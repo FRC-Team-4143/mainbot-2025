@@ -1,0 +1,15 @@
+{
+  "NTProvider": {
+    "types": {
+      "/FMSInfo": "FMSInfo",
+      "/Pose": "Field2d",
+      "/SmartDashboard/Field": "Field2d",
+      "/SmartDashboard/Module 0": "Mechanism2d",
+      "/SmartDashboard/Module 1": "Mechanism2d",
+      "/SmartDashboard/Set wheel offsets": "Command"
+    }
+  },
+  "NetworkTables Info": {
+    "visible": true
+  }
+}
