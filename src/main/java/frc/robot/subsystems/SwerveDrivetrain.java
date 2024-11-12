@@ -15,16 +15,20 @@ import com.ctre.phoenix6.hardware.Pigeon2;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.geometry.Twist2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.networktables.NetworkTableInstance;
+import edu.wpi.first.networktables.ProtobufPublisher;
 import edu.wpi.first.networktables.StructArrayPublisher;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import frc.lib.ChassisProxyServer;
 import frc.lib.Util;
 import frc.lib.subsystem.Subsystem;
 import frc.lib.swerve.*;
@@ -101,7 +105,8 @@ public class SwerveDrivetrain extends Subsystem {
     public boolean hasAppliedOperatorPerspective = false;
 
     // NT publishers
-    private StructArrayPublisher<SwerveModuleState> current_state_pub, requested_state_pub;
+    private StructArrayPublisher<SwerveModuleState> current_state_pub, requested_state_pub, current_state_proxy_pub;
+    private Field2d field_ = new Field2d();
 
     /**
      * Constructs a SwerveDrivetrain using the specified constants.
@@ -116,6 +121,9 @@ public class SwerveDrivetrain extends Subsystem {
 
         // make new io instance
         io_ = new SwerveDriverainPeriodicIo();
+
+        // configure chassis server for comms
+        ChassisProxyServer.configureServer();
 
         // Setup the Pigeon IMU
         pigeon_imu = new Pigeon2(DrivetrainConstants.PIGEON2_ID, DrivetrainConstants.MODULE_CANBUS_NAME[0]);
@@ -166,6 +174,8 @@ public class SwerveDrivetrain extends Subsystem {
                 .getStructArrayTopic("module_states/requested", SwerveModuleState.struct).publish();
         current_state_pub = NetworkTableInstance.getDefault()
                 .getStructArrayTopic("module_states/current", SwerveModuleState.struct).publish();
+        current_state_proxy_pub = NetworkTableInstance.getDefault()
+                .getStructArrayTopic("module_states/current_proxy", SwerveModuleState.struct).publish();
     }
 
     @Override
@@ -196,6 +206,9 @@ public class SwerveDrivetrain extends Subsystem {
 
         io_.chassis_speeds_ = kinematics.toChassisSpeeds(io_.current_module_states_);
         io_.field_relative_chassis_speed_ = ChassisSpeeds.fromRobotRelativeSpeeds(io_.chassis_speeds_, io_.robot_yaw_);
+
+        // recieve new chassis info
+        ChassisProxyServer.updateOdom();
     }
 
     @Override
@@ -249,7 +262,6 @@ public class SwerveDrivetrain extends Subsystem {
         request_parameters.timestamp = timestamp;
         request_parameters.operatorForwardDirection = io_.drivers_station_perspective_;
 
-        io_.chassis_speed_magnitude_ = calculateChassisSpeedMagnitude(io_.chassis_speeds_);
     }
 
     @Override
@@ -261,6 +273,7 @@ public class SwerveDrivetrain extends Subsystem {
     public void outputTelemetry(double timestamp) {
         current_state_pub.set(io_.current_module_states_);
         requested_state_pub.set(io_.requested_module_states_);
+        current_state_proxy_pub.set(ChassisProxyServer.getModuleStates());
 
         SmartDashboard.putNumber("Rotation Control/Target Rotation", io_.target_rotation_.getDegrees());
         SmartDashboard.putNumber("Rotation Control/Current Yaw", io_.robot_yaw_.getDegrees());
@@ -268,11 +281,16 @@ public class SwerveDrivetrain extends Subsystem {
         SmartDashboard.putNumber("Debug/Chassis Speed/X", io_.chassis_speeds_.vxMetersPerSecond);
         SmartDashboard.putNumber("Debug/Chassis Speed/Y", io_.chassis_speeds_.vyMetersPerSecond);
         SmartDashboard.putNumber("Debug/Chassis Speed/Omega", io_.chassis_speeds_.omegaRadiansPerSecond);
-        SmartDashboard.putNumber("Debug/Chassis Speed/magnitude", io_.chassis_speed_magnitude_);
 
-        // SmartDashboard.putData("X_Controler", DrivetrainConstants.X_CONTROLLER);
-        // SmartDashboard.putData("Y_Controler", DrivetrainConstants.Y_CONTROLLER);
-        // SmartDashboard.putData("T_Controler", DrivetrainConstants.T_CONTROLLER);
+        Twist2d chassis_proxy_twist = ChassisProxyServer.getTwist();
+        SmartDashboard.putNumber("Debug/Chassis Proxy Speed/X", chassis_proxy_twist.dx);
+        SmartDashboard.putNumber("Debug/Chassis Proxy Speed/Y", chassis_proxy_twist.dy);
+        SmartDashboard.putNumber("Debug/Chassis Proxy Speed/Omega", chassis_proxy_twist.dtheta);
+        field_.setRobotPose(ChassisProxyServer.getPose());
+        SmartDashboard.putData("Chassis Proxy Pose", field_);
+
+
+        
     }
 
     public Rotation2d getRobotRotation() {
@@ -281,14 +299,6 @@ public class SwerveDrivetrain extends Subsystem {
 
     public Command applyRequest(Supplier<SwerveRequest> requestSupplier) {
         return Commands.run(() -> this.setControl(requestSupplier.get()));
-    }
-
-    public ChassisSpeeds getCurrentRobotChassisSpeeds() {
-        return io_.chassis_speeds_;
-    }
-
-    public ChassisSpeeds getFieldRelativeSpeeds(){
-        return io_.field_relative_chassis_speed_;
     }
 
     /**
@@ -390,11 +400,6 @@ public class SwerveDrivetrain extends Subsystem {
 
     public Rotation2d getDriverPrespective() {
         return io_.drivers_station_perspective_;
-    }
-
-    public double calculateChassisSpeedMagnitude(ChassisSpeeds chassis) {
-        return Math.sqrt((chassis.vxMetersPerSecond * chassis.vxMetersPerSecond)
-                + (chassis.vyMetersPerSecond * chassis.vyMetersPerSecond));
     }
 
     public void rotationTargetWithGyro(boolean state){
