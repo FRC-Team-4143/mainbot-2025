@@ -3,13 +3,6 @@ package frc.robot;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.Commands;
-import frc.robot.subsystems.SwerveDrivetrain;
-import frc.robot.subsystems.SwerveDrivetrain.DriveMode;
-
-import com.pathplanner.lib.auto.NamedCommands;
-
-
 
 public class AutoManager {
 
@@ -27,8 +20,6 @@ public class AutoManager {
 
     private AutoManager() {
         
-        SwerveDrivetrain.getInstance().configurePathPlanner();
-
         // Register each of the autos
         SmartDashboard.putData("Auto Mode", autoChooser);
     }
