@@ -64,7 +64,6 @@ public class Robot extends TimedRobot {
 
     @Override
     public void teleopInit() {
-        PoseEstimator.getInstance().setIgnoreVision(false);
         if (m_autonomousCommand != null) {
             m_autonomousCommand.cancel();
         }

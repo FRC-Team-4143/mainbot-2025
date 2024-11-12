@@ -37,11 +37,6 @@ public abstract class OI {
         SmartDashboard.putData("Seed Field Centric", Commands.runOnce(
                 () -> swerve_drivetrain_.seedFieldRelative(swerve_drivetrain_.getDriverPrespective()))
                 .ignoringDisable(true));
-        SmartDashboard.putData("Pause Vision", Commands.runOnce(
-                () -> PoseEstimator.getInstance().pauseVisionFilter())
-                .ignoringDisable(true));
-        SmartDashboard.putNumber("Max Drive Speed", Constants.DrivetrainConstants.MAX_DRIVE_SPEED);
-
 
         driver_joystick_.rightStick().onTrue(Commands.runOnce(() -> swerve_drivetrain_.toggleFieldCentric(), swerve_drivetrain_));
     }
