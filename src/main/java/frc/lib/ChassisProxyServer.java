@@ -12,6 +12,33 @@ import edu.wpi.first.math.kinematics.SwerveModuleState;
 
 public class ChassisProxyServer {
 
+    // Byte index for packet header data
+    private static final int ID_IDX = 0;
+    private static final int TIME_SEC_IDX = 1;
+    private static final int TIME_NSEC_IDX = 5;
+
+    // Byte index for odom packet data
+    private static final int X_POS_IDX = 9;
+    private static final int Y_POS_IDX = 13;
+    private static final int OMEGA_POS_IDX = 17;
+    private static final int X_VAR_IDX = 21;
+    private static final int Y_VAR_IDX = 25;
+    private static final int OMEGA_VAR_IDX = 29; 
+    private static final int X_DOT_IDX = 33;
+    private static final int Y_DOT_IDX = 37;
+    private static final int OMEGA_DOT_IDX = 41;
+
+    // Byte index for state packet data
+    private static final int MOD_1_ANG_POS_IDX = 9;
+    private static final int MOD_1_LIN_VEL_IDX = 13;
+    private static final int MOD_2_ANG_POS_IDX = 17;
+    private static final int MOD_2_LIN_VEL_IDX = 21;
+    private static final int MOD_3_ANG_POS_IDX = 25;
+    private static final int MOD_3_LIN_VEL_IDX = 29;
+    private static final int MOD_4_ANG_POS_IDX = 33;
+    private static final int MOD_4_LIN_VEL_IDX = 37;
+
+    // Data members
     private static Pose2d pose_ = new Pose2d();
     private static Twist2d twist_ = new Twist2d();
     private static double[] variances_ = new double[3];
@@ -20,35 +47,53 @@ public class ChassisProxyServer {
     private static SwerveModuleState[] module_states_ = new SwerveModuleState[4];
     private static Timestamp states_timestamp_ = new Timestamp(0, 0);
 
+    // Socket Config
     private static DatagramSocket socket_ = null;
-
     private static final int PORT = 30000; // local port to bind server
-    private static final int TIMEOUT = 1; // Server receive block timeout
+    private static final int TIMEOUT = 1; // Server receive blocking timeout
 
+    
+
+    // Timestamp class to store packer timestamp and preform operations
     public static class Timestamp {
-        public int seconds;
-        public int nanoseconds;
+        private int seconds;
+        private int nanoseconds;
 
         public Timestamp(int seconds, int nanoseconds){
             this.seconds = seconds;
             this.nanoseconds = nanoseconds;
         }
 
-        public boolean isLater(Timestamp compare){
-            if(seconds > compare.seconds){
-                return false;
-            } else if (nanoseconds > compare.nanoseconds) {
-                return false;
-            } else {
+        /**
+         * Determines is current timestamp is more recent than supplied timestamp
+         * @param recorded the store {@link #Timestamp} to compare current timestamp against
+         * @return true: current timestamp is the most recent | false: recorded timestamp is the most recent
+         */
+        public boolean isLatest(Timestamp recorded){
+            if(seconds > recorded.seconds){
                 return true;
+            } else if (nanoseconds > recorded.nanoseconds) {
+                return true;
+            } else {
+                return false;
             }
         }
 
+        /**
+         * Converts timestamp object into seconds.nanoseconds
+         * @return timestamp as a decimal for human readability
+         */
         public double toDouble(){
             return seconds + nanoseconds / 1000000000.0;
         }
     }
 
+    /**
+     * Binds the server socket to the set port to begin communication.
+     * This must be called once before you can attempt to {@link #updateData()}.
+     * @return true: server configured successfully | false: configuration error occured.
+     * @throws SocketException if the socket could not be opened, or the socket could not bind to the specified local port.
+     */
     public static boolean configureServer(){
         // check if socket is already bound
         if (socket_ == null || !socket_.isBound()){
@@ -67,6 +112,14 @@ public class ChassisProxyServer {
         return true;
     }
 
+    /**
+     * Server attempts to recieve data from bound socket and parse the incoming packet.
+     * This method is called periodcally to continously update internal members.
+     * Ensure {@link #configureServer()}
+     * @return true: packet succesfully recieved | false: recieve error occured.
+     * @throws SocketTimeoutException if socket recieve timed out to avoid blocking.
+     * @throws IOException if I/O error occurs.
+     */
     public static boolean updateData(){
 
         try {
@@ -81,21 +134,24 @@ public class ChassisProxyServer {
 
     
             // update timestamp
-            Timestamp timestamp = new Timestamp(getIntFromBuffer(buffer, 1), getIntFromBuffer(buffer, 5));
-            System.out.println("ID: " + ((int) buffer[0]) + " | Seconds: " + timestamp.toDouble());
+            Timestamp timestamp = new Timestamp(getIntFromBuffer(buffer, TIME_SEC_IDX), getIntFromBuffer(buffer, TIME_NSEC_IDX));
+
+            // Debugging
+            System.out.println("ID: " + ((int) buffer[ID_IDX]) + " | Seconds: " + timestamp.toDouble() + "\n\t"
+                            + "First Int: " + buffer[9] + " | " + buffer[10] + " | " + buffer[11] + " | " + buffer[12] + "Value: " + getIntFromBuffer(buffer, 9));
 
             // Determine packet type from first byte of buffer
-            switch ((int) buffer[0]){
+            switch ((int) buffer[ID_IDX]){
                 // Odom Packet Type
                 case 30 : // const uint8_t msg_id{ 30u };
-                    if (timestamp.isLater(odom_timestamp_)){
+                    if (timestamp.isLatest(odom_timestamp_)){
                         odom_timestamp_ = timestamp;
                         readOdomFromBuffer(buffer);
                     }
                     break;
                 // States Packet Type
                 case 2 : // const uint8_t msg_id{ 2u };
-                    if (timestamp.isLater(states_timestamp_)){
+                    if (timestamp.isLatest(states_timestamp_)){
                         states_timestamp_ = timestamp;
                         readStatesFromBuffer(buffer);
                     }
@@ -116,91 +172,74 @@ public class ChassisProxyServer {
         return true;
     }
 
-    // struct ProxyOdomMsg {
-    //     // Unique message identifier
-    //     const uint8_t msg_id{ 30u };     | 0
-    
-    //     // Timestamp
-    //     int32_t sec{ 0 };                | 1-4
-    //     int32_t nanosec{ 0 };            | 4-8
-    
-    //     // Position data
-    //     int32_t x_pos;                   | 9-12
-    //     int32_t y_pos;                   | 13-16
-    //     int32_t theta_pos;               | 17-20
-    
-    //     // Position variances for certainty estimation
-    //     int32_t x_var;                   | 21-24
-    //     int32_t y_var;                   | 25-28
-    //     int32_t theta_var;               | 29-32
-    
-    //     // Velocity data
-    //     int32_t x_dot;                   | 33-36
-    //     int32_t y_dot;                   | 37-40
-    //     int32_t theta_dot;               | 41-44
-    // };
+    /**
+     * Updates interal pose, twist, and variance with data from byte buffer.
+     * @param buffer byte buffer containing data from packet to be parsed.
+     */
     private static void readOdomFromBuffer(byte[] buffer){
-        pose_ = new Pose2d(getIntFromBuffer(buffer, 9)/1000.0, getIntFromBuffer(buffer, 13)/1000.0, new Rotation2d(getIntFromBuffer(buffer, 17)/1000.0));
-        twist_ = new Twist2d(getIntFromBuffer(buffer, 33)/1000.0, getIntFromBuffer(buffer, 37)/1000.0, getIntFromBuffer(buffer, 41)/1000.0);
+        // Position data
+        pose_ = new Pose2d(
+                getIntFromBuffer(buffer, X_POS_IDX)/1000.0,
+                getIntFromBuffer(buffer, Y_POS_IDX)/1000.0,
+            new Rotation2d(
+                getIntFromBuffer(buffer, OMEGA_POS_IDX)/1000.0));
+
+        // Velocity data
+        twist_ = new Twist2d(
+                getIntFromBuffer(buffer, X_DOT_IDX)/1000.0,
+                getIntFromBuffer(buffer, Y_DOT_IDX)/1000.0,
+                getIntFromBuffer(buffer, OMEGA_DOT_IDX)/1000.0);
             
-        variances_[0] = getIntFromBuffer(buffer, 21)/1000.0;
-        variances_[1] = getIntFromBuffer(buffer, 25)/1000.0;
-        variances_[2] = getIntFromBuffer(buffer, 29)/1000.0;
+        // Position variances for certainty estimation
+        variances_[0] = getIntFromBuffer(buffer, X_VAR_IDX)/1000.0;
+        variances_[1] = getIntFromBuffer(buffer, Y_VAR_IDX)/1000.0;
+        variances_[2] = getIntFromBuffer(buffer, OMEGA_VAR_IDX)/1000.0;
     }
 
-    // struct ProxyModuleStatesMsg {
-    //     // Unique message identifier
-    //     const uint8_t msg_id{ 2u };      | 0
-    
-    //     // Timestamp
-    //     int32_t sec{ 0 };                | 1-4
-    //     int32_t nanosec{ 0 };            | 4-8
-    
-    //     // Module 1 buffer
-    //     int32_t ang_pos_1;               | 9-12
-    //     int32_t lin_vel_1;               | 13-16
-    
-    //     // Module 2 data
-    //     int32_t ang_pos_2;               | 17-20
-    //     int32_t lin_vel_2;               | 21-24
-    
-    //     // Module 3 data
-    //     int32_t ang_pos_3;               | 25-28
-    //     int32_t lin_vel_3;               | 29-32
-    
-    //     // Module 4 data
-    //     int32_t ang_pos_4;               | 33-36
-    //     int32_t lin_vel_4;               | 37-40
-    // };
+    /**
+     * Updates internal module states with data from byte buffer.
+     * @param buffer byte buffer containing data from packet to be parsed.
+     */
     private static void readStatesFromBuffer(byte[] buffer){
-        for (int i = 0; i < module_states_.length; i++){
-            module_states_[i] = new SwerveModuleState(getIntFromBuffer(buffer, 9+i*8)/1000.0, new Rotation2d(getIntFromBuffer(buffer, 13+i*8)/1000.0));
-        }
+        module_states_[0] = new SwerveModuleState(getIntFromBuffer(buffer,  MOD_1_LIN_VEL_IDX)/1000.0, new Rotation2d(getIntFromBuffer(buffer, MOD_1_ANG_POS_IDX)/1000.0));
+        module_states_[1] = new SwerveModuleState(getIntFromBuffer(buffer,  MOD_2_LIN_VEL_IDX)/1000.0, new Rotation2d(getIntFromBuffer(buffer, MOD_2_ANG_POS_IDX)/1000.0));
+        module_states_[2] = new SwerveModuleState(getIntFromBuffer(buffer,  MOD_3_LIN_VEL_IDX)/1000.0, new Rotation2d(getIntFromBuffer(buffer, MOD_3_ANG_POS_IDX)/1000.0));
+        module_states_[3] = new SwerveModuleState(getIntFromBuffer(buffer,  MOD_4_LIN_VEL_IDX)/1000.0, new Rotation2d(getIntFromBuffer(buffer, MOD_4_ANG_POS_IDX)/1000.0));
     }
 
+    /**
+     * Parses a single int from 4 bytes in given buffer.
+     * @param buffer byte buffer containing data from packet to be parsed.
+     * @param start index of first byte in stored int data.
+     * @return interger value assocatied with bytes.
+     */
     private static int getIntFromBuffer(byte[] buffer, int start){
+        // htonl - big endian
         return (((int) buffer[start]) << 24) | (((int) buffer[start+1]) << 16) | (((int) buffer[start+2]) << 8) | ((int) buffer[start+3]);
     }
 
     /**
-     * Gets the current robot Pose
-     * @return most recent pose from chassis proxy
+     * Gets the current robot Pose.
+     * Pose is updated by calling {@link #updateData()} periodically.
+     * @return most recent {@link Pose2d} from chassis proxy.
      */
     public static Pose2d getPose(){
         return pose_;
     }
 
     /**
-     * Gets the current robot Twist
-     * @return most recent twist from chassis proxy
+     * Gets the current robot Twist.
+     * Twist is updated by calling {@link #updateData()} periodically.
+     * @return most recent {@link Twist2d} from chassis proxy.
      */
     public static Twist2d getTwist(){
         return twist_;
     }
     
     /**
-     * Gets the current robot module state
-     * @return array containing SwereModuleState for each module
+     * Gets the current robot module state.
+     * States are updated by calling {@link #updateData()} periodically.
+     * @return array containing the {@link SwerveModuleState} for each module
      */
     public static SwerveModuleState[] getModuleStates(){
         return module_states_;
