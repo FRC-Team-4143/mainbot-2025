@@ -208,7 +208,7 @@ public class SwerveDrivetrain extends Subsystem {
         io_.field_relative_chassis_speed_ = ChassisSpeeds.fromRobotRelativeSpeeds(io_.chassis_speeds_, io_.robot_yaw_);
 
         // recieve new chassis info
-        ChassisProxyServer.updateOdom();
+        ChassisProxyServer.updateData();
     }
 
     @Override
