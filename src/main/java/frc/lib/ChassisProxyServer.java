@@ -5,6 +5,8 @@ import java.net.DatagramSocket;
 import java.net.SocketException;
 import java.net.SocketTimeoutException;
 
+import java.nio.ByteBuffer;
+
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Twist2d;
@@ -49,15 +51,13 @@ public class ChassisProxyServer {
 
     // Socket Config
     private static DatagramSocket socket_ = null;
-    private static final int PORT = 30000; // local port to bind server
+    private static final int PORT = 1180; // local port to bind server
     private static final int TIMEOUT = 1; // Server receive blocking timeout
-
-    
 
     // Timestamp class to store packet timestamp and preform operations
     public static class Timestamp {
-        private int seconds;
-        private int nanoseconds;
+        public int seconds;
+        public int nanoseconds;
 
         public Timestamp(int seconds, int nanoseconds){
             this.seconds = seconds;
@@ -77,14 +77,6 @@ public class ChassisProxyServer {
             } else {
                 return false;
             }
-        }
-
-        /**
-         * Converts {@link #Timestamp} object into seconds.nanoseconds
-         * @return timestamp as a decimal for human readability
-         */
-        public double toDouble(){
-            return seconds + nanoseconds / 1000000000.0;
         }
     }
 
@@ -131,14 +123,9 @@ public class ChassisProxyServer {
             
             // receive the data in byte buffer
             socket_.receive(packet);
-
     
             // update timestamp
-            Timestamp timestamp = new Timestamp(getIntFromBuffer(buffer, TIME_SEC_IDX), getIntFromBuffer(buffer, TIME_NSEC_IDX));
-
-            // Debugging
-            System.out.println("ID: " + ((int) buffer[ID_IDX]) + " | Seconds: " + timestamp.toDouble() + "\n\t"
-                            + "First Int: " + buffer[9] + " | " + buffer[10] + " | " + buffer[11] + " | " + buffer[12] + "Value: " + getIntFromBuffer(buffer, 9));
+            Timestamp timestamp = new Timestamp(ByteBuffer.wrap(buffer, TIME_SEC_IDX, 4).getInt(), ByteBuffer.wrap(buffer, TIME_NSEC_IDX, 4).getInt());
 
             // Determine packet type from first byte of buffer
             switch ((int) buffer[ID_IDX]){
@@ -179,21 +166,21 @@ public class ChassisProxyServer {
     private static void readOdomFromBuffer(byte[] buffer){
         // Position data
         pose_ = new Pose2d(
-                getIntFromBuffer(buffer, X_POS_IDX)/1000.0,
-                getIntFromBuffer(buffer, Y_POS_IDX)/1000.0,
+                ByteBuffer.wrap(buffer, X_POS_IDX, 4).getInt()/1000.0,
+                ByteBuffer.wrap(buffer, Y_POS_IDX, 4).getInt()/1000.0,
             new Rotation2d(
-                getIntFromBuffer(buffer, OMEGA_POS_IDX)/1000.0));
+                ByteBuffer.wrap(buffer, OMEGA_POS_IDX, 4).getInt()/1000.0));
 
         // Velocity data
         twist_ = new Twist2d(
-                getIntFromBuffer(buffer, X_DOT_IDX)/1000.0,
-                getIntFromBuffer(buffer, Y_DOT_IDX)/1000.0,
-                getIntFromBuffer(buffer, OMEGA_DOT_IDX)/1000.0);
+                ByteBuffer.wrap(buffer, X_DOT_IDX, 4).getInt()/1000.0,
+                ByteBuffer.wrap(buffer, Y_DOT_IDX, 4).getInt()/1000.0,
+                ByteBuffer.wrap(buffer, OMEGA_DOT_IDX, 4).getInt()/1000.0);
             
         // Position variances for certainty estimation
-        variances_[0] = getIntFromBuffer(buffer, X_VAR_IDX)/1000.0;
-        variances_[1] = getIntFromBuffer(buffer, Y_VAR_IDX)/1000.0;
-        variances_[2] = getIntFromBuffer(buffer, OMEGA_VAR_IDX)/1000.0;
+        variances_[0] = ByteBuffer.wrap(buffer, X_VAR_IDX, 4).getInt()/1000.0;
+        variances_[1] = ByteBuffer.wrap(buffer, Y_VAR_IDX, 4).getInt()/1000.0;
+        variances_[2] = ByteBuffer.wrap(buffer, OMEGA_VAR_IDX, 4).getInt()/1000.0;
     }
 
     /**
@@ -201,21 +188,10 @@ public class ChassisProxyServer {
      * @param buffer byte buffer containing data from packet to be parsed.
      */
     private static void readStatesFromBuffer(byte[] buffer){
-        module_states_[0] = new SwerveModuleState(getIntFromBuffer(buffer,  MOD_1_LIN_VEL_IDX)/1000.0, new Rotation2d(getIntFromBuffer(buffer, MOD_1_ANG_POS_IDX)/1000.0));
-        module_states_[1] = new SwerveModuleState(getIntFromBuffer(buffer,  MOD_2_LIN_VEL_IDX)/1000.0, new Rotation2d(getIntFromBuffer(buffer, MOD_2_ANG_POS_IDX)/1000.0));
-        module_states_[2] = new SwerveModuleState(getIntFromBuffer(buffer,  MOD_3_LIN_VEL_IDX)/1000.0, new Rotation2d(getIntFromBuffer(buffer, MOD_3_ANG_POS_IDX)/1000.0));
-        module_states_[3] = new SwerveModuleState(getIntFromBuffer(buffer,  MOD_4_LIN_VEL_IDX)/1000.0, new Rotation2d(getIntFromBuffer(buffer, MOD_4_ANG_POS_IDX)/1000.0));
-    }
-
-    /**
-     * Parses a single int from 4 bytes in given buffer.
-     * @param buffer byte buffer containing data from packet to be parsed.
-     * @param start index of first byte in stored int data.
-     * @return integer value associated with bytes.
-     */
-    private static int getIntFromBuffer(byte[] buffer, int start){
-        // htonl - big endian
-        return (((int) buffer[start]) << 24) | (((int) buffer[start+1]) << 16) | (((int) buffer[start+2]) << 8) | ((int) buffer[start+3]);
+        module_states_[0] = new SwerveModuleState(ByteBuffer.wrap(buffer,  MOD_1_LIN_VEL_IDX, 4).getInt()/1000.0, new Rotation2d(ByteBuffer.wrap(buffer, MOD_1_ANG_POS_IDX, 4).getInt()/1000.0));
+        module_states_[1] = new SwerveModuleState(ByteBuffer.wrap(buffer,  MOD_2_LIN_VEL_IDX, 4).getInt()/1000.0, new Rotation2d(ByteBuffer.wrap(buffer, MOD_2_ANG_POS_IDX, 4).getInt()/1000.0));
+        module_states_[2] = new SwerveModuleState(ByteBuffer.wrap(buffer,  MOD_3_LIN_VEL_IDX, 4).getInt()/1000.0, new Rotation2d(ByteBuffer.wrap(buffer, MOD_3_ANG_POS_IDX, 4).getInt()/1000.0));
+        module_states_[3] = new SwerveModuleState(ByteBuffer.wrap(buffer,  MOD_4_LIN_VEL_IDX, 4).getInt()/1000.0, new Rotation2d(ByteBuffer.wrap(buffer, MOD_4_ANG_POS_IDX, 4).getInt()/1000.0));
     }
 
     /**
