@@ -7,11 +7,10 @@
 package frc.lib.swerve;
 
 import static edu.wpi.first.units.Units.Volts;
-import static edu.wpi.first.units.MutableMeasure.mutable;
 
 import com.ctre.phoenix6.StatusCode;
 import com.ctre.phoenix6.controls.VoltageOut;
-import com.ctre.phoenix6.mechanisms.swerve.utility.PhoenixPIDController;
+import com.ctre.phoenix6.swerve.utility.PhoenixPIDController;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -21,7 +20,8 @@ import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.units.Measure;
 import edu.wpi.first.units.MutableMeasure;
-import edu.wpi.first.units.Voltage;
+import edu.wpi.first.units.measure.MutVoltage;
+import edu.wpi.first.units.measure.Voltage;
 
 import frc.robot.subsystems.PoseEstimator;
 
@@ -860,95 +860,4 @@ public interface SwerveRequest {
         }
     }
 
-    /**
-     * SysId-specific SwerveRequest to characterize the translational
-     * characteristics of a swerve drivetrain.
-     */
-    public class SysIdSwerveTranslation implements SwerveRequest {
-        /* Voltage to apply to drive wheels. This is final to enforce mutating the value */
-        public final MutableMeasure<Voltage> VoltsToApply = mutable(Volts.of(0));
-
-        /* Local reference to a voltage request to drive the motors with */
-        private VoltageOut m_voltRequest = new VoltageOut(0);
-
-        public StatusCode apply(SwerveControlRequestParameters parameters, SwerveModule... modulesToApply) {
-            for (int i = 0; i < modulesToApply.length; ++i) {
-                modulesToApply[i].applyCharacterization(Rotation2d.fromDegrees(0), m_voltRequest.withOutput(VoltsToApply.in(Volts)));
-            }
-            return StatusCode.OK;
-        }
-
-        /**
-         * Update the voltage to apply to the drive wheels.
-         *
-         * @param Volts Voltage to apply
-         * @return this request
-         */
-        public SysIdSwerveTranslation withVolts(Measure<Voltage> Volts) {
-            VoltsToApply.mut_replace(Volts);
-            return this;
-        }
-    }
-
-    /**
-     * SysId-specific SwerveRequest to characterize the rotational
-     * characteristics of a swerve drivetrain.
-     */
-    public class SysIdSwerveRotation implements SwerveRequest {
-        /* Voltage to apply to drive wheels. This is final to enforce mutating the value */
-        public final MutableMeasure<Voltage> VoltsToApply = mutable(Volts.of(0));
-
-        /* Local reference to a voltage request to drive the motors with */
-        private VoltageOut m_voltRequest = new VoltageOut(0);
-
-        public StatusCode apply(SwerveControlRequestParameters parameters, SwerveModule... modulesToApply) {
-            for (int i = 0; i < modulesToApply.length; ++i) {
-                modulesToApply[i].applyCharacterization(parameters.swervePositions[i].getAngle().plus(Rotation2d.fromDegrees(90)),
-                                                        m_voltRequest.withOutput(VoltsToApply.in(Volts)));
-            }
-            return StatusCode.OK;
-        }
-
-        /**
-         * Update the voltage to apply to the drive wheels.
-         *
-         * @param Volts Voltage to apply
-         * @return this request
-         */
-        public SysIdSwerveRotation withVolts(Measure<Voltage> Volts) {
-            VoltsToApply.mut_replace(Volts);
-            return this;
-        }
-    }
-
-    /**
-     * SysId-specific SwerveRequest to characterize the steer module
-     * characteristics of a swerve drivetrain.
-     */
-    public class SysIdSwerveSteerGains implements SwerveRequest {
-        /* Voltage to apply to drive wheels. This is final to enforce mutating the value */
-        public final MutableMeasure<Voltage> VoltsToApply = mutable(Volts.of(0));
-
-        /* Local reference to a voltage request to drive the motors with */
-        private VoltageOut m_voltRequest = new VoltageOut(0);
-
-        public StatusCode apply(SwerveControlRequestParameters parameters, SwerveModule... modulesToApply) {
-            for (int i = 0; i < modulesToApply.length; ++i) {
-                modulesToApply[i].getSteerMotor().setControl(m_voltRequest.withOutput(VoltsToApply.in(Volts)));
-                modulesToApply[i].getDriveMotor().setControl(m_voltRequest.withOutput(0));
-            }
-            return StatusCode.OK;
-        }
-
-        /**
-         * Update the voltage to apply to the drive wheels.
-         *
-         * @param Volts Voltage to apply
-         * @return this request
-         */
-        public SysIdSwerveSteerGains withVolts(Measure<Voltage> Volts) {
-            VoltsToApply.mut_replace(Volts);
-            return this;
-        }
-    }
 }

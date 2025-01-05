@@ -85,8 +85,7 @@ public class PoseEstimator extends Subsystem {
         if (result.timestamp > io_.last_vision_timestamp_ && io_.vision_ready_status_ && !io_.ignore_vision) {
             vision_filtered_odometry_.addVisionMeasurement(
                     result.value.transformBy(new Transform2d(0, 0, new Rotation2d())), timestamp - 0.04,
-                    new MatBuilder<>(Nat.N3(), Nat.N1()).fill(vision_std_devs_[0], vision_std_devs_[1],
-                            vision_std_devs_[2]));
+                    MatBuilder.fill(Nat.N3(), Nat.N1(), vision_std_devs_[0], vision_std_devs_[1], vision_std_devs_[2]));
             io_.last_vision_timestamp_ = result.timestamp;
         }
 

@@ -6,6 +6,10 @@
  */
 package frc.lib.swerve;
 
+import static edu.wpi.first.units.Units.MetersPerSecond;
+import static edu.wpi.first.units.Units.Rotation;
+import static edu.wpi.first.units.Units.RotationsPerSecond;
+
 import com.ctre.phoenix6.BaseStatusSignal;
 import com.ctre.phoenix6.StatusCode;
 import com.ctre.phoenix6.StatusSignal;
@@ -28,6 +32,8 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.units.measure.Angle;
+import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.wpilibj.AnalogEncoder;
 import edu.wpi.first.wpilibj.Preferences;
 
@@ -93,10 +99,10 @@ public class SwerveModule {
     private final int m_encoder_id;
     private double m_angle_offset;
 
-    private final StatusSignal<Double> m_drivePosition;
-    private final StatusSignal<Double> m_driveVelocity;
-    private final StatusSignal<Double> m_steerPosition;
-    private final StatusSignal<Double> m_steerVelocity;
+    private final StatusSignal<Angle> m_drivePosition;
+    private final StatusSignal<AngularVelocity> m_driveVelocity;
+    private final StatusSignal<Angle> m_steerPosition;
+    private final StatusSignal<AngularVelocity> m_steerVelocity;
     private final BaseStatusSignal[] m_signals;
     private final double m_driveRotationsPerMeter;
     private final double m_couplingRatioDriveRotorToCANcoder;
@@ -274,8 +280,8 @@ public class SwerveModule {
         }
 
         /* Now latency-compensate our signals */
-        double drive_rot = BaseStatusSignal.getLatencyCompensatedValue(m_drivePosition, m_driveVelocity);
-        double angle_rot = BaseStatusSignal.getLatencyCompensatedValue(m_steerPosition, m_steerVelocity);
+        double drive_rot = BaseStatusSignal.getLatencyCompensatedValue(m_drivePosition, m_driveVelocity).in(Rotation);
+        double angle_rot = BaseStatusSignal.getLatencyCompensatedValue(m_steerPosition, m_steerVelocity).in(Rotation);
 
         /*
          * Back out the drive rotations based on angle rotations due to coupling between
@@ -347,7 +353,7 @@ public class SwerveModule {
          * velocity
          */
         /* To reduce the "skew" that occurs when changing direction */
-        double steerMotorError = angleToSetDeg - m_steerPosition.getValue();
+        double steerMotorError = angleToSetDeg - m_steerPosition.getValue().in(Rotation);
         /* If error is close to 0 rotations, we're already there, so apply full power */
         /*
          * If the error is close to 0.25 rotations, then we're 90 degrees, so movement
@@ -365,7 +371,7 @@ public class SwerveModule {
 
         /* Back out the expected shimmy the drive motor will see */
         /* Find the angular rate to determine what to back out */
-        double azimuthTurnRps = m_steerVelocity.getValue();
+        double azimuthTurnRps = m_steerVelocity.getValueAsDouble();
         /* Azimuth turn rate multiplied by coupling ratio provides back-out rps */
         double driveRateBackOut = azimuthTurnRps * m_couplingRatioDriveRotorToCANcoder;
         velocityToSet += driveRateBackOut;
@@ -495,8 +501,8 @@ public class SwerveModule {
      * @return Current state of the module
      */
     public SwerveModuleState getCurrentState() {
-        return new SwerveModuleState(m_driveVelocity.getValue() / m_driveRotationsPerMeter,
-                Rotation2d.fromRotations(m_steerPosition.getValue()));
+        return new SwerveModuleState(m_driveVelocity.getValue().in(RotationsPerSecond) / m_driveRotationsPerMeter,
+                Rotation2d.fromRotations(m_steerPosition.getValue().in(Rotation)));
     }
 
     /**
@@ -536,7 +542,7 @@ public class SwerveModule {
      */
     public void setWheelOffsets() {
         m_steerMotor.setPosition(0);
-        m_angle_offset = m_analogEncoder.getAbsolutePosition();// * 360.0;
+        m_angle_offset = m_analogEncoder.get();// * 360.0;
         Preferences.setDouble("Module" + m_encoder_id, m_angle_offset);
 
         System.out.println("Set wheel offsets of " + m_encoder_id + " to " + m_angle_offset);
@@ -549,7 +555,7 @@ public class SwerveModule {
      */
     public void resetToAbsolute() {
         m_angle_offset = Preferences.getDouble("Module" + m_encoder_id, 0);
-        double absolutePosition = m_analogEncoder.getAbsolutePosition() - m_angle_offset;
+        double absolutePosition = m_analogEncoder.get() - m_angle_offset;
         m_steerMotor.setPosition(absolutePosition);
     }
 

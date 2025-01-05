@@ -202,7 +202,7 @@ public class SwerveDrivetrain extends Subsystem {
         io_.driver_joystick_leftY_ = OI.getDriverJoystickLeftY();
         io_.driver_joystick_rightX_ = OI.getDriverJoystickRightX();
 
-        io_.robot_yaw_ = Rotation2d.fromRadians(MathUtil.angleModulus(-pigeon_imu.getAngle() * Math.PI / 180));
+        io_.robot_yaw_ = Rotation2d.fromRadians(MathUtil.angleModulus(-pigeon_imu.getYaw().getValueAsDouble() * Math.PI / 180));
 
         io_.chassis_speeds_ = kinematics.toChassisSpeeds(io_.current_module_states_);
         io_.field_relative_chassis_speed_ = ChassisSpeeds.fromRobotRelativeSpeeds(io_.chassis_speeds_, io_.robot_yaw_);
@@ -307,7 +307,7 @@ public class SwerveDrivetrain extends Subsystem {
      */
     public void seedFieldRelative(Rotation2d offset) {
         pigeon_imu.setYaw(offset.getDegrees());
-        io_.robot_yaw_ = Rotation2d.fromRadians(MathUtil.angleModulus(-pigeon_imu.getAngle() * Math.PI / 180));
+        io_.robot_yaw_ = Rotation2d.fromRadians(MathUtil.angleModulus(-pigeon_imu.getYaw().getValueAsDouble() * Math.PI / 180));
     }
 
     /**
@@ -431,7 +431,7 @@ public class SwerveDrivetrain extends Subsystem {
         @Log.File
         public Rotation2d target_rotation_ = new Rotation2d();
         @Log.File
-        public DriveMode drive_mode_ = DriveMode.FIELD_CENTRIC;
+        public DriveMode drive_mode_ = DriveMode.ROBOT_CENTRIC;
         @Log.File
         public double driver_POVx = 0.0;
         @Log.File
