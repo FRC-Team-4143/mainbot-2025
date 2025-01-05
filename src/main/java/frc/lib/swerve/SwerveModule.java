@@ -207,8 +207,6 @@ public class SwerveModule {
                 ? InvertedValue.Clockwise_Positive
                 : InvertedValue.CounterClockwise_Positive;
 
-        // CRH: Switched steer to coast netural for teststand
-        talonConfigs.MotorOutput.NeutralMode = NeutralModeValue.Coast;
         response = m_steerMotor.getConfigurator().apply(talonConfigs);
         if (!response.isOK()) {
             System.out.println(
@@ -554,9 +552,11 @@ public class SwerveModule {
      * 
      */
     public void resetToAbsolute() {
-        m_angle_offset = Preferences.getDouble("Module" + m_encoder_id, 0);
-        double absolutePosition = m_analogEncoder.get() - m_angle_offset;
-        m_steerMotor.setPosition(absolutePosition);
+        // m_angle_offset = Preferences.getDouble("Module" + m_encoder_id, 0);
+        // double absolutePosition = m_analogEncoder.get() - m_angle_offset;
+        // m_steerMotor.setPosition(absolutePosition);
+        m_steerMotor.setPosition(0.0);
+        //TODO: Fix wheel offset Preferences 
     }
 
     public void optimizeCan() {

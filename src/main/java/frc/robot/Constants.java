@@ -72,14 +72,14 @@ public final class Constants {
     private static final double STEER_GEAR_RATIO = 12.8; // Mk4i: (150.0/7.0), Mk4: 12.8
     private static final double WHEEL_RADIUS_INCH = 1.88; // 1.6090288; // 1.59997; 
 
-    private static final boolean STEER_MOTOR_REVERSED = true;
+    private static final boolean STEER_MOTOR_REVERSED = false;
     private static final boolean INVERT_LEFT_DRIVE = false;
     private static final boolean INVERT_RIGHT_DRIVE = false; // true;
 
     private static final double CHASSIS_WIDTH = 19.0;
     private static final double CHASSIS_LENGTH = 18.0;
 
-    public static final double MAX_DRIVE_SPEED = 5; // 6 meters per second desired top speed
+    public static final double MAX_DRIVE_SPEED = 1; // 6 meters per second desired top speed
     public static final double MAX_DRIVE_ANGULAR_RATE = Math.PI * 2; // Rotation per second max angular velocity
     public static final double CRAWL_DRIVE_SPEED = 0.4;
     public static final double MAX_TARGET_SPEED = 1;

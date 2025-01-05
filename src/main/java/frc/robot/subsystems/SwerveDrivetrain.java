@@ -6,6 +6,7 @@
  */
 package frc.robot.subsystems;
 
+import java.io.Console;
 import java.util.Optional;
 import java.util.function.Supplier;
 
@@ -75,6 +76,7 @@ public class SwerveDrivetrain extends Subsystem {
         TARGET,
         AUTONOMOUS,
         AUTONOMOUS_TARGET,
+        IDLE
     }
 
     // Robot Hardware
@@ -249,6 +251,8 @@ public class SwerveDrivetrain extends Subsystem {
                         // Use current robot rotation
                         .useGyroForRotation(io_.is_locked_with_gyro));
                 break;
+            case IDLE:
+                setControl(new SwerveRequest.Idle());
             default:
                 // yes these dont do anything for auto...
                 break;
@@ -288,6 +292,8 @@ public class SwerveDrivetrain extends Subsystem {
         SmartDashboard.putNumber("Debug/Chassis Proxy Speed/Omega", chassis_proxy_twist.dtheta);
         field_.setRobotPose(ChassisProxyServer.getPose());
         SmartDashboard.putData("Chassis Proxy Pose", field_);
+
+        SmartDashboard.putString("drive mode", io_.drive_mode_.toString());
 
 
         
@@ -431,7 +437,7 @@ public class SwerveDrivetrain extends Subsystem {
         @Log.File
         public Rotation2d target_rotation_ = new Rotation2d();
         @Log.File
-        public DriveMode drive_mode_ = DriveMode.ROBOT_CENTRIC;
+        public DriveMode drive_mode_ = DriveMode.IDLE;
         @Log.File
         public double driver_POVx = 0.0;
         @Log.File
