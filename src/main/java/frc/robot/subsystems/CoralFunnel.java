@@ -5,10 +5,12 @@
 package frc.robot.subsystems;
 
 import com.revrobotics.spark.SparkMax;
+import com.revrobotics.spark.config.SparkFlexConfig;
+import com.revrobotics.spark.config.SparkMaxConfig;
 import com.revrobotics.spark.SparkFlex;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
+import com.revrobotics.spark.SparkBase;
 import com.revrobotics.spark.SparkClosedLoopController;
-
 import frc.lib.subsystem.Subsystem;
 import frc.robot.Constants.FeederConstants;
 import monologue.Logged;
@@ -46,8 +48,13 @@ public class CoralFunnel extends Subsystem {
         left_feeder_motor_ = new SparkFlex(FeederConstants.LEFT_FEEDER_MOTOR, MotorType.kBrushless);
         right_feeder_motor_ = new SparkFlex(FeederConstants.RIGHT_FEEDER_MOTOR, MotorType.kBrushless);
 
-        left_feeder_motor_.setInverted(FeederConstants.LEFT_FEEDER_INVERTED);
-        right_feeder_motor_.setInverted(FeederConstants.RIGHT_FEEDER_INVERTED);
+        SparkFlexConfig config_ = new SparkFlexConfig();
+        config_.inverted(FeederConstants.LEFT_FEEDER_INVERTED);
+        left_feeder_motor_.configure(config_, SparkBase.ResetMode.kResetSafeParameters, SparkBase.PersistMode.kPersistParameters);
+        config_.inverted(FeederConstants.RIGHT_FEEDER_INVERTED);
+        right_feeder_motor_.configure(config_, SparkBase.ResetMode.kResetSafeParameters, SparkBase.PersistMode.kPersistParameters);
+       
+
         // Call reset last in subsystem configuration
         reset();
     }
@@ -134,6 +141,9 @@ public class CoralFunnel extends Subsystem {
         @Log.File
         public double average_motor_current_ = 0;
 
+    }
+    public void setFeedingMode(FeedingMode mode) {
+        io_.feeding_mode = mode;
     }
 
     @Override
