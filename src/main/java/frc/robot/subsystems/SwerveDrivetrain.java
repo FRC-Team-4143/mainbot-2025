@@ -12,7 +12,7 @@ import java.util.function.Supplier;
 
 import com.ctre.phoenix6.BaseStatusSignal;
 import com.ctre.phoenix6.hardware.Pigeon2;
-
+import choreo.trajectory.SwerveSample;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
@@ -22,6 +22,7 @@ import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.networktables.ProtobufPublisher;
 import edu.wpi.first.networktables.StructArrayPublisher;
@@ -83,6 +84,11 @@ public class SwerveDrivetrain extends Subsystem {
     private final Pigeon2 pigeon_imu;
     private final SwerveModule[] swerve_modules;
 
+    // PID Controllers
+    private final PIDController xController;
+    private final PIDController yController;
+    private final PIDController headingController;
+
     // Subsystem data class
     private SwerveDriverainPeriodicIo io_;
 
@@ -130,6 +136,11 @@ public class SwerveDrivetrain extends Subsystem {
         // Setup the Pigeon IMU
         pigeon_imu = new Pigeon2(DrivetrainConstants.PIGEON2_ID, DrivetrainConstants.MODULE_CANBUS_NAME[0]);
         pigeon_imu.optimizeBusUtilization();
+
+        // PID Controllers
+        xController = new PIDController(5.0, 0, 0.001);
+        yController = new PIDController(5.0, 0, 0.001);
+        headingController = new PIDController(7.3, 0, 0.07);
 
         // Begin configuring swerve modules
         module_locations = new Translation2d[modules.length];
@@ -297,6 +308,16 @@ public class SwerveDrivetrain extends Subsystem {
 
 
         
+    }
+    
+    public void followTrajectory(SwerveSample sample){
+        Pose2d pose = PoseEstimator.getInstance().getFieldPose();
+        ChassisSpeeds speeds = new ChassisSpeeds(
+            sample.vx + xController.calculate(pose.getX(),sample.x),
+            sample.vy + yController.calculate(pose.getY(), sample.y),
+            sample.omega + headingController.calculate(pose.getRotation().getRadians(), sample.heading)
+        );
+        this.setControl(auto_request.withSpeeds(speeds));
     }
 
     public Rotation2d getRobotRotation() {
