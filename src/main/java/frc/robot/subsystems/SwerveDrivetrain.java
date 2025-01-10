@@ -6,9 +6,11 @@
  */
 package frc.robot.subsystems;
 
+import choreo.trajectory.SwerveSample;
 import com.ctre.phoenix6.BaseStatusSignal;
 import com.ctre.phoenix6.hardware.Pigeon2;
 import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
@@ -64,6 +66,9 @@ public class SwerveDrivetrain extends Subsystem {
     return instance;
   }
 
+  // Subsystem data class
+  private SwerveDriverainPeriodicIo io_;
+
   // Drive Mode Selections
   public enum DriveMode {
     ROBOT_CENTRIC,
@@ -77,9 +82,6 @@ public class SwerveDrivetrain extends Subsystem {
   // Robot Hardware
   private final Pigeon2 pigeon_imu;
   private final SwerveModule[] swerve_modules;
-
-  // Subsystem data class
-  private SwerveDriverainPeriodicIo io_;
 
   // Drivetrain config
   final SwerveDriveKinematics kinematics;
@@ -107,6 +109,11 @@ public class SwerveDrivetrain extends Subsystem {
       current_state_proxy_pub;
   private Field2d field_ = new Field2d();
 
+  // PID Controllers
+  private final PIDController xController;
+  private final PIDController yController;
+  private final PIDController headingController;
+
   /**
    * Constructs a SwerveDrivetrain using the specified constants.
    *
@@ -127,6 +134,11 @@ public class SwerveDrivetrain extends Subsystem {
     pigeon_imu =
         new Pigeon2(DrivetrainConstants.PIGEON2_ID, DrivetrainConstants.MODULE_CANBUS_NAME[0]);
     pigeon_imu.optimizeBusUtilization();
+
+    // PID Controllers
+    xController = new PIDController(5.0, 0, 0.001);
+    yController = new PIDController(5.0, 0, 0.001);
+    headingController = new PIDController(7.3, 0, 0.07);
 
     // Begin configuring swerve modules
     module_locations = new Translation2d[modules.length];
@@ -422,6 +434,17 @@ public class SwerveDrivetrain extends Subsystem {
 
   public void rotationTargetWithGyro(boolean state) {
     io_.is_locked_with_gyro = state;
+  }
+
+  public void followTrajectory(SwerveSample sample) {
+    Pose2d pose = PoseEstimator.getInstance().getFieldPose();
+    ChassisSpeeds speeds =
+        new ChassisSpeeds(
+            sample.vx + xController.calculate(pose.getX(), sample.x),
+            sample.vy + yController.calculate(pose.getY(), sample.y),
+            sample.omega
+                + headingController.calculate(pose.getRotation().getRadians(), sample.heading));
+    this.setControl(auto_request.withSpeeds(speeds));
   }
 
   /**
