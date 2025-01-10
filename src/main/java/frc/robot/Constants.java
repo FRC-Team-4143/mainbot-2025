@@ -148,4 +148,10 @@ public final class Constants {
         BRS_MOTOR_ID, BRD_MOTOR_ID, BRS_ENCODER_ID, BRS_ENCODER_OFFSET, Units.inchesToMeters(BR_X_POS_INCH),
         Units.inchesToMeters(BR_Y_POS_INCH), INVERT_RIGHT_DRIVE);
   }
+  public static final class FeederConstants {
+    public static final int LEFT_FEEDER_MOTOR = 10;
+    public static final int RIGHT_FEEDER_MOTOR = 11;
+    public static final boolean LEFT_FEEDER_INVERTED = true;
+    public static final boolean RIGHT_FEEDER_INVERTED = false;
+  }
 }
