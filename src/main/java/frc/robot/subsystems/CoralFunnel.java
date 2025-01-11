@@ -56,6 +56,7 @@ public class CoralFunnel extends Subsystem {
         config_.inverted(FeederConstants.LEFT_FEEDER_INVERTED);
         left_feeder_motor_.configure(config_, SparkBase.ResetMode.kResetSafeParameters,
                 SparkBase.PersistMode.kPersistParameters);
+
         config_.inverted(FeederConstants.RIGHT_FEEDER_INVERTED);
         right_feeder_motor_.configure(config_, SparkBase.ResetMode.kResetSafeParameters,
                 SparkBase.PersistMode.kPersistParameters);
@@ -93,15 +94,12 @@ public class CoralFunnel extends Subsystem {
     @Override
     public void updateLogic(double timestamp) {
         switch (io_.feeding_mode_) {
-
             case FEEDING:
-
                 io_.feeder_output_ = FeederConstants.FEEDER_SPEED;
                 break;
-
             case SCORING:
                 io_.feeder_output_ = FeederConstants.SCORE_SPEED;
-
+                break;
             case IDLE:
             default:
                 io_.feeder_output_ = FeederConstants.IDLE_SPEED;
@@ -122,7 +120,7 @@ public class CoralFunnel extends Subsystem {
     @Override
     public void writePeriodicOutputs(double timestamp) {
         left_feeder_motor_.set(io_.feeder_output_);
-        right_feeder_motor_.set(io_.feeder_output_);
+        right_feeder_motor_.set(-io_.feeder_output_);
 
     }
 
@@ -136,6 +134,7 @@ public class CoralFunnel extends Subsystem {
      */
     @Override
     public void outputTelemetry(double timestamp) {
+        SmartDashboard.putNumber("CURRENT", io_.average_motor_current_);
     }
 
     public class CoralFunnelPeriodicIo implements Logged {
@@ -157,7 +156,7 @@ public class CoralFunnel extends Subsystem {
     }
 
     public boolean hasCoral() {
-        return io_.average_motor_current_ > 50;
+        return (io_.average_motor_current_ > 45);
     }
 
     @Override

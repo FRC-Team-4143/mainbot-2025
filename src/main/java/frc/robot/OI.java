@@ -18,6 +18,8 @@ import edu.wpi.first.wpilibj2.command.ConditionalCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import edu.wpi.first.wpilibj.GenericHID.RumbleType;
+import frc.robot.commands.Feed;
+import frc.robot.commands.Score;
 import frc.robot.subsystems.*;
 import frc.robot.subsystems.CoralFunnel.FeedingMode;
 import frc.robot.subsystems.SwerveDrivetrain.DriveMode;
@@ -29,7 +31,6 @@ public abstract class OI {
     static CommandXboxController driver_controller_ = new CommandXboxController(0);
 
     static SwerveDrivetrain swerve_drivetrain_ = SwerveDrivetrain.getInstance();
-
     static CoralFunnel coral_funnel_ = CoralFunnel.getInstance();
 
     public static void configureBindings() {
@@ -43,11 +44,9 @@ public abstract class OI {
 
         driver_controller_.rightStick().onTrue(Commands.runOnce(() -> swerve_drivetrain_.toggleFieldCentric(), swerve_drivetrain_));
 
-        driver_controller_.leftTrigger().whileTrue(Commands.startEnd(() -> coral_funnel_.setFeedingMode(FeedingMode.FEEDING), 
-        () -> coral_funnel_.setFeedingMode(FeedingMode.IDLE), coral_funnel_));
+        driver_controller_.leftTrigger().whileTrue(new Feed());
 
-        driver_controller_.rightTrigger().whileTrue(Commands.startEnd(() -> coral_funnel_.setFeedingMode(FeedingMode.SCORING),
-        () -> coral_funnel_.setFeedingMode(FeedingMode.IDLE), coral_funnel_));
+        driver_controller_.rightTrigger().whileTrue(new Score());
     }
 
     static public double getDriverJoystickLeftX() {

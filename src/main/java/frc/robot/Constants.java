@@ -39,7 +39,7 @@ public final class Constants {
   public class DrivetrainConstants {
 
     // Can bus names for each of the swerve modules
-    public static final String[] MODULE_CANBUS_NAME = { "can0", "can0", "can0", "can0" };
+    public static final String[] MODULE_CANBUS_NAME = { "rio", "rio", "rio", "rio" };
 
     // Can bus ID for the pigeon
     public static final int PIGEON2_ID = 0;
@@ -151,8 +151,8 @@ public final class Constants {
   public static final class FeederConstants {
     public static final int LEFT_FEEDER_MOTOR = 10;
     public static final int RIGHT_FEEDER_MOTOR = 11;
-    public static final boolean LEFT_FEEDER_INVERTED = false;
-    public static final boolean RIGHT_FEEDER_INVERTED = true;
+    public static final boolean LEFT_FEEDER_INVERTED = true;
+    public static final boolean RIGHT_FEEDER_INVERTED = false;
     public static final double FEEDER_SPEED = 0.15;
     public static final double SCORE_SPEED = 0.5;
     public static final double IDLE_SPEED = 0;
