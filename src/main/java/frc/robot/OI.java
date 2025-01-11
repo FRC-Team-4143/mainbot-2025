@@ -8,8 +8,9 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.lib.Util;
+import frc.robot.commands.Feed;
+import frc.robot.commands.Score;
 import frc.robot.subsystems.*;
-import frc.robot.subsystems.CoralFunnel.FeedingMode;
 
 public abstract class OI {
 
@@ -36,21 +37,9 @@ public abstract class OI {
         .onTrue(
             Commands.runOnce(() -> swerve_drivetrain_.toggleFieldCentric(), swerve_drivetrain_));
 
-    driver_controller_
-        .leftTrigger()
-        .whileTrue(
-            Commands.startEnd(
-                () -> coral_funnel_.setFeedingMode(FeedingMode.FEEDING),
-                () -> coral_funnel_.setFeedingMode(FeedingMode.IDLE),
-                coral_funnel_));
+    driver_controller_.leftTrigger().whileTrue(new Feed());
 
-    driver_controller_
-        .rightTrigger()
-        .whileTrue(
-            Commands.startEnd(
-                () -> coral_funnel_.setFeedingMode(FeedingMode.SCORING),
-                () -> coral_funnel_.setFeedingMode(FeedingMode.IDLE),
-                coral_funnel_));
+    driver_controller_.rightTrigger().whileTrue(new Score());
   }
 
   public static double getDriverJoystickLeftX() {

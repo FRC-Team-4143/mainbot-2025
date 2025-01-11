@@ -122,20 +122,20 @@ public class CoralFunnel extends Subsystem {
   @Override
   public void outputTelemetry(double timestamp) {}
 
-  public class CoralFunnelPeriodicIo implements Logged {
-    @Log.File public double feeder_output_ = 0;
-    @Log.File public double left_current_sensor_ = 0;
-    @Log.File public double right_current_sensor_ = 0;
-    @Log.File public FeedingMode feeding_mode_ = FeedingMode.IDLE;
-    @Log.File public double average_motor_current_ = 0;
-  }
-
   public void setFeedingMode(FeedingMode mode) {
     io_.feeding_mode_ = mode;
   }
 
   public boolean hasCoral() {
     return io_.average_motor_current_ > 50;
+  }
+
+  public class CoralFunnelPeriodicIo implements Logged {
+    @Log.File public double feeder_output_ = 0;
+    @Log.File public double left_current_sensor_ = 0;
+    @Log.File public double right_current_sensor_ = 0;
+    @Log.File public FeedingMode feeding_mode_ = FeedingMode.IDLE;
+    @Log.File public double average_motor_current_ = 0;
   }
 
   @Override
