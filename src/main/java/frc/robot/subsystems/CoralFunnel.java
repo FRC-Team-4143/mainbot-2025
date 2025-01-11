@@ -7,6 +7,9 @@ package frc.robot.subsystems;
 import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.config.SparkFlexConfig;
 import com.revrobotics.spark.config.SparkMaxConfig;
+
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+
 import com.revrobotics.spark.SparkFlex;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.SparkBase;
@@ -23,7 +26,8 @@ public class CoralFunnel extends Subsystem {
 
     public enum FeedingMode {
         IDLE,
-        FEEDING
+        FEEDING,
+        SCORING
     }
 
     // Singleton pattern
@@ -50,10 +54,11 @@ public class CoralFunnel extends Subsystem {
 
         SparkFlexConfig config_ = new SparkFlexConfig();
         config_.inverted(FeederConstants.LEFT_FEEDER_INVERTED);
-        left_feeder_motor_.configure(config_, SparkBase.ResetMode.kResetSafeParameters, SparkBase.PersistMode.kPersistParameters);
+        left_feeder_motor_.configure(config_, SparkBase.ResetMode.kResetSafeParameters,
+                SparkBase.PersistMode.kPersistParameters);
         config_.inverted(FeederConstants.RIGHT_FEEDER_INVERTED);
-        right_feeder_motor_.configure(config_, SparkBase.ResetMode.kResetSafeParameters, SparkBase.PersistMode.kPersistParameters);
-       
+        right_feeder_motor_.configure(config_, SparkBase.ResetMode.kResetSafeParameters,
+                SparkBase.PersistMode.kPersistParameters);
 
         // Call reset last in subsystem configuration
         reset();
@@ -87,19 +92,23 @@ public class CoralFunnel extends Subsystem {
      */
     @Override
     public void updateLogic(double timestamp) {
-        switch (io_.feeding_mode) {
+        switch (io_.feeding_mode_) {
 
             case FEEDING:
 
-                io_.feeder_output_ = 1;
+                io_.feeder_output_ = FeederConstants.FEEDER_SPEED;
                 break;
+
+            case SCORING:
+                io_.feeder_output_ = FeederConstants.SCORE_SPEED;
+
             case IDLE:
             default:
-                io_.feeder_output_ = 0;
+                io_.feeder_output_ = FeederConstants.IDLE_SPEED;
                 break;
         }
 
-        io_.average_motor_current_ = (io_.left_current_sensor_ + io_.right_current_sensor_)/2;
+        io_.average_motor_current_ = (io_.left_current_sensor_ + io_.right_current_sensor_) / 2;
 
     }
 
@@ -137,13 +146,18 @@ public class CoralFunnel extends Subsystem {
         @Log.File
         public double right_current_sensor_ = 0;
         @Log.File
-        public FeedingMode feeding_mode = FeedingMode.IDLE;
+        public FeedingMode feeding_mode_ = FeedingMode.IDLE;
         @Log.File
         public double average_motor_current_ = 0;
 
     }
+
     public void setFeedingMode(FeedingMode mode) {
-        io_.feeding_mode = mode;
+        io_.feeding_mode_ = mode;
+    }
+
+    public boolean hasCoral() {
+        return io_.average_motor_current_ > 50;
     }
 
     @Override

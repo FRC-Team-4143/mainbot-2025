@@ -151,7 +151,10 @@ public final class Constants {
   public static final class FeederConstants {
     public static final int LEFT_FEEDER_MOTOR = 10;
     public static final int RIGHT_FEEDER_MOTOR = 11;
-    public static final boolean LEFT_FEEDER_INVERTED = true;
-    public static final boolean RIGHT_FEEDER_INVERTED = false;
+    public static final boolean LEFT_FEEDER_INVERTED = false;
+    public static final boolean RIGHT_FEEDER_INVERTED = true;
+    public static final double FEEDER_SPEED = 0.3;
+    public static final double SCORE_SPEED = 0.7;
+    public static final double IDLE_SPEED = 0;
   }
 }
