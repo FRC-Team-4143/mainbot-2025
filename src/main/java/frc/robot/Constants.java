@@ -31,7 +31,7 @@ public final class Constants {
   public class DrivetrainConstants {
 
     // Can bus names for each of the swerve modules
-    public static final String[] MODULE_CANBUS_NAME = {"can0", "can0", "can0", "can0"};
+    public static final String[] MODULE_CANBUS_NAME = {"rio", "rio", "rio", "rio"};
 
     // Can bus ID for the pigeon
     public static final int PIGEON2_ID = 0;
@@ -64,18 +64,18 @@ public final class Constants {
     // This may need to be tuned to your individual robot
     private static final double COUPLE_RATIO = 3.5;
 
-    private static final double DRIVE_GEAR_RATIO = 5.36827799; // L3: 6.12, L2: 5.14     //4.572
-    private static final double STEER_GEAR_RATIO = 12.8; // Mk4i: (150.0/7.0), Mk4: 12.8
-    private static final double WHEEL_RADIUS_INCH = 1.88; // 1.6090288; // 1.59997;
+    private static final double DRIVE_GEAR_RATIO = 6.12; // L3: 6.12, L2: 5.14     //4.572
+    private static final double STEER_GEAR_RATIO = 21.4285714286; // Mk4i: (150.0/7.0), Mk4: 12.8
+    private static final double WHEEL_RADIUS_INCH = 1.8; // 1.6090288; // 1.59997;
 
-    private static final boolean STEER_MOTOR_REVERSED = false;
+    private static final boolean STEER_MOTOR_REVERSED = true;
     private static final boolean INVERT_LEFT_DRIVE = false;
     private static final boolean INVERT_RIGHT_DRIVE = false; // true;
 
-    private static final double CHASSIS_WIDTH = 19.0;
-    private static final double CHASSIS_LENGTH = 18.0;
+    private static final double CHASSIS_WIDTH = 15.0;
+    private static final double CHASSIS_LENGTH = 15.0;
 
-    public static final double MAX_DRIVE_SPEED = 1; // 6 meters per second desired top speed
+    public static final double MAX_DRIVE_SPEED = 5; // 6 meters per second desired top speed
     public static final double MAX_DRIVE_ANGULAR_RATE =
         Math.PI * 2; // Rotation per second max angular velocity
     public static final double CRAWL_DRIVE_SPEED = 0.4;
@@ -100,8 +100,8 @@ public final class Constants {
             .withDriveMotorClosedLoopOutput(ClosedLoopOutputType.TorqueCurrentFOC);
 
     // Front Left
-    private static final int FLD_MOTOR_ID = 1;
-    private static final int FLS_MOTOR_ID = 2;
+    private static final int FLD_MOTOR_ID = 3;
+    private static final int FLS_MOTOR_ID = 4;
     private static final int FLS_ENCODER_ID = 0;
     private static final double FLS_ENCODER_OFFSET = 0;
 
@@ -109,17 +109,17 @@ public final class Constants {
     private static final double FL_Y_POS_INCH = CHASSIS_LENGTH / 2;
 
     // Front Right
-    private static final int FRD_MOTOR_ID = 3;
-    private static final int FRS_MOTOR_ID = 4;
+    private static final int FRD_MOTOR_ID = 1;
+    private static final int FRS_MOTOR_ID = 2;
     private static final int FRS_ENCODER_ID = 1;
-    private static final double FRS_ENCODER_OFFSET = 0;
+    private static final double FRS_ENCODER_OFFSET = 0.0;
 
     private static final double FR_X_POS_INCH = CHASSIS_WIDTH / 2;
     private static final double FR_Y_POS_INCH = -CHASSIS_LENGTH / 2;
 
     // Back Left
-    private static final int BLD_MOTOR_ID = 5;
-    private static final int BLS_MOTOR_ID = 6;
+    private static final int BLD_MOTOR_ID = 7;
+    private static final int BLS_MOTOR_ID = 8;
     private static final int BLS_ENCODER_ID = 2;
     private static final double BLS_ENCODER_OFFSET = 0.0;
 
@@ -127,8 +127,8 @@ public final class Constants {
     private static final double BL_Y_POS_INCH = CHASSIS_LENGTH / 2;
 
     // Back Right
-    private static final int BRD_MOTOR_ID = 7;
-    private static final int BRS_MOTOR_ID = 8;
+    private static final int BRD_MOTOR_ID = 5;
+    private static final int BRS_MOTOR_ID = 6;
     private static final int BRS_ENCODER_ID = 3;
     private static final double BRS_ENCODER_OFFSET = 0;
 
