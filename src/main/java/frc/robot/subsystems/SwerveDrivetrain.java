@@ -138,9 +138,9 @@ public class SwerveDrivetrain extends Subsystem {
         pigeon_imu.optimizeBusUtilization();
 
         // PID Controllers
-        xController = new PIDController(5.0, 0, 0.001);
-        yController = new PIDController(5.0, 0, 0.001);
-        headingController = new PIDController(7.3, 0, 0.07);
+        xController = new PIDController(0.0, 0, 0.000);//5, 0, 0.001
+        yController = new PIDController(0.0, 0, 0.000);//5, 0, 0.001
+        headingController = new PIDController(0.0, 0, 0.00);//7.3, 0, 0.07
 
         // Begin configuring swerve modules
         module_locations = new Translation2d[modules.length];
@@ -264,6 +264,7 @@ public class SwerveDrivetrain extends Subsystem {
                 break;
             case IDLE:
                 setControl(new SwerveRequest.Idle());
+                break;
             default:
                 // yes these dont do anything for auto...
                 break;
@@ -313,7 +314,7 @@ public class SwerveDrivetrain extends Subsystem {
     public void followTrajectory(SwerveSample sample){
         Pose2d pose = PoseEstimator.getInstance().getFieldPose();
         ChassisSpeeds speeds = new ChassisSpeeds(
-            sample.vx + xController.calculate(pose.getX(),sample.x),
+            sample.vx + xController.calculate(pose.getX(), sample.x),
             sample.vy + yController.calculate(pose.getY(), sample.y),
             sample.omega + headingController.calculate(pose.getRotation().getRadians(), sample.heading)
         );

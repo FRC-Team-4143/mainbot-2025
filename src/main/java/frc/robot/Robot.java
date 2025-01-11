@@ -49,12 +49,12 @@ public class Robot extends TimedRobot {
     @Override
     public void autonomousInit() {
 
-        swerve_drivetrain_.setDriveMode(DriveMode.IDLE);
-        m_autonomousCommand = AutoManager.getInstance().getAutonomousCommand();
+        swerve_drivetrain_.setDriveMode(DriveMode.AUTONOMOUS);
+        //  m_autonomousCommand = AutoManager.getInstance().getAutonomousCommand();
 
-        if (m_autonomousCommand != null) {
-            m_autonomousCommand.schedule();
-        }
+        // if (m_autonomousCommand != null) {
+        //     m_autonomousCommand.schedule();
+        // }
     }
 
     @Override

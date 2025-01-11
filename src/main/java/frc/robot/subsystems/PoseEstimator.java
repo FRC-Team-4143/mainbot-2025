@@ -122,10 +122,10 @@ public class PoseEstimator extends Subsystem {
 
     @Override
     public void outputTelemetry(double timestamp) {
-        //field_.setRobotPose(io_.vision_filtered_pose_);
+        field_.setRobotPose(io_.vision_filtered_pose_);
         //pose_publisher_.set(io_.vision_filtered_pose_);
 
-        //SmartDashboard.putData("Field", field_);
+        SmartDashboard.putData("Field", field_);
         //SmartDashboard.putBoolean("Is Vision Paused", io_.ignore_vision);
     }
 
