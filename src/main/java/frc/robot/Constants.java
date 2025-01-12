@@ -37,115 +37,124 @@ public final class Constants {
   }
 
   public class DrivetrainConstants {
+     // Can bus names for each of the swerve modules
+     public static final String[] MODULE_CANBUS_NAME = { "rio", "rio", "rio", "rio" };
 
-       // Can bus names for each of the swerve modules
-       public static final String[] MODULE_CANBUS_NAME = { "rio", "rio", "rio", "rio" };
+     // Can bus ID for the pigeon
+     public static final int PIGEON2_ID = 0;
 
-       // Can bus ID for the pigeon
-       public static final int PIGEON2_ID = 0;
-   
-       // Both sets of gains need to be tuned to your individual robot
-       // The steer motor uses MotionMagicVoltage control
-       private static final Slot0Configs STEER_GAINS = new Slot0Configs()
-           .withKP(100).withKI(0).withKD(0)
-           .withKS(0).withKV(0).withKA(0);
-       // When using closed-loop control, the drive motor uses:
-       // - VelocityVoltage, if DrivetrainConstants.SupportsPro is false (default)
-       // - VelocityTorqueCurrentFOC, if DrivetrainConstants.SupportsPro is true
-       private static final Slot0Configs DRIVE_GAINS = new Slot0Configs()
-           .withKP(12.5).withKI(0.0).withKD(0.01) // 7 : updated to 3 RJS
-           .withKS(0.2).withKV(0.12).withKA(0.05); // 2.4 : updated to 0 RJS
-   
-       // The stator current at which the wheels start to slip;
-       // This needs to be tuned to your individual robot
-       private static final double SLIP_CURRENT_AMPS = 95.0;
-   
-       // Theoretical free speed (m/s) at 12v applied output;
-       // This needs to be tuned to your individual robot
-       private static final double SPEED_AT_12V_MPS = 5.0;
-   
-       // Every 1 rotation of the azimuth results in kCoupleRatio drive motor turns;
-       // This may need to be tuned to your individual robot
-       private static final double COUPLE_RATIO = 3.5;
-   
-       private static final double DRIVE_GEAR_RATIO = 6.12; // L3: 6.12, L2: 5.14     //4.572
-       private static final double STEER_GEAR_RATIO = 21.4285714286; // Mk4i: (150.0/7.0), Mk4: 12.8
-       private static final double WHEEL_RADIUS_INCH = 1.8; // 1.6090288; // 1.59997; 
-   
-       private static final boolean STEER_MOTOR_REVERSED = true;
-       private static final boolean INVERT_LEFT_DRIVE = false;
-       private static final boolean INVERT_RIGHT_DRIVE = false; // true;
-   
-       private static final double CHASSIS_WIDTH = 15.0;
-       private static final double CHASSIS_LENGTH = 15.0;
-   
-       public static final double MAX_DRIVE_SPEED = 5; // 6 meters per second desired top speed
-       public static final double MAX_DRIVE_ANGULAR_RATE = Math.PI * 2; // Rotation per second max angular velocity
-       public static final double CRAWL_DRIVE_SPEED = 0.4;
-       public static final double MAX_TARGET_SPEED = 1;
-   
-       private static final SwerveModuleConstantsFactory ConstantCreator = new SwerveModuleConstantsFactory()
-           .withDriveMotorGearRatio(DRIVE_GEAR_RATIO)
-           .withSteerMotorGearRatio(STEER_GEAR_RATIO)
-           .withWheelRadius(WHEEL_RADIUS_INCH)
-           .withSlipCurrent(SLIP_CURRENT_AMPS)
-           .withSteerMotorGains(STEER_GAINS)
-           .withDriveMotorGains(DRIVE_GAINS)
-           .withSpeedAt12VoltsMps(SPEED_AT_12V_MPS)
-           .withFeedbackSource(SteerFeedbackType.None) // .withFeedbackSource(SteerFeedbackType.FusedCANcoder) CRH: Removed
-                                                       // for AnalogEncoders
-           .withCouplingGearRatio(COUPLE_RATIO)
-           .withSteerMotorInverted(STEER_MOTOR_REVERSED)
-           .withSteerMotorClosedLoopOutput(ClosedLoopOutputType.Voltage)
-           .withDriveMotorClosedLoopOutput(ClosedLoopOutputType.TorqueCurrentFOC);
-   
-       // Front Left
-       private static final int FLD_MOTOR_ID = 3;
-       private static final int FLS_MOTOR_ID = 4;
-       private static final int FLS_ENCODER_ID = 0;
-       private static final double FLS_ENCODER_OFFSET = 0;
-   
-       private static final double FL_X_POS_INCH = CHASSIS_WIDTH / 2;
-       private static final double FL_Y_POS_INCH = CHASSIS_LENGTH / 2;
-   
-       // Front Right
-       private static final int FRD_MOTOR_ID = 1;
-       private static final int FRS_MOTOR_ID = 2;
-       private static final int FRS_ENCODER_ID = 1;
-       private static final double FRS_ENCODER_OFFSET = 0.0;
-   
-       private static final double FR_X_POS_INCH = CHASSIS_WIDTH / 2;
-       private static final double FR_Y_POS_INCH = -CHASSIS_LENGTH / 2;
-   
-       // Back Left
-       private static final int BLD_MOTOR_ID = 7;
-       private static final int BLS_MOTOR_ID = 8;
-       private static final int BLS_ENCODER_ID = 2;
-       private static final double BLS_ENCODER_OFFSET = 0.0;
-   
-       private static final double BL_X_POS_INCH = -CHASSIS_WIDTH / 2.;
-       private static final double BL_Y_POS_INCH = CHASSIS_LENGTH / 2;
-   
-       // Back Right
-       private static final int BRD_MOTOR_ID = 5;
-       private static final int BRS_MOTOR_ID = 6;
-       private static final int BRS_ENCODER_ID = 3;
-       private static final double BRS_ENCODER_OFFSET = 0;
-   
-       private static final double BR_X_POS_INCH = -CHASSIS_WIDTH / 2.;
-       private static final double BR_Y_POS_INCH = -CHASSIS_LENGTH / 2;
-   
-       public static final SwerveModuleConstants FL_MODULE_CONSTANTS = ConstantCreator.createModuleConstants(
-           FLS_MOTOR_ID, FLD_MOTOR_ID, FLS_ENCODER_ID, FLS_ENCODER_OFFSET, Units.inchesToMeters(FL_X_POS_INCH),
-           Units.inchesToMeters(FL_Y_POS_INCH), INVERT_LEFT_DRIVE);
-       public static final SwerveModuleConstants FR_MODULE_CONSTANTS = ConstantCreator.createModuleConstants(
-           FRS_MOTOR_ID, FRD_MOTOR_ID, FRS_ENCODER_ID, FRS_ENCODER_OFFSET, Units.inchesToMeters(FR_X_POS_INCH),
-           Units.inchesToMeters(FR_Y_POS_INCH), INVERT_RIGHT_DRIVE);
-       public static final SwerveModuleConstants BL_MODULE_CONSTANTS = ConstantCreator.createModuleConstants(
-           BLS_MOTOR_ID, BLD_MOTOR_ID, BLS_ENCODER_ID, BLS_ENCODER_OFFSET, Units.inchesToMeters(BL_X_POS_INCH),
-           Units.inchesToMeters(BL_Y_POS_INCH), INVERT_LEFT_DRIVE);
-       public static final SwerveModuleConstants BR_MODULE_CONSTANTS = ConstantCreator.createModuleConstants(
-           BRS_MOTOR_ID, BRD_MOTOR_ID, BRS_ENCODER_ID, BRS_ENCODER_OFFSET, Units.inchesToMeters(BR_X_POS_INCH),
-           Units.inchesToMeters(BR_Y_POS_INCH), INVERT_RIGHT_DRIVE);
-     }
+     // Both sets of gains need to be tuned to your individual robot
+     // The steer motor uses MotionMagicVoltage control
+     private static final Slot0Configs STEER_GAINS = new Slot0Configs()
+         .withKP(100).withKI(0).withKD(0)
+         .withKS(0).withKV(0).withKA(0);
+     // When using closed-loop control, the drive motor uses:
+     // - VelocityVoltage, if DrivetrainConstants.SupportsPro is false (default)
+     // - VelocityTorqueCurrentFOC, if DrivetrainConstants.SupportsPro is true
+     private static final Slot0Configs DRIVE_GAINS = new Slot0Configs()
+         .withKP(12.5).withKI(0.0).withKD(0.01) // 7 : updated to 3 RJS
+         .withKS(0.2).withKV(0.12).withKA(0.05); // 2.4 : updated to 0 RJS
+
+     // The stator current at which the wheels start to slip;
+     // This needs to be tuned to your individual robot
+     private static final double SLIP_CURRENT_AMPS = 95.0;
+
+     // Theoretical free speed (m/s) at 12v applied output;
+     // This needs to be tuned to your individual robot
+     private static final double SPEED_AT_12V_MPS = 5.0;
+
+     // Every 1 rotation of the azimuth results in kCoupleRatio drive motor turns;
+     // This may need to be tuned to your individual robot
+     private static final double COUPLE_RATIO = 3.5;
+
+     private static final double DRIVE_GEAR_RATIO = 6.12; // L3: 6.12, L2: 5.14     //4.572
+     private static final double STEER_GEAR_RATIO = 21.4285714286; // Mk4i: (150.0/7.0), Mk4: 12.8
+     private static final double WHEEL_RADIUS_INCH = 1.8; // 1.6090288; // 1.59997; 
+
+     private static final boolean STEER_MOTOR_REVERSED = true;
+     private static final boolean INVERT_LEFT_DRIVE = false;
+     private static final boolean INVERT_RIGHT_DRIVE = false; // true;
+
+     private static final double CHASSIS_WIDTH = 15.0;
+     private static final double CHASSIS_LENGTH = 15.0;
+
+     public static final double MAX_DRIVE_SPEED = 5; // 6 meters per second desired top speed
+     public static final double MAX_DRIVE_ANGULAR_RATE = Math.PI * 2; // Rotation per second max angular velocity
+     public static final double CRAWL_DRIVE_SPEED = 0.4;
+     public static final double MAX_TARGET_SPEED = 1;
+
+     private static final SwerveModuleConstantsFactory ConstantCreator = new SwerveModuleConstantsFactory()
+         .withDriveMotorGearRatio(DRIVE_GEAR_RATIO)
+         .withSteerMotorGearRatio(STEER_GEAR_RATIO)
+         .withWheelRadius(WHEEL_RADIUS_INCH)
+         .withSlipCurrent(SLIP_CURRENT_AMPS)
+         .withSteerMotorGains(STEER_GAINS)
+         .withDriveMotorGains(DRIVE_GAINS)
+         .withSpeedAt12VoltsMps(SPEED_AT_12V_MPS)
+         .withFeedbackSource(SteerFeedbackType.None) // .withFeedbackSource(SteerFeedbackType.FusedCANcoder) CRH: Removed
+                                                     // for AnalogEncoders
+         .withCouplingGearRatio(COUPLE_RATIO)
+         .withSteerMotorInverted(STEER_MOTOR_REVERSED)
+         .withSteerMotorClosedLoopOutput(ClosedLoopOutputType.Voltage)
+         .withDriveMotorClosedLoopOutput(ClosedLoopOutputType.TorqueCurrentFOC);
+
+     // Front Left
+     private static final int FLD_MOTOR_ID = 3;
+     private static final int FLS_MOTOR_ID = 4;
+     private static final int FLS_ENCODER_ID = 0;
+     private static final double FLS_ENCODER_OFFSET = 0;
+
+     private static final double FL_X_POS_INCH = CHASSIS_WIDTH / 2;
+     private static final double FL_Y_POS_INCH = CHASSIS_LENGTH / 2;
+
+     // Front Right
+     private static final int FRD_MOTOR_ID = 1;
+     private static final int FRS_MOTOR_ID = 2;
+     private static final int FRS_ENCODER_ID = 1;
+     private static final double FRS_ENCODER_OFFSET = 0.0;
+
+     private static final double FR_X_POS_INCH = CHASSIS_WIDTH / 2;
+     private static final double FR_Y_POS_INCH = -CHASSIS_LENGTH / 2;
+
+     // Back Left
+     private static final int BLD_MOTOR_ID = 7;
+     private static final int BLS_MOTOR_ID = 8;
+     private static final int BLS_ENCODER_ID = 2;
+     private static final double BLS_ENCODER_OFFSET = 0.0;
+
+     private static final double BL_X_POS_INCH = -CHASSIS_WIDTH / 2.;
+     private static final double BL_Y_POS_INCH = CHASSIS_LENGTH / 2;
+
+     // Back Right
+     private static final int BRD_MOTOR_ID = 5;
+     private static final int BRS_MOTOR_ID = 6;
+     private static final int BRS_ENCODER_ID = 3;
+     private static final double BRS_ENCODER_OFFSET = 0;
+
+     private static final double BR_X_POS_INCH = -CHASSIS_WIDTH / 2.;
+     private static final double BR_Y_POS_INCH = -CHASSIS_LENGTH / 2;
+
+     public static final SwerveModuleConstants FL_MODULE_CONSTANTS = ConstantCreator.createModuleConstants(
+         FLS_MOTOR_ID, FLD_MOTOR_ID, FLS_ENCODER_ID, FLS_ENCODER_OFFSET, Units.inchesToMeters(FL_X_POS_INCH),
+         Units.inchesToMeters(FL_Y_POS_INCH), INVERT_LEFT_DRIVE);
+     public static final SwerveModuleConstants FR_MODULE_CONSTANTS = ConstantCreator.createModuleConstants(
+         FRS_MOTOR_ID, FRD_MOTOR_ID, FRS_ENCODER_ID, FRS_ENCODER_OFFSET, Units.inchesToMeters(FR_X_POS_INCH),
+         Units.inchesToMeters(FR_Y_POS_INCH), INVERT_RIGHT_DRIVE);
+     public static final SwerveModuleConstants BL_MODULE_CONSTANTS = ConstantCreator.createModuleConstants(
+         BLS_MOTOR_ID, BLD_MOTOR_ID, BLS_ENCODER_ID, BLS_ENCODER_OFFSET, Units.inchesToMeters(BL_X_POS_INCH),
+         Units.inchesToMeters(BL_Y_POS_INCH), INVERT_LEFT_DRIVE);
+     public static final SwerveModuleConstants BR_MODULE_CONSTANTS = ConstantCreator.createModuleConstants(
+         BRS_MOTOR_ID, BRD_MOTOR_ID, BRS_ENCODER_ID, BRS_ENCODER_OFFSET, Units.inchesToMeters(BR_X_POS_INCH),
+         Units.inchesToMeters(BR_Y_POS_INCH), INVERT_RIGHT_DRIVE);
+   }
+
+  public static final class FeederConstants {
+    public static final int LEFT_FEEDER_MOTOR = 10;
+    public static final int RIGHT_FEEDER_MOTOR = 11;
+    public static final boolean LEFT_FEEDER_INVERTED = true;
+    public static final boolean RIGHT_FEEDER_INVERTED = false;
+    public static final double FEEDER_SPEED = 0.15;
+    public static final double SCORE_SPEED = 0.5;
+    public static final double IDLE_SPEED = 0;
+  }
 }
