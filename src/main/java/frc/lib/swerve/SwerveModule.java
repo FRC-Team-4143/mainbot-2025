@@ -552,11 +552,9 @@ public class SwerveModule {
      * 
      */
     public void resetToAbsolute() {
-        // m_angle_offset = Preferences.getDouble("Module" + m_encoder_id, 0);
-        // double absolutePosition = m_analogEncoder.get() - m_angle_offset;
-        // m_steerMotor.setPosition(absolutePosition);
-        m_steerMotor.setPosition(0.0);
-        //TODO: Fix wheel offset Preferences 
+        m_angle_offset = Preferences.getDouble("Module" + m_encoder_id, 0);
+        double absolutePosition = m_analogEncoder.get() - m_angle_offset;
+        m_steerMotor.setPosition(absolutePosition);
     }
 
     public void optimizeCan() {
