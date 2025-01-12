@@ -8,6 +8,8 @@ import com.revrobotics.spark.SparkBase;
 import com.revrobotics.spark.SparkFlex;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.config.SparkFlexConfig;
+import edu.wpi.first.math.filter.Debouncer;
+import edu.wpi.first.math.filter.Debouncer.DebounceType;
 import frc.lib.subsystem.Subsystem;
 import frc.robot.Constants.FeederConstants;
 import monologue.Annotations.Log;
@@ -17,6 +19,8 @@ public class CoralFunnel extends Subsystem {
 
   private SparkFlex left_feeder_motor_;
   private SparkFlex right_feeder_motor_;
+
+  private Debouncer possession_debouncer_;
 
   public enum FeedingMode {
     IDLE,
@@ -55,6 +59,8 @@ public class CoralFunnel extends Subsystem {
         config_,
         SparkBase.ResetMode.kResetSafeParameters,
         SparkBase.PersistMode.kPersistParameters);
+
+    possession_debouncer_ = new Debouncer(0.02, DebounceType.kRising);
 
     // Call reset last in subsystem configuration
     reset();
@@ -127,7 +133,8 @@ public class CoralFunnel extends Subsystem {
   }
 
   public boolean hasCoral() {
-    return io_.average_motor_current_ > 50;
+    return possession_debouncer_.calculate(
+        io_.average_motor_current_ >= FeederConstants.AMP_SPIKE_THRESHHOLD);
   }
 
   public class CoralFunnelPeriodicIo implements Logged {

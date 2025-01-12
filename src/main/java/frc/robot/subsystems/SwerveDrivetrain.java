@@ -6,6 +6,8 @@
  */
 package frc.robot.subsystems;
 
+import static edu.wpi.first.units.Units.Radians;
+
 import choreo.trajectory.SwerveSample;
 import com.ctre.phoenix6.BaseStatusSignal;
 import com.ctre.phoenix6.hardware.Pigeon2;
@@ -223,8 +225,7 @@ public class SwerveDrivetrain extends Subsystem {
     io_.driver_joystick_rightX_ = OI.getDriverJoystickRightX();
 
     io_.robot_yaw_ =
-        Rotation2d.fromRadians(
-            MathUtil.angleModulus(-pigeon_imu.getYaw().getValueAsDouble() * Math.PI / 180));
+        Rotation2d.fromRadians(MathUtil.angleModulus(pigeon_imu.getYaw().getValue().in(Radians)));
 
     io_.chassis_speeds_ = kinematics.toChassisSpeeds(io_.current_module_states_);
     io_.field_relative_chassis_speed_ =
@@ -337,8 +338,7 @@ public class SwerveDrivetrain extends Subsystem {
   public void seedFieldRelative(Rotation2d offset) {
     pigeon_imu.setYaw(offset.getDegrees());
     io_.robot_yaw_ =
-        Rotation2d.fromRadians(
-            MathUtil.angleModulus(-pigeon_imu.getYaw().getValueAsDouble() * Math.PI / 180));
+        Rotation2d.fromRadians(MathUtil.angleModulus(pigeon_imu.getYaw().getValue().in(Radians)));
   }
 
   /**

@@ -45,7 +45,7 @@ public final class Constants {
     // - VelocityTorqueCurrentFOC, if DrivetrainConstants.SupportsPro is true
     private static final Slot0Configs DRIVE_GAINS =
         new Slot0Configs()
-            .withKP(12.5)
+            .withKP(6.25)
             .withKI(0.0)
             .withKD(0.01) // 7 : updated to 3 RJS
             .withKS(0.2)
@@ -174,12 +174,13 @@ public final class Constants {
   }
 
   public static final class FeederConstants {
-    public static final int LEFT_FEEDER_MOTOR = 10;
-    public static final int RIGHT_FEEDER_MOTOR = 11;
+    public static final int LEFT_FEEDER_MOTOR = 11;
+    public static final int RIGHT_FEEDER_MOTOR = 10;
     public static final boolean LEFT_FEEDER_INVERTED = true;
     public static final boolean RIGHT_FEEDER_INVERTED = false;
     public static final double FEEDER_SPEED = 0.15;
     public static final double SCORE_SPEED = 0.5;
     public static final double IDLE_SPEED = 0;
+    public static final double AMP_SPIKE_THRESHHOLD = 25;
   }
 }
