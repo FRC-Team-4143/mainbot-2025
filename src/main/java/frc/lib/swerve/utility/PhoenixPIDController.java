@@ -14,10 +14,12 @@ import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.util.sendable.SendableRegistry;
 
 /**
- * Phoenix-centric PID controller taken from WPI's {@link edu.wpi.first.math.controller.PIDController} class.
- * <p>
- * This class differs from the WPI implementation by using explicit timestamps for
- * integral/derivative calculations. Ideally, these timestamps come from the {@link com.ctre.phoenix6.StatusSignal}.
+ * Phoenix-centric PID controller taken from WPI's {@link
+ * edu.wpi.first.math.controller.PIDController} class.
+ *
+ * <p>This class differs from the WPI implementation by using explicit timestamps for
+ * integral/derivative calculations. Ideally, these timestamps come from the {@link
+ * com.ctre.phoenix6.StatusSignal}.
  */
 public class PhoenixPIDController implements Sendable, AutoCloseable {
   private static int instances;
@@ -343,4 +345,3 @@ public class PhoenixPIDController implements Sendable, AutoCloseable {
     builder.addDoubleProperty("setpoint", this::getSetpoint, null);
   }
 }
-

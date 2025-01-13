@@ -4,28 +4,20 @@
 
 package frc.robot;
 
-import edu.wpi.first.math.controller.PIDController;
-import edu.wpi.first.math.controller.ProfiledPIDController;
-import edu.wpi.first.math.trajectory.TrapezoidProfile;
+import com.ctre.phoenix6.configs.Slot0Configs;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.Preferences;
-
-import com.ctre.phoenix6.configs.Slot0Configs;
-import frc.lib.swerve.SwerveModuleConstantsFactory;
-import frc.lib.swerve.SwerveModuleConstants.SteerFeedbackType;
 import frc.lib.swerve.SwerveModule.ClosedLoopOutputType;
 import frc.lib.swerve.SwerveModuleConstants;
+import frc.lib.swerve.SwerveModuleConstants.SteerFeedbackType;
+import frc.lib.swerve.SwerveModuleConstantsFactory;
 
 /**
- * The Constants class provides a convenient place for teams to hold robot-wide
- * numerical or boolean
- * constants. This class should not be used for any other purpose. All constants
- * should be declared
+ * The Constants class provides a convenient place for teams to hold robot-wide numerical or boolean
+ * constants. This class should not be used for any other purpose. All constants should be declared
  * globally (i.e. public static). Do not put anything functional in this class.
  *
- * <p>
- * It is advised to statically import this class (or one of its inner classes)
- * wherever the
+ * <p>It is advised to statically import this class (or one of its inner classes) wherever the
  * constants are needed, to reduce verbosity.
  */
 public final class Constants {
@@ -39,22 +31,26 @@ public final class Constants {
   public class DrivetrainConstants {
 
     // Can bus names for each of the swerve modules
-    public static final String[] MODULE_CANBUS_NAME = { "can0", "can0", "can0", "can0" };
+    public static final String[] MODULE_CANBUS_NAME = {"can0", "can0", "can0", "can0"};
 
     // Can bus ID for the pigeon
     public static final int PIGEON2_ID = 0;
 
     // Both sets of gains need to be tuned to your individual robot
     // The steer motor uses MotionMagicVoltage control
-    private static final Slot0Configs STEER_GAINS = new Slot0Configs()
-        .withKP(100).withKI(0).withKD(0)
-        .withKS(0).withKV(0).withKA(0);
+    private static final Slot0Configs STEER_GAINS =
+        new Slot0Configs().withKP(100).withKI(0).withKD(0).withKS(0).withKV(0).withKA(0);
     // When using closed-loop control, the drive motor uses:
     // - VelocityVoltage, if DrivetrainConstants.SupportsPro is false (default)
     // - VelocityTorqueCurrentFOC, if DrivetrainConstants.SupportsPro is true
-    private static final Slot0Configs DRIVE_GAINS = new Slot0Configs()
-        .withKP(12.5).withKI(0.0).withKD(0.01) // 7 : updated to 3 RJS
-        .withKS(0.2).withKV(0.12).withKA(0.05); // 2.4 : updated to 0 RJS
+    private static final Slot0Configs DRIVE_GAINS =
+        new Slot0Configs()
+            .withKP(12.5)
+            .withKI(0.0)
+            .withKD(0.01) // 7 : updated to 3 RJS
+            .withKS(0.2)
+            .withKV(0.12)
+            .withKA(0.05); // 2.4 : updated to 0 RJS
 
     // The stator current at which the wheels start to slip;
     // This needs to be tuned to your individual robot
@@ -70,7 +66,7 @@ public final class Constants {
 
     private static final double DRIVE_GEAR_RATIO = 5.36827799; // L3: 6.12, L2: 5.14     //4.572
     private static final double STEER_GEAR_RATIO = 12.8; // Mk4i: (150.0/7.0), Mk4: 12.8
-    private static final double WHEEL_RADIUS_INCH = 1.88; // 1.6090288; // 1.59997; 
+    private static final double WHEEL_RADIUS_INCH = 1.88; // 1.6090288; // 1.59997;
 
     private static final boolean STEER_MOTOR_REVERSED = false;
     private static final boolean INVERT_LEFT_DRIVE = false;
@@ -80,24 +76,28 @@ public final class Constants {
     private static final double CHASSIS_LENGTH = 18.0;
 
     public static final double MAX_DRIVE_SPEED = 1; // 6 meters per second desired top speed
-    public static final double MAX_DRIVE_ANGULAR_RATE = Math.PI * 2; // Rotation per second max angular velocity
+    public static final double MAX_DRIVE_ANGULAR_RATE =
+        Math.PI * 2; // Rotation per second max angular velocity
     public static final double CRAWL_DRIVE_SPEED = 0.4;
     public static final double MAX_TARGET_SPEED = 1;
 
-    private static final SwerveModuleConstantsFactory ConstantCreator = new SwerveModuleConstantsFactory()
-        .withDriveMotorGearRatio(DRIVE_GEAR_RATIO)
-        .withSteerMotorGearRatio(STEER_GEAR_RATIO)
-        .withWheelRadius(WHEEL_RADIUS_INCH)
-        .withSlipCurrent(SLIP_CURRENT_AMPS)
-        .withSteerMotorGains(STEER_GAINS)
-        .withDriveMotorGains(DRIVE_GAINS)
-        .withSpeedAt12VoltsMps(SPEED_AT_12V_MPS)
-        .withFeedbackSource(SteerFeedbackType.None) // .withFeedbackSource(SteerFeedbackType.FusedCANcoder) CRH: Removed
-                                                    // for AnalogEncoders
-        .withCouplingGearRatio(COUPLE_RATIO)
-        .withSteerMotorInverted(STEER_MOTOR_REVERSED)
-        .withSteerMotorClosedLoopOutput(ClosedLoopOutputType.Voltage)
-        .withDriveMotorClosedLoopOutput(ClosedLoopOutputType.TorqueCurrentFOC);
+    private static final SwerveModuleConstantsFactory ConstantCreator =
+        new SwerveModuleConstantsFactory()
+            .withDriveMotorGearRatio(DRIVE_GEAR_RATIO)
+            .withSteerMotorGearRatio(STEER_GEAR_RATIO)
+            .withWheelRadius(WHEEL_RADIUS_INCH)
+            .withSlipCurrent(SLIP_CURRENT_AMPS)
+            .withSteerMotorGains(STEER_GAINS)
+            .withDriveMotorGains(DRIVE_GAINS)
+            .withSpeedAt12VoltsMps(SPEED_AT_12V_MPS)
+            .withFeedbackSource(
+                SteerFeedbackType
+                    .None) // .withFeedbackSource(SteerFeedbackType.FusedCANcoder) CRH: Removed
+            // for AnalogEncoders
+            .withCouplingGearRatio(COUPLE_RATIO)
+            .withSteerMotorInverted(STEER_MOTOR_REVERSED)
+            .withSteerMotorClosedLoopOutput(ClosedLoopOutputType.Voltage)
+            .withDriveMotorClosedLoopOutput(ClosedLoopOutputType.TorqueCurrentFOC);
 
     // Front Left
     private static final int FLD_MOTOR_ID = 1;
@@ -135,17 +135,41 @@ public final class Constants {
     private static final double BR_X_POS_INCH = -CHASSIS_WIDTH / 2.;
     private static final double BR_Y_POS_INCH = -CHASSIS_LENGTH / 2;
 
-    public static final SwerveModuleConstants FL_MODULE_CONSTANTS = ConstantCreator.createModuleConstants(
-        FLS_MOTOR_ID, FLD_MOTOR_ID, FLS_ENCODER_ID, FLS_ENCODER_OFFSET, Units.inchesToMeters(FL_X_POS_INCH),
-        Units.inchesToMeters(FL_Y_POS_INCH), INVERT_LEFT_DRIVE);
-    public static final SwerveModuleConstants FR_MODULE_CONSTANTS = ConstantCreator.createModuleConstants(
-        FRS_MOTOR_ID, FRD_MOTOR_ID, FRS_ENCODER_ID, FRS_ENCODER_OFFSET, Units.inchesToMeters(FR_X_POS_INCH),
-        Units.inchesToMeters(FR_Y_POS_INCH), INVERT_RIGHT_DRIVE);
-    public static final SwerveModuleConstants BL_MODULE_CONSTANTS = ConstantCreator.createModuleConstants(
-        BLS_MOTOR_ID, BLD_MOTOR_ID, BLS_ENCODER_ID, BLS_ENCODER_OFFSET, Units.inchesToMeters(BL_X_POS_INCH),
-        Units.inchesToMeters(BL_Y_POS_INCH), INVERT_LEFT_DRIVE);
-    public static final SwerveModuleConstants BR_MODULE_CONSTANTS = ConstantCreator.createModuleConstants(
-        BRS_MOTOR_ID, BRD_MOTOR_ID, BRS_ENCODER_ID, BRS_ENCODER_OFFSET, Units.inchesToMeters(BR_X_POS_INCH),
-        Units.inchesToMeters(BR_Y_POS_INCH), INVERT_RIGHT_DRIVE);
+    public static final SwerveModuleConstants FL_MODULE_CONSTANTS =
+        ConstantCreator.createModuleConstants(
+            FLS_MOTOR_ID,
+            FLD_MOTOR_ID,
+            FLS_ENCODER_ID,
+            FLS_ENCODER_OFFSET,
+            Units.inchesToMeters(FL_X_POS_INCH),
+            Units.inchesToMeters(FL_Y_POS_INCH),
+            INVERT_LEFT_DRIVE);
+    public static final SwerveModuleConstants FR_MODULE_CONSTANTS =
+        ConstantCreator.createModuleConstants(
+            FRS_MOTOR_ID,
+            FRD_MOTOR_ID,
+            FRS_ENCODER_ID,
+            FRS_ENCODER_OFFSET,
+            Units.inchesToMeters(FR_X_POS_INCH),
+            Units.inchesToMeters(FR_Y_POS_INCH),
+            INVERT_RIGHT_DRIVE);
+    public static final SwerveModuleConstants BL_MODULE_CONSTANTS =
+        ConstantCreator.createModuleConstants(
+            BLS_MOTOR_ID,
+            BLD_MOTOR_ID,
+            BLS_ENCODER_ID,
+            BLS_ENCODER_OFFSET,
+            Units.inchesToMeters(BL_X_POS_INCH),
+            Units.inchesToMeters(BL_Y_POS_INCH),
+            INVERT_LEFT_DRIVE);
+    public static final SwerveModuleConstants BR_MODULE_CONSTANTS =
+        ConstantCreator.createModuleConstants(
+            BRS_MOTOR_ID,
+            BRD_MOTOR_ID,
+            BRS_ENCODER_ID,
+            BRS_ENCODER_OFFSET,
+            Units.inchesToMeters(BR_X_POS_INCH),
+            Units.inchesToMeters(BR_Y_POS_INCH),
+            INVERT_RIGHT_DRIVE);
   }
 }

@@ -7,16 +7,16 @@ package frc.robot;
 import frc.lib.subsystem.SubsystemManager;
 import frc.robot.subsystems.*;
 
-
 public class RobotContainer extends SubsystemManager {
   private static RobotContainer instance;
+
   public static synchronized RobotContainer getInstance() {
-        if (instance == null) {
-            instance = new RobotContainer();
-        }
-        return instance;
+    if (instance == null) {
+      instance = new RobotContainer();
     }
-  
+    return instance;
+  }
+
   public RobotContainer() {
     // !!!!!! ALL SUBSYSTEMS MUST BE REGISTERED HERE TO RUN !!!!!!!
     registerSubsystem(SwerveDrivetrain.getInstance());
@@ -26,5 +26,4 @@ public class RobotContainer extends SubsystemManager {
     reset();
     completeRegistration();
   }
-
 }

@@ -6,30 +6,29 @@ import edu.wpi.first.wpilibj2.command.Command;
 
 public class AutoManager {
 
-    // Singleton pattern
-    private static AutoManager autoManagerInstance = null;
+  // Singleton pattern
+  private static AutoManager autoManagerInstance = null;
 
-    public static AutoManager getInstance() {
-        if (autoManagerInstance == null) {
-            autoManagerInstance = new AutoManager();
-        }
-        return autoManagerInstance;
+  public static AutoManager getInstance() {
+    if (autoManagerInstance == null) {
+      autoManagerInstance = new AutoManager();
     }
+    return autoManagerInstance;
+  }
 
-    private SendableChooser<Command> autoChooser = new SendableChooser<>();
+  private SendableChooser<Command> autoChooser = new SendableChooser<>();
 
-    private AutoManager() {
-        
-        // Register each of the autos
-        SmartDashboard.putData("Auto Mode", autoChooser);
-    }
+  private AutoManager() {
 
-    public SendableChooser<Command> getAutoChooser(){
-        return autoChooser;
-    }
+    // Register each of the autos
+    SmartDashboard.putData("Auto Mode", autoChooser);
+  }
 
-    public Command getAutonomousCommand() {
-        return autoChooser.getSelected();
-    }
+  public SendableChooser<Command> getAutoChooser() {
+    return autoChooser;
+  }
 
+  public Command getAutonomousCommand() {
+    return autoChooser.getSelected();
+  }
 }
