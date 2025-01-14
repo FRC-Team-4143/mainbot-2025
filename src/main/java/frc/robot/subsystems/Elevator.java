@@ -40,22 +40,26 @@ public class Elevator extends Subsystem {
   /** Reads all sensors and stores periodic data */
   public void readPeriodicInputs(double timestamp) {
     io_.is_elevator_at_starting_point_ = elevator_starting_point_.get();
-    io_.is_coral_piece_loaded_ = 
+    // io_.is_coral_piece_loaded_ = 
 
   }
     
 
   /** Computes updated outputs for the actuators */
-  public void updateLogic(double timestamp);
+  public void updateLogic(double timestamp){
+
+  }
 
   /** Writes the periodic outputs to actuators (motors and etc...) */
-  public void writePeriodicOutputs(double timestamp);
+  public void writePeriodicOutputs(double timestamp){}
 
   /** Outputs all logging information to the SmartDashboard */
-  public void outputTelemetry(double timestamp);
+  public void outputTelemetry(double timestamp){}
 
   /** Get logging object from subsystem */
-  public Logged getLoggingObject();
+  public Logged getLoggingObject(){
+    return io_;
+  }
 
   public class ElevatorPeriodicIo implements Logged {
     // IO container for all variables
@@ -66,5 +70,6 @@ public class Elevator extends Subsystem {
   }
 
   /** Called to reset and configure the subsystem */
-  public void reset();
+  public void reset(){
+  }
 }
