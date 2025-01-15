@@ -8,14 +8,17 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.lib.Util;
+import frc.robot.commands.Feed;
+import frc.robot.commands.Score;
 import frc.robot.subsystems.*;
 
 public abstract class OI {
 
   // Sets up both controllers
-  static CommandXboxController driver_joystick_ = new CommandXboxController(0);
+  static CommandXboxController driver_controller_ = new CommandXboxController(0);
 
   static SwerveDrivetrain swerve_drivetrain_ = SwerveDrivetrain.getInstance();
+  static CoralFunnel coral_funnel_ = CoralFunnel.getInstance();
 
   public static void configureBindings() {
 
@@ -29,14 +32,18 @@ public abstract class OI {
                     swerve_drivetrain_.seedFieldRelative(swerve_drivetrain_.getDriverPrespective()))
             .ignoringDisable(true));
 
-    driver_joystick_
+    driver_controller_
         .rightStick()
         .onTrue(
             Commands.runOnce(() -> swerve_drivetrain_.toggleFieldCentric(), swerve_drivetrain_));
+
+    driver_controller_.leftTrigger().whileTrue(new Feed());
+
+    driver_controller_.rightTrigger().whileTrue(new Score());
   }
 
   public static double getDriverJoystickLeftX() {
-    double val = driver_joystick_.getLeftX();
+    double val = driver_controller_.getLeftX();
     double output = val * val;
     output = Math.copySign(output, val);
     // return output;
@@ -44,7 +51,7 @@ public abstract class OI {
   }
 
   public static double getDriverJoystickLeftY() {
-    double val = driver_joystick_.getLeftY();
+    double val = driver_controller_.getLeftY();
     double output = val * val;
     output = Math.copySign(output, val);
     // return output;
@@ -52,7 +59,7 @@ public abstract class OI {
   }
 
   public static double getDriverJoystickRightX() {
-    double val = driver_joystick_.getRightX();
+    double val = driver_controller_.getRightX();
     double output = val * val;
     output = Math.copySign(output, val);
     // return output;
@@ -60,11 +67,11 @@ public abstract class OI {
   }
 
   public static boolean getDriverJoystickRightY() {
-    double val = driver_joystick_.getRightY();
+    double val = driver_controller_.getRightY();
     return Util.epislonEquals(val, 0, 0.1);
   }
 
   public static double getDriverJoystickPOVangle() {
-    return driver_joystick_.getHID().getPOV();
+    return driver_controller_.getHID().getPOV();
   }
 }

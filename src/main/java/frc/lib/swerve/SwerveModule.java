@@ -317,10 +317,10 @@ public class SwerveModule {
       SwerveModuleState state,
       DriveRequestType driveRequestType,
       SteerRequestType steerRequestType) {
-    var optimized = SwerveModuleState.optimize(state, m_internalState.angle);
-    m_targetState = optimized;
+    state.optimize(m_internalState.angle);
+    m_targetState = state;
 
-    double angleToSetDeg = optimized.angle.getRotations();
+    double angleToSetDeg = state.angle.getRotations();
     switch (steerRequestType) {
       case MotionMagic:
         switch (m_steerClosedLoopOutput) {
@@ -347,7 +347,7 @@ public class SwerveModule {
         break;
     }
 
-    double velocityToSet = optimized.speedMetersPerSecond * m_driveRotationsPerMeter;
+    double velocityToSet = state.speedMetersPerSecond * m_driveRotationsPerMeter;
 
     /*
      * From FRC 900's whitepaper, we add a cosine compensator to the applied drive
@@ -537,7 +537,6 @@ public class SwerveModule {
     m_steerMotor.setPosition(0);
     m_angle_offset = m_analogEncoder.get(); // * 360.0;
     Preferences.setDouble("Module" + m_encoder_id, m_angle_offset);
-
     System.out.println("Set wheel offsets of " + m_encoder_id + " to " + m_angle_offset);
 
     resetToAbsolute();
@@ -545,11 +544,9 @@ public class SwerveModule {
 
   /** */
   public void resetToAbsolute() {
-    // m_angle_offset = Preferences.getDouble("Module" + m_encoder_id, 0);
-    // double absolutePosition = m_analogEncoder.get() - m_angle_offset;
-    // m_steerMotor.setPosition(absolutePosition);
-    m_steerMotor.setPosition(0.0);
-    // TODO: Fix wheel offset Preferences
+    m_angle_offset = Preferences.getDouble("Module" + m_encoder_id, 0);
+    double absolutePosition = m_analogEncoder.get() - m_angle_offset;
+    m_steerMotor.setPosition(absolutePosition);
   }
 
   public void optimizeCan() {
