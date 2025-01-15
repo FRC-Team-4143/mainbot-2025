@@ -183,4 +183,10 @@ public final class Constants {
     public static final double IDLE_SPEED = 0;
     public static final double AMP_SPIKE_THRESHHOLD = 25;
   }
+
+  public class ClimberConstants {
+    private static final double CLIMBER_GEAR_RATIO = 1;
+    private static final double LATCHER_GEAR_RATIO = 1;
+    private static final double MAX_CLIMBER_DISTANCE = 1;
+  }
 }
