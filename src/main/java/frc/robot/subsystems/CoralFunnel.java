@@ -95,10 +95,9 @@ public class CoralFunnel extends Subsystem {
       case FEEDING:
         io_.feeder_output_ = FeederConstants.FEEDER_SPEED;
         break;
-
       case SCORING:
         io_.feeder_output_ = FeederConstants.SCORE_SPEED;
-
+        break;
       case IDLE:
       default:
         io_.feeder_output_ = FeederConstants.IDLE_SPEED;
