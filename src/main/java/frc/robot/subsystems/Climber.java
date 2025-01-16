@@ -8,17 +8,20 @@ import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.hardware.TalonFX;
 import edu.wpi.first.wpilibj.AnalogInput;
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.lib.subsystem.Subsystem;
 import monologue.Annotations.Log;
 import monologue.Logged;
 
 public class Climber extends Subsystem {
 
-  enum climberStage {
+  enum ClimberStage {
     RETRACTED,
     CLAMPED,
     AIRBORNE
   }
+
 
   TalonFX climber_motor_;
   TalonFX clamper;
@@ -48,21 +51,26 @@ public class Climber extends Subsystem {
 
     var slot0configs = new Slot0Configs();
 
-    slot0configs.kP = 0; 
-    slot0configs.kI = 0; 
-    slot0configs.kD = 0; 
+    slot0configs.kP = 0;
+    slot0configs.kI = 0;
+    slot0configs.kD = 0;
   }
 
   /**
-   * This function should be logic and code to fully reset your subsystem. This is called during
-   * initialization, and should handle I/O configuration and initializing data members.
+   * This function should be logic and code to fully reset your subsystem. This is
+   * called during
+   * initialization, and should handle I/O configuration and initializing data
+   * members.
    */
   @Override
-  public void reset() {}
+  public void reset() {
+  }
 
   /**
-   * Inside this function, all of the SENSORS should be read into variables stored in the PeriodicIO
-   * class defined below. There should be no calls to output to actuators, or any logic within this
+   * Inside this function, all of the SENSORS should be read into variables stored
+   * in the PeriodicIO
+   * class defined below. There should be no calls to output to actuators, or any
+   * logic within this
    * function.
    */
   @Override
@@ -71,37 +79,42 @@ public class Climber extends Subsystem {
     // ./climber_encoder_.getValue();
     io_.climber_rotational_pose_ += climber_encoder_.getValue();
     io_.clamper_current_ = clamper.getSupplyCurrent().getValueAsDouble();
-    
+
   }
 
   /**
-   * Inside this function, all of the LOGIC should compute updates to output variables in the
-   * PeriodicIO class defined below. There should be no calls to read from sensors or write to
+   * Inside this function, all of the LOGIC should compute updates to output
+   * variables in the
+   * PeriodicIO class defined below. There should be no calls to read from sensors
+   * or write to
    * actuators in this function.
    */
   @Override
   public void updateLogic(double timestamp) {
-    switch(io_.climber_stage_){
+    switch (io_.climber_stage_) {
       case RETRACTED:
-        io_.climber_vertical_target_ = 0;   //Retracted position
-        io_.climber_rotational_target_ = 0;   //Retracted position
-        io_.clamper_target_ = 0;  //Retracted position
-      break;
+        io_.climber_vertical_target_ = 0; // Retracted position
+        io_.climber_rotational_target_ = 0; // Retracted position
+        io_.clamper_target_ = 0; // Retracted position
+        break;
       case CLAMPED:
-        io_.climber_vertical_target_ = 0;   //Extended to grab deep cage
-        io_.climber_rotational_target_ = 0;   //Rotated to grab deep cacge
-        io_.clamper_target_ = 0;  //Clamped
-      break;
+        io_.climber_vertical_target_ = 0; // Extended to grab deep cage
+        io_.climber_rotational_target_ = 0; // Rotated to grab deep cacge
+        io_.clamper_target_ = 0; // Clamped
+        break;
       case AIRBORNE:
-        io_.climber_vertical_target_ = 0;   //Likely identical to clamped
-        io_.climber_rotational_target_ = 0;   //Rotated off the ground
-        io_.clamper_target_ = 0;  //Clamped
-      break;
+        io_.climber_vertical_target_ = 0; // Likely identical to clamped
+        io_.climber_rotational_target_ = 0; // Rotated off the ground
+        io_.clamper_target_ = 0; // Clamped
+        break;
     }
   }
+
   /**
-   * Inside this function actuator OUTPUTS should be updated from data contained in the PeriodicIO
-   * class defined below. There should be little to no logic contained within this function, and no
+   * Inside this function actuator OUTPUTS should be updated from data contained
+   * in the PeriodicIO
+   * class defined below. There should be little to no logic contained within this
+   * function, and no
    * sensors should be read.
    */
   @Override
@@ -111,21 +124,37 @@ public class Climber extends Subsystem {
   }
 
   /**
-   * Inside this function telemetry should be output to smartdashboard. The data should be collected
-   * out of the PeriodicIO class instance defined below. There should be no sensor information read
-   * in this function nor any outputs made to actuators within this function. Only publish to
+   * Inside this function telemetry should be output to smartdashboard. The data
+   * should be collected
+   * out of the PeriodicIO class instance defined below. There should be no sensor
+   * information read
+   * in this function nor any outputs made to actuators within this function. Only
+   * publish to
    * smartdashboard here.
    */
   @Override
-  public void outputTelemetry(double timestamp) {}
+  public void outputTelemetry(double timestamp) {
+
+    SmartDashboard.putString("enumName", io_.climber_stage_.toString());
+  }
+
+  public ClimberStage getClimberStage(){
+    return io_.climber_stage_;
+  }
 
   public class ClimberPeriodicIo implements Logged {
-    @Log.File private double climber_rotational_pose_;
-    @Log.File private double clamper_current_;
-    @Log.File private double climber_vertical_target_;
-    @Log.File private double climber_rotational_target_;
-    @Log.File private double clamper_target_;
-    @Log.File private climberStage climber_stage_;
+    @Log.File
+    private double climber_rotational_pose_;
+    @Log.File
+    private double clamper_current_;
+    @Log.File
+    private double climber_vertical_target_;
+    @Log.File
+    private double climber_rotational_target_;
+    @Log.File
+    private double clamper_target_;
+    @Log.File
+    private ClimberStage climber_stage_;
   }
 
   @Override
