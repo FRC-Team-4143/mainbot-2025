@@ -31,6 +31,7 @@ import frc.lib.ChassisProxyServer;
 import frc.lib.Util;
 import frc.lib.subsystem.Subsystem;
 import frc.lib.swerve.*;
+import frc.lib.swerve.SwerveRequest.ForwardReference;
 import frc.lib.swerve.SwerveRequest.SwerveControlRequestParameters;
 import frc.robot.Constants.DrivetrainConstants;
 import frc.robot.OI;
@@ -90,7 +91,7 @@ public class SwerveDrivetrain extends Subsystem {
   private final Translation2d[] module_locations;
 
   // Drive requests
-  private SwerveRequest.ApplyChassisSpeeds auto_request;
+  private SwerveRequest.FieldCentric auto_request;
   private SwerveRequest.FieldCentric field_centric;
   private SwerveRequest.RobotCentric robot_centric;
   private SwerveRequest.FieldCentricFacingAngle target_facing;
@@ -167,6 +168,7 @@ public class SwerveDrivetrain extends Subsystem {
             .withSteerRequestType(SwerveModule.SteerRequestType.MotionMagic)
             .withDeadband(DrivetrainConstants.MAX_DRIVE_SPEED * 0.01)
             .withRotationalDeadband(DrivetrainConstants.MAX_DRIVE_ANGULAR_RATE * 0.01);
+            field_centric.ForwardReference=ForwardReference.OperatorPerspective;
     robot_centric =
         new SwerveRequest.RobotCentric()
             .withDriveRequestType(SwerveModule.DriveRequestType.OpenLoopVoltage)
@@ -179,9 +181,12 @@ public class SwerveDrivetrain extends Subsystem {
             .withSteerRequestType(SwerveModule.SteerRequestType.MotionMagic)
             .withDeadband(DrivetrainConstants.MAX_DRIVE_SPEED * 0.01)
             .withRotationalDeadband(DrivetrainConstants.MAX_DRIVE_ANGULAR_RATE * 0.01);
+            target_facing.ForwardReference=ForwardReference.OperatorPerspective;
     auto_request =
-        new SwerveRequest.ApplyChassisSpeeds()
-            .withDriveRequestType(SwerveModule.DriveRequestType.Velocity);
+        new SwerveRequest.FieldCentric()
+            .withDriveRequestType(SwerveModule.DriveRequestType.Velocity)
+            .withSteerRequestType(SwerveModule.SteerRequestType.MotionMagic);
+            auto_request.ForwardReference=ForwardReference.RedAlliance;
     request_parameters = new SwerveControlRequestParameters();
     request_to_apply = new SwerveRequest.Idle();
 
@@ -438,13 +443,10 @@ public class SwerveDrivetrain extends Subsystem {
 
   public void followTrajectory(SwerveSample sample) {
     Pose2d pose = PoseEstimator.getInstance().getFieldPose();
-    ChassisSpeeds speeds =
-        new ChassisSpeeds(
-            sample.vx + xController.calculate(pose.getX(), sample.x),
-            sample.vy + yController.calculate(pose.getY(), sample.y),
-            sample.omega
-                + headingController.calculate(pose.getRotation().getRadians(), sample.heading));
-    this.setControl(auto_request.withSpeeds(speeds));
+    this.setControl(auto_request
+          .withVelocityX(sample.vx + xController.calculate(pose.getX(), sample.x))
+          .withVelocityY(sample.vy + yController.calculate(pose.getY(), sample.y))
+          .withRotationalRate((sample.omega) + headingController.calculate(pose.getRotation().getRadians(), sample.heading)));
   }
 
   /**
