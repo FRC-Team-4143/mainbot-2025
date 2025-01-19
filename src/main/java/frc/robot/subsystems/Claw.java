@@ -6,31 +6,37 @@ package frc.robot.subsystems;
 
 import static edu.wpi.first.units.Units.Amps;
 import static edu.wpi.first.units.Units.Radian;
+import static edu.wpi.first.units.Units.Radians;
+import static edu.wpi.first.units.Units.Rotations;
+import static edu.wpi.first.units.Units.Volts;
 
+import com.ctre.phoenix6.configs.TalonFXConfiguration;
+import com.ctre.phoenix6.controls.ControlRequest;
+import com.ctre.phoenix6.controls.MotionMagicExpoVoltage;
+import com.ctre.phoenix6.controls.PositionVoltage;
+import com.ctre.phoenix6.controls.VoltageOut;
 import com.ctre.phoenix6.hardware.TalonFX;
-import com.revrobotics.spark.SparkBase;
-import com.revrobotics.spark.SparkFlex;
-import com.revrobotics.spark.SparkLowLevel.MotorType;
-import com.revrobotics.spark.config.SparkFlexConfig;
-import edu.wpi.first.math.filter.Debouncer;
-import edu.wpi.first.math.filter.Debouncer.DebounceType;
+import com.ctre.phoenix6.signals.NeutralModeValue;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.lib.subsystem.Subsystem;
 import frc.robot.Constants;
-import frc.robot.Constants.ClawConstants;
 import monologue.Annotations.Log;
 import monologue.Logged;
 
 public class Claw extends Subsystem {
 
-  private TalonFX clamp_motor_, clamp_wheel_motor_;
+  private TalonFX clamp_motor_, wheel_motor_;
+  private TalonFXConfiguration clamp_config;
+  private TalonFXConfiguration wheel_config;
+
+  ControlRequest clamp_request;
 
   public enum ClawMode {
     CLOSED,
     OPEN,
-    SQUEEZE,
     SHOOT,
-    LOAD
+    LOAD,
+    IDLE
   }
 
   // Singleton pattern
@@ -51,8 +57,25 @@ public class Claw extends Subsystem {
     // Create io object first in subsystem configuration
     io_ = new ClawPeriodicIo();
 
-    clamp_motor_ = new TalonFX(ClawConstants.CLAMP_CLAW_MOTOR_);
-    clamp_wheel_motor_ = new TalonFX(ClawConstants.CLAMP_WHEEL_MOTOR_);
+    clamp_motor_ = new TalonFX(Constants.ClawConstants.CLAMP_MOTOR_ID);
+    wheel_motor_ = new TalonFX(Constants.ClawConstants.WHEEL_MOTOR_ID);
+    clamp_request = new PositionVoltage(0).withSlot(0);
+    clamp_config = new TalonFXConfiguration();
+    wheel_config = new TalonFXConfiguration();
+
+    wheel_config.MotorOutput.NeutralMode = NeutralModeValue.Brake;
+
+    clamp_config.MotorOutput.NeutralMode = NeutralModeValue.Brake;
+    clamp_config.CurrentLimits.SupplyCurrentLimit = Constants.ClawConstants.CLAMP_CURRENT_LIMIT;
+    clamp_config.CurrentLimits.StatorCurrentLimitEnable = true;
+    clamp_config.Feedback.SensorToMechanismRatio = Constants.ClawConstants.CLAMP_SENSOR_TO_MECHANISM_RATION;
+    clamp_config.Feedback.FeedbackRotorOffset = Constants.ClawConstants.CLAMP_ZERO_OFFSET;
+    clamp_config.Slot0 = Constants.ClawConstants.CLAMP_GAINS;
+
+    clamp_motor_.getConfigurator().apply(clamp_config);
+    wheel_motor_.getConfigurator().apply(wheel_config);
+
+    SmartDashboard.putNumber("%Power", 0);
 
     // Call reset last in subsystem configuration
     reset();
@@ -66,6 +89,7 @@ public class Claw extends Subsystem {
    */
   @Override
   public void reset() {
+
   }
 
   /**
@@ -78,7 +102,7 @@ public class Claw extends Subsystem {
   @Override
   public void readPeriodicInputs(double timestamp) {
     io_.clamp_current_ = clamp_motor_.getSupplyCurrent().getValue().in(Amps);
-    io_.current_clamp_angle_ = clamp_motor_.getPosition().getValue().in(Radian);
+    io_.current_clamp_angle_ = clamp_motor_.getPosition().getValue().in(Radians);
   }
 
   /**
@@ -90,31 +114,34 @@ public class Claw extends Subsystem {
    */
   @Override
   public void updateLogic(double timestamp) {
-
-    if (io_.clamp_current_ >= Constants.ClawConstants.CLAW_AMP_THRESHOLD && io_.claw_mode_ == ClawMode.CLOSED) {
-      io_.claw_mode_ = ClawMode.SQUEEZE;
-    }
-
     switch (io_.claw_mode_) {
       case CLOSED:
-        io_.claw_output_ = Constants.ClawConstants.CLOSING_CLAW_SPEED;
-        io_.wheel_output_ = 0;
-        break;
-      case SQUEEZE:
-        io_.claw_output_ = Constants.ClawConstants.SQUEEZING_CLAW_SPEED;
+        io_.target_clamp_angle = Constants.ClawConstants.CLOSED_ANGLE;
+        clamp_request = new VoltageOut(Constants.ClawConstants.CLOSED_VOLTS);
         io_.wheel_output_ = 0;
         break;
       case SHOOT:
-        // io_.claw_output_ = Constants.ClawConstants.CLOSED_CLAW_ANGLE;
-        // io_.wheel_output_ = Constants.ClawConstants.CLAW_WHEEL_MAX_SPEED;
+        io_.target_clamp_angle = Constants.ClawConstants.CLOSED_ANGLE;
+        clamp_request = new VoltageOut(Constants.ClawConstants.CLOSED_VOLTS);
+        io_.wheel_output_ = Constants.ClawConstants.WHEEL_SHOOT_SPEED;
         break;
       case OPEN:
+        io_.target_clamp_angle = Constants.ClawConstants.OPEN_ANGLE;
+        clamp_request = new PositionVoltage(0).withSlot(0).withPosition(io_.target_clamp_angle / (Math.PI * 2));
+        io_.wheel_output_ = 0;
+        break;
+      case LOAD:
+        io_.target_clamp_angle = Constants.ClawConstants.LOAD_ANGLE;
+        clamp_request = new PositionVoltage(0).withSlot(0).withPosition(io_.target_clamp_angle / (Math.PI * 2));
+        io_.wheel_output_ = Constants.ClawConstants.WHEEL_LOAD_SPEED;
+        break;
+      case IDLE:
       default:
-        io_.claw_output_ = Constants.ClawConstants.OPEN_CLAW_ANGLE;
+        io_.target_clamp_angle = Constants.ClawConstants.CLOSED_ANGLE;
+        clamp_request = new VoltageOut(0);
         io_.wheel_output_ = 0;
         break;
     }
-
   }
 
   /**
@@ -126,9 +153,9 @@ public class Claw extends Subsystem {
    */
   @Override
   public void writePeriodicOutputs(double timestamp) {
-    // clamp_wheel_motor_.set(io_.wheel_output_);
-    clamp_motor_.set(io_.claw_output_);
-    clamp_motor_.set(io_.wheel_output_);
+    wheel_motor_.set(io_.wheel_output_);
+    clamp_motor_.setControl(clamp_request);
+    // clamp_motor_.set(SmartDashboard.getNumber("%Power", 0));
   }
 
   /**
@@ -142,21 +169,24 @@ public class Claw extends Subsystem {
    */
   @Override
   public void outputTelemetry(double timestamp) {
-    SmartDashboard.putNumber("Current", io_.clamp_current_);
+    SmartDashboard.putNumber("Clamp Angle", io_.current_clamp_angle_);
+    SmartDashboard.putNumber("Target Angle", io_.target_clamp_angle);
+    SmartDashboard.putNumber("Clamp Amps", io_.clamp_current_);
+    SmartDashboard.putNumber("Clamp Volts", clamp_motor_.getMotorVoltage().getValue().in(Volts));
+    SmartDashboard.putString("Clamp Mode", io_.claw_mode_.toString());
   }
 
   public class ClawPeriodicIo implements Logged {
     @Log.File
-    public ClawMode claw_mode_ = ClawMode.OPEN;
-    @Log.File
-    public double claw_output_ = 0;
+    public ClawMode claw_mode_ = ClawMode.IDLE;
     @Log.File
     public double wheel_output_ = 0;
     @Log.File
     public double clamp_current_ = 0;
     @Log.File
     public double current_clamp_angle_ = 0.0;
-
+    @Log.File
+    public double target_clamp_angle = 0.0;
   }
 
   public double getClampAngle() {
@@ -170,6 +200,10 @@ public class Claw extends Subsystem {
   public double getClampAmps() {
     return io_.clamp_current_;
   }
+
+  // public void resetClampAngle() {
+  // clamp_motor_.setPosition(0);
+  // }
 
   @Override
   public Logged getLoggingObject() {

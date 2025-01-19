@@ -5,12 +5,14 @@
 package frc.robot;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.lib.Util;
 import frc.robot.commands.Feed;
 import frc.robot.commands.Score;
 import frc.robot.subsystems.*;
+import frc.robot.subsystems.Claw.ClawMode;
 
 public abstract class OI {
 
@@ -19,6 +21,7 @@ public abstract class OI {
 
   static SwerveDrivetrain swerve_drivetrain_ = SwerveDrivetrain.getInstance();
   static CoralFunnel coral_funnel_ = CoralFunnel.getInstance();
+  static Claw claw_ = Claw.getInstance();
 
   public static void configureBindings() {
 
@@ -37,10 +40,14 @@ public abstract class OI {
         .onTrue(
             Commands.runOnce(() -> swerve_drivetrain_.toggleFieldCentric(), swerve_drivetrain_));
 
-    driver_controller_.leftTrigger().whileTrue(new Feed());
+    // driver_controller_.leftTrigger().whileTrue(new Feed());
 
-    driver_controller_.rightTrigger().whileTrue(new Score());
+    // driver_controller_.rightTrigger().whileTrue(new Score());
+    driver_controller_.a().whileTrue(Commands.startEnd(() -> claw_.setClawMode(ClawMode.SHOOT), () -> claw_.setClawMode(ClawMode.IDLE), claw_));
+    driver_controller_.y().whileTrue(Commands.startEnd(() -> claw_.setClawMode(ClawMode.LOAD), () -> claw_.setClawMode(ClawMode.CLOSED), claw_));
+    driver_controller_.b().whileTrue(Commands.startEnd(() -> claw_.setClawMode(ClawMode.OPEN), () -> claw_.setClawMode(ClawMode.CLOSED), claw_));
   }
+
 
   public static double getDriverJoystickLeftX() {
     double val = driver_controller_.getLeftX();
