@@ -181,6 +181,7 @@ public final class Constants {
         public static final int ARM_ENCODER_ID = 24;
         public static final double ARM_TARGET_THRESHOLD = 0.25; // In rads
         public static final double ELEVATOR_TARGET_THRESHOLD = 0.25; // In m
+        public static final double ELEVATOR_MAX_HEIGHT = 0.0; // In m
         public static final InvertedValue ELEVATOR_MASTER_INVERSION_ = InvertedValue.Clockwise_Positive; 
         public static final InvertedValue ELEVATOR_FOLLOWER_INVERSION_ = InvertedValue.CounterClockwise_Positive; 
         public static final InvertedValue ARM_FOLLOWER_INVERSION_ = InvertedValue.Clockwise_Positive; 
@@ -200,7 +201,7 @@ public final class Constants {
 
         public static final Slot0Configs ELEVATOR_GAINS = new Slot0Configs()
                 .withKP(0.0)
-                .withKI(0.0) // DO NOT TOUCH!!!!!!!!!
+                .withKI(0.0) // <-DO NOT TOUCH!!!!!!!!!
                 .withKD(0.0)
                 .withKS(0.0)
                 .withKV(0.0)

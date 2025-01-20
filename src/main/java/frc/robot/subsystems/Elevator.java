@@ -28,15 +28,17 @@ import com.playingwithfusion.TimeOfFlight;
 
 public class Elevator extends Subsystem {
   // Elevator/Arm motors
-  TalonFX elevator_master_;
-  TalonFX elevator_follower_;
-  TalonFX arm_motor_;
-  TalonFXConfiguration elevator_config_;
-  TalonFXConfiguration arm_config_;
-  final MotionMagicExpoVoltage elevator_request_;
-  final MotionMagicExpoVoltage arm_request_;
-  BooleanSupplier elevator_at_minimum_;
-  Trigger reset_elevator_trigger_;
+  private TalonFX elevator_master_;
+  private TalonFX elevator_follower_;
+  private TalonFX arm_motor_;
+  private TalonFXConfiguration elevator_config_;
+  private TalonFXConfiguration arm_config_;
+  private final MotionMagicExpoVoltage elevator_request_;
+  private final MotionMagicExpoVoltage arm_request_;
+  private BooleanSupplier elevator_at_minimum_;
+  private Trigger reset_elevator_trigger_;
+  private DigitalInput elevator_limit_switch_;
+  private CANcoder arm_encode_;
 
   // Enums for Elevator/Arm
   public enum TargetConfig {
@@ -50,12 +52,11 @@ public class Elevator extends Subsystem {
     GROUND,
     PRECESSER,
     BARGE,
-    STOW
+    STOW,
+    IDLE
   }
 
   private ElevatorPeriodicIo io_;
-  DigitalInput elevator_limit_switch_;
-  CANcoder arm_encode_;
 
   // Constructor
   public Elevator() {
@@ -163,6 +164,7 @@ public class Elevator extends Subsystem {
         io_.target_elevator_height = 0;
         io_.target_arm_angle = 0;
         break;
+      case IDLE:
       default:
         io_.target_elevator_height = 0;
         io_.target_arm_angle = 0;
@@ -202,8 +204,6 @@ public class Elevator extends Subsystem {
     public double elevator_left_position = 0;
     @Log.File
     public double elevator_right_position = 0;
-    @Log.File
-    public double average_elevator_position = 0;
     @Log.File
     public double elevator_average_position = 0;
   }
