@@ -30,7 +30,7 @@ public class Elevator extends Subsystem {
   private BooleanSupplier elevator_at_minimum_;
   private Trigger reset_elevator_trigger_;
   private DigitalInput elevator_limit_switch_;
-  private CANcoder arm_encode_;
+  private CANcoder arm_encoder_;
 
   // Enums for Elevator/Arm
   public enum TargetConfig {
@@ -39,10 +39,10 @@ public class Elevator extends Subsystem {
     L3,
     L4,
     ALGAE_HIGH,
-    ALGEO_LOW,
+    ALGAE_LOW,
     SOURCE,
     GROUND,
-    PRECESSER,
+    PROCESSER,
     BARGE,
     STOW,
     IDLE
@@ -57,7 +57,7 @@ public class Elevator extends Subsystem {
     // Limit Switch: Elevator
     // Change channel once we find out what port it goes into on the RoboRIO
     elevator_limit_switch_ = new DigitalInput(Constants.ElevatorConstants.ELEVATOR_MASTER_ID);
-    arm_encode_ = new CANcoder(Constants.ElevatorConstants.ARM_ENCODER_ID);
+    arm_encoder_ = new CANcoder(Constants.ElevatorConstants.ARM_ENCODER_ID);
     elevator_master_ = new TalonFX(Constants.ElevatorConstants.ELEVATOR_LIMIT_SWITCH_PORT_NUMBER);
     elevator_follower_ = new TalonFX(Constants.ElevatorConstants.ARM_MOTOR_ID);
     arm_motor_ = new TalonFX(Constants.ElevatorConstants.ARM_ENCODER_ID);
@@ -86,10 +86,10 @@ public class Elevator extends Subsystem {
     elevator_request_ = new MotionMagicExpoVoltage(0);
     arm_request_ = new MotionMagicExpoVoltage(0);
 
-    elevator_at_minimum_ = () -> isLimitSwitchPressed() && elevator_is_near_limit_switch();
+    elevator_at_minimum_ = () -> isLimitSwitchPressed() && isElevatorNearLimitSwitch();
     reset_elevator_trigger_ = new Trigger(elevator_at_minimum_);
 
-    reset_elevator_trigger_.onTrue(Commands.runOnce(() -> reset_elevator_pose()));
+    reset_elevator_trigger_.onTrue(Commands.runOnce(() -> elevatorPoseReset()));
 
     // Arm stuff
     arm_config_ = new TalonFXConfiguration();
@@ -116,7 +116,7 @@ public class Elevator extends Subsystem {
   public void readPeriodicInputs(double timestamp) {
     io_.elevator_left_position = elevator_follower_.getPosition().getValue().in(Radians);
     io_.elevator_right_position = elevator_master_.getPosition().getValue().in(Radians);
-    io_.elevator_right_position = arm_encode_.getAbsolutePosition().getValue().in(Radians);
+    io_.elevator_right_position = arm_encoder_.getAbsolutePosition().getValue().in(Radians);
   }
 
   /** Computes updated outputs for the actuators */
@@ -144,7 +144,7 @@ public class Elevator extends Subsystem {
         io_.target_elevator_height = 0;
         io_.target_arm_angle = 0;
         break;
-      case ALGEO_LOW:
+      case ALGAE_LOW:
         io_.target_elevator_height = 0;
         io_.target_arm_angle = 0;
         break;
@@ -156,7 +156,7 @@ public class Elevator extends Subsystem {
         io_.target_elevator_height = 0;
         io_.target_arm_angle = 0;
         break;
-      case PRECESSER:
+      case PROCESSER:
         io_.target_elevator_height = 0;
         io_.target_arm_angle = 0;
         break;
@@ -231,25 +231,25 @@ public class Elevator extends Subsystem {
     return !elevator_limit_switch_.get();
   }
 
-  public boolean elevator_is_near_limit_switch() {
+  public boolean isElevatorNearLimitSwitch() {
     return io_.current_elevator_height <= Constants.ElevatorConstants.LIMIT_SWITCH_THRESHOLD;
   }
 
-  public void reset_elevator_pose() {
+  public void elevatorPoseReset() {
     elevator_master_.setPosition(0);
     elevator_follower_.setPosition(0);
   }
 
-  public void reset_arm_pose() {
+  public void armPoseReset() {
     arm_motor_.setPosition(Constants.ElevatorConstants.ARM_HOME_POSITION);
   }
 
-  public void reset_elevator_and_arm_pose() {
-    reset_elevator_pose();
-    reset_arm_pose();
+  public void elevatorAndArmPoseReset() {
+    elevatorPoseReset();
+    armPoseReset();
   }
 
-  public void set_current_target_config(TargetConfig newConfig) {
+  public void setCurrentTargetConfig(TargetConfig newConfig) {
     io_.current_target_config = newConfig;
   }
 }
