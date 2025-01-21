@@ -15,6 +15,7 @@ import edu.wpi.first.networktables.ProtobufSubscriber;
 import edu.wpi.first.networktables.TimestampedObject;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.lib.subsystem.Subsystem;
 import monologue.Annotations.Log;
 import monologue.Logged;
@@ -131,10 +132,10 @@ public class PoseEstimator extends Subsystem {
 
   @Override
   public void outputTelemetry(double timestamp) {
-    // field_.setRobotPose(io_.vision_filtered_pose_);
+    field_.setRobotPose(io_.vision_filtered_pose_);
     // pose_publisher_.set(io_.vision_filtered_pose_);
 
-    // SmartDashboard.putData("Field", field_);
+    SmartDashboard.putData("Field", field_);
     // SmartDashboard.putBoolean("Is Vision Paused", io_.ignore_vision);
   }
 
