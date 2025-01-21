@@ -92,7 +92,7 @@ public class Elevator extends Subsystem {
     elevator_request_ = new MotionMagicExpoVoltage(0);
     arm_request_ = new MotionMagicExpoVoltage(0);
 
-    elevator_at_minimum_ = () -> isLimitSwitchPressed() && isElevatorNearLimitSwitch();
+    elevator_at_minimum_ = () -> isElevatorAtMinium();
     reset_elevator_trigger_ = new Trigger(elevator_at_minimum_);
 
     reset_elevator_trigger_.onTrue(Commands.runOnce(() -> elevatorPoseReset()));
@@ -189,7 +189,7 @@ public class Elevator extends Subsystem {
     elevator_master_.setControl(
         elevator_request_
             .withPosition(io_.target_elevator_height)
-            .withLimitReverseMotion(isLimitSwitchPressed()));
+            .withLimitReverseMotion(isElevatorAtMinium()));
     arm_motor_.setControl(arm_request_.withPosition(io_.target_arm_angle));
     elevator_follower_.setControl(new Follower(elevator_master_.getDeviceID(), true));
   }
@@ -241,6 +241,10 @@ public class Elevator extends Subsystem {
 
   public void setCurrentTargetConfig(TargetConfig newConfig) {
     io_.current_target_config = newConfig;
+  }
+
+  public boolean isElevatorAtMinium() {
+    return isLimitSwitchPressed() && isElevatorNearLimitSwitch();
   }
 
   public class ElevatorPeriodicIo implements Logged {
