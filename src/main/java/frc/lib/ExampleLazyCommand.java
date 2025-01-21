@@ -29,6 +29,7 @@ public class ExampleLazyCommand extends LazyCommand {
   @Override
   public void end(boolean interrupted) {}
 
+  // unique to lazy command and serves the same purpose as "isFinished()" {*THE COMMAND WILL END IF THIS IS TRUE & THE TIME HAS ELAPSED*}
   @Override
   public boolean isConditionMet() {
 
