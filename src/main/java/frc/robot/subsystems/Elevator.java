@@ -42,7 +42,7 @@ public class Elevator extends Subsystem {
     ALGAE_LOW,
     SOURCE,
     GROUND,
-    PROCESSER,
+    PROCESSOR,
     BARGE,
     STOW,
     IDLE
@@ -156,7 +156,7 @@ public class Elevator extends Subsystem {
         io_.target_elevator_height = 0;
         io_.target_arm_angle = 0;
         break;
-      case PROCESSER:
+      case PROCESSOR:
         io_.target_elevator_height = 0;
         io_.target_arm_angle = 0;
         break;
