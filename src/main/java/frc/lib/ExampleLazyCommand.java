@@ -5,8 +5,10 @@
 package frc.lib;
 
 public class ExampleLazyCommand extends LazyCommand {
-  /** Creates a new TestLazyCommand. */
+  /** Creates a new ExampleLazyCommand. */
   public ExampleLazyCommand() {
+    // Creates a new LazyCommand with the selected amount of seconds(double) to wait before allowing
+    // the lazy command to end
     super(0);
   }
 
@@ -14,8 +16,9 @@ public class ExampleLazyCommand extends LazyCommand {
   @Override
   public void initialize() {
 
+    // Allows for the timer to reset properly and for the delay in the lazy command
+    // to be timed correctly
     this.timerReset();
-    
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -26,7 +29,6 @@ public class ExampleLazyCommand extends LazyCommand {
   @Override
   public void end(boolean interrupted) {}
 
-  // Returns true when the command should end.
   @Override
   public boolean isConditionMet() {
 
