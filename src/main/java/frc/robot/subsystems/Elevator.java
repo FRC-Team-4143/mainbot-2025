@@ -78,6 +78,8 @@ public class Elevator extends Subsystem {
     elevator_config_.MotionMagic.MotionMagicExpo_kV = Constants.ElevatorConstants.ELEVATOR_EXPO_KV;
     elevator_config_.MotionMagic.MotionMagicExpo_kA = Constants.ElevatorConstants.ELEVATOR_EXPO_KA;
     elevator_config_.MotorOutput.NeutralMode = NeutralModeValue.Brake;
+    elevator_config_.SoftwareLimitSwitch.ForwardSoftLimitEnable = true;
+    elevator_config_.SoftwareLimitSwitch.ForwardSoftLimitThreshold = Constants.ElevatorConstants.ELEVATOR_MAX_HEIGHT;
 
     elevator_config_.MotorOutput.Inverted = Constants.ElevatorConstants.ELEVATOR_MASTER_INVERSION_;
     elevator_master_.getConfigurator().apply(elevator_config_);
@@ -104,6 +106,9 @@ public class Elevator extends Subsystem {
     arm_config_.MotionMagic.MotionMagicExpo_kV = Constants.ElevatorConstants.ARM_EXPO_KV;
     arm_config_.MotionMagic.MotionMagicExpo_kA = Constants.ElevatorConstants.ARM_EXPO_KA;
     arm_config_.MotorOutput.NeutralMode = NeutralModeValue.Brake;
+    arm_config_.SoftwareLimitSwitch.ForwardSoftLimitEnable = true;
+    arm_config_.SoftwareLimitSwitch.ForwardSoftLimitThreshold = Constants.ElevatorConstants.ARM_LOWER_LIMIT;
+
     arm_motor_.getConfigurator().apply(arm_config_);
   }
 
@@ -174,7 +179,7 @@ public class Elevator extends Subsystem {
 
   /** Writes the periodic outputs to actuators (motors and etc...) */
   public void writePeriodicOutputs(double timestamp) {
-    elevator_master_.setControl(elevator_request_.withPosition(io_.target_elevator_height));
+    elevator_master_.setControl(elevator_request_.withPosition(io_.target_elevator_height).withLimitReverseMotion(isLimitSwitchPressed()));
     arm_motor_.setControl(arm_request_.withPosition(io_.target_arm_angle));
     elevator_follower_.setControl(new Follower(elevator_master_.getDeviceID(), true));
   }

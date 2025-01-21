@@ -197,6 +197,7 @@ public final class Constants {
         public static final double ARM_ACCELERATION = 0;
         public static final double ARM_EXPO_KV = 0;
         public static final double ARM_EXPO_KA = 0;
+        public static final double ARM_LOWER_LIMIT = 0;
         public static final double ROTOR_TO_CENSOR_RATIO = 1;
 
         public static final Slot0Configs ELEVATOR_GAINS = new Slot0Configs()
