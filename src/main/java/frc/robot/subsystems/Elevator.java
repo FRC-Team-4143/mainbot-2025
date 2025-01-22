@@ -92,7 +92,7 @@ public class Elevator extends Subsystem {
     elevator_request_ = new MotionMagicExpoVoltage(0);
     arm_request_ = new MotionMagicExpoVoltage(0);
 
-    elevator_at_minimum_ = () -> isElevatorAtMinium();
+    elevator_at_minimum_ = () -> isElevatorAtMinimum();
     reset_elevator_trigger_ = new Trigger(elevator_at_minimum_);
 
     reset_elevator_trigger_.onTrue(Commands.runOnce(() -> elevatorPoseReset()));
@@ -189,7 +189,7 @@ public class Elevator extends Subsystem {
     elevator_master_.setControl(
         elevator_request_
             .withPosition(io_.target_elevator_height)
-            .withLimitReverseMotion(isElevatorAtMinium()));
+            .withLimitReverseMotion(isElevatorAtMinimum()));
     arm_motor_.setControl(arm_request_.withPosition(io_.target_arm_angle));
     elevator_follower_.setControl(new Follower(elevator_master_.getDeviceID(), true));
   }
@@ -256,7 +256,7 @@ public class Elevator extends Subsystem {
   }
 
   /**
-   * Reset the elvator position to zero and the arm to home
+   * Reset the elevator position to zero and the arm to home
    */
   public void elevatorAndArmPoseReset() {
     elevatorPoseReset();
@@ -264,7 +264,7 @@ public class Elevator extends Subsystem {
   }
 
   /**
-   * Set the target config of arm and elavator
+   * Set the target config of arm and elevator
    * @param newConfig The new target config
    */
   public void setCurrentTargetConfig(TargetConfig newConfig) {
@@ -272,9 +272,9 @@ public class Elevator extends Subsystem {
   }
 
   /**
-   * @return If the elvator is within the treshold of zero and the limit switch is pressed
+   * @return If the elevator is within the threshold of zero and the limit switch is pressed
    */
-  public boolean isElevatorAtMinium() {
+  public boolean isElevatorAtMinimum() {
     return isLimitSwitchPressed() && isElevatorNearLimitSwitch();
   }
 
