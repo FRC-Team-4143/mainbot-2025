@@ -194,9 +194,9 @@ public final class Constants {
     public static final double ELEVATOR_TARGET_THRESHOLD = 0.25; // In m
     public static final double ELEVATOR_MAX_HEIGHT = 0.0; // In m
     public static final InvertedValue ELEVATOR_MASTER_INVERSION_ = InvertedValue.Clockwise_Positive;
-    public static final InvertedValue ELEVATOR_FOLLOWER_INVERSION_ =
+    public static final InvertedValue ELEVATOR_FOLLOWER_INVERSION =
         InvertedValue.CounterClockwise_Positive;
-    public static final double ELEVATOR_SENSOR_TO_MECHANISM_RATION = 0;
+    public static final double ELEVATOR_SENSOR_TO_MECHANISM_RATIO = 0;
     public static final double ELEVATOR_CRUISE_VELOCITY = 0;
     public static final double ELEVATOR_ACCELERATION = 0;
     public static final double ELEVATOR_EXPO_KV = 0;
@@ -208,9 +208,9 @@ public final class Constants {
     public static final int ARM_MOTOR_ID = 23;
     public static final int ARM_ENCODER_ID = 24;
     public static final double ARM_TARGET_THRESHOLD = 0.25; // In rads
-    public static final InvertedValue ARM_FOLLOWER_INVERSION_ = InvertedValue.Clockwise_Positive;
+    public static final InvertedValue ARM_FOLLOWER_INVERSION = InvertedValue.Clockwise_Positive;
     public static final double ARM_HOME_POSITION = 0;
-    public static final double ARM_SENSOR_TO_MECHANISM_RATION = 0;
+    public static final double ARM_SENSOR_TO_MECHANISM_RATIO = 0;
     public static final double ARM_CRUISE_VELOCITY = 0;
     public static final double ARM_ACCELERATION = 0;
     public static final double ARM_EXPO_KV = 0;

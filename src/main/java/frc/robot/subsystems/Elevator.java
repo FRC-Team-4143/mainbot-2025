@@ -74,7 +74,7 @@ public class Elevator extends Subsystem {
     arm_encoder_ = new CANcoder(Constants.ElevatorConstants.ARM_ENCODER_ID);
     elevator_config_ = new TalonFXConfiguration();
 
-    elevator_config_.Feedback.SensorToMechanismRatio = Constants.ElevatorConstants.ELEVATOR_SENSOR_TO_MECHANISM_RATION;
+    elevator_config_.Feedback.SensorToMechanismRatio = Constants.ElevatorConstants.ELEVATOR_SENSOR_TO_MECHANISM_RATIO;
     elevator_config_.Slot0 = Constants.ElevatorConstants.ELEVATOR_GAINS;
     elevator_config_.MotionMagic.MotionMagicCruiseVelocity = Constants.ElevatorConstants.ELEVATOR_CRUISE_VELOCITY;
     elevator_config_.MotionMagic.MotionMagicAcceleration = Constants.ElevatorConstants.ELEVATOR_ACCELERATION;
@@ -86,7 +86,7 @@ public class Elevator extends Subsystem {
 
     elevator_config_.MotorOutput.Inverted = Constants.ElevatorConstants.ELEVATOR_MASTER_INVERSION_;
     elevator_master_.getConfigurator().apply(elevator_config_);
-    elevator_config_.MotorOutput.Inverted = Constants.ElevatorConstants.ELEVATOR_FOLLOWER_INVERSION_;
+    elevator_config_.MotorOutput.Inverted = Constants.ElevatorConstants.ELEVATOR_FOLLOWER_INVERSION;
     elevator_follower_.getConfigurator().apply(elevator_config_);
 
     elevator_request_ = new MotionMagicExpoVoltage(0);
@@ -102,7 +102,7 @@ public class Elevator extends Subsystem {
 
     arm_config_.Feedback.RotorToSensorRatio = Constants.ElevatorConstants.ROTOR_TO_CENSOR_RATIO;
     arm_config_.Feedback.FeedbackRemoteSensorID = Constants.ElevatorConstants.ARM_ENCODER_ID;
-    arm_config_.Feedback.SensorToMechanismRatio = Constants.ElevatorConstants.ARM_SENSOR_TO_MECHANISM_RATION;
+    arm_config_.Feedback.SensorToMechanismRatio = Constants.ElevatorConstants.ARM_SENSOR_TO_MECHANISM_RATIO;
     arm_config_.Slot0 = Constants.ElevatorConstants.ARM_GAINS;
     arm_config_.MotionMagic.MotionMagicCruiseVelocity = Constants.ElevatorConstants.ARM_CRUISE_VELOCITY;
     arm_config_.MotionMagic.MotionMagicAcceleration = Constants.ElevatorConstants.ARM_ACCELERATION;
