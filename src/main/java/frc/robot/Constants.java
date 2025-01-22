@@ -201,7 +201,7 @@ public final class Constants {
     public static final double ELEVATOR_ACCELERATION = 0;
     public static final double ELEVATOR_EXPO_KV = 0;
     public static final double ELEVATOR_EXPO_KA = 0;
-    public static final double LIMIT_SWITCH_THRESHOLD = 0; // In m
+    public static final double ELEVATOR_ZERO_THRESHOLD = 0; // In m
     public static final double ROTOR_TO_CENSOR_RATIO = 1;
 
     // Arm Constants:

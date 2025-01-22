@@ -199,6 +199,9 @@ public class Elevator extends Subsystem {
 
   }
 
+  /**
+   * @return If the arm is within the threshold of its target 
+   */
   public boolean isArmAtTarget() {
     return Util.epislonEquals(
         io_.current_arm_angle,
@@ -206,6 +209,9 @@ public class Elevator extends Subsystem {
         Constants.ElevatorConstants.ARM_TARGET_THRESHOLD);
   }
 
+  /**
+   * @return If the elevator is within the threshold of its target 
+   */
   public boolean isElevatorAtTarget() {
     return Util.epislonEquals(
         io_.current_elevator_height,
@@ -213,36 +219,61 @@ public class Elevator extends Subsystem {
         Constants.ElevatorConstants.ELEVATOR_TARGET_THRESHOLD);
   }
 
+  /**
+   * @return If both the arm and elevator are at there targets 
+   */
   public boolean isElevatorAndArmAtTarget() {
     return isElevatorAtTarget() && isArmAtTarget();
   }
 
+  /**
+   * @return If the limit switch is pressed
+   */
   public boolean isLimitSwitchPressed() {
     return !elevator_limit_switch_.get();
   }
 
+  /**
+   * @return If the elevator is within threshold of the zero pose
+   */
   public boolean isElevatorNearLimitSwitch() {
-    return io_.current_elevator_height <= Constants.ElevatorConstants.LIMIT_SWITCH_THRESHOLD;
+    return io_.current_elevator_height <= Constants.ElevatorConstants.ELEVATOR_ZERO_THRESHOLD;
   }
 
+  /**
+   * Reset the elevator pose to zero
+   */
   public void elevatorPoseReset() {
     elevator_master_.setPosition(0);
     elevator_follower_.setPosition(0);
   }
 
+  /**
+   * Reset the arm pose to home
+   */
   public void armPoseReset() {
     arm_motor_.setPosition(Constants.ElevatorConstants.ARM_HOME_POSITION);
   }
 
+  /**
+   * Reset the elvator position to zero and the arm to home
+   */
   public void elevatorAndArmPoseReset() {
     elevatorPoseReset();
     armPoseReset();
   }
 
+  /**
+   * Set the target config of arm and elavator
+   * @param newConfig The new target config
+   */
   public void setCurrentTargetConfig(TargetConfig newConfig) {
     io_.current_target_config = newConfig;
   }
 
+  /**
+   * @return If the elvator is within the treshold of zero and the limit switch is pressed
+   */
   public boolean isElevatorAtMinium() {
     return isLimitSwitchPressed() && isElevatorNearLimitSwitch();
   }
