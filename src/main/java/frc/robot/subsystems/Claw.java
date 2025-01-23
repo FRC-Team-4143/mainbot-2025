@@ -5,14 +5,11 @@
 package frc.robot.subsystems;
 
 import static edu.wpi.first.units.Units.Amps;
-import static edu.wpi.first.units.Units.Radian;
 import static edu.wpi.first.units.Units.Radians;
-import static edu.wpi.first.units.Units.Rotations;
 import static edu.wpi.first.units.Units.Volts;
 
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.ControlRequest;
-import com.ctre.phoenix6.controls.MotionMagicExpoVoltage;
 import com.ctre.phoenix6.controls.PositionVoltage;
 import com.ctre.phoenix6.controls.VoltageOut;
 import com.ctre.phoenix6.hardware.TalonFX;
@@ -26,10 +23,10 @@ import monologue.Logged;
 public class Claw extends Subsystem {
 
   private TalonFX clamp_motor_, wheel_motor_;
-  private TalonFXConfiguration clamp_config;
-  private TalonFXConfiguration wheel_config;
-
-  ControlRequest clamp_request;
+  private TalonFXConfiguration clamp_config_, wheel_config_;
+  private ControlRequest current_clamp_request_; 
+  private VoltageOut voltage_clamp_request_;
+  private PositionVoltage position_clamp_request_;
 
   public enum ClawMode {
     CLOSED,
@@ -40,14 +37,14 @@ public class Claw extends Subsystem {
   }
 
   // Singleton pattern
-  private static Claw example_instance = null;
+  private static Claw claw_instance = null;
 
   // C
   public static Claw getInstance() {
-    if (example_instance == null) {
-      example_instance = new Claw();
+    if (claw_instance == null) {
+      claw_instance = new Claw();
     }
-    return example_instance;
+    return claw_instance;
   }
 
   /** Class Members */
@@ -59,23 +56,23 @@ public class Claw extends Subsystem {
 
     clamp_motor_ = new TalonFX(Constants.ClawConstants.CLAMP_MOTOR_ID);
     wheel_motor_ = new TalonFX(Constants.ClawConstants.WHEEL_MOTOR_ID);
-    clamp_request = new PositionVoltage(0).withSlot(0);
-    clamp_config = new TalonFXConfiguration();
-    wheel_config = new TalonFXConfiguration();
+    current_clamp_request_ = new PositionVoltage(0).withSlot(0);
+    voltage_clamp_request_ = new VoltageOut(Constants.ClawConstants.CLOSED_VOLTS);
+    position_clamp_request_ = new PositionVoltage(0).withSlot(0);
+    clamp_config_ = new TalonFXConfiguration();
+    wheel_config_ = new TalonFXConfiguration();
 
-    wheel_config.MotorOutput.NeutralMode = NeutralModeValue.Brake;
+    wheel_config_.MotorOutput.NeutralMode = NeutralModeValue.Brake;
 
-    clamp_config.MotorOutput.NeutralMode = NeutralModeValue.Brake;
-    clamp_config.CurrentLimits.SupplyCurrentLimit = Constants.ClawConstants.CLAMP_CURRENT_LIMIT;
-    clamp_config.CurrentLimits.StatorCurrentLimitEnable = true;
-    clamp_config.Feedback.SensorToMechanismRatio = Constants.ClawConstants.CLAMP_SENSOR_TO_MECHANISM_RATION;
-    clamp_config.Feedback.FeedbackRotorOffset = Constants.ClawConstants.CLAMP_ZERO_OFFSET;
-    clamp_config.Slot0 = Constants.ClawConstants.CLAMP_GAINS;
+    clamp_config_.MotorOutput.NeutralMode = NeutralModeValue.Brake;
+    clamp_config_.CurrentLimits.SupplyCurrentLimit = Constants.ClawConstants.CLAMP_CURRENT_LIMIT;
+    clamp_config_.CurrentLimits.StatorCurrentLimitEnable = true;
+    clamp_config_.Feedback.SensorToMechanismRatio = Constants.ClawConstants.CLAMP_SENSOR_TO_MECHANISM_RATION;
+    clamp_config_.Feedback.FeedbackRotorOffset = Constants.ClawConstants.CLAMP_ZERO_OFFSET;
+    clamp_config_.Slot0 = Constants.ClawConstants.CLAMP_GAINS;
 
-    clamp_motor_.getConfigurator().apply(clamp_config);
-    wheel_motor_.getConfigurator().apply(wheel_config);
-
-    SmartDashboard.putNumber("%Power", 0);
+    clamp_motor_.getConfigurator().apply(clamp_config_);
+    wheel_motor_.getConfigurator().apply(wheel_config_);
 
     // Call reset last in subsystem configuration
     reset();
@@ -117,28 +114,28 @@ public class Claw extends Subsystem {
     switch (io_.claw_mode_) {
       case CLOSED:
         io_.target_clamp_angle = Constants.ClawConstants.CLOSED_ANGLE;
-        clamp_request = new VoltageOut(Constants.ClawConstants.CLOSED_VOLTS);
+        current_clamp_request_ = voltage_clamp_request_.withOutput(Constants.ClawConstants.CLOSED_VOLTS);
         io_.wheel_output_ = 0;
         break;
       case SHOOT:
         io_.target_clamp_angle = Constants.ClawConstants.CLOSED_ANGLE;
-        clamp_request = new VoltageOut(Constants.ClawConstants.CLOSED_VOLTS);
+        current_clamp_request_ = voltage_clamp_request_.withOutput(Constants.ClawConstants.CLOSED_VOLTS);
         io_.wheel_output_ = Constants.ClawConstants.WHEEL_SHOOT_SPEED;
         break;
       case OPEN:
         io_.target_clamp_angle = Constants.ClawConstants.OPEN_ANGLE;
-        clamp_request = new PositionVoltage(0).withSlot(0).withPosition(io_.target_clamp_angle / (Math.PI * 2));
+        current_clamp_request_ = position_clamp_request_.withPosition(io_.target_clamp_angle / (Math.PI * 2));
         io_.wheel_output_ = 0;
         break;
       case LOAD:
         io_.target_clamp_angle = Constants.ClawConstants.LOAD_ANGLE;
-        clamp_request = new PositionVoltage(0).withSlot(0).withPosition(io_.target_clamp_angle / (Math.PI * 2));
+        current_clamp_request_ = position_clamp_request_.withPosition(io_.target_clamp_angle / (Math.PI * 2));
         io_.wheel_output_ = Constants.ClawConstants.WHEEL_LOAD_SPEED;
         break;
       case IDLE:
       default:
         io_.target_clamp_angle = Constants.ClawConstants.CLOSED_ANGLE;
-        clamp_request = new VoltageOut(0);
+        current_clamp_request_ = voltage_clamp_request_.withOutput(Constants.ClawConstants.CLOSED_VOLTS);
         io_.wheel_output_ = 0;
         break;
     }
@@ -154,8 +151,7 @@ public class Claw extends Subsystem {
   @Override
   public void writePeriodicOutputs(double timestamp) {
     wheel_motor_.set(io_.wheel_output_);
-    clamp_motor_.setControl(clamp_request);
-    // clamp_motor_.set(SmartDashboard.getNumber("%Power", 0));
+    clamp_motor_.setControl(current_clamp_request_);
   }
 
   /**
@@ -176,6 +172,28 @@ public class Claw extends Subsystem {
     SmartDashboard.putString("Clamp Mode", io_.claw_mode_.toString());
   }
 
+  /**
+   * @return the current angle of the clamp in radians 
+   */
+  public double getClampAngle() {
+    return io_.current_clamp_angle_;
+  }
+
+  /**
+   * Set the mode of the claw
+   * @param claw_mode the new mode to be set
+   */
+  public void setClawMode(ClawMode claw_mode) {
+    io_.claw_mode_ = claw_mode;
+  }
+
+  /**
+   * @return The supply current in Amps
+   */
+  public double getClampAmps() {
+    return io_.clamp_current_;
+  }
+
   public class ClawPeriodicIo implements Logged {
     @Log.File
     public ClawMode claw_mode_ = ClawMode.IDLE;
@@ -188,22 +206,6 @@ public class Claw extends Subsystem {
     @Log.File
     public double target_clamp_angle = 0.0;
   }
-
-  public double getClampAngle() {
-    return io_.current_clamp_angle_;
-  }
-
-  public void setClawMode(ClawMode claw_mode) {
-    io_.claw_mode_ = claw_mode;
-  }
-
-  public double getClampAmps() {
-    return io_.clamp_current_;
-  }
-
-  // public void resetClampAngle() {
-  // clamp_motor_.setPosition(0);
-  // }
 
   @Override
   public Logged getLoggingObject() {
