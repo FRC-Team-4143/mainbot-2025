@@ -4,37 +4,44 @@
 
 package frc.robot.subsystems;
 
+import static edu.wpi.first.units.Units.Amps;
+
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
+import com.ctre.phoenix6.controls.PositionVoltage;
+import com.ctre.phoenix6.controls.VoltageOut;
 import com.ctre.phoenix6.hardware.TalonFX;
+import com.ctre.phoenix6.signals.NeutralModeValue;
+
 import edu.wpi.first.wpilibj.AnalogInput;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.lib.subsystem.Subsystem;
+import frc.robot.Constants;
 import monologue.Annotations.Log;
 import monologue.Logged;
 
 public class Climber extends Subsystem {
 
-  enum ClimberStage {
-    RETRACTED,
-    CLAMPED,
-    AIRBORNE
+  private TalonFX climber_motor_;
+  private TalonFXConfiguration climber_config_;
+  private PositionVoltage climber_request_deployed_;
+  private PositionVoltage climber_request_retracted_;
+
+  enum ClimberMode {
+    DEPLOYED,
+    RETRACTED
   }
 
-
-  TalonFX climber_motor_;
-  TalonFX clamper;
-  AnalogInput climber_encoder_;
   // Singleton pattern
-  private static Climber example_instance = null;
+  private static Climber climber_instance = null;
 
   // C
   public static Climber getInstance() {
-    if (example_instance == null) {
-      example_instance = new Climber();
+    if (climber_instance == null) {
+      climber_instance = new Climber();
     }
-    return example_instance;
+    return climber_instance;
   }
 
   /** Class Members */
@@ -44,16 +51,16 @@ public class Climber extends Subsystem {
     // Create io object first in subsystem configuration
     io_ = new ClimberPeriodicIo();
     climber_motor_ = new TalonFX(0);
-    clamper = new TalonFX(1);
-    climber_encoder_ = new AnalogInput(0);
+    climber_request_retracted_ = new PositionVoltage(0).withSlot(0);
+    climber_request_deployed_ = new PositionVoltage(Constants.ClimberConstants.DEPLOYED_ROTATIONS).withSlot(0);
+
+    climber_config_.MotorOutput.NeutralMode = NeutralModeValue.Brake;
+    climber_config_.Slot0 = Constants.ClimberConstants.CLIMBER_GAINS;
+
+    climber_motor_.getConfigurator().apply(climber_config_);
+
     // Call reset last in subsystem configuration
     reset();
-
-    var slot0configs = new Slot0Configs();
-
-    slot0configs.kP = 0;
-    slot0configs.kI = 0;
-    slot0configs.kD = 0;
   }
 
   /**
@@ -64,6 +71,7 @@ public class Climber extends Subsystem {
    */
   @Override
   public void reset() {
+
   }
 
   /**
@@ -75,11 +83,8 @@ public class Climber extends Subsystem {
    */
   @Override
   public void readPeriodicInputs(double timestamp) {
-    // read climber motor
-    // ./climber_encoder_.getValue();
-    io_.climber_rotational_pose_ += climber_encoder_.getValue();
-    io_.clamper_current_ = clamper.getSupplyCurrent().getValueAsDouble();
-
+    io_.current_amps_ = climber_motor_.getSupplyCurrent().getValue().in(Amps);
+    io_.current_rotations_ = climber_motor_.getPosition().getValueAsDouble();
   }
 
   /**
@@ -91,21 +96,15 @@ public class Climber extends Subsystem {
    */
   @Override
   public void updateLogic(double timestamp) {
-    switch (io_.climber_stage_) {
+    switch (io_.current_mode_) {
+      case DEPLOYED:
+        io_.current_request_ = climber_request_deployed_;
+        break;
       case RETRACTED:
-        io_.climber_vertical_target_ = 0; // Retracted position
-        io_.climber_rotational_target_ = 0; // Retracted position
-        io_.clamper_target_ = 0; // Retracted position
+        io_.current_request_ = climber_request_retracted_;
         break;
-      case CLAMPED:
-        io_.climber_vertical_target_ = 0; // Extended to grab deep cage
-        io_.climber_rotational_target_ = 0; // Rotated to grab deep cacge
-        io_.clamper_target_ = 0; // Clamped
-        break;
-      case AIRBORNE:
-        io_.climber_vertical_target_ = 0; // Likely identical to clamped
-        io_.climber_rotational_target_ = 0; // Rotated off the ground
-        io_.clamper_target_ = 0; // Clamped
+      default:
+        io_.current_request_ = climber_request_retracted_;
         break;
     }
   }
@@ -119,8 +118,8 @@ public class Climber extends Subsystem {
    */
   @Override
   public void writePeriodicOutputs(double timestamp) {
-    climber_motor_.set(io_.climber_rotational_target_);
-    clamper.set(io_.clamper_target_);
+    climber_motor_.setControl(io_.current_request_);
+
   }
 
   /**
@@ -134,27 +133,52 @@ public class Climber extends Subsystem {
    */
   @Override
   public void outputTelemetry(double timestamp) {
-
-    SmartDashboard.putString("enumName", io_.climber_stage_.toString());
+    SmartDashboard.putString("climberMode", io_.current_mode_.toString());
+    SmartDashboard.putNumber("currentRotations", io_.current_rotations_);
   }
 
-  public ClimberStage getClimberStage(){
-    return io_.climber_stage_;
+  /**
+   * Sets the current mode of climber
+   * 
+   * @param target_mode new mode that is being set
+   */
+  public void setClimberMode(ClimberMode target_mode) {
+    io_.current_mode_ = target_mode;
+  }
+
+  /**
+   * 
+   * @return Returns current rotations in rotations
+   */
+  public double getCurrentRotations() {
+    return io_.current_rotations_;
+  }
+
+  /**
+   * 
+   * @return Returns current amps in amps
+   */
+  public double getCurrentAmps() {
+    return io_.current_amps_;
+  }
+
+  /**
+   * Resets to the zero position of the climber motor
+   */
+  public void resetClimberPosition() {
+    climber_motor_.setPosition(0);
   }
 
   public class ClimberPeriodicIo implements Logged {
     @Log.File
-    private double climber_rotational_pose_;
+    private double current_rotations_ = 0;
     @Log.File
-    private double clamper_current_;
+    private PositionVoltage current_request_ = climber_request_retracted_;
     @Log.File
-    private double climber_vertical_target_;
+    private ClimberMode current_mode_ = ClimberMode.RETRACTED;
     @Log.File
-    private double climber_rotational_target_;
-    @Log.File
-    private double clamper_target_;
-    @Log.File
-    private ClimberStage climber_stage_;
+    private double current_amps_;
+
   }
 
   @Override
