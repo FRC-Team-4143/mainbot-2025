@@ -18,7 +18,6 @@ public class autoTest2 {
     AutoTrajectory pickup1 = routine.trajectory("Pickup1");
     AutoTrajectory score2 = routine.trajectory("Score1");
 
-
     routine.active().onTrue(Commands.sequence(score1.resetOdometry(), score1.cmd()));
 
     score1.done().onTrue(new Score().withTimeout(2).andThen(pickup1.cmd()));

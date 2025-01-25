@@ -12,8 +12,8 @@ import com.ctre.phoenix6.signals.NeutralModeValue;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
-import frc.lib.Util;
-import frc.lib.subsystem.Subsystem;
+import frc.mw_lib.subsystem.Subsystem;
+import frc.mw_lib.util.Util;
 import frc.robot.Constants;
 import java.util.function.BooleanSupplier;
 import monologue.Annotations.Log;
@@ -67,22 +67,27 @@ public class Elevator extends Subsystem {
 
     // Limit Switch: Elevator
     // Change channel once we find out what port it goes into on the RoboRIO
-    elevator_limit_switch_ = new DigitalInput(Constants.ElevatorConstants.ELEVATOR_LIMIT_SWITCH_PORT_NUMBER);
+    elevator_limit_switch_ =
+        new DigitalInput(Constants.ElevatorConstants.ELEVATOR_LIMIT_SWITCH_PORT_NUMBER);
     elevator_master_ = new TalonFX(Constants.ElevatorConstants.ELEVATOR_MASTER_ID);
     elevator_follower_ = new TalonFX(Constants.ElevatorConstants.ELEVATOR_FOLLOWER_ID);
     arm_motor_ = new TalonFX(Constants.ElevatorConstants.ARM_MOTOR_ID);
     arm_encoder_ = new CANcoder(Constants.ElevatorConstants.ARM_ENCODER_ID);
     elevator_config_ = new TalonFXConfiguration();
 
-    elevator_config_.Feedback.SensorToMechanismRatio = Constants.ElevatorConstants.ELEVATOR_SENSOR_TO_MECHANISM_RATIO;
+    elevator_config_.Feedback.SensorToMechanismRatio =
+        Constants.ElevatorConstants.ELEVATOR_SENSOR_TO_MECHANISM_RATIO;
     elevator_config_.Slot0 = Constants.ElevatorConstants.ELEVATOR_GAINS;
-    elevator_config_.MotionMagic.MotionMagicCruiseVelocity = Constants.ElevatorConstants.ELEVATOR_CRUISE_VELOCITY;
-    elevator_config_.MotionMagic.MotionMagicAcceleration = Constants.ElevatorConstants.ELEVATOR_ACCELERATION;
+    elevator_config_.MotionMagic.MotionMagicCruiseVelocity =
+        Constants.ElevatorConstants.ELEVATOR_CRUISE_VELOCITY;
+    elevator_config_.MotionMagic.MotionMagicAcceleration =
+        Constants.ElevatorConstants.ELEVATOR_ACCELERATION;
     elevator_config_.MotionMagic.MotionMagicExpo_kV = Constants.ElevatorConstants.ELEVATOR_EXPO_KV;
     elevator_config_.MotionMagic.MotionMagicExpo_kA = Constants.ElevatorConstants.ELEVATOR_EXPO_KA;
     elevator_config_.MotorOutput.NeutralMode = NeutralModeValue.Brake;
     elevator_config_.SoftwareLimitSwitch.ForwardSoftLimitEnable = true;
-    elevator_config_.SoftwareLimitSwitch.ForwardSoftLimitThreshold = Constants.ElevatorConstants.ELEVATOR_MAX_HEIGHT;
+    elevator_config_.SoftwareLimitSwitch.ForwardSoftLimitThreshold =
+        Constants.ElevatorConstants.ELEVATOR_MAX_HEIGHT;
 
     elevator_config_.MotorOutput.Inverted = Constants.ElevatorConstants.ELEVATOR_MASTER_INVERSION_;
     elevator_master_.getConfigurator().apply(elevator_config_);
@@ -102,23 +107,24 @@ public class Elevator extends Subsystem {
 
     arm_config_.Feedback.RotorToSensorRatio = Constants.ElevatorConstants.ROTOR_TO_CENSOR_RATIO;
     arm_config_.Feedback.FeedbackRemoteSensorID = Constants.ElevatorConstants.ARM_ENCODER_ID;
-    arm_config_.Feedback.SensorToMechanismRatio = Constants.ElevatorConstants.ARM_SENSOR_TO_MECHANISM_RATIO;
+    arm_config_.Feedback.SensorToMechanismRatio =
+        Constants.ElevatorConstants.ARM_SENSOR_TO_MECHANISM_RATIO;
     arm_config_.Slot0 = Constants.ElevatorConstants.ARM_GAINS;
-    arm_config_.MotionMagic.MotionMagicCruiseVelocity = Constants.ElevatorConstants.ARM_CRUISE_VELOCITY;
+    arm_config_.MotionMagic.MotionMagicCruiseVelocity =
+        Constants.ElevatorConstants.ARM_CRUISE_VELOCITY;
     arm_config_.MotionMagic.MotionMagicAcceleration = Constants.ElevatorConstants.ARM_ACCELERATION;
     arm_config_.MotionMagic.MotionMagicExpo_kV = Constants.ElevatorConstants.ARM_EXPO_KV;
     arm_config_.MotionMagic.MotionMagicExpo_kA = Constants.ElevatorConstants.ARM_EXPO_KA;
     arm_config_.MotorOutput.NeutralMode = NeutralModeValue.Brake;
     arm_config_.SoftwareLimitSwitch.ForwardSoftLimitEnable = true;
-    arm_config_.SoftwareLimitSwitch.ForwardSoftLimitThreshold = Constants.ElevatorConstants.ARM_LOWER_LIMIT;
+    arm_config_.SoftwareLimitSwitch.ForwardSoftLimitThreshold =
+        Constants.ElevatorConstants.ARM_LOWER_LIMIT;
 
     arm_motor_.getConfigurator().apply(arm_config_);
   }
 
   /** Called to reset and configure the subsystem */
-  public void reset() {
-
-  }
+  public void reset() {}
 
   /** Reads all sensors and stores periodic data */
   public void readPeriodicInputs(double timestamp) {
@@ -129,7 +135,8 @@ public class Elevator extends Subsystem {
 
   /** Computes updated outputs for the actuators */
   public void updateLogic(double timestamp) {
-    io_.elevator_average_position = (io_.elevator_master_position + io_.elevator_follower_position) / 2;
+    io_.elevator_average_position =
+        (io_.elevator_master_position + io_.elevator_follower_position) / 2;
 
     switch (io_.current_target_config) {
       case L1:
@@ -195,12 +202,10 @@ public class Elevator extends Subsystem {
   }
 
   /** Outputs all logging information to the SmartDashboard */
-  public void outputTelemetry(double timestamp) {
-
-  }
+  public void outputTelemetry(double timestamp) {}
 
   /**
-   * @return If the arm is within the threshold of its target 
+   * @return If the arm is within the threshold of its target
    */
   public boolean isArmAtTarget() {
     return Util.epislonEquals(
@@ -210,7 +215,7 @@ public class Elevator extends Subsystem {
   }
 
   /**
-   * @return If the elevator is within the threshold of its target 
+   * @return If the elevator is within the threshold of its target
    */
   public boolean isElevatorAtTarget() {
     return Util.epislonEquals(
@@ -220,7 +225,7 @@ public class Elevator extends Subsystem {
   }
 
   /**
-   * @return If both the arm and elevator are at there targets 
+   * @return If both the arm and elevator are at there targets
    */
   public boolean isElevatorAndArmAtTarget() {
     return isElevatorAtTarget() && isArmAtTarget();
@@ -240,24 +245,18 @@ public class Elevator extends Subsystem {
     return io_.current_elevator_height <= Constants.ElevatorConstants.ELEVATOR_ZERO_THRESHOLD;
   }
 
-  /**
-   * Reset the elevator pose to zero
-   */
+  /** Reset the elevator pose to zero */
   public void elevatorPoseReset() {
     elevator_master_.setPosition(0);
     elevator_follower_.setPosition(0);
   }
 
-  /**
-   * Reset the arm pose to home
-   */
+  /** Reset the arm pose to home */
   public void armPoseReset() {
     arm_motor_.setPosition(Constants.ElevatorConstants.ARM_HOME_POSITION);
   }
 
-  /**
-   * Reset the elevator position to zero and the arm to home
-   */
+  /** Reset the elevator position to zero and the arm to home */
   public void elevatorAndArmPoseReset() {
     elevatorPoseReset();
     armPoseReset();
@@ -265,6 +264,7 @@ public class Elevator extends Subsystem {
 
   /**
    * Set the target config of arm and elevator
+   *
    * @param newConfig The new target config
    */
   public void setCurrentTargetConfig(TargetConfig newConfig) {
@@ -280,22 +280,14 @@ public class Elevator extends Subsystem {
 
   public class ElevatorPeriodicIo implements Logged {
     // IO container for all variables
-    @Log.File
-    public TargetConfig current_target_config = TargetConfig.SOURCE;
-    @Log.File
-    public double current_elevator_height = 0;
-    @Log.File
-    public double target_elevator_height = 0;
-    @Log.File
-    public double current_arm_angle = 0;
-    @Log.File
-    public double target_arm_angle = 0;
-    @Log.File
-    public double elevator_master_position = 0;
-    @Log.File
-    public double elevator_follower_position = 0;
-    @Log.File
-    public double elevator_average_position = 0;
+    @Log.File public TargetConfig current_target_config = TargetConfig.SOURCE;
+    @Log.File public double current_elevator_height = 0;
+    @Log.File public double target_elevator_height = 0;
+    @Log.File public double current_arm_angle = 0;
+    @Log.File public double target_arm_angle = 0;
+    @Log.File public double elevator_master_position = 0;
+    @Log.File public double elevator_follower_position = 0;
+    @Log.File public double elevator_average_position = 0;
   }
 
   /** Get logging object from subsystem */
