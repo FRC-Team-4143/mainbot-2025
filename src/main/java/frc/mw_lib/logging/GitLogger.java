@@ -1,4 +1,4 @@
-package frc.lib;
+package frc.mw_lib.logging;
 
 import edu.wpi.first.util.datalog.BooleanLogEntry;
 import edu.wpi.first.util.datalog.DataLog;

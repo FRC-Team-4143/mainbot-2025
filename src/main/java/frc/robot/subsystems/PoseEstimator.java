@@ -16,7 +16,7 @@ import edu.wpi.first.networktables.TimestampedObject;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import frc.lib.subsystem.Subsystem;
+import frc.mw_lib.subsystem.Subsystem;
 import monologue.Annotations.Log;
 import monologue.Logged;
 

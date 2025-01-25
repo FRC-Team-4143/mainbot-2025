@@ -9,10 +9,10 @@ import com.ctre.phoenix6.signals.GravityTypeValue;
 import com.ctre.phoenix6.signals.InvertedValue;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.Preferences;
-import frc.lib.swerve.SwerveModule.ClosedLoopOutputType;
-import frc.lib.swerve.SwerveModuleConstants;
-import frc.lib.swerve.SwerveModuleConstants.SteerFeedbackType;
-import frc.lib.swerve.SwerveModuleConstantsFactory;
+import frc.mw_lib.swerve.SwerveModule.ClosedLoopOutputType;
+import frc.mw_lib.swerve.SwerveModuleConstants;
+import frc.mw_lib.swerve.SwerveModuleConstants.SteerFeedbackType;
+import frc.mw_lib.swerve.SwerveModuleConstantsFactory;
 
 /**
  * The Constants class provides a convenient place for teams to hold robot-wide numerical or boolean

@@ -2,7 +2,7 @@
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
-package frc.lib;
+package frc.mw_lib.command;
 
 public class ExampleLazyCommand extends LazyCommand {
   /** Creates a new ExampleLazyCommand. */
@@ -29,7 +29,8 @@ public class ExampleLazyCommand extends LazyCommand {
   @Override
   public void end(boolean interrupted) {}
 
-  // unique to lazy command and serves the same purpose as "isFinished()" {*THE COMMAND WILL END IF THIS IS TRUE & THE TIME HAS ELAPSED*}
+  // unique to lazy command and serves the same purpose as "isFinished()" {*THE COMMAND WILL END IF
+  // THIS IS TRUE & THE TIME HAS ELAPSED*}
   @Override
   public boolean isConditionMet() {
 

@@ -4,36 +4,17 @@
  * For support and suggestions contact support@ctr-electronics.com or file
  * an issue tracker at https://github.com/CrossTheRoadElec/Phoenix-Releases
  */
-package frc.lib.swerve;
+package frc.mw_lib.swerve;
 
 import com.ctre.phoenix6.configs.Slot0Configs;
-import frc.lib.swerve.SwerveModule.ClosedLoopOutputType;
+import frc.mw_lib.swerve.SwerveModule.ClosedLoopOutputType;
+import frc.mw_lib.swerve.SwerveModuleConstants.SteerFeedbackType;
 
-/** All constants for a swerve module. */
-public class SwerveModuleConstants {
-  /** Supported feedback sensors for the steer motors. */
-  public enum SteerFeedbackType {
-    RemoteCANcoder,
-    /** Requires Pro */
-    FusedCANcoder,
-    /** Requires Pro */
-    SyncCANcoder,
-    AnalogEncoder,
-    None,
-  }
-
-  /** CAN ID of the drive motor. */
-  public int DriveMotorId = 0;
-
-  /** CAN ID of the steer motor. */
-  public int SteerMotorId = 0;
-
-  /** CAN ID of the CANcoder used for azimuth. */
-  public int encoderId = 0;
-
-  /** Offset of the CANcoder in rotations. */
-  public double CANcoderOffset = 0;
-
+/**
+ * Constants that are common across the swerve modules, used for creating instances of
+ * module-specific {@link SwerveModuleConstants}.
+ */
+public class SwerveModuleConstantsFactory {
   /** Gear ratio between the drive motor and the wheel. */
   public double DriveMotorGearRatio = 0;
 
@@ -54,18 +35,6 @@ public class SwerveModuleConstants {
 
   /** Radius of the driving wheel in inches. */
   public double WheelRadius = 0;
-
-  /**
-   * The location of this module's wheels relative to the physical center of the robot in meters
-   * along the X axis of the robot.
-   */
-  public double LocationX = 0;
-
-  /**
-   * The location of this module's wheels relative to the physical center of the robot in meters
-   * along the Y axis of the robot.
-   */
-  public double LocationY = 0;
 
   /**
    * The steer motor closed-loop gains.
@@ -94,9 +63,6 @@ public class SwerveModuleConstants {
 
   /** True if the steering motor is reversed from the CANcoder. */
   public boolean SteerMotorInverted = false;
-
-  /** True if the driving motor is reversed. */
-  public boolean DriveMotorInverted = false;
 
   /**
    * When using open-loop drive control, this specifies the speed at which the robot travels when
@@ -128,56 +94,12 @@ public class SwerveModuleConstants {
   public SteerFeedbackType FeedbackSource = SteerFeedbackType.RemoteCANcoder;
 
   /**
-   * Sets the CAN ID of the drive motor.
-   *
-   * @param id CAN ID of the drive motor
-   * @return this object
-   */
-  public SwerveModuleConstants withDriveMotorId(int id) {
-    this.DriveMotorId = id;
-    return this;
-  }
-
-  /**
-   * Sets the CAN ID of the steer motor.
-   *
-   * @param id CAN ID of the steer motor
-   * @return this object
-   */
-  public SwerveModuleConstants withSteerMotorId(int id) {
-    this.SteerMotorId = id;
-    return this;
-  }
-
-  /**
-   * Sets the CAN ID of the CANcoder used for azimuth.
-   *
-   * @param id CAN ID of the CANcoder used for azimuth
-   * @return this object
-   */
-  public SwerveModuleConstants withCANcoderId(int id) {
-    this.encoderId = id;
-    return this;
-  }
-
-  /**
-   * Sets the offset of the CANcoder in rotations.
-   *
-   * @param offset Offset of the CANcoder in rotations
-   * @return this object
-   */
-  public SwerveModuleConstants withCANcoderOffset(double offset) {
-    this.CANcoderOffset = offset;
-    return this;
-  }
-
-  /**
    * Sets the gear ratio between the drive motor and the wheel.
    *
    * @param ratio Gear ratio between the drive motor and the wheel
    * @return this object
    */
-  public SwerveModuleConstants withDriveMotorGearRatio(double ratio) {
+  public SwerveModuleConstantsFactory withDriveMotorGearRatio(double ratio) {
     this.DriveMotorGearRatio = ratio;
     return this;
   }
@@ -189,7 +111,7 @@ public class SwerveModuleConstants {
    * @param ratio Gear ratio between the steer motor and the CANcoder
    * @return this object
    */
-  public SwerveModuleConstants withSteerMotorGearRatio(double ratio) {
+  public SwerveModuleConstantsFactory withSteerMotorGearRatio(double ratio) {
     this.SteerMotorGearRatio = ratio;
     return this;
   }
@@ -204,7 +126,7 @@ public class SwerveModuleConstants {
    * @param ratio Coupled gear ratio between the CANcoder and the drive motor
    * @return this object
    */
-  public SwerveModuleConstants withCouplingGearRatio(double ratio) {
+  public SwerveModuleConstantsFactory withCouplingGearRatio(double ratio) {
     this.CouplingGearRatio = ratio;
     return this;
   }
@@ -215,32 +137,8 @@ public class SwerveModuleConstants {
    * @param radius Radius of the driving wheel in inches
    * @return this object
    */
-  public SwerveModuleConstants withWheelRadius(double radius) {
+  public SwerveModuleConstantsFactory withWheelRadius(double radius) {
     this.WheelRadius = radius;
-    return this;
-  }
-
-  /**
-   * Sets the location of this module's wheels relative to the physical center of the robot in
-   * meters along the X axis of the robot.
-   *
-   * @param locationXMeters Location of this module's wheels
-   * @return this object
-   */
-  public SwerveModuleConstants withLocationX(double locationXMeters) {
-    this.LocationX = locationXMeters;
-    return this;
-  }
-
-  /**
-   * Sets the location of this module's wheels relative to the physical center of the robot in
-   * meters along the Y axis of the robot.
-   *
-   * @param locationYMeters Location of this module's wheels
-   * @return this object
-   */
-  public SwerveModuleConstants withLocationY(double locationYMeters) {
-    this.LocationY = locationYMeters;
     return this;
   }
 
@@ -253,7 +151,7 @@ public class SwerveModuleConstants {
    * @param gains Steer motor closed-loop gains
    * @return this object
    */
-  public SwerveModuleConstants withSteerMotorGains(Slot0Configs gains) {
+  public SwerveModuleConstantsFactory withSteerMotorGains(Slot0Configs gains) {
     this.SteerMotorGains = gains;
     return this;
   }
@@ -267,7 +165,7 @@ public class SwerveModuleConstants {
    * @param gains Drive motor closed-loop gains
    * @return this object
    */
-  public SwerveModuleConstants withDriveMotorGains(Slot0Configs gains) {
+  public SwerveModuleConstantsFactory withDriveMotorGains(Slot0Configs gains) {
     this.DriveMotorGains = gains;
     return this;
   }
@@ -278,7 +176,8 @@ public class SwerveModuleConstants {
    * @param outputType Closed-loop output type to use for the steer motors
    * @return this object
    */
-  public SwerveModuleConstants withSteerMotorClosedLoopOutput(ClosedLoopOutputType outputType) {
+  public SwerveModuleConstantsFactory withSteerMotorClosedLoopOutput(
+      ClosedLoopOutputType outputType) {
     this.SteerMotorClosedLoopOutput = outputType;
     return this;
   }
@@ -289,7 +188,8 @@ public class SwerveModuleConstants {
    * @param outputType Closed-loop output type to use for the drive motors
    * @return this object
    */
-  public SwerveModuleConstants withDriveMotorClosedLoopOutput(ClosedLoopOutputType outputType) {
+  public SwerveModuleConstantsFactory withDriveMotorClosedLoopOutput(
+      ClosedLoopOutputType outputType) {
     this.DriveMotorClosedLoopOutput = outputType;
     return this;
   }
@@ -300,7 +200,7 @@ public class SwerveModuleConstants {
    * @param slipCurrent Maximum amount of stator current
    * @return this object
    */
-  public SwerveModuleConstants withSlipCurrent(double slipCurrent) {
+  public SwerveModuleConstantsFactory withSlipCurrent(double slipCurrent) {
     this.SlipCurrent = slipCurrent;
     return this;
   }
@@ -311,19 +211,8 @@ public class SwerveModuleConstants {
    * @param steerMotorInverted True if the steering motor is reversed from the CANcoder
    * @return this object
    */
-  public SwerveModuleConstants withSteerMotorInverted(boolean steerMotorInverted) {
+  public SwerveModuleConstantsFactory withSteerMotorInverted(boolean steerMotorInverted) {
     this.SteerMotorInverted = steerMotorInverted;
-    return this;
-  }
-
-  /**
-   * Sets whether the driving motor is reversed.
-   *
-   * @param driveMotorInverted True if the driving motor is reversed
-   * @return this object
-   */
-  public SwerveModuleConstants withDriveMotorInverted(boolean driveMotorInverted) {
-    this.DriveMotorInverted = driveMotorInverted;
     return this;
   }
 
@@ -336,7 +225,7 @@ public class SwerveModuleConstants {
    *     per second
    * @return this object
    */
-  public SwerveModuleConstants withSpeedAt12VoltsMps(double speedAt12VoltsMps) {
+  public SwerveModuleConstantsFactory withSpeedAt12VoltsMps(double speedAt12VoltsMps) {
     this.SpeedAt12VoltsMps = speedAt12VoltsMps;
     return this;
   }
@@ -347,7 +236,7 @@ public class SwerveModuleConstants {
    * @param steerInertia Azimuthal inertia in kilogram meters squared
    * @return this object
    */
-  public SwerveModuleConstants withSteerInertia(double steerInertia) {
+  public SwerveModuleConstantsFactory withSteerInertia(double steerInertia) {
     this.SteerInertia = steerInertia;
     return this;
   }
@@ -358,7 +247,7 @@ public class SwerveModuleConstants {
    * @param driveInertia Drive inertia in kilogram meters squared
    * @return this object
    */
-  public SwerveModuleConstants withDriveInertia(double driveInertia) {
+  public SwerveModuleConstantsFactory withDriveInertia(double driveInertia) {
     this.DriveInertia = driveInertia;
     return this;
   }
@@ -369,7 +258,7 @@ public class SwerveModuleConstants {
    * @param voltage Steer voltage required to overcome friction
    * @return this object
    */
-  public SwerveModuleConstants withSteerFrictionVoltage(double voltage) {
+  public SwerveModuleConstantsFactory withSteerFrictionVoltage(double voltage) {
     this.SteerFrictionVoltage = voltage;
     return this;
   }
@@ -380,7 +269,7 @@ public class SwerveModuleConstants {
    * @param voltage Drive voltage required to overcome friction
    * @return this object
    */
-  public SwerveModuleConstants withDriveFrictionVoltage(double voltage) {
+  public SwerveModuleConstantsFactory withDriveFrictionVoltage(double voltage) {
     this.DriveFrictionVoltage = voltage;
     return this;
   }
@@ -395,8 +284,56 @@ public class SwerveModuleConstants {
    * @param source The feedback sensor source
    * @return this object
    */
-  public SwerveModuleConstants withFeedbackSource(SteerFeedbackType source) {
+  public SwerveModuleConstantsFactory withFeedbackSource(SteerFeedbackType source) {
     this.FeedbackSource = source;
     return this;
+  }
+
+  /**
+   * Creates the constants for a swerve module with the given properties.
+   *
+   * @param steerId CAN ID of the steer motor
+   * @param driveId CAN ID of the drive motor
+   * @param cancoderId CAN ID of the CANcoder used for azimuth
+   * @param cancoderOffset Offset of the CANcoder in rotations
+   * @param locationX The location of this module's wheels relative to the physical center of the
+   *     robot in meters along the X axis of the robot
+   * @param locationY The location of this module's wheels relative to the physical center of the
+   *     robot in meters along the Y axis of the robot
+   * @param driveMotorReversed True if the driving motor is reversed
+   * @return Constants for the swerve module
+   */
+  public SwerveModuleConstants createModuleConstants(
+      int steerId,
+      int driveId,
+      int cancoderId,
+      double cancoderOffset,
+      double locationX,
+      double locationY,
+      boolean driveMotorReversed) {
+    return new SwerveModuleConstants()
+        .withSteerMotorId(steerId)
+        .withDriveMotorId(driveId)
+        .withCANcoderId(cancoderId)
+        .withCANcoderOffset(cancoderOffset)
+        .withLocationX(locationX)
+        .withLocationY(locationY)
+        .withDriveMotorGearRatio(DriveMotorGearRatio)
+        .withSteerMotorGearRatio(SteerMotorGearRatio)
+        .withCouplingGearRatio(CouplingGearRatio)
+        .withWheelRadius(WheelRadius)
+        .withSlipCurrent(SlipCurrent)
+        .withSteerMotorGains(SteerMotorGains)
+        .withDriveMotorGains(DriveMotorGains)
+        .withSteerMotorClosedLoopOutput(SteerMotorClosedLoopOutput)
+        .withDriveMotorClosedLoopOutput(DriveMotorClosedLoopOutput)
+        .withSteerMotorInverted(SteerMotorInverted)
+        .withDriveMotorInverted(driveMotorReversed)
+        .withSpeedAt12VoltsMps(SpeedAt12VoltsMps)
+        .withSteerInertia(SteerInertia)
+        .withDriveInertia(DriveInertia)
+        .withSteerFrictionVoltage(SteerFrictionVoltage)
+        .withDriveFrictionVoltage(DriveFrictionVoltage)
+        .withFeedbackSource(FeedbackSource);
   }
 }
