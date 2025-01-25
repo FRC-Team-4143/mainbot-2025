@@ -9,7 +9,19 @@
             "WHEEL_RADIUS_INCH": 1.8,
             "MAX_DRIVE_SPEED": 5.0,
             "MAX_DRIVE_ANGULAR_RATE": 6.28,
-            "STEER_MOTOR_REVERSED": true
+            "STEER_MOTOR_REVERSED": true,
+            "DRIVE_GAINS_P": 6.25,
+            "DRIVE_GAINS_I": 0,
+            "DRIVE_GAINS_D": 0.01,
+            "DRIVE_GAINS_S": 0.2,
+            "DRIVE_GAINS_V": 0.12,
+            "DRIVE_GAINS_A": 0.05,
+            "STEER_GAINS_P": 100,
+            "STEER_GAINS_I": 0,
+            "STEER_GAINS_D": 0,
+            "STEER_GAINS_S": 0,
+            "STEER_GAINS_V": 0,
+            "STEER_GAINS_A": 0
         },
         "fl": {
             "DRIVE_ID": 3,
