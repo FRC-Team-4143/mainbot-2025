@@ -14,6 +14,8 @@ import com.ctre.phoenix6.controls.PositionVoltage;
 import com.ctre.phoenix6.controls.VoltageOut;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.NeutralModeValue;
+
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.lib.subsystem.Subsystem;
 import frc.robot.Constants;
@@ -24,7 +26,7 @@ public class Claw extends Subsystem {
 
   private TalonFX clamp_motor_, wheel_motor_;
   private TalonFXConfiguration clamp_config_, wheel_config_;
-  private ControlRequest current_clamp_request_; 
+  private ControlRequest current_clamp_request_;
   private VoltageOut voltage_clamp_request_;
   private PositionVoltage position_clamp_request_;
 
@@ -56,9 +58,9 @@ public class Claw extends Subsystem {
 
     clamp_motor_ = new TalonFX(Constants.ClawConstants.CLAMP_MOTOR_ID);
     wheel_motor_ = new TalonFX(Constants.ClawConstants.WHEEL_MOTOR_ID);
-    current_clamp_request_ = new PositionVoltage(0).withSlot(0);
-    voltage_clamp_request_ = new VoltageOut(Constants.ClawConstants.CLOSED_VOLTS);
+    voltage_clamp_request_ = new VoltageOut(0);
     position_clamp_request_ = new PositionVoltage(0).withSlot(0);
+    current_clamp_request_ = voltage_clamp_request_;
     clamp_config_ = new TalonFXConfiguration();
     wheel_config_ = new TalonFXConfiguration();
 
@@ -124,15 +126,18 @@ public class Claw extends Subsystem {
         break;
       case OPEN:
         io_.target_clamp_angle = Constants.ClawConstants.OPEN_ANGLE;
-        current_clamp_request_ = position_clamp_request_.withPosition(io_.target_clamp_angle / (Math.PI * 2));
+        current_clamp_request_ = position_clamp_request_.withPosition(Units.radiansToRotations(io_.target_clamp_angle));
         io_.wheel_output_ = 0;
         break;
       case LOAD:
         io_.target_clamp_angle = Constants.ClawConstants.LOAD_ANGLE;
-        current_clamp_request_ = position_clamp_request_.withPosition(io_.target_clamp_angle / (Math.PI * 2));
+        current_clamp_request_ = position_clamp_request_.withPosition(Units.radiansToRotations(io_.target_clamp_angle));
         io_.wheel_output_ = Constants.ClawConstants.WHEEL_LOAD_SPEED;
         break;
       case IDLE:
+        current_clamp_request_ = voltage_clamp_request_.withOutput(0);
+        io_.wheel_output_ = 0;
+        break;
       default:
         io_.target_clamp_angle = Constants.ClawConstants.CLOSED_ANGLE;
         current_clamp_request_ = voltage_clamp_request_.withOutput(Constants.ClawConstants.CLOSED_VOLTS);
@@ -173,7 +178,7 @@ public class Claw extends Subsystem {
   }
 
   /**
-   * @return the current angle of the clamp in radians 
+   * @return the current angle of the clamp in radians
    */
   public double getClampAngle() {
     return io_.current_clamp_angle_;
@@ -181,6 +186,7 @@ public class Claw extends Subsystem {
 
   /**
    * Set the mode of the claw
+   * 
    * @param claw_mode the new mode to be set
    */
   public void setClawMode(ClawMode claw_mode) {
