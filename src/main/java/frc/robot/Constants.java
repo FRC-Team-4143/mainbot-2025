@@ -185,14 +185,10 @@ public final class Constants {
   }
 
   public class ClimberConstants {
-    public static final double CLIMBER_ID = 35;
+    public static final int CLIMBER_ID = 35;
     public static final double DEPLOYED_ROTATIONS = 30;
+    public static final double RETRACTED_ROTATIONS = 30;
     public static final Slot0Configs CLIMBER_GAINS =
-        new Slot0Configs()
-            .withKP(0.0)
-            .withKD(0.0)
-            .withKS(0.0)
-            .withKV(0.0)
-            .withKA(0.0);
+        new Slot0Configs().withKP(0.0).withKD(0.0).withKS(0.0).withKV(0.0).withKA(0.0);
   }
 }
