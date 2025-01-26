@@ -186,6 +186,14 @@ public final class Constants {
     public static final double AMP_SPIKE_THRESHHOLD = 25;
   }
 
+
+  public class ClimberConstants {
+    public static final int CLIMBER_ID = 35;
+    public static final double DEPLOYED_ROTATIONS = 30;
+    public static final double RETRACTED_ROTATIONS = 30;
+    public static final Slot0Configs CLIMBER_GAINS =
+        new Slot0Configs().withKP(0.0).withKD(0.0).withKS(0.0).withKV(0.0).withKA(0.0);
+
   public class ElevatorConstants {
     // Elevator Constants
     public static final int ELEVATOR_MASTER_ID = 21;
