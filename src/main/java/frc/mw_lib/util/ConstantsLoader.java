@@ -54,7 +54,7 @@ public class ConstantsLoader {
       robot_name = robot_name_node.get("value").asText();
     } catch (ConstantParseError e) {
       DriverStation.reportError(
-          "Failed to retrieve robot name on startup, using default: " + robot_name, null);
+          "Failed to retrieve robot name on startup, using default: " + robot_name, false);
     }
 
     String json_name = robot_name + ".json";
