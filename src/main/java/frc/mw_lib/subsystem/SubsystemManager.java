@@ -1,9 +1,10 @@
-package frc.lib.subsystem;
+package frc.mw_lib.subsystem;
 
 import edu.wpi.first.wpilibj.DataLogManager;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Notifier;
 import edu.wpi.first.wpilibj.Timer;
+import frc.mw_lib.logging.GitLogger;
 import java.util.ArrayList;
 import monologue.Annotations.Log;
 import monologue.Logged;
@@ -88,6 +89,8 @@ public abstract class SubsystemManager {
 
     Monologue.setupMonologue(ios, "Robot", true, false);
     DriverStation.startDataLog(DataLogManager.getLog());
+    GitLogger.logGitData();
+    GitLogger.putGitDataToDashboarad();
     log_init = true;
   }
 

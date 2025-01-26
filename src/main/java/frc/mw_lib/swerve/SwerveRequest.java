@@ -4,7 +4,7 @@
  * For support and suggestions contact support@ctr-electronics.com or file
  * an issue tracker at https://github.com/CrossTheRoadElec/Phoenix-Releases
  */
-package frc.lib.swerve;
+package frc.mw_lib.swerve;
 
 import com.ctre.phoenix6.StatusCode;
 import com.ctre.phoenix6.swerve.utility.PhoenixPIDController;

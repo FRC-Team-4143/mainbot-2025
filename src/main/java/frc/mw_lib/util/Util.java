@@ -1,4 +1,4 @@
-package frc.lib;
+package frc.mw_lib.util;
 
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;

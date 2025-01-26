@@ -1,4 +1,4 @@
-package frc.lib;
+package frc.mw_lib.auto;
 
 import choreo.auto.AutoRoutine;
 
