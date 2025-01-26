@@ -151,7 +151,7 @@ public class ConstantsLoader {
     String robot_name = SmartDashboard.getString("Config/RobotName", "");
     if (!robot_name.isBlank()) {
       Preferences.setString("RobotName", robot_name);
-      DataLogManager.log("Updated RobotName to " + robot_name);
+      DataLogManager.log("Updated RobotName to " + robot_name + " - Restart Robot Code!!!!");
     } else {
       System.out.println("Cannot Configure Robot with Blank Name");
     }

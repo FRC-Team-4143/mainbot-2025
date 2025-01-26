@@ -10,7 +10,7 @@
             "MAX_DRIVE_SPEED": 5.0,
             "MAX_DRIVE_ANGULAR_RATE": 6.28,
             "STEER_MOTOR_REVERSED": true,
-            "DRIVE_GAINS_P": 12.5,
+            "DRIVE_GAINS_P": 6.25,
             "DRIVE_GAINS_I": 0,
             "DRIVE_GAINS_D": 0.01,
             "DRIVE_GAINS_S": 0.2,
@@ -24,35 +24,35 @@
             "STEER_GAINS_A": 0
         },
         "fl": {
-            "DRIVE_ID": 3,
-            "STEER_ID": 4,
+            "DRIVE_ID": 1,
+            "STEER_ID": 2,
             "ENCODER_ID": 0,
-            "X_POSITION": 7.5,
-            "Y_POSITION": 7.5,
+            "X_POSITION": 11.4,
+            "Y_POSITION": 11.4,
             "INVERT_DRIVE": false
         },
         "fr": {
-            "DRIVE_ID": 1,
-            "STEER_ID": 2,
+            "DRIVE_ID": 3,
+            "STEER_ID": 4,
             "ENCODER_ID": 1,
-            "X_POSITION": 7.5,
-            "Y_POSITION": -7.5,
+            "X_POSITION": 11.4,
+            "Y_POSITION": -11.4,
             "INVERT_DRIVE": false
         },
         "bl": {
-            "DRIVE_ID": 7,
-            "STEER_ID": 8,
+            "DRIVE_ID": 5,
+            "STEER_ID": 6,
             "ENCODER_ID": 2,
-            "X_POSITION": -7.5,
-            "Y_POSITION": 7.5,
+            "X_POSITION": -11.4,
+            "Y_POSITION": 11.4,
             "INVERT_DRIVE": false
         },
         "br": {
-            "DRIVE_ID": 5,
-            "STEER_ID": 6,
+            "DRIVE_ID": 7,
+            "STEER_ID": 8,
             "ENCODER_ID": 3,
-            "X_POSITION": -7.5,
-            "Y_POSITION": -7.5,
+            "X_POSITION": -11.4,
+            "Y_POSITION": -11.4,
             "INVERT_DRIVE": false
         }
     }
