@@ -67,8 +67,7 @@ public class Elevator extends Subsystem {
 
     // Limit Switch: Elevator
     // Change channel once we find out what port it goes into on the RoboRIO
-    elevator_limit_switch_ =
-        new DigitalInput(ElevatorConstants.ELEVATOR_LIMIT_SWITCH_PORT_NUMBER);
+    elevator_limit_switch_ = new DigitalInput(ElevatorConstants.ELEVATOR_LIMIT_SWITCH_PORT_NUMBER);
     elevator_master_ = new TalonFX(ElevatorConstants.ELEVATOR_MASTER_ID);
     elevator_follower_ = new TalonFX(ElevatorConstants.ELEVATOR_FOLLOWER_ID);
     arm_motor_ = new TalonFX(ElevatorConstants.ARM_MOTOR_ID);
@@ -80,8 +79,7 @@ public class Elevator extends Subsystem {
     elevator_config_.Slot0 = ElevatorConstants.ELEVATOR_GAINS;
     elevator_config_.MotionMagic.MotionMagicCruiseVelocity =
         ElevatorConstants.ELEVATOR_CRUISE_VELOCITY;
-    elevator_config_.MotionMagic.MotionMagicAcceleration =
-        ElevatorConstants.ELEVATOR_ACCELERATION;
+    elevator_config_.MotionMagic.MotionMagicAcceleration = ElevatorConstants.ELEVATOR_ACCELERATION;
     elevator_config_.MotionMagic.MotionMagicExpo_kV = ElevatorConstants.ELEVATOR_EXPO_KV;
     elevator_config_.MotionMagic.MotionMagicExpo_kA = ElevatorConstants.ELEVATOR_EXPO_KA;
     elevator_config_.MotorOutput.NeutralMode = NeutralModeValue.Brake;
@@ -107,18 +105,15 @@ public class Elevator extends Subsystem {
 
     arm_config_.Feedback.RotorToSensorRatio = ElevatorConstants.ROTOR_TO_CENSOR_RATIO;
     arm_config_.Feedback.FeedbackRemoteSensorID = ElevatorConstants.ARM_ENCODER_ID;
-    arm_config_.Feedback.SensorToMechanismRatio =
-        ElevatorConstants.ARM_SENSOR_TO_MECHANISM_RATIO;
+    arm_config_.Feedback.SensorToMechanismRatio = ElevatorConstants.ARM_SENSOR_TO_MECHANISM_RATIO;
     arm_config_.Slot0 = ElevatorConstants.ARM_GAINS;
-    arm_config_.MotionMagic.MotionMagicCruiseVelocity =
-        ElevatorConstants.ARM_CRUISE_VELOCITY;
+    arm_config_.MotionMagic.MotionMagicCruiseVelocity = ElevatorConstants.ARM_CRUISE_VELOCITY;
     arm_config_.MotionMagic.MotionMagicAcceleration = ElevatorConstants.ARM_ACCELERATION;
     arm_config_.MotionMagic.MotionMagicExpo_kV = ElevatorConstants.ARM_EXPO_KV;
     arm_config_.MotionMagic.MotionMagicExpo_kA = ElevatorConstants.ARM_EXPO_KA;
     arm_config_.MotorOutput.NeutralMode = NeutralModeValue.Brake;
     arm_config_.SoftwareLimitSwitch.ForwardSoftLimitEnable = true;
-    arm_config_.SoftwareLimitSwitch.ForwardSoftLimitThreshold =
-        ElevatorConstants.ARM_LOWER_LIMIT;
+    arm_config_.SoftwareLimitSwitch.ForwardSoftLimitThreshold = ElevatorConstants.ARM_LOWER_LIMIT;
 
     arm_motor_.getConfigurator().apply(arm_config_);
   }
@@ -209,9 +204,7 @@ public class Elevator extends Subsystem {
    */
   public boolean isArmAtTarget() {
     return Util.epislonEquals(
-        io_.current_arm_angle,
-        io_.target_arm_angle,
-        ElevatorConstants.ARM_TARGET_THRESHOLD);
+        io_.current_arm_angle, io_.target_arm_angle, ElevatorConstants.ARM_TARGET_THRESHOLD);
   }
 
   /**

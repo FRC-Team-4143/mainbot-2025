@@ -83,16 +83,13 @@ public class Climber extends Subsystem {
   public void updateLogic(double timestamp) {
     switch (io_.current_mode_) {
       case DEPLOYED:
-        io_.current_request_ =
-            climber_request_.withPosition(ClimberConstants.DEPLOYED_ROTATIONS);
+        io_.current_request_ = climber_request_.withPosition(ClimberConstants.DEPLOYED_ROTATIONS);
         break;
       case RETRACTED:
-        io_.current_request_ =
-            climber_request_.withPosition(ClimberConstants.RETRACTED_ROTATIONS);
+        io_.current_request_ = climber_request_.withPosition(ClimberConstants.RETRACTED_ROTATIONS);
         break;
       default:
-        io_.current_request_ =
-            climber_request_.withPosition(ClimberConstants.RETRACTED_ROTATIONS);
+        io_.current_request_ = climber_request_.withPosition(ClimberConstants.RETRACTED_ROTATIONS);
         break;
     }
   }

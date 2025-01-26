@@ -68,8 +68,7 @@ public class Claw extends Subsystem {
     clamp_config_.MotorOutput.NeutralMode = NeutralModeValue.Brake;
     clamp_config_.CurrentLimits.SupplyCurrentLimit = ClawConstants.CLAMP_CURRENT_LIMIT;
     clamp_config_.CurrentLimits.StatorCurrentLimitEnable = true;
-    clamp_config_.Feedback.SensorToMechanismRatio =
-        ClawConstants.CLAMP_SENSOR_TO_MECHANISM_RATION;
+    clamp_config_.Feedback.SensorToMechanismRatio = ClawConstants.CLAMP_SENSOR_TO_MECHANISM_RATION;
     clamp_config_.Feedback.FeedbackRotorOffset = ClawConstants.CLAMP_ZERO_OFFSET;
     clamp_config_.Slot0 = ClawConstants.CLAMP_GAINS;
 
@@ -108,14 +107,12 @@ public class Claw extends Subsystem {
     switch (io_.claw_mode_) {
       case CLOSED:
         io_.target_clamp_angle = ClawConstants.CLOSED_ANGLE;
-        current_clamp_request_ =
-            voltage_clamp_request_.withOutput(ClawConstants.CLOSED_VOLTS);
+        current_clamp_request_ = voltage_clamp_request_.withOutput(ClawConstants.CLOSED_VOLTS);
         io_.wheel_output_ = 0;
         break;
       case SHOOT:
         io_.target_clamp_angle = ClawConstants.CLOSED_ANGLE;
-        current_clamp_request_ =
-            voltage_clamp_request_.withOutput(ClawConstants.CLOSED_VOLTS);
+        current_clamp_request_ = voltage_clamp_request_.withOutput(ClawConstants.CLOSED_VOLTS);
         io_.wheel_output_ = ClawConstants.WHEEL_SHOOT_SPEED;
         break;
       case OPEN:
@@ -136,8 +133,7 @@ public class Claw extends Subsystem {
         break;
       default:
         io_.target_clamp_angle = ClawConstants.CLOSED_ANGLE;
-        current_clamp_request_ =
-            voltage_clamp_request_.withOutput(ClawConstants.CLOSED_VOLTS);
+        current_clamp_request_ = voltage_clamp_request_.withOutput(ClawConstants.CLOSED_VOLTS);
         io_.wheel_output_ = 0;
         break;
     }
