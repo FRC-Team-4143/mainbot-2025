@@ -11,8 +11,8 @@ import com.ctre.phoenix6.controls.PositionVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import frc.lib.subsystem.Subsystem;
-import frc.robot.Constants;
+import frc.mw_lib.subsystem.Subsystem;
+import frc.robot.Constants.ClimberConstants;
 import monologue.Annotations.Log;
 import monologue.Logged;
 
@@ -44,11 +44,11 @@ public class Climber extends Subsystem {
   private Climber() {
     // Create io object first in subsystem configuration
     io_ = new ClimberPeriodicIo();
-    climber_motor_ = new TalonFX(Constants.ClimberConstants.CLIMBER_ID);
+    climber_motor_ = new TalonFX(ClimberConstants.CLIMBER_ID);
     climber_request_ = new PositionVoltage(0).withSlot(0);
 
     climber_config_.MotorOutput.NeutralMode = NeutralModeValue.Brake;
-    climber_config_.Slot0 = Constants.ClimberConstants.CLIMBER_GAINS;
+    climber_config_.Slot0 = ClimberConstants.CLIMBER_GAINS;
 
     climber_motor_.getConfigurator().apply(climber_config_);
 
@@ -84,15 +84,15 @@ public class Climber extends Subsystem {
     switch (io_.current_mode_) {
       case DEPLOYED:
         io_.current_request_ =
-            climber_request_.withPosition(Constants.ClimberConstants.DEPLOYED_ROTATIONS);
+            climber_request_.withPosition(ClimberConstants.DEPLOYED_ROTATIONS);
         break;
       case RETRACTED:
         io_.current_request_ =
-            climber_request_.withPosition(Constants.ClimberConstants.RETRACTED_ROTATIONS);
+            climber_request_.withPosition(ClimberConstants.RETRACTED_ROTATIONS);
         break;
       default:
         io_.current_request_ =
-            climber_request_.withPosition(Constants.ClimberConstants.RETRACTED_ROTATIONS);
+            climber_request_.withPosition(ClimberConstants.RETRACTED_ROTATIONS);
         break;
     }
   }
@@ -152,7 +152,7 @@ public class Climber extends Subsystem {
 
     @Log.File
     private PositionVoltage current_request_ =
-        climber_request_.withPosition(Constants.ClimberConstants.RETRACTED_ROTATIONS);
+        climber_request_.withPosition(ClimberConstants.RETRACTED_ROTATIONS);
 
     @Log.File private ClimberMode current_mode_ = ClimberMode.RETRACTED;
     @Log.File private double current_amps_;

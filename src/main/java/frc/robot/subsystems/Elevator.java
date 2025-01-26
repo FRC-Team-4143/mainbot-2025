@@ -14,7 +14,7 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.mw_lib.subsystem.Subsystem;
 import frc.mw_lib.util.Util;
-import frc.robot.Constants;
+import frc.robot.Constants.ElevatorConstants;
 import java.util.function.BooleanSupplier;
 import monologue.Annotations.Log;
 import monologue.Logged;
@@ -68,30 +68,30 @@ public class Elevator extends Subsystem {
     // Limit Switch: Elevator
     // Change channel once we find out what port it goes into on the RoboRIO
     elevator_limit_switch_ =
-        new DigitalInput(Constants.ElevatorConstants.ELEVATOR_LIMIT_SWITCH_PORT_NUMBER);
-    elevator_master_ = new TalonFX(Constants.ElevatorConstants.ELEVATOR_MASTER_ID);
-    elevator_follower_ = new TalonFX(Constants.ElevatorConstants.ELEVATOR_FOLLOWER_ID);
-    arm_motor_ = new TalonFX(Constants.ElevatorConstants.ARM_MOTOR_ID);
-    arm_encoder_ = new CANcoder(Constants.ElevatorConstants.ARM_ENCODER_ID);
+        new DigitalInput(ElevatorConstants.ELEVATOR_LIMIT_SWITCH_PORT_NUMBER);
+    elevator_master_ = new TalonFX(ElevatorConstants.ELEVATOR_MASTER_ID);
+    elevator_follower_ = new TalonFX(ElevatorConstants.ELEVATOR_FOLLOWER_ID);
+    arm_motor_ = new TalonFX(ElevatorConstants.ARM_MOTOR_ID);
+    arm_encoder_ = new CANcoder(ElevatorConstants.ARM_ENCODER_ID);
     elevator_config_ = new TalonFXConfiguration();
 
     elevator_config_.Feedback.SensorToMechanismRatio =
-        Constants.ElevatorConstants.ELEVATOR_SENSOR_TO_MECHANISM_RATIO;
-    elevator_config_.Slot0 = Constants.ElevatorConstants.ELEVATOR_GAINS;
+        ElevatorConstants.ELEVATOR_SENSOR_TO_MECHANISM_RATIO;
+    elevator_config_.Slot0 = ElevatorConstants.ELEVATOR_GAINS;
     elevator_config_.MotionMagic.MotionMagicCruiseVelocity =
-        Constants.ElevatorConstants.ELEVATOR_CRUISE_VELOCITY;
+        ElevatorConstants.ELEVATOR_CRUISE_VELOCITY;
     elevator_config_.MotionMagic.MotionMagicAcceleration =
-        Constants.ElevatorConstants.ELEVATOR_ACCELERATION;
-    elevator_config_.MotionMagic.MotionMagicExpo_kV = Constants.ElevatorConstants.ELEVATOR_EXPO_KV;
-    elevator_config_.MotionMagic.MotionMagicExpo_kA = Constants.ElevatorConstants.ELEVATOR_EXPO_KA;
+        ElevatorConstants.ELEVATOR_ACCELERATION;
+    elevator_config_.MotionMagic.MotionMagicExpo_kV = ElevatorConstants.ELEVATOR_EXPO_KV;
+    elevator_config_.MotionMagic.MotionMagicExpo_kA = ElevatorConstants.ELEVATOR_EXPO_KA;
     elevator_config_.MotorOutput.NeutralMode = NeutralModeValue.Brake;
     elevator_config_.SoftwareLimitSwitch.ForwardSoftLimitEnable = true;
     elevator_config_.SoftwareLimitSwitch.ForwardSoftLimitThreshold =
-        Constants.ElevatorConstants.ELEVATOR_MAX_HEIGHT;
+        ElevatorConstants.ELEVATOR_MAX_HEIGHT;
 
-    elevator_config_.MotorOutput.Inverted = Constants.ElevatorConstants.ELEVATOR_MASTER_INVERSION_;
+    elevator_config_.MotorOutput.Inverted = ElevatorConstants.ELEVATOR_MASTER_INVERSION_;
     elevator_master_.getConfigurator().apply(elevator_config_);
-    elevator_config_.MotorOutput.Inverted = Constants.ElevatorConstants.ELEVATOR_FOLLOWER_INVERSION;
+    elevator_config_.MotorOutput.Inverted = ElevatorConstants.ELEVATOR_FOLLOWER_INVERSION;
     elevator_follower_.getConfigurator().apply(elevator_config_);
 
     elevator_request_ = new MotionMagicExpoVoltage(0);
@@ -105,20 +105,20 @@ public class Elevator extends Subsystem {
     // Arm stuff
     arm_config_ = new TalonFXConfiguration();
 
-    arm_config_.Feedback.RotorToSensorRatio = Constants.ElevatorConstants.ROTOR_TO_CENSOR_RATIO;
-    arm_config_.Feedback.FeedbackRemoteSensorID = Constants.ElevatorConstants.ARM_ENCODER_ID;
+    arm_config_.Feedback.RotorToSensorRatio = ElevatorConstants.ROTOR_TO_CENSOR_RATIO;
+    arm_config_.Feedback.FeedbackRemoteSensorID = ElevatorConstants.ARM_ENCODER_ID;
     arm_config_.Feedback.SensorToMechanismRatio =
-        Constants.ElevatorConstants.ARM_SENSOR_TO_MECHANISM_RATIO;
-    arm_config_.Slot0 = Constants.ElevatorConstants.ARM_GAINS;
+        ElevatorConstants.ARM_SENSOR_TO_MECHANISM_RATIO;
+    arm_config_.Slot0 = ElevatorConstants.ARM_GAINS;
     arm_config_.MotionMagic.MotionMagicCruiseVelocity =
-        Constants.ElevatorConstants.ARM_CRUISE_VELOCITY;
-    arm_config_.MotionMagic.MotionMagicAcceleration = Constants.ElevatorConstants.ARM_ACCELERATION;
-    arm_config_.MotionMagic.MotionMagicExpo_kV = Constants.ElevatorConstants.ARM_EXPO_KV;
-    arm_config_.MotionMagic.MotionMagicExpo_kA = Constants.ElevatorConstants.ARM_EXPO_KA;
+        ElevatorConstants.ARM_CRUISE_VELOCITY;
+    arm_config_.MotionMagic.MotionMagicAcceleration = ElevatorConstants.ARM_ACCELERATION;
+    arm_config_.MotionMagic.MotionMagicExpo_kV = ElevatorConstants.ARM_EXPO_KV;
+    arm_config_.MotionMagic.MotionMagicExpo_kA = ElevatorConstants.ARM_EXPO_KA;
     arm_config_.MotorOutput.NeutralMode = NeutralModeValue.Brake;
     arm_config_.SoftwareLimitSwitch.ForwardSoftLimitEnable = true;
     arm_config_.SoftwareLimitSwitch.ForwardSoftLimitThreshold =
-        Constants.ElevatorConstants.ARM_LOWER_LIMIT;
+        ElevatorConstants.ARM_LOWER_LIMIT;
 
     arm_motor_.getConfigurator().apply(arm_config_);
   }
@@ -211,7 +211,7 @@ public class Elevator extends Subsystem {
     return Util.epislonEquals(
         io_.current_arm_angle,
         io_.target_arm_angle,
-        Constants.ElevatorConstants.ARM_TARGET_THRESHOLD);
+        ElevatorConstants.ARM_TARGET_THRESHOLD);
   }
 
   /**
@@ -221,7 +221,7 @@ public class Elevator extends Subsystem {
     return Util.epislonEquals(
         io_.current_elevator_height,
         io_.target_elevator_height,
-        Constants.ElevatorConstants.ELEVATOR_TARGET_THRESHOLD);
+        ElevatorConstants.ELEVATOR_TARGET_THRESHOLD);
   }
 
   /**
@@ -242,7 +242,7 @@ public class Elevator extends Subsystem {
    * @return If the elevator is within threshold of the zero pose
    */
   public boolean isElevatorNearLimitSwitch() {
-    return io_.current_elevator_height <= Constants.ElevatorConstants.ELEVATOR_ZERO_THRESHOLD;
+    return io_.current_elevator_height <= ElevatorConstants.ELEVATOR_ZERO_THRESHOLD;
   }
 
   /** Reset the elevator pose to zero */
@@ -253,7 +253,7 @@ public class Elevator extends Subsystem {
 
   /** Reset the arm pose to home */
   public void armPoseReset() {
-    arm_motor_.setPosition(Constants.ElevatorConstants.ARM_HOME_POSITION);
+    arm_motor_.setPosition(ElevatorConstants.ARM_HOME_POSITION);
   }
 
   /** Reset the elevator position to zero and the arm to home */

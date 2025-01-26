@@ -14,11 +14,10 @@ import com.ctre.phoenix6.controls.PositionVoltage;
 import com.ctre.phoenix6.controls.VoltageOut;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.NeutralModeValue;
-
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import frc.lib.subsystem.Subsystem;
-import frc.robot.Constants;
+import frc.mw_lib.subsystem.Subsystem;
+import frc.robot.Constants.ClawConstants;
 import monologue.Annotations.Log;
 import monologue.Logged;
 
@@ -56,8 +55,8 @@ public class Claw extends Subsystem {
     // Create io object first in subsystem configuration
     io_ = new ClawPeriodicIo();
 
-    clamp_motor_ = new TalonFX(Constants.ClawConstants.CLAMP_MOTOR_ID);
-    wheel_motor_ = new TalonFX(Constants.ClawConstants.WHEEL_MOTOR_ID);
+    clamp_motor_ = new TalonFX(ClawConstants.CLAMP_MOTOR_ID);
+    wheel_motor_ = new TalonFX(ClawConstants.WHEEL_MOTOR_ID);
     voltage_clamp_request_ = new VoltageOut(0);
     position_clamp_request_ = new PositionVoltage(0).withSlot(0);
     current_clamp_request_ = voltage_clamp_request_;
@@ -67,11 +66,12 @@ public class Claw extends Subsystem {
     wheel_config_.MotorOutput.NeutralMode = NeutralModeValue.Brake;
 
     clamp_config_.MotorOutput.NeutralMode = NeutralModeValue.Brake;
-    clamp_config_.CurrentLimits.SupplyCurrentLimit = Constants.ClawConstants.CLAMP_CURRENT_LIMIT;
+    clamp_config_.CurrentLimits.SupplyCurrentLimit = ClawConstants.CLAMP_CURRENT_LIMIT;
     clamp_config_.CurrentLimits.StatorCurrentLimitEnable = true;
-    clamp_config_.Feedback.SensorToMechanismRatio = Constants.ClawConstants.CLAMP_SENSOR_TO_MECHANISM_RATION;
-    clamp_config_.Feedback.FeedbackRotorOffset = Constants.ClawConstants.CLAMP_ZERO_OFFSET;
-    clamp_config_.Slot0 = Constants.ClawConstants.CLAMP_GAINS;
+    clamp_config_.Feedback.SensorToMechanismRatio =
+        ClawConstants.CLAMP_SENSOR_TO_MECHANISM_RATION;
+    clamp_config_.Feedback.FeedbackRotorOffset = ClawConstants.CLAMP_ZERO_OFFSET;
+    clamp_config_.Slot0 = ClawConstants.CLAMP_GAINS;
 
     clamp_motor_.getConfigurator().apply(clamp_config_);
     wheel_motor_.getConfigurator().apply(wheel_config_);
@@ -81,21 +81,15 @@ public class Claw extends Subsystem {
   }
 
   /**
-   * This function should be logic and code to fully reset your subsystem. This is
-   * called during
-   * initialization, and should handle I/O configuration and initializing data
-   * members.
+   * This function should be logic and code to fully reset your subsystem. This is called during
+   * initialization, and should handle I/O configuration and initializing data members.
    */
   @Override
-  public void reset() {
-
-  }
+  public void reset() {}
 
   /**
-   * Inside this function, all of the SENSORS should be read into variables stored
-   * in the PeriodicIO
-   * class defined below. There should be no calls to output to actuators, or any
-   * logic within this
+   * Inside this function, all of the SENSORS should be read into variables stored in the PeriodicIO
+   * class defined below. There should be no calls to output to actuators, or any logic within this
    * function.
    */
   @Override
@@ -105,52 +99,53 @@ public class Claw extends Subsystem {
   }
 
   /**
-   * Inside this function, all of the LOGIC should compute updates to output
-   * variables in the
-   * PeriodicIO class defined below. There should be no calls to read from sensors
-   * or write to
+   * Inside this function, all of the LOGIC should compute updates to output variables in the
+   * PeriodicIO class defined below. There should be no calls to read from sensors or write to
    * actuators in this function.
    */
   @Override
   public void updateLogic(double timestamp) {
     switch (io_.claw_mode_) {
       case CLOSED:
-        io_.target_clamp_angle = Constants.ClawConstants.CLOSED_ANGLE;
-        current_clamp_request_ = voltage_clamp_request_.withOutput(Constants.ClawConstants.CLOSED_VOLTS);
+        io_.target_clamp_angle = ClawConstants.CLOSED_ANGLE;
+        current_clamp_request_ =
+            voltage_clamp_request_.withOutput(ClawConstants.CLOSED_VOLTS);
         io_.wheel_output_ = 0;
         break;
       case SHOOT:
-        io_.target_clamp_angle = Constants.ClawConstants.CLOSED_ANGLE;
-        current_clamp_request_ = voltage_clamp_request_.withOutput(Constants.ClawConstants.CLOSED_VOLTS);
-        io_.wheel_output_ = Constants.ClawConstants.WHEEL_SHOOT_SPEED;
+        io_.target_clamp_angle = ClawConstants.CLOSED_ANGLE;
+        current_clamp_request_ =
+            voltage_clamp_request_.withOutput(ClawConstants.CLOSED_VOLTS);
+        io_.wheel_output_ = ClawConstants.WHEEL_SHOOT_SPEED;
         break;
       case OPEN:
-        io_.target_clamp_angle = Constants.ClawConstants.OPEN_ANGLE;
-        current_clamp_request_ = position_clamp_request_.withPosition(Units.radiansToRotations(io_.target_clamp_angle));
+        io_.target_clamp_angle = ClawConstants.OPEN_ANGLE;
+        current_clamp_request_ =
+            position_clamp_request_.withPosition(Units.radiansToRotations(io_.target_clamp_angle));
         io_.wheel_output_ = 0;
         break;
       case LOAD:
-        io_.target_clamp_angle = Constants.ClawConstants.LOAD_ANGLE;
-        current_clamp_request_ = position_clamp_request_.withPosition(Units.radiansToRotations(io_.target_clamp_angle));
-        io_.wheel_output_ = Constants.ClawConstants.WHEEL_LOAD_SPEED;
+        io_.target_clamp_angle = ClawConstants.LOAD_ANGLE;
+        current_clamp_request_ =
+            position_clamp_request_.withPosition(Units.radiansToRotations(io_.target_clamp_angle));
+        io_.wheel_output_ = ClawConstants.WHEEL_LOAD_SPEED;
         break;
       case IDLE:
         current_clamp_request_ = voltage_clamp_request_.withOutput(0);
         io_.wheel_output_ = 0;
         break;
       default:
-        io_.target_clamp_angle = Constants.ClawConstants.CLOSED_ANGLE;
-        current_clamp_request_ = voltage_clamp_request_.withOutput(Constants.ClawConstants.CLOSED_VOLTS);
+        io_.target_clamp_angle = ClawConstants.CLOSED_ANGLE;
+        current_clamp_request_ =
+            voltage_clamp_request_.withOutput(ClawConstants.CLOSED_VOLTS);
         io_.wheel_output_ = 0;
         break;
     }
   }
 
   /**
-   * Inside this function actuator OUTPUTS should be updated from data contained
-   * in the PeriodicIO
-   * class defined below. There should be little to no logic contained within this
-   * function, and no
+   * Inside this function actuator OUTPUTS should be updated from data contained in the PeriodicIO
+   * class defined below. There should be little to no logic contained within this function, and no
    * sensors should be read.
    */
   @Override
@@ -160,12 +155,9 @@ public class Claw extends Subsystem {
   }
 
   /**
-   * Inside this function telemetry should be output to smartdashboard. The data
-   * should be collected
-   * out of the PeriodicIO class instance defined below. There should be no sensor
-   * information read
-   * in this function nor any outputs made to actuators within this function. Only
-   * publish to
+   * Inside this function telemetry should be output to smartdashboard. The data should be collected
+   * out of the PeriodicIO class instance defined below. There should be no sensor information read
+   * in this function nor any outputs made to actuators within this function. Only publish to
    * smartdashboard here.
    */
   @Override
@@ -186,7 +178,7 @@ public class Claw extends Subsystem {
 
   /**
    * Set the mode of the claw
-   * 
+   *
    * @param claw_mode the new mode to be set
    */
   public void setClawMode(ClawMode claw_mode) {
@@ -201,16 +193,11 @@ public class Claw extends Subsystem {
   }
 
   public class ClawPeriodicIo implements Logged {
-    @Log.File
-    public ClawMode claw_mode_ = ClawMode.IDLE;
-    @Log.File
-    public double wheel_output_ = 0;
-    @Log.File
-    public double clamp_current_ = 0;
-    @Log.File
-    public double current_clamp_angle_ = 0.0;
-    @Log.File
-    public double target_clamp_angle = 0.0;
+    @Log.File public ClawMode claw_mode_ = ClawMode.IDLE;
+    @Log.File public double wheel_output_ = 0;
+    @Log.File public double clamp_current_ = 0;
+    @Log.File public double current_clamp_angle_ = 0.0;
+    @Log.File public double target_clamp_angle = 0.0;
   }
 
   @Override

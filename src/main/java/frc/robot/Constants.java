@@ -76,13 +76,9 @@ public final class Constants {
         LOADER.getBoolValue("drive", "com", "STEER_MOTOR_REVERSED");
     public static final double MAX_DRIVE_SPEED =
         LOADER.getDoubleValue("drive", "com", "MAX_DRIVE_SPEED");
-
-    private static final double CHASSIS_WIDTH = 15.0;
-    private static final double CHASSIS_LENGTH = 15.0;
-
-    public static final double MAX_DRIVE_SPEED = 5; // 6 meters per second desired top speed
     public static final double MAX_DRIVE_ANGULAR_RATE =
         LOADER.getDoubleValue("drive", "com", "MAX_DRIVE_ANGULAR_RATE");
+
     public static final double CRAWL_DRIVE_SPEED = 0.4;
     public static final double MAX_TARGET_SPEED = 1;
 
@@ -153,11 +149,10 @@ public final class Constants {
     public static final double AMP_SPIKE_THRESHHOLD = 25;
   }
 
-
   public static final class ClawConstants {
     public static final int CLAMP_MOTOR_ID = 11;
     public static final int WHEEL_MOTOR_ID = 12;
-    public static final double CLOSED_ANGLE = -0.02; 
+    public static final double CLOSED_ANGLE = -0.02;
     public static final double OPEN_ANGLE = 0.72622613981267;
     public static final double LOAD_ANGLE = 0.30;
     public static final double WHEEL_SHOOT_SPEED = 0.30;
@@ -176,6 +171,7 @@ public final class Constants {
             .withKV(0.0)
             .withKA(0.0)
             .withKG(0.0);
+  }
 
   public class ClimberConstants {
     public static final int CLIMBER_ID = 35;
@@ -183,6 +179,7 @@ public final class Constants {
     public static final double RETRACTED_ROTATIONS = 30;
     public static final Slot0Configs CLIMBER_GAINS =
         new Slot0Configs().withKP(0.0).withKD(0.0).withKS(0.0).withKV(0.0).withKA(0.0);
+  }
 
   public class ElevatorConstants {
     // Elevator Constants
