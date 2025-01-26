@@ -4,7 +4,7 @@
  * For support and suggestions contact support@ctr-electronics.com or file
  * an issue tracker at https://github.com/CrossTheRoadElec/Phoenix-Releases
  */
-package frc.lib.swerve.utility;
+package frc.mw_lib.swerve.utility;
 
 import edu.wpi.first.math.MathSharedStore;
 import edu.wpi.first.math.MathUsageId;

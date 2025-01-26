@@ -4,7 +4,7 @@
  * For support and suggestions contact support@ctr-electronics.com or file
  * an issue tracker at https://github.com/CrossTheRoadElec/Phoenix-Releases
  */
-package frc.lib.swerve;
+package frc.mw_lib.swerve;
 
 import static edu.wpi.first.units.Units.Rotation;
 import static edu.wpi.first.units.Units.RotationsPerSecond;
