@@ -113,12 +113,12 @@ public class SwerveDrivetrain extends Subsystem {
   private Field2d field_ = new Field2d();
 
   // PID Controllers
-  private final PIDController xTrajController;
-  private final PIDController yTrajController;
-  private final PIDController trajHeadingController;
-  private final PIDController xPoseController;
-  private final PIDController yPoseController;
-  private final PIDController poseHeadingController;
+  private final PIDController x_traj_controller_;
+  private final PIDController y_traj_controller_;
+  private final PIDController traj_heading_controller_;
+  private final PIDController x_pose_controller_;
+  private final PIDController y_pose_controller_;
+  private final PIDController pose_heading_controller_;
 
   /**
    * Constructs a SwerveDrivetrain using the specified constants.
@@ -142,12 +142,12 @@ public class SwerveDrivetrain extends Subsystem {
     pigeon_imu.optimizeBusUtilization();
 
     // PID Controllers
-    xTrajController = new PIDController(0.0, 0, 0.000);
-    yTrajController = new PIDController(0.0, 0, 0.000);
-    trajHeadingController = new PIDController(0.0, 0, 0.00);
-    xPoseController = new PIDController(0.0, 0, 0.000);
-    yPoseController = new PIDController(0.0, 0, 0.000);
-    poseHeadingController = new PIDController(0.0, 0, 0.00);
+    x_traj_controller_ = new PIDController(0.0, 0, 0.000);
+    y_traj_controller_ = new PIDController(0.0, 0, 0.000);
+    traj_heading_controller_ = new PIDController(0.0, 0, 0.00);
+    x_pose_controller_ = new PIDController(0.0, 0, 0.000);
+    y_pose_controller_ = new PIDController(0.0, 0, 0.000);
+    pose_heading_controller_ = new PIDController(0.0, 0, 0.00);
 
     // Begin configuring swerve modules
     module_locations = new Translation2d[modules.length];
@@ -451,11 +451,11 @@ public class SwerveDrivetrain extends Subsystem {
     Pose2d pose = PoseEstimator.getInstance().getFieldPose();
     this.setControl(
         auto_request
-            .withVelocityX(sample.vx + xTrajController.calculate(pose.getX(), sample.x))
-            .withVelocityY(sample.vy + yTrajController.calculate(pose.getY(), sample.y))
+            .withVelocityX(sample.vx + x_traj_controller_.calculate(pose.getX(), sample.x))
+            .withVelocityY(sample.vy + y_traj_controller_.calculate(pose.getY(), sample.y))
             .withRotationalRate(
                 (sample.omega)
-                    + trajHeadingController.calculate(
+                    + traj_heading_controller_.calculate(
                         pose.getRotation().getRadians(), sample.heading)));
   }
 
@@ -466,10 +466,10 @@ public class SwerveDrivetrain extends Subsystem {
     Pose2d pose = PoseEstimator.getInstance().getFieldPose();
     this.setControl(
         auto_request
-            .withVelocityX(xPoseController.calculate(pose.getX(), targetPose.getX()) * io_.tractor_beam_scaling_factor_)
-            .withVelocityY(yPoseController.calculate(pose.getY(), targetPose.getY()) * io_.tractor_beam_scaling_factor_)
+            .withVelocityX(x_pose_controller_.calculate(pose.getX(), targetPose.getX()) * io_.tractor_beam_scaling_factor_)
+            .withVelocityY(y_pose_controller_.calculate(pose.getY(), targetPose.getY()) * io_.tractor_beam_scaling_factor_)
             .withRotationalRate(
-                poseHeadingController.calculate(
+                pose_heading_controller_.calculate(
                     pose.getRotation().getRadians(), targetPose.getRotation().getRadians()) * io_.tractor_beam_scaling_factor_));
   }
 
