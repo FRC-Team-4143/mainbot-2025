@@ -460,14 +460,17 @@ public class SwerveDrivetrain extends Subsystem {
   }
 
   public void tractorBeam(Pose2d targetPose) {
+    io_.tractor_beam_scaling_factor_ = Math.sqrt(
+      Math.pow(io_.driver_joystick_leftX_, 2) + Math.pow(io_.driver_joystick_leftY_, 2) + Math.pow(io_.driver_joystick_rightX_, 2));
+
     Pose2d pose = PoseEstimator.getInstance().getFieldPose();
     this.setControl(
         auto_request
-            .withVelocityX(xPoseController.calculate(pose.getX(), targetPose.getX()))
-            .withVelocityY(yPoseController.calculate(pose.getY(), targetPose.getY()))
+            .withVelocityX(xPoseController.calculate(pose.getX(), targetPose.getX()) * io_.tractor_beam_scaling_factor_)
+            .withVelocityY(yPoseController.calculate(pose.getY(), targetPose.getY()) * io_.tractor_beam_scaling_factor_)
             .withRotationalRate(
                 poseHeadingController.calculate(
-                    pose.getRotation().getRadians(), targetPose.getRotation().getRadians())));
+                    pose.getRotation().getRadians(), targetPose.getRotation().getRadians()) * io_.tractor_beam_scaling_factor_));
   }
 
   /**
@@ -490,6 +493,7 @@ public class SwerveDrivetrain extends Subsystem {
     @Log.File public Rotation2d drivers_station_perspective_ = new Rotation2d();
     @Log.File public double chassis_speed_magnitude_;
     @Log.File public boolean is_locked_with_gyro = false;
+    @Log.File public double tractor_beam_scaling_factor_ = 0.0;
   }
 
   @Override
