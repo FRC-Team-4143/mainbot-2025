@@ -10,7 +10,7 @@ import java.awt.geom.*;
  * This class models a region of the field. It is defined by its vertices and the transition points
  * to neighboring regions.
  */
-public class Region2d {
+public class PolygonRegion {
   private Path2D shape;
 
   /**
@@ -20,7 +20,7 @@ public class Region2d {
    * @param points the array of Translation2d that define the vertices of the region.
    * @param regionName the name of the region that is used for logging
    */
-  public Region2d(Translation2d[] points, String regionName) {
+  public PolygonRegion(Translation2d[] points, String regionName) {
     this.shape = new Path2D.Double(Path2D.WIND_EVEN_ODD, points.length);
     this.shape.moveTo(points[0].getX(), points[0].getY());
 
