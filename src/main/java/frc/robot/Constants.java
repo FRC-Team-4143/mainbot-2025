@@ -138,17 +138,6 @@ public final class Constants {
             LOADER.getBoolValue("drive", "br", "INVERT_DRIVE"));
   }
 
-  public static final class FeederConstants {
-    public static final int LEFT_FEEDER_MOTOR = 11;
-    public static final int RIGHT_FEEDER_MOTOR = 10;
-    public static final boolean LEFT_FEEDER_INVERTED = true;
-    public static final boolean RIGHT_FEEDER_INVERTED = false;
-    public static final double FEEDER_SPEED = 0.15;
-    public static final double SCORE_SPEED = 0.5;
-    public static final double IDLE_SPEED = 0;
-    public static final double AMP_SPIKE_THRESHHOLD = 25;
-  }
-
   public static final class ClawConstants {
     public static final int CLAMP_MOTOR_ID = 11;
     public static final int WHEEL_MOTOR_ID = 12;
@@ -198,6 +187,18 @@ public final class Constants {
     public static final double ELEVATOR_EXPO_KA = 0;
     public static final double ELEVATOR_ZERO_THRESHOLD = 0; // In m
     public static final double ROTOR_TO_CENSOR_RATIO = 1;
+    public static final double MIN_ELEVATOR_HEIGHT = Units.inchesToMeters(36.875);
+
+    public static final Slot0Configs ELEVATOR_GAINS =
+        new Slot0Configs()
+            .withKP(0.0)
+            .withKI(0.0) // <-DO NOT TOUCH!!!!!!!!!
+            .withKD(0.0)
+            .withKS(0.0)
+            .withKV(0.0)
+            .withKA(0.0)
+            .withKG(0.0)
+            .withGravityType(GravityTypeValue.Elevator_Static);
 
     // Arm Constants:
     public static final int ARM_MOTOR_ID = 23;
@@ -211,17 +212,7 @@ public final class Constants {
     public static final double ARM_EXPO_KV = 0;
     public static final double ARM_EXPO_KA = 0;
     public static final double ARM_LOWER_LIMIT = 0;
-
-    public static final Slot0Configs ELEVATOR_GAINS =
-        new Slot0Configs()
-            .withKP(0.0)
-            .withKI(0.0) // <-DO NOT TOUCH!!!!!!!!!
-            .withKD(0.0)
-            .withKS(0.0)
-            .withKV(0.0)
-            .withKA(0.0)
-            .withKG(0.0)
-            .withGravityType(GravityTypeValue.Elevator_Static);
+    public static final double MIN_ARM_LENGTH = Units.inchesToMeters(19.280);
 
     public static final Slot0Configs ARM_GAINS =
         new Slot0Configs()
