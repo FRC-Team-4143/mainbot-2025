@@ -17,7 +17,6 @@ public abstract class OI {
   static CommandXboxController driver_controller_ = new CommandXboxController(0);
 
   static SwerveDrivetrain swerve_drivetrain_ = SwerveDrivetrain.getInstance();
-  static CoralFunnel coral_funnel_ = CoralFunnel.getInstance();
   static Claw claw_ = Claw.getInstance();
 
   public static void configureBindings() {
