@@ -1,0 +1,31 @@
+
+
+public class ElevarKinematics{
+
+    double arm_length_ = 0; //fill in with a constant here
+
+    public ElevatorKinematics(){}
+
+    /**
+     * Calculates and returns the y position needed for the wanted y-postion
+     * MUST HAVE ANGLE SET CORRECT FOR HEIGHT TO BE ACCURATE
+     * 
+     * @param y the wanted y postion of the elevator
+     * 
+     * @param currentAngle the current angle of the piviot arm
+     * 
+     * @return the needed y for the wanted y postion of the elevator
+     */
+    public double PointByY(double y, double currentAngle){
+        return y - calYoffset(currentAngle);
+    }
+
+    public double calXOffset(double angle){
+        return arm_length_ * Math.cos(angle);
+    }
+
+
+    public double calYOffset(double angle){
+        return arm_length_ * Math.sin(angle);
+    }
+}
