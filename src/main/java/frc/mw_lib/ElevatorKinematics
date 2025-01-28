@@ -10,14 +10,14 @@ public class ElevarKinematics{
      * Calculates and returns the y position needed for the wanted y-postion
      * MUST HAVE ANGLE SET CORRECT FOR HEIGHT TO BE ACCURATE
      * 
-     * @param y the wanted y postion of the elevator
+     * @param y the wanted y postion of the pivot arm
      * 
-     * @param currentAngle the current angle of the piviot arm
+     * @param desiredAngle the current angle of the pivot arm
      * 
      * @return the needed y for the wanted y postion of the elevator
      */
-    public double PointByY(double y, double currentAngle){
-        return y - calYoffset(currentAngle);
+    public double desiredElevatorY(double y, double desiredAngle){
+        return y - calYoffset(desiredAngle);
     }
 
     public double calXOffset(double angle){
