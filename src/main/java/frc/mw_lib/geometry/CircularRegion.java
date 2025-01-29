@@ -8,6 +8,7 @@ import edu.wpi.first.networktables.StructArrayPublisher;
 
 /**
  * This class models a region of the field. It is defined by its center and radius
+ * Credit to frc-3061 for base code 
  */
 public class CircularRegion implements Region {
   private Translation2d center_;

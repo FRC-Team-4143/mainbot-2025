@@ -8,6 +8,7 @@ import java.awt.geom.*;
 
 /**
  * This class models a region of the field. It is defined by its vertices
+ * Credit to frc-3061 for base code
  */
 public class PolygonRegion implements Region {
   private Path2D shape;
