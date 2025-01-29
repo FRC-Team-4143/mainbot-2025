@@ -7,6 +7,7 @@ package frc.robot;
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.signals.GravityTypeValue;
 import com.ctre.phoenix6.signals.InvertedValue;
+import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.Preferences;
 import frc.mw_lib.swerve.SwerveModule.ClosedLoopOutputType;
@@ -136,6 +137,12 @@ public final class Constants {
 
     private static final double BR_X_POS_INCH = -CHASSIS_WIDTH / 2.;
     private static final double BR_Y_POS_INCH = -CHASSIS_LENGTH / 2;
+
+    // Tractor Beam
+    public static final PIDController TRAJECTORY_TRANSLATION = new PIDController(0.0, 0, 0.000);
+    public static final PIDController TRAJECTORY_HEADING = new PIDController(0.0, 0, 0.000);
+    public static final PIDController POSE_TRANSLATION = new PIDController(0.0, 0, 0.000);
+    public static final PIDController POSE_HEADING = new PIDController(0.0, 0, 0.000);
 
     public static final SwerveModuleConstants FL_MODULE_CONSTANTS =
         ConstantCreator.createModuleConstants(
