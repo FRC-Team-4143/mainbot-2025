@@ -7,7 +7,6 @@ package frc.robot;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.TimedRobot;
-import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.robot.subsystems.Claw;
 import frc.robot.subsystems.Claw.ClawMode;
@@ -16,15 +15,13 @@ import frc.robot.subsystems.SwerveDrivetrain;
 import frc.robot.subsystems.SwerveDrivetrain.DriveMode;
 
 public class Robot extends TimedRobot {
-  private Command m_autonomousCommand;
-
-  private RobotContainer m_robotContainer;
+  private RobotContainer robot_container_;
   static SwerveDrivetrain swerve_drivetrain_ = SwerveDrivetrain.getInstance();
   static PoseEstimator pose_estimator_ = PoseEstimator.getInstance();
 
   @Override
   public void robotInit() {
-    m_robotContainer = RobotContainer.getInstance();
+    robot_container_ = RobotContainer.getInstance();
     AutoManager.getInstance();
     OI.configureBindings();
   }
@@ -35,7 +32,7 @@ public class Robot extends TimedRobot {
     CommandScheduler.getInstance().run();
 
     // tell the subsystems to output telemetry to smartdashboard
-    m_robotContainer.outputTelemetry();
+    robot_container_.outputTelemetry();
   }
 
   @Override
