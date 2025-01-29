@@ -7,6 +7,7 @@ package frc.robot;
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.signals.GravityTypeValue;
 import com.ctre.phoenix6.signals.InvertedValue;
+import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.util.Units;
 import frc.mw_lib.swerve.SwerveModule.ClosedLoopOutputType;
 import frc.mw_lib.swerve.SwerveModuleConstants;
@@ -136,6 +137,12 @@ public final class Constants {
             Units.inchesToMeters(LOADER.getDoubleValue("drive", "br", "X_POSITION")),
             Units.inchesToMeters(LOADER.getDoubleValue("drive", "br", "Y_POSITION")),
             LOADER.getBoolValue("drive", "br", "INVERT_DRIVE"));
+    
+    // Drivetrain PID Controller
+    public static final PIDController TRAJECTORY_TRANSLATION = new PIDController(0.0, 0, 0.000);
+    public static final PIDController TRAJECTORY_HEADING = new PIDController(0.0, 0, 0.000);
+    public static final PIDController POSE_TRANSLATION = new PIDController(0.0, 0, 0.000);
+    public static final PIDController POSE_HEADING = new PIDController(0.0, 0, 0.000);
   }
 
   public static final class FeederConstants {
