@@ -184,17 +184,21 @@ public final class Constants {
     public static final int ELEVATOR_LIMIT_SWITCH_PORT_NUMBER = 4;
     public static final double ELEVATOR_TARGET_THRESHOLD = 0.25; // In m
     public static final double ELEVATOR_MAX_HEIGHT = 0.0; // In m
-    public static final InvertedValue ELEVATOR_MASTER_INVERSION_ = InvertedValue.Clockwise_Positive;
-    public static final InvertedValue ELEVATOR_FOLLOWER_INVERSION =
+    public static final InvertedValue ELEVATOR_MASTER_INVERSION_ =
         InvertedValue.CounterClockwise_Positive;
-    public static final double ELEVATOR_SENSOR_TO_MECHANISM_RATIO = 0;
+    public static final InvertedValue ELEVATOR_FOLLOWER_INVERSION =
+        InvertedValue.Clockwise_Positive;
     public static final double ELEVATOR_CRUISE_VELOCITY = 0;
     public static final double ELEVATOR_ACCELERATION = 0;
     public static final double ELEVATOR_EXPO_KV = 0;
     public static final double ELEVATOR_EXPO_KA = 0;
     public static final double ELEVATOR_ZERO_THRESHOLD = 0; // In m
     public static final double ROTOR_TO_CENSOR_RATIO = 1;
-    public static final double MIN_ELEVATOR_HEIGHT = Units.inchesToMeters(36.875);
+    public static final double MIN_ELEVATOR_HEIGHT = Units.inchesToMeters(23.75);
+    public static final double ELEVATOR_ROTATIONS_TO_METERS =
+        Units.inchesToMeters(1.751 * Math.PI)
+            / 4
+            * 2; // Units.inchesToMeters(Sprocket Circumference * Math.PI) / gearbox ratio * rigging
 
     public static final Slot0Configs ELEVATOR_GAINS =
         new Slot0Configs()
@@ -220,7 +224,10 @@ public final class Constants {
     public static final double ARM_EXPO_KA = 0;
     public static final double ARM_LOWER_LIMIT = 0;
     public static final double MIN_ARM_LENGTH = Units.inchesToMeters(19.280);
-
+    public static final double ARM_ROTATIONS_TO_RADIANS =
+        Units.rotationsToRadians(
+            (16 / 64) / 20); // Units.rotationsToRadians((shaft sprocket / pivot sprocket) / gearbox
+    // ratio)
     public static final Slot0Configs ARM_GAINS =
         new Slot0Configs()
             .withKP(0.0)

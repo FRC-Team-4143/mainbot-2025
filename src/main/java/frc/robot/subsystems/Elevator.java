@@ -1,6 +1,5 @@
 package frc.robot.subsystems;
 
-import static edu.wpi.first.units.Units.Radians;
 import static edu.wpi.first.units.Units.Rotations;
 
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
@@ -86,8 +85,6 @@ public class Elevator extends Subsystem {
 
     // Elevator Config
     elevator_config_ = new TalonFXConfiguration();
-    elevator_config_.Feedback.SensorToMechanismRatio =
-        ElevatorConstants.ELEVATOR_SENSOR_TO_MECHANISM_RATIO;
     elevator_config_.Slot0 = ElevatorConstants.ELEVATOR_GAINS;
     elevator_config_.MotionMagic.MotionMagicCruiseVelocity =
         ElevatorConstants.ELEVATOR_CRUISE_VELOCITY;
@@ -130,12 +127,18 @@ public class Elevator extends Subsystem {
     // Mechanism Setup
     system_mech_ = new Mechanism2d(0, 0);
     mech_root_ = system_mech_.getRoot("Base", 0, 0);
-    elevator_mech_.append(
-        new MechanismLigament2d(
-            "Elevator", ElevatorConstants.MIN_ELEVATOR_HEIGHT, 0, 6, new Color8Bit(Color.kPurple)));
-    arm_mech_.append(
-        new MechanismLigament2d(
-            "Arm", ElevatorConstants.MIN_ARM_LENGTH, 0, 6, new Color8Bit(Color.kOrange)));
+    elevator_mech_ =
+        mech_root_.append(
+            new MechanismLigament2d(
+                "Elevator",
+                ElevatorConstants.MIN_ELEVATOR_HEIGHT,
+                90,
+                6,
+                new Color8Bit(Color.kPurple)));
+    arm_mech_ =
+        elevator_mech_.append(
+            new MechanismLigament2d(
+                "Arm", ElevatorConstants.MIN_ARM_LENGTH, 0, 6, new Color8Bit(Color.kOrange)));
   }
 
   /** Called to reset and configure the subsystem */
@@ -143,15 +146,19 @@ public class Elevator extends Subsystem {
 
   /** Reads all sensors and stores periodic data */
   public void readPeriodicInputs(double timestamp) {
-    io_.elevator_follower_position = elevator_follower_.getPosition().getValue().in(Rotations);
-    io_.elevator_master_position = elevator_master_.getPosition().getValue().in(Rotations);
-    io_.current_arm_angle = arm_encoder_.getAbsolutePosition().getValue().in(Radians);
+    io_.elevator_follower_rotations_ = elevator_follower_.getPosition().getValue().in(Rotations);
+    io_.elevator_master_rotations_ = elevator_master_.getPosition().getValue().in(Rotations);
+    io_.current_elevator_height =
+        ((io_.elevator_master_rotations_ + io_.elevator_follower_rotations_) / 2)
+            * ElevatorConstants.ELEVATOR_ROTATIONS_TO_METERS;
+    //  io_.current_arm_angle = arm_encoder_.getAbsolutePosition().getValue().in(Radians);
+    io_.current_arm_angle =
+        arm_motor_.getPosition().getValue().in(Rotations)
+            * ElevatorConstants.ARM_ROTATIONS_TO_RADIANS;
   }
 
   /** Computes updated outputs for the actuators */
   public void updateLogic(double timestamp) {
-    io_.elevator_average_position =
-        (io_.elevator_master_position + io_.elevator_follower_position) / 2;
 
     switch (io_.current_target_config) {
       case L1:
@@ -208,11 +215,12 @@ public class Elevator extends Subsystem {
 
   /** Writes the periodic outputs to actuators (motors and etc...) */
   public void writePeriodicOutputs(double timestamp) {
-    elevator_master_.setControl(
-        elevator_request_
-            .withPosition(io_.target_elevator_height)
-            .withLimitReverseMotion(isElevatorAtMinimum()));
-    arm_motor_.setControl(arm_request_.withPosition(io_.target_arm_angle));
+    // elevator_master_.setControl(
+    // elevator_request_
+    //
+    // .withPosition(io_.target_elevator_height/ElevatorConstants.ELEVATOR_ROTATIONS_TO_METERS)
+    // .withLimitReverseMotion(isElevatorAtMinimum()));
+    // arm_motor_.setControl(arm_request_.withPosition(io_.target_arm_angle));
     elevator_follower_.setControl(new Follower(elevator_master_.getDeviceID(), true));
   }
 
@@ -308,8 +316,8 @@ public class Elevator extends Subsystem {
     @Log.File public double target_elevator_height = 0;
     @Log.File public double current_arm_angle = 0;
     @Log.File public double target_arm_angle = 0;
-    @Log.File public double elevator_master_position = 0;
-    @Log.File public double elevator_follower_position = 0;
+    @Log.File public double elevator_master_rotations_ = 0;
+    @Log.File public double elevator_follower_rotations_ = 0;
     @Log.File public double elevator_average_position = 0;
   }
 
