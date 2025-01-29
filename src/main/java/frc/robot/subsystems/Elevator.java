@@ -3,17 +3,13 @@ package frc.robot.subsystems;
 import static edu.wpi.first.units.Units.Radians;
 import static edu.wpi.first.units.Units.Rotations;
 
-import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.Follower;
 import com.ctre.phoenix6.controls.MotionMagicExpoVoltage;
 import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.NeutralModeValue;
-import edu.wpi.first.util.sendable.Sendable;
-import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.wpilibj.DigitalInput;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.mw_lib.subsystem.Subsystem;
@@ -64,19 +60,6 @@ public class Elevator extends Subsystem {
   }
 
   private ElevatorPeriodicIo io_;
-
-  // Singleton pattern
-  private static Elevator example_instance = null;
-
-  // C
-  public static Elevator getInstance() {
-    if (example_instance == null) {
-      example_instance = new Elevator();
-    }
-    return example_instance;
-  }
-
-  double testNum = 0.0;
 
   // Constructor
   public Elevator() {
@@ -214,33 +197,7 @@ public class Elevator extends Subsystem {
   }
 
   /** Outputs all logging information to the SmartDashboard */
-  public void outputTelemetry(double timestamp) {
-    SmartDashboard.putData(
-        "Elevator PID",
-        new Sendable() {
-          @Override
-          public void initSendable(SendableBuilder builder) {
-            builder.setSmartDashboardType("Elevator ");
-
-            builder.addDoubleProperty("Example P: ", () -> getTestNum(), (num) -> updateTestNum(num));
-            builder.addDoubleProperty("Example I: ", () -> 45.0, null);
-            builder.addDoubleProperty("Example D: ", () -> 35.0, null);
-          }
-        });
-
-    SmartDashboard.putData(
-        "Elevator SVA",
-        new Sendable() {
-          @Override
-          public void initSendable(SendableBuilder builder) {
-            builder.setSmartDashboardType("Elevator Type");
-
-            builder.addDoubleProperty("Example S: ", () -> 55.0, null);
-            builder.addDoubleProperty("Example V: ", () -> 45.0, null);
-            builder.addDoubleProperty("Example A: ", () -> 35.0, null);
-          }
-        });
-  }
+  public void outputTelemetry(double timestamp) {}
 
   /**
    * @return If the arm is within the threshold of its target
@@ -329,25 +286,5 @@ public class Elevator extends Subsystem {
   /** Get logging object from subsystem */
   public Logged getLoggingObject() {
     return io_;
-  }
-
-  public void updateElevatorConfig(Slot0Configs newConfig) {
-    elevator_master_.getConfigurator().apply(newConfig);
-  }
-
-  public void updateElevatorFollowerConfig(Slot0Configs newConfig) {
-    elevator_follower_.getConfigurator().apply(newConfig);
-  }
-
-  public void updateArmConfig(Slot0Configs newConfig) {
-    arm_motor_.getConfigurator().apply(newConfig);
-  }
-
-  public double getTestNum() {
-    return testNum;
-  }
-
-  public void updateTestNum(double num) {
-    testNum = num;
   }
 }
