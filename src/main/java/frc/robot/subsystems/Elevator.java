@@ -7,8 +7,8 @@ import com.ctre.phoenix6.controls.Follower;
 import com.ctre.phoenix6.controls.MotionMagicExpoVoltage;
 import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.hardware.TalonFX;
+import com.ctre.phoenix6.signals.FeedbackSensorSourceValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
-import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.smartdashboard.Mechanism2d;
 import edu.wpi.first.wpilibj.smartdashboard.MechanismLigament2d;
@@ -52,6 +52,7 @@ public class Elevator extends Subsystem {
   Mechanism2d system_mech_;
   MechanismRoot2d mech_root_;
   MechanismLigament2d elevator_mech_;
+  MechanismLigament2d elevator_max_mech_;
   MechanismLigament2d arm_mech_;
 
   // Enums for Elevator/Arm
@@ -78,9 +79,9 @@ public class Elevator extends Subsystem {
 
     // Hardware
     elevator_limit_switch_ = new DigitalInput(ElevatorConstants.ELEVATOR_LIMIT_SWITCH_PORT_NUMBER);
-    elevator_master_ = new TalonFX(ElevatorConstants.ELEVATOR_MASTER_ID);
-    elevator_follower_ = new TalonFX(ElevatorConstants.ELEVATOR_FOLLOWER_ID);
-    arm_motor_ = new TalonFX(ElevatorConstants.ARM_MOTOR_ID);
+    elevator_master_ = new TalonFX(ElevatorConstants.ELEVATOR_MASTER_ID, "CANivore");
+    elevator_follower_ = new TalonFX(ElevatorConstants.ELEVATOR_FOLLOWER_ID, "CANivore");
+    arm_motor_ = new TalonFX(ElevatorConstants.ARM_MOTOR_ID, "CANivore");
     arm_encoder_ = new CANcoder(ElevatorConstants.ARM_ENCODER_ID);
 
     // Elevator Config
@@ -92,7 +93,7 @@ public class Elevator extends Subsystem {
     elevator_config_.MotionMagic.MotionMagicExpo_kV = ElevatorConstants.ELEVATOR_EXPO_KV;
     elevator_config_.MotionMagic.MotionMagicExpo_kA = ElevatorConstants.ELEVATOR_EXPO_KA;
     elevator_config_.MotorOutput.NeutralMode = NeutralModeValue.Brake;
-    elevator_config_.SoftwareLimitSwitch.ForwardSoftLimitEnable = true;
+    elevator_config_.SoftwareLimitSwitch.ForwardSoftLimitEnable = false; // TODO: set back to true
     elevator_config_.SoftwareLimitSwitch.ForwardSoftLimitThreshold =
         ElevatorConstants.ELEVATOR_MAX_HEIGHT;
     elevator_config_.MotorOutput.Inverted = ElevatorConstants.ELEVATOR_MASTER_INVERSION_;
@@ -102,16 +103,15 @@ public class Elevator extends Subsystem {
 
     // Arm Configuration
     arm_config_ = new TalonFXConfiguration();
-    arm_config_.Feedback.RotorToSensorRatio = ElevatorConstants.ROTOR_TO_CENSOR_RATIO;
-    arm_config_.Feedback.FeedbackRemoteSensorID = ElevatorConstants.ARM_ENCODER_ID;
-    arm_config_.Feedback.SensorToMechanismRatio = ElevatorConstants.ARM_SENSOR_TO_MECHANISM_RATIO;
+    // arm_config_.Feedback.FeedbackRemoteSensorID = ElevatorConstants.ARM_ENCODER_ID;
+    arm_config_.Feedback.FeedbackSensorSource = FeedbackSensorSourceValue.RotorSensor;
     arm_config_.Slot0 = ElevatorConstants.ARM_GAINS;
     arm_config_.MotionMagic.MotionMagicCruiseVelocity = ElevatorConstants.ARM_CRUISE_VELOCITY;
     arm_config_.MotionMagic.MotionMagicAcceleration = ElevatorConstants.ARM_ACCELERATION;
     arm_config_.MotionMagic.MotionMagicExpo_kV = ElevatorConstants.ARM_EXPO_KV;
     arm_config_.MotionMagic.MotionMagicExpo_kA = ElevatorConstants.ARM_EXPO_KA;
     arm_config_.MotorOutput.NeutralMode = NeutralModeValue.Brake;
-    arm_config_.SoftwareLimitSwitch.ForwardSoftLimitEnable = true;
+    arm_config_.SoftwareLimitSwitch.ForwardSoftLimitEnable = false; // TODO: set back to true
     arm_config_.SoftwareLimitSwitch.ForwardSoftLimitThreshold = ElevatorConstants.ARM_LOWER_LIMIT;
     arm_motor_.getConfigurator().apply(arm_config_);
 
@@ -139,6 +139,14 @@ public class Elevator extends Subsystem {
         elevator_mech_.append(
             new MechanismLigament2d(
                 "Arm", ElevatorConstants.MIN_ARM_LENGTH, 0, 6, new Color8Bit(Color.kOrange)));
+    elevator_max_mech_ =
+        elevator_mech_.append(
+            new MechanismLigament2d(
+                "Elevator Max",
+                ElevatorConstants.ELEVATOR_HEIGHT_ABOVE_PIVOT,
+                0,
+                6,
+                new Color8Bit(Color.kPurple)));
   }
 
   /** Called to reset and configure the subsystem */
@@ -152,7 +160,7 @@ public class Elevator extends Subsystem {
         ((io_.elevator_master_rotations_ + io_.elevator_follower_rotations_) / 2)
             * ElevatorConstants.ELEVATOR_ROTATIONS_TO_METERS;
     //  io_.current_arm_angle = arm_encoder_.getAbsolutePosition().getValue().in(Radians);
-    io_.current_arm_angle =
+    io_.current_arm_angle_ =
         arm_motor_.getPosition().getValue().in(Rotations)
             * ElevatorConstants.ARM_ROTATIONS_TO_RADIANS;
   }
@@ -230,10 +238,8 @@ public class Elevator extends Subsystem {
   }
 
   public void updateMechanism() {
-    Pose2d robot_pose = PoseEstimator.getInstance().getFieldPose();
-    mech_root_.setPosition(robot_pose.getX(), robot_pose.getY());
     elevator_mech_.setLength(ElevatorConstants.MIN_ELEVATOR_HEIGHT + io_.current_elevator_height);
-    arm_mech_.setAngle(Math.toDegrees(io_.current_arm_angle));
+    arm_mech_.setAngle(Math.toDegrees(io_.current_arm_angle_) - 90);
     SmartDashboard.putData("Elevator System Mech", system_mech_);
   }
 
@@ -242,7 +248,7 @@ public class Elevator extends Subsystem {
    */
   public boolean isArmAtTarget() {
     return Util.epislonEquals(
-        io_.current_arm_angle, io_.target_arm_angle, ElevatorConstants.ARM_TARGET_THRESHOLD);
+        io_.current_arm_angle_, io_.target_arm_angle, ElevatorConstants.ARM_TARGET_THRESHOLD);
   }
 
   /**
@@ -314,7 +320,7 @@ public class Elevator extends Subsystem {
     @Log.File public TargetConfig current_target_config = TargetConfig.SOURCE;
     @Log.File public double current_elevator_height = 0;
     @Log.File public double target_elevator_height = 0;
-    @Log.File public double current_arm_angle = 0;
+    @Log.File public double current_arm_angle_ = 0;
     @Log.File public double target_arm_angle = 0;
     @Log.File public double elevator_master_rotations_ = 0;
     @Log.File public double elevator_follower_rotations_ = 0;
