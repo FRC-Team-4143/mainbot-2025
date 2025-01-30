@@ -11,6 +11,7 @@ import edu.wpi.first.wpilibj.RobotState;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.FunctionalCommand;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 
 public class TalonFXTuner {
@@ -78,25 +79,31 @@ public class TalonFXTuner {
    */
   private Command updateSetpoint(ControlRequest request) {
     return new FunctionalCommand(
-      // Set motor requests
-      () -> {
-          motor_.setControl(request);
-          DataLogManager.log("Motor ID: " + motor_.getDeviceID() + " - " + request.toString());
-          // Set all follower motors to same command as leader motor
-          for (TalonFX follower : follower_motors_) {
-            // follower motors use their own inversion config
-            follower.setControl(new StrictFollower(motor_.getDeviceID()));
-          }
-        },
-      // Put Closed Loop Data On Dashboard
-      () -> {
-          SmartDashboard.putNumber(system_name_ + "Setpoint", motor_.getClosedLoopReference().getValue());
-          SmartDashboard.putNumber(system_name_ + "Feedback", motor_.getClosedLoopReference().getValue() - motor_.getClosedLoopError().getValue());
-          SmartDashboard.putNumber(system_name_ + "Error", motor_.getClosedLoopError().getValue());
-        },
-      // Clear the active request and setpoint
-      (interrupted) -> clearSetpoint(),
-      () -> false).onlyIf(RobotState::isTest);
+            // Set motor requests
+            () -> {
+              motor_.setControl(request);
+              DataLogManager.log("Motor ID: " + motor_.getDeviceID() + " - " + request.toString());
+              // Set all follower motors to same command as leader motor
+              for (TalonFX follower : follower_motors_) {
+                // follower motors use their own inversion config
+                follower.setControl(new StrictFollower(motor_.getDeviceID()));
+              }
+            },
+            // Put Closed Loop Data On Dashboard
+            () -> {
+              SmartDashboard.putNumber(
+                  system_name_ + "Setpoint", motor_.getClosedLoopReference().getValue());
+              SmartDashboard.putNumber(
+                  system_name_ + "Feedback",
+                  motor_.getClosedLoopReference().getValue()
+                      - motor_.getClosedLoopError().getValue());
+              SmartDashboard.putNumber(
+                  system_name_ + "Error", motor_.getClosedLoopError().getValue());
+            },
+            // Clear the active request and setpoint
+            (interrupted) -> clearSetpoint(),
+            () -> false)
+        .onlyIf(RobotState::isTest);
   }
 
   /**
