@@ -4,28 +4,90 @@ public class ElevarKinematics{
 
     private double arm_length_ = 0; //fill in with a constant here
 
-    public ElevatorKinematics(){}
+
+    public ElevatorKinematics(){
+        system_mech_ = new Mechanism2d(0, 0);
+        mech_root_ = system_mech_.getRoot("Base", 0, 0);
+            elevator_mech_ =
+            mech_root_.append(
+                new MechanismLigament2d(
+                    "Elevator",
+                    ElevatorConstants.MIN_ELEVATOR_HEIGHT,
+                    90,
+                    6,
+                    new Color8Bit(Color.kPurple)));
+        arm_mech_ =
+            elevator_mech_.append(
+                new MechanismLigament2d(
+                    "Arm", ElevatorConstants.MIN_ARM_LENGTH, 0, 6, new Color8Bit(Color.kOrange)));
+        elevator_max_mech_ =
+            elevator_mech_.append(
+                new MechanismLigament2d(
+                    "Elevator Max",
+                    ElevatorConstants.ELEVATOR_HEIGHT_ABOVE_PIVOT,
+                    0,
+                    6,
+                    new Color8Bit(Color.kPurple)));
+    }
 
     /**
-     * Calculates and returns the y position needed for the wanted y-postion
+     * Calculates and returns the z position needed for the wanted z-postion
      * MUST HAVE ANGLE SET CORRECT FOR HEIGHT TO BE ACCURATE
      * 
-     * @param desiredY the wanted y postion of the pivot arm
+     * @param desiredZ the wanted z postion of the Claw
      * 
      * @param desiredAngle the current angle of the pivot arm
      * 
-     * @return the needed y for the wanted y postion of the elevator
+     * @return the needed z for the wanted z postion of the elevator
      */
-    public double desiredElevatorY(double desiredY, double desiredAngle){
-        return desiredY - calYoffset(desiredAngle);
+    public double desiredElevatorZ(double desiredZ, double desiredAngle){
+        return desiredZ - calYoffset(desiredAngle);
+    }
+
+    /**
+    * Calculates and returns the pivot arm angle needed for the wanted x-postion of the claw
+    *
+    * @param desiredX The wanted x postion of the Claw
+    *
+    * @param isRightSide True for the angle to go right and False for left
+    *
+    * @return the joint angle needed for the desired x postion
+    */
+    public double desiredJointAngle(double desiredX){
+        if(desiredX > arm_length_){
+            desiredX = arm_length_;
+        }
+        if(desiredX <= 0){
+           return calAngleWithX(desiredX); 
+        }
+        return calAngleWithX(desiredX);     
     }
 
     public double calXOffset(double angle){
         return arm_length_ * Math.cos(angle);
     }
 
-
-    public double calYOffset(double angle){
+    public double calZOffset(double angle){
         return arm_length_ * Math.sin(angle);
     }
+
+    public double calAngleWithX(double X){
+        return Math.acos(X / arm_length_);
+    }
+
+    public double calAngleWithZ(double Z){
+        return Math.asin(Z / arm_length_);
+    }
+
+
+
+
+
+
+    //elevator_mech_.setLength(ElevatorConstants.MIN_ELEVATOR_HEIGHT + io_.current_elevator_height);
+    //arm_mech_.setAngle(Math.toDegrees(io_.current_arm_angle_) - 90);
+    //SmartDashboard.putData("Elevator System Mech", system_mech_);
+
+
+
 }
