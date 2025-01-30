@@ -7,6 +7,7 @@ package frc.robot;
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.signals.GravityTypeValue;
 import com.ctre.phoenix6.signals.InvertedValue;
+import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.util.Units;
 import frc.mw_lib.swerve.SwerveModule.ClosedLoopOutputType;
 import frc.mw_lib.swerve.SwerveModuleConstants;
@@ -136,6 +137,12 @@ public final class Constants {
             Units.inchesToMeters(LOADER.getDoubleValue("drive", "br", "X_POSITION")),
             Units.inchesToMeters(LOADER.getDoubleValue("drive", "br", "Y_POSITION")),
             LOADER.getBoolValue("drive", "br", "INVERT_DRIVE"));
+
+    // Drivetrain PID Controller
+    public static final PIDController TRAJECTORY_TRANSLATION = new PIDController(0.0, 0, 0.000);
+    public static final PIDController TRAJECTORY_HEADING = new PIDController(0.0, 0, 0.000);
+    public static final PIDController POSE_TRANSLATION = new PIDController(0.0, 0, 0.000);
+    public static final PIDController POSE_HEADING = new PIDController(0.0, 0, 0.000);
   }
 
   public static final class ClawConstants {
@@ -186,6 +193,7 @@ public final class Constants {
     public static final double ELEVATOR_EXPO_KV = 0;
     public static final double ELEVATOR_EXPO_KA = 0;
     public static final double ELEVATOR_ZERO_THRESHOLD = 0; // In m
+    public static final double ELEVATOR_STATOR_CURRENT_LIMIT = 40.0;
     public static final double MIN_ELEVATOR_HEIGHT = Units.inchesToMeters(23.75);
     public static final double ELEVATOR_HEIGHT_ABOVE_PIVOT = Units.inchesToMeters(13);
     // Units.inchesToMeters(Sprocket Circumference * Math.PI) / gearbox ratio * rigging
@@ -194,13 +202,13 @@ public final class Constants {
 
     public static final Slot0Configs ELEVATOR_GAINS =
         new Slot0Configs()
-            .withKP(0.0)
+            .withKP(5.0)
             .withKI(0.0) // <-DO NOT TOUCH!!!!!!!!!
-            .withKD(0.0)
+            .withKD(0.05)
             .withKS(0.0)
             .withKV(0.0)
             .withKA(0.0)
-            .withKG(0.0)
+            .withKG(0.285)
             .withGravityType(GravityTypeValue.Elevator_Static);
 
     // Arm Constants:
@@ -216,7 +224,7 @@ public final class Constants {
     public static final double ARM_LOWER_LIMIT = 0;
     public static final double MIN_ARM_LENGTH = Units.inchesToMeters(19.280);
     // ((shaft sprocket / pivot sprocket) / gearbox) * rotations to radians ratio)
-    public static final double ARM_ROTATIONS_TO_RADIANS = (0.0125) * 2 * Math.PI;
+    public static final double ARM_ROTATIONS_TO_RADIANS = ((16.0 / 64.0) / 40.0) * 2 * Math.PI;
 
     public static final Slot0Configs ARM_GAINS =
         new Slot0Configs()

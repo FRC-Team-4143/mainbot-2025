@@ -3,8 +3,8 @@ package frc.robot.subsystems;
 import static edu.wpi.first.units.Units.Rotations;
 
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
-import com.ctre.phoenix6.controls.Follower;
 import com.ctre.phoenix6.controls.MotionMagicExpoVoltage;
+import com.ctre.phoenix6.controls.VoltageOut;
 import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.FeedbackSensorSourceValue;
@@ -18,9 +18,11 @@ import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj.util.Color8Bit;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
+import frc.mw_lib.controls.TalonFXTuner;
 import frc.mw_lib.subsystem.Subsystem;
 import frc.mw_lib.util.Util;
 import frc.robot.Constants.ElevatorConstants;
+import frc.robot.OI;
 import java.util.function.BooleanSupplier;
 import monologue.Annotations.Log;
 import monologue.Logged;
@@ -54,6 +56,9 @@ public class Elevator extends Subsystem {
   MechanismLigament2d elevator_mech_;
   MechanismLigament2d elevator_max_mech_;
   MechanismLigament2d arm_mech_;
+
+  TalonFXTuner elevator_tuner_;
+  TalonFXTuner arm_tuner_;
 
   // Enums for Elevator/Arm
   public enum TargetConfig {
@@ -96,6 +101,10 @@ public class Elevator extends Subsystem {
     elevator_config_.SoftwareLimitSwitch.ForwardSoftLimitEnable = false; // TODO: set back to true
     elevator_config_.SoftwareLimitSwitch.ForwardSoftLimitThreshold =
         ElevatorConstants.ELEVATOR_MAX_HEIGHT;
+    elevator_config_.CurrentLimits.StatorCurrentLimit =
+        ElevatorConstants.ELEVATOR_STATOR_CURRENT_LIMIT;
+    elevator_config_.CurrentLimits.StatorCurrentLimitEnable = true;
+
     elevator_config_.MotorOutput.Inverted = ElevatorConstants.ELEVATOR_MASTER_INVERSION_;
     elevator_master_.getConfigurator().apply(elevator_config_);
     elevator_config_.MotorOutput.Inverted = ElevatorConstants.ELEVATOR_FOLLOWER_INVERSION;
@@ -147,6 +156,18 @@ public class Elevator extends Subsystem {
                 0,
                 6,
                 new Color8Bit(Color.kPurple)));
+
+    // System Tuning
+    elevator_tuner_ =
+        new TalonFXTuner(elevator_master_, new TalonFX[] {elevator_follower_}, "Elevator");
+    elevator_tuner_.bindSetpoint(
+        elevator_request_.withPosition(10.0), OI.getDriverJoystickAButtonTrigger());
+    elevator_tuner_.bindSetpoint(
+        elevator_request_.withPosition(5.0), OI.getDriverJoystickYButtonTrigger());
+    elevator_tuner_.bindSetpoint(new VoltageOut(-1), OI.getDriverJoystickXButtonTrigger());
+    elevator_tuner_.bindSetpoint(new VoltageOut(1), OI.getDriverJoystickBButtonTrigger());
+
+    arm_tuner_ = new TalonFXTuner(arm_motor_, "Arm");
   }
 
   /** Called to reset and configure the subsystem */
@@ -229,7 +250,7 @@ public class Elevator extends Subsystem {
     // .withPosition(io_.target_elevator_height/ElevatorConstants.ELEVATOR_ROTATIONS_TO_METERS)
     // .withLimitReverseMotion(isElevatorAtMinimum()));
     // arm_motor_.setControl(arm_request_.withPosition(io_.target_arm_angle));
-    elevator_follower_.setControl(new Follower(elevator_master_.getDeviceID(), true));
+    // elevator_follower_.setControl(new Follower(elevator_master_.getDeviceID(), true));
   }
 
   /** Outputs all logging information to the SmartDashboard */
