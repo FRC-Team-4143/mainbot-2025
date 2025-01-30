@@ -8,6 +8,8 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.mw_lib.util.Util;
+import frc.robot.commands.Feed;
+import frc.robot.commands.Score;
 import frc.robot.subsystems.*;
 import frc.robot.subsystems.Claw.ClawMode;
 
@@ -36,9 +38,9 @@ public abstract class OI {
         .onTrue(
             Commands.runOnce(() -> swerve_drivetrain_.toggleFieldCentric(), swerve_drivetrain_));
 
-    // driver_controller_.leftTrigger().whileTrue(new Feed());
+    driver_controller_.leftTrigger().whileTrue(new Feed());
 
-    // driver_controller_.rightTrigger().whileTrue(new Score());
+    driver_controller_.rightTrigger().whileTrue(new Score());
     driver_controller_
         .a()
         .whileTrue(
