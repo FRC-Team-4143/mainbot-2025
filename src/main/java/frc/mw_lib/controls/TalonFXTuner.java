@@ -77,18 +77,26 @@ public class TalonFXTuner {
    * @return command that set the setpoint when onTrue and clears the setpoint when interrupted
    */
   private Command updateSetpoint(ControlRequest request) {
-    return Commands.startEnd(
-            () -> {
-              motor_.setControl(request);
-              DataLogManager.log("Motor ID: " + motor_.getDeviceID() + " - " + request.toString());
-              // Set all follower motors to same command as leader motor
-              for (TalonFX follower : follower_motors_) {
-                // follower motors use their own inversion config
-                follower.setControl(new StrictFollower(motor_.getDeviceID()));
-              }
-            },
-            () -> clearSetpoint())
-        .onlyIf(RobotState::isTest);
+    return new FunctionalCommand(
+      // Set motor requests
+      () -> {
+          motor_.setControl(request);
+          DataLogManager.log("Motor ID: " + motor_.getDeviceID() + " - " + request.toString());
+          // Set all follower motors to same command as leader motor
+          for (TalonFX follower : follower_motors_) {
+            // follower motors use their own inversion config
+            follower.setControl(new StrictFollower(motor_.getDeviceID()));
+          }
+        },
+      // Put Closed Loop Data On Dashboard
+      () -> {
+          SmartDashboard.putNumber(system_name_ + "Setpoint", motor_.getClosedLoopReference().getValue());
+          SmartDashboard.putNumber(system_name_ + "Feedback", motor_.getClosedLoopReference().getValue() - motor_.getClosedLoopError().getValue());
+          SmartDashboard.putNumber(system_name_ + "Error", motor_.getClosedLoopError().getValue());
+        },
+      // Clear the active request and setpoint
+      (interrupted) -> clearSetpoint(),
+      () -> false).onlyIf(RobotState::isTest);
   }
 
   /**
@@ -119,5 +127,8 @@ public class TalonFXTuner {
     SmartDashboard.putData(
         system_name_ + "Update",
         Commands.runOnce(() -> updateGains()).onlyIf(RobotState::isTest).ignoringDisable(true));
+    SmartDashboard.putNumber(system_name_ + "Setpoint", 0);
+    SmartDashboard.putNumber(system_name_ + "Feedback", 0);
+    SmartDashboard.putNumber(system_name_ + "Error", 0);
   }
 }
