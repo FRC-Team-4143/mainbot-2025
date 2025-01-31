@@ -6,6 +6,7 @@ import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Transform2d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.networktables.BooleanPublisher;
 import edu.wpi.first.networktables.BooleanSubscriber;
 import edu.wpi.first.networktables.DoubleArraySubscriber;
@@ -15,6 +16,7 @@ import edu.wpi.first.networktables.ProtobufSubscriber;
 import edu.wpi.first.networktables.StructPublisher;
 import edu.wpi.first.networktables.TimestampedObject;
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.mw_lib.subsystem.Subsystem;
@@ -102,7 +104,7 @@ public class PoseEstimator extends Subsystem {
               Nat.N3(), Nat.N1(), vision_std_devs_[0], vision_std_devs_[1], vision_std_devs_[2]));
       io_.last_vision_timestamp_ = result.timestamp;
     }
-    // Correct pose estimate with vision measurements
+    // Correct pose estimate with vision measurements from Photonvision
     var vision = Vision.getInstance();
     var visionEst = vision.getEstimatedGlobalPose();
     visionEst.ifPresent(
@@ -110,10 +112,19 @@ public class PoseEstimator extends Subsystem {
           // Change our trust in the measurement based on the tags we can see
           var estStdDevs = vision.getEstimationStdDevs();
 
-          vision_filtered_odometry_.addVisionMeasurement(
-              est.estimatedPose.toPose2d(), est.timestampSeconds, estStdDevs);
+          var est_timestamp = est.timestampSeconds;
+          var now = Timer.getFPGATimestamp();
+          var latency = now - est_timestamp;
+          SmartDashboard.putNumber("vision latency", latency);
+          if (latency < 0 || latency > .05) {
+            // keep latency sane
+            latency = .05;
+            est_timestamp = now - latency;
+          }
 
-          //  SmartDashboard.putData("estimatedpose", est.estimatedPose.toPose2d());
+          vision_filtered_odometry_.addVisionMeasurement(
+              est.estimatedPose.toPose2d(), est_timestamp, estStdDevs);
+
           camPosePublisher.set(est.estimatedPose.toPose2d());
         });
   }
@@ -205,6 +216,13 @@ public class PoseEstimator extends Subsystem {
     SwerveDrivetrain.getInstance().seedFieldRelative(pose.getRotation());
     // vision_filtered_odometry_.resetPosition(drive.getImuYaw(), drive.getModulePositions(), pose);
     vision_filtered_odometry_.resetPosition(pose.getRotation(), drive.getModulePositions(), pose);
+  }
+
+  /** Simulates an external force applied to the robot */
+  public void disturbPose() {
+    var disturbance =
+        new Transform2d(new Translation2d(1.0, 1.0), new Rotation2d(0.17 * 2 * Math.PI));
+    setRobotOdometry(getFieldPose().plus(disturbance));
   }
 
   public class PoseEstimatorPeriodicIo implements Logged {
