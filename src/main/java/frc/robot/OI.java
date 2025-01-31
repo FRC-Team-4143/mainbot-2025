@@ -62,6 +62,12 @@ public abstract class OI {
                 () -> claw_.setClawMode(ClawMode.OPEN),
                 () -> claw_.setClawMode(ClawMode.CLOSED),
                 claw_));
+
+    /* driver_controller_.x().onTrue(Commands.runOnce(
+    () -> {
+      var disturbance =
+      new Transform2d(new Translation2d(1.0, 1.0), new Rotation2d(0.17 * 2 * Math.PI));
+      drivetrain.resetPose(drivetrain.getPose().plus(disturbance), false);}).ignoringDisable(true));*/
   }
 
   public static double getDriverJoystickLeftX() {

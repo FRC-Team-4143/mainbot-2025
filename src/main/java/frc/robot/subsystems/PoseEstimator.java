@@ -12,11 +12,13 @@ import edu.wpi.first.networktables.DoubleArraySubscriber;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.networktables.ProtobufPublisher;
 import edu.wpi.first.networktables.ProtobufSubscriber;
+import edu.wpi.first.networktables.StructPublisher;
 import edu.wpi.first.networktables.TimestampedObject;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.mw_lib.subsystem.Subsystem;
+import frc.robot.Vision;
 import monologue.Annotations.Log;
 import monologue.Logged;
 
@@ -44,6 +46,7 @@ public class PoseEstimator extends Subsystem {
 
   int update_counter_ = 2;
   double[] vision_std_devs_ = {1, 1, 1};
+  StructPublisher<Pose2d> camPosePublisher;
 
   PoseEstimator() {
     io_ = new PoseEstimatorPeriodicIo();
@@ -63,6 +66,8 @@ public class PoseEstimator extends Subsystem {
     odom_publisher_ = robot_odom_topic.publish();
     pose_publisher_ = robot_pose_topic.publish();
     supression_publisher_ = supress_odom_topic.publish();
+    camPosePublisher =
+        NetworkTableInstance.getDefault().getStructTopic("CamPose", Pose2d.struct).publish();
   }
 
   @Override
@@ -97,6 +102,20 @@ public class PoseEstimator extends Subsystem {
               Nat.N3(), Nat.N1(), vision_std_devs_[0], vision_std_devs_[1], vision_std_devs_[2]));
       io_.last_vision_timestamp_ = result.timestamp;
     }
+    // Correct pose estimate with vision measurements
+    var vision = Vision.getInstance();
+    var visionEst = vision.getEstimatedGlobalPose();
+    visionEst.ifPresent(
+        est -> {
+          // Change our trust in the measurement based on the tags we can see
+          var estStdDevs = vision.getEstimationStdDevs();
+
+          vision_filtered_odometry_.addVisionMeasurement(
+              est.estimatedPose.toPose2d(), est.timestampSeconds, estStdDevs);
+
+          //  SmartDashboard.putData("estimatedpose", est.estimatedPose.toPose2d());
+          camPosePublisher.set(est.estimatedPose.toPose2d());
+        });
   }
 
   // Make a subscriber, integate vision measurements wpilib method on the new
@@ -133,11 +152,11 @@ public class PoseEstimator extends Subsystem {
   @Override
   public void outputTelemetry(double timestamp) {
     field_.setRobotPose(io_.vision_filtered_pose_);
-    // pose_publisher_.set(io_.vision_filtered_pose_);
-
     SmartDashboard.putData("Field", field_);
-    // SmartDashboard.putBoolean("Is Vision Paused", io_.ignore_vision);
   }
+  ;
+
+  // SmartDashboard.putBoolean("Is Vision Paused", io_.ignore_vision);
 
   public Field2d getFieldWidget() {
     return field_;
