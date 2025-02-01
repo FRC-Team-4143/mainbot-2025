@@ -137,23 +137,12 @@ public final class Constants {
             Units.inchesToMeters(LOADER.getDoubleValue("drive", "br", "X_POSITION")),
             Units.inchesToMeters(LOADER.getDoubleValue("drive", "br", "Y_POSITION")),
             LOADER.getBoolValue("drive", "br", "INVERT_DRIVE"));
-    
+
     // Drivetrain PID Controller
     public static final PIDController TRAJECTORY_TRANSLATION = new PIDController(0.0, 0, 0.000);
     public static final PIDController TRAJECTORY_HEADING = new PIDController(0.0, 0, 0.000);
     public static final PIDController POSE_TRANSLATION = new PIDController(0.0, 0, 0.000);
     public static final PIDController POSE_HEADING = new PIDController(0.0, 0, 0.000);
-  }
-
-  public static final class FeederConstants {
-    public static final int LEFT_FEEDER_MOTOR = 11;
-    public static final int RIGHT_FEEDER_MOTOR = 10;
-    public static final boolean LEFT_FEEDER_INVERTED = true;
-    public static final boolean RIGHT_FEEDER_INVERTED = false;
-    public static final double FEEDER_SPEED = 0.15;
-    public static final double SCORE_SPEED = 0.5;
-    public static final double IDLE_SPEED = 0;
-    public static final double AMP_SPIKE_THRESHHOLD = 25;
   }
 
   public static final class ClawConstants {
@@ -194,17 +183,34 @@ public final class Constants {
     public static final int ELEVATOR_FOLLOWER_ID = 22;
     public static final int ELEVATOR_LIMIT_SWITCH_PORT_NUMBER = 4;
     public static final double ELEVATOR_TARGET_THRESHOLD = 0.25; // In m
-    public static final double ELEVATOR_MAX_HEIGHT = 0.0; // In m
-    public static final InvertedValue ELEVATOR_MASTER_INVERSION_ = InvertedValue.Clockwise_Positive;
-    public static final InvertedValue ELEVATOR_FOLLOWER_INVERSION =
+    public static final double ELEVATOR_MAX_HEIGHT = 9000; // In m
+    public static final InvertedValue ELEVATOR_MASTER_INVERSION_ =
         InvertedValue.CounterClockwise_Positive;
-    public static final double ELEVATOR_SENSOR_TO_MECHANISM_RATIO = 0;
-    public static final double ELEVATOR_CRUISE_VELOCITY = 0;
-    public static final double ELEVATOR_ACCELERATION = 0;
-    public static final double ELEVATOR_EXPO_KV = 0;
-    public static final double ELEVATOR_EXPO_KA = 0;
+    public static final InvertedValue ELEVATOR_FOLLOWER_INVERSION =
+        InvertedValue.Clockwise_Positive;
+    // Units.inchesToMeters(Sprocket Circumference * Math.PI) / gearbox ratio *
+    // rigging
+    public static final double ELEVATOR_ROTATIONS_TO_METERS =
+        Units.inchesToMeters(1.751 * Math.PI) / 4 * 2;
+    public static final double ELEVATOR_CRUISE_VELOCITY = 5.0 / ELEVATOR_ROTATIONS_TO_METERS;
+    public static final double ELEVATOR_ACCEL = 3.0 / ELEVATOR_ROTATIONS_TO_METERS;
+    public static final double ELEVATOR_EXPO_KV = 0.11733;
+    public static final double ELEVATOR_EXPO_KA = 0.0070285;
     public static final double ELEVATOR_ZERO_THRESHOLD = 0; // In m
-    public static final double ROTOR_TO_CENSOR_RATIO = 1;
+    public static final double ELEVATOR_STATOR_CURRENT_LIMIT = 40.0;
+    public static final double MIN_ELEVATOR_HEIGHT = Units.inchesToMeters(23.75);
+    public static final double ELEVATOR_HEIGHT_ABOVE_PIVOT = Units.inchesToMeters(13);
+
+    public static final Slot0Configs ELEVATOR_GAINS =
+        new Slot0Configs()
+            .withKP(1.0)
+            .withKI(0.0) // <-DO NOT TOUCH!!!!!!!!!
+            .withKD(0.08)
+            .withKS(0.06766)
+            .withKV(0.11733)
+            .withKA(0.0070285)
+            .withKG(0.43)
+            .withGravityType(GravityTypeValue.Elevator_Static);
 
     // Arm Constants:
     public static final int ARM_MOTOR_ID = 23;
@@ -212,33 +218,22 @@ public final class Constants {
     public static final double ARM_TARGET_THRESHOLD = 0.25; // In rads
     public static final InvertedValue ARM_FOLLOWER_INVERSION = InvertedValue.Clockwise_Positive;
     public static final double ARM_HOME_POSITION = 0;
-    public static final double ARM_SENSOR_TO_MECHANISM_RATIO = 0;
     public static final double ARM_CRUISE_VELOCITY = 0;
     public static final double ARM_ACCELERATION = 0;
-    public static final double ARM_EXPO_KV = 0;
-    public static final double ARM_EXPO_KA = 0;
     public static final double ARM_LOWER_LIMIT = 0;
-
-    public static final Slot0Configs ELEVATOR_GAINS =
-        new Slot0Configs()
-            .withKP(0.0)
-            .withKI(0.0) // <-DO NOT TOUCH!!!!!!!!!
-            .withKD(0.0)
-            .withKS(0.0)
-            .withKV(0.0)
-            .withKA(0.0)
-            .withKG(0.0)
-            .withGravityType(GravityTypeValue.Elevator_Static);
+    public static final double MIN_ARM_LENGTH = Units.inchesToMeters(19.280);
+    // ((shaft sprocket / pivot sprocket) / gearbox) * rotations to radians ratio)
+    public static final double ARM_ROTATIONS_TO_RADIANS = ((16.0 / 64.0) / 40.0) * 2 * Math.PI;
 
     public static final Slot0Configs ARM_GAINS =
         new Slot0Configs()
-            .withKP(0.0)
+            .withKP(0.056898)
             .withKI(0.0) // DO NOT TOUCH!!!!!!!!!
             .withKD(0.0)
-            .withKS(0.0)
-            .withKV(0.0)
-            .withKA(0.0)
-            .withKG(0.0)
+            .withKS(0.030967)
+            .withKV(0.1097)
+            .withKA(0.0027189)
+            .withKG(0.00055752)
             .withGravityType(GravityTypeValue.Arm_Cosine);
   }
 }
