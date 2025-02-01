@@ -14,7 +14,6 @@ import edu.wpi.first.networktables.ProtobufPublisher;
 import edu.wpi.first.networktables.ProtobufSubscriber;
 import edu.wpi.first.networktables.StructPublisher;
 import edu.wpi.first.networktables.TimestampedObject;
-import edu.wpi.first.util.sendable.Sendable;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -157,8 +156,9 @@ public class PoseEstimator extends Subsystem {
     SmartDashboard.putData("Field", field_);
     // SmartDashboard.putBoolean("Is Vision Paused", io_.ignore_vision);
 
-    SmartDashboard.putData("Coral Region", (Sendable) currentCoralRegion);
-    SmartDashboard.putData("Coral Region", (Sendable) currentAlgaeRegion);
+    // outputs the current reigon to smart dashboard
+    SmartDashboard.putString("Coral Region", currentCoralRegion.getName());
+    SmartDashboard.putString("Coral Region", currentAlgaeRegion.getName());
   }
 
   public Field2d getFieldWidget() {

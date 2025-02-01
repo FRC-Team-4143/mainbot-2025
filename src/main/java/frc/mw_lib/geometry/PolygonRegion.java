@@ -12,6 +12,7 @@ import java.awt.geom.*;
  */
 public class PolygonRegion implements Region {
   private Path2D shape;
+  private String name;
 
   /**
    * Create a Region2d, a polygon, from an array of Translation2d specifying vertices of a polygon.
@@ -27,9 +28,13 @@ public class PolygonRegion implements Region {
     for (int i = 1; i < points.length; i++) {
       this.shape.lineTo(points[i].getX(), points[i].getY());
     }
-
+    name = regionName;
     this.shape.closePath();
     logPoints(points, regionName);
+  }
+
+  public String getName() {
+    return name;
   }
 
   /**
