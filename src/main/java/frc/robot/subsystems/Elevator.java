@@ -163,7 +163,7 @@ public class Elevator extends Subsystem {
     // bindTuner(elevator_tuner_, 5, 10);
 
     arm_tuner_ = new TalonFXTuner(arm_motor_, "Arm", this);
-    bindTuner(arm_tuner_, 0.0, 0.5);
+    // bindTuner(arm_tuner_, 0.0, 0.5);
   }
 
   /** Called to reset and configure the subsystem */
