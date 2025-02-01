@@ -216,24 +216,26 @@ public final class Constants {
     public static final int ARM_MOTOR_ID = 23;
     public static final int ARM_ENCODER_ID = 24;
     public static final double ARM_TARGET_THRESHOLD = 0.25; // In rads
-    public static final InvertedValue ARM_FOLLOWER_INVERSION = InvertedValue.Clockwise_Positive;
+    public static final InvertedValue ARM_FOLLOWER_INVERSION =
+        InvertedValue.CounterClockwise_Positive;
     public static final double ARM_HOME_POSITION = 0;
-    public static final double ARM_CRUISE_VELOCITY = 0;
-    public static final double ARM_ACCELERATION = 0;
+    public static final double ARM_CRUISE_VELOCITY = 4;
+    public static final double ARM_ACCELERATION = 2;
     public static final double ARM_LOWER_LIMIT = 0;
     public static final double MIN_ARM_LENGTH = Units.inchesToMeters(19.280);
     // ((shaft sprocket / pivot sprocket) / gearbox) * rotations to radians ratio)
-    public static final double ARM_ROTATIONS_TO_RADIANS = ((16.0 / 64.0) / 40.0) * 2 * Math.PI;
+    public static final double ARM_ROTATIONS_TO_RADIANS = 2 * Math.PI;
+    public static final double SENSOR_TO_MECHANISM_RATIO = (1.0 / ((16.0 / 64.0) / 20.0));
 
     public static final Slot0Configs ARM_GAINS =
         new Slot0Configs()
-            .withKP(0.056898)
+            .withKP(40.0)
             .withKI(0.0) // DO NOT TOUCH!!!!!!!!!
             .withKD(0.0)
-            .withKS(0.030967)
-            .withKV(0.1097)
-            .withKA(0.0027189)
-            .withKG(0.00055752)
+            .withKS(0.024495)
+            .withKV(8.778)
+            .withKA(0.25148)
+            .withKG(0.28)
             .withGravityType(GravityTypeValue.Arm_Cosine);
   }
 }

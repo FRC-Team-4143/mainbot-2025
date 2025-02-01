@@ -114,14 +114,14 @@ public class Elevator extends Subsystem {
     // arm_config_.Feedback.FeedbackRemoteSensorID =
     // ElevatorConstants.ARM_ENCODER_ID;
     arm_config_.Feedback.FeedbackSensorSource = FeedbackSensorSourceValue.RotorSensor;
+    arm_config_.Feedback.SensorToMechanismRatio = ElevatorConstants.SENSOR_TO_MECHANISM_RATIO;
     arm_config_.Slot0 = ElevatorConstants.ARM_GAINS;
     arm_config_.MotionMagic.MotionMagicCruiseVelocity = ElevatorConstants.ARM_CRUISE_VELOCITY;
     arm_config_.MotionMagic.MotionMagicAcceleration = ElevatorConstants.ARM_ACCELERATION;
-    arm_config_.MotionMagic.MotionMagicExpo_kV = ElevatorConstants.ARM_EXPO_KV;
-    arm_config_.MotionMagic.MotionMagicExpo_kA = ElevatorConstants.ARM_EXPO_KA;
     arm_config_.MotorOutput.NeutralMode = NeutralModeValue.Brake;
     arm_config_.SoftwareLimitSwitch.ForwardSoftLimitEnable = false; // TODO: set back to true
     arm_config_.SoftwareLimitSwitch.ForwardSoftLimitThreshold = ElevatorConstants.ARM_LOWER_LIMIT;
+    arm_config_.ClosedLoopGeneral.ContinuousWrap = true;
     arm_motor_.getConfigurator().apply(arm_config_);
 
     // System Behavior Setup
@@ -163,7 +163,7 @@ public class Elevator extends Subsystem {
     // bindTuner(elevator_tuner_, 5, 10);
 
     arm_tuner_ = new TalonFXTuner(arm_motor_, "Arm", this);
-    bindTuner(arm_tuner_, 1, 10);
+    bindTuner(arm_tuner_, 0.0, 0.5);
   }
 
   /** Called to reset and configure the subsystem */
