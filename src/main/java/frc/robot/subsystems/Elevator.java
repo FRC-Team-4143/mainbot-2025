@@ -1,5 +1,6 @@
 package frc.robot.subsystems;
 
+import static edu.wpi.first.units.Units.Radians;
 import static edu.wpi.first.units.Units.Rotations;
 
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
@@ -179,8 +180,7 @@ public class Elevator extends Subsystem {
     // io_.current_arm_angle =
     // arm_encoder_.getAbsolutePosition().getValue().in(Radians);
     io_.current_arm_angle_ =
-        arm_motor_.getPosition().getValue().in(Rotations)
-            * ElevatorConstants.ARM_ROTATIONS_TO_RADIANS;
+        arm_motor_.getPosition().getValue().in(Radians);
   }
 
   /** Computes updated outputs for the actuators */
