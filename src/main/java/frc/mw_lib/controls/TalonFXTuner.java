@@ -161,6 +161,11 @@ public class TalonFXTuner {
     SmartDashboard.putNumber(system_name_ + "Setpoint", 0);
     SmartDashboard.putNumber(system_name_ + "Feedback", 0);
     SmartDashboard.putNumber(system_name_ + "Error", 0);
+    SmartDashboard.putData(
+        system_name_ + "Zero",
+        Commands.runOnce(() -> motor_.setPosition(0))
+            .onlyIf(RobotState::isTest)
+            .ignoringDisable(true));
   }
 
   private SysIdRoutine getSysIdRoutine() {
