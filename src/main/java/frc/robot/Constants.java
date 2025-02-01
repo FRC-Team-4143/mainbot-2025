@@ -224,7 +224,6 @@ public final class Constants {
     public static final double ARM_LOWER_LIMIT = 0;
     public static final double MIN_ARM_LENGTH = Units.inchesToMeters(19.280);
     // ((shaft sprocket / pivot sprocket) / gearbox) * rotations to radians ratio)
-    public static final double ARM_ROTATIONS_TO_RADIANS = 2 * Math.PI;
     public static final double SENSOR_TO_MECHANISM_RATIO = (1.0 / ((16.0 / 64.0) / 20.0));
 
     public static final Slot0Configs ARM_GAINS =
