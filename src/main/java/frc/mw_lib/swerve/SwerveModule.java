@@ -403,6 +403,10 @@ public class SwerveModule {
     }
   }
 
+  public double getEncoderValue() {
+    return m_analogEncoder.get();
+  }
+
   /**
    * Controls this module to the specified steer target, and applies the specific drive request.
    *

@@ -16,7 +16,7 @@
             "DRIVE_GAINS_S": 0.2,
             "DRIVE_GAINS_V": 0.12,
             "DRIVE_GAINS_A": 0.05,
-            "STEER_GAINS_P": 100,
+            "STEER_GAINS_P": 120,
             "STEER_GAINS_I": 0,
             "STEER_GAINS_D": 0,
             "STEER_GAINS_S": 0,

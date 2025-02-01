@@ -7,6 +7,7 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import frc.robot.AutoManager;
 import frc.robot.commands.Feed;
 import frc.robot.commands.Score;
+import frc.robot.commands.SetIdleMode;
 
 public class autoPresentation {
 
@@ -33,30 +34,117 @@ public class autoPresentation {
     AutoTrajectory SourceBackIJ = routine.trajectory("Source Back IJ");
     AutoTrajectory SourceBackKL = routine.trajectory("Source Back KL");
 
-    routine.active().onTrue(Commands.sequence(SourceToA.resetOdometry(), SourceToA.cmd()));
-    SourceToA.done().onTrue(Commands.sequence(new Score().withTimeout(1), SourceBackAB.cmd()));
-    SourceBackAB.done().onTrue(Commands.sequence(new Feed(), SourceToB.cmd()));
-    SourceToB.done().onTrue((Commands.sequence(new Score().withTimeout(1), SourceBackAB.cmd())));
-    SourceBackAB.done().onTrue((Commands.sequence(new Feed(), SourceToC.cmd())));
-    SourceToC.done().onTrue(Commands.sequence(new Score().withTimeout(1), SourceBackCD.cmd()));
-    SourceBackCD.done().onTrue((Commands.sequence(new Feed(), SourceToD.cmd())));
-    SourceToD.done().onTrue(Commands.sequence(new Score().withTimeout(1), SourceBackCD.cmd()));
-    SourceBackCD.done().onTrue((Commands.sequence(new Feed(), SourceToE.cmd())));
-    SourceToE.done().onTrue(Commands.sequence(new Score().withTimeout(1), SourceBackEF.cmd()));
-    SourceBackEF.done().onTrue((Commands.sequence(new Feed(), SourceToF.cmd())));
-    SourceToF.done().onTrue(Commands.sequence(new Score().withTimeout(1), SourceBackEF.cmd()));
-    SourceBackEF.done().onTrue((Commands.sequence(new Feed(), SourceToG.cmd())));
-    SourceToG.done().onTrue(Commands.sequence(new Score().withTimeout(1), SourceBackGH.cmd()));
-    SourceBackGH.done().onTrue((Commands.sequence(new Feed(), SourceToH.cmd())));
-    SourceToH.done().onTrue(Commands.sequence(new Score().withTimeout(1), SourceBackGH.cmd()));
-    SourceBackGH.done().onTrue((Commands.sequence(new Feed(), SourceToI.cmd())));
-    SourceToI.done().onTrue(Commands.sequence(new Score().withTimeout(1), SourceBackIJ.cmd()));
-    SourceBackIJ.done().onTrue((Commands.sequence(new Feed(), SourceToJ.cmd())));
-    SourceToJ.done().onTrue(Commands.sequence(new Score().withTimeout(1), SourceBackIJ.cmd()));
-    SourceBackIJ.done().onTrue((Commands.sequence(new Feed(), SourceToK.cmd())));
-    SourceToK.done().onTrue(Commands.sequence(new Score().withTimeout(1), SourceBackKL.cmd()));
-    SourceBackKL.done().onTrue((Commands.sequence(new Feed(), SourceToL.cmd())));
-    SourceToL.done().onTrue(Commands.sequence(new Score().withTimeout(1), SourceBackKL.cmd()));
+    routine
+        .active()
+        .onTrue(
+            Commands.sequence(
+                SourceToA.cmd(),
+                new SetIdleMode(),
+                new Score().withTimeout(1),
+                SourceBackAB.cmd(),
+                new SetIdleMode(),
+                new Feed(),
+                SourceToL.cmd(),
+                new SetIdleMode(),
+                new Score().withTimeout(1),
+                SourceBackKL.cmd(),
+                new SetIdleMode(),
+                new Feed(),
+                SourceToK.cmd(),
+                new SetIdleMode(),
+                new Score().withTimeout(1),
+                SourceBackKL.cmd(),
+                new SetIdleMode(),
+                new Feed(),
+                SourceToJ.cmd(),
+                new SetIdleMode(),
+                new Score().withTimeout(1),
+                SourceBackIJ.cmd(),
+                new SetIdleMode(),
+                new Feed(),
+                SourceToI.cmd(),
+                new SetIdleMode(),
+                new Score().withTimeout(1),
+                SourceBackIJ.cmd(),
+                new SetIdleMode(),
+                new Feed(),
+                SourceToH.cmd(),
+                new SetIdleMode(),
+                new Score().withTimeout(1),
+                SourceBackGH.cmd(),
+                new SetIdleMode(),
+                new Feed()));
+
+    // routine.active().onTrue(Commands.sequence(SourceToA.cmd()));
+    // SourceToA.done()
+    // .onTrue(
+    // Commands.sequence(new SetIdleMode(), new Score().withTimeout(1),
+    // SourceBackAB.cmd()));
+    // SourceBackAB.done().onTrue(Commands.sequence(new SetIdleMode(), new Feed(),
+    // SourceToB.cmd()));
+    // SourceToB.done()
+    // .onTrue(
+    // Commands.sequence(new SetIdleMode(), new Score().withTimeout(1),
+    // SourceBackAB2.cmd()));
+    // SourceBackAB2.done()
+    // .onTrue((Commands.sequence(new SetIdleMode(), new Feed(), SourceToC.cmd())));
+    // SourceToC.done()
+    // .onTrue(
+    // Commands.sequence(new SetIdleMode(), new Score().withTimeout(1),
+    // SourceBackCD.cmd()));
+
+    // SourceBackCD.done().onTrue((Commands.sequence(new SetIdleMode(), new Feed(),
+    // SourceToD.cmd())));
+    // SourceToD.done()
+    // .onTrue(
+    // Commands.sequence(new SetIdleMode(), new Score().withTimeout(1),
+    // SourceBackCD2.cmd()));
+    // SourceBackCD2.done()
+    // .onTrue((Commands.sequence(new SetIdleMode(), new Feed(), SourceToE.cmd())));
+    // SourceToE.done()
+    // .onTrue(
+    // Commands.sequence(new SetIdleMode(), new Score().withTimeout(1),
+    // SourceBackEF.cmd()));
+    // SourceBackEF.done().onTrue((Commands.sequence(new SetIdleMode(), new Feed(),
+    // SourceToF.cmd())));
+    // SourceToF.done()
+    // .onTrue(
+    // Commands.sequence(new SetIdleMode(), new Score().withTimeout(1),
+    // SourceBackEF2.cmd()));
+    // SourceBackEF2.done()
+    // .onTrue((Commands.sequence(new SetIdleMode(), new Feed(), SourceToG.cmd())));
+    // SourceToG.done()
+    // .onTrue(
+    // Commands.sequence(new SetIdleMode(), new Score().withTimeout(1),
+    // SourceBackGH.cmd()));
+    // SourceBackGH.done().onTrue((Commands.sequence(new SetIdleMode(), new Feed(),
+    // SourceToH.cmd())));
+    // SourceToH.done()
+    // .onTrue(
+    // Commands.sequence(new SetIdleMode(), new Score().withTimeout(1),
+    // SourceBackGH2.cmd()));
+    // SourceBackGH2.done()
+    // .onTrue((Commands.sequence(new SetIdleMode(), new Feed(), SourceToI.cmd())));
+    // SourceToI.done()
+    // .onTrue(
+    // Commands.sequence(new SetIdleMode(), new Score().withTimeout(1),
+    // SourceBackIJ.cmd()));
+    // SourceBackIJ.done().onTrue((Commands.sequence(new SetIdleMode(), new Feed(),
+    // SourceToJ.cmd())));
+    // SourceToJ.done()
+    // .onTrue(
+    // Commands.sequence(new SetIdleMode(), new Score().withTimeout(1),
+    // SourceBackIJ2.cmd()));
+    // SourceBackIJ2.done()
+    // .onTrue((Commands.sequence(new SetIdleMode(), new Feed(), SourceToK.cmd())));
+    // SourceToK.done()
+    // .onTrue(
+    // Commands.sequence(new SetIdleMode(), new Score().withTimeout(1),
+    // SourceBackKL.cmd()));
+    // SourceBackKL.done().onTrue((Commands.sequence(new SetIdleMode(), new Feed(),
+    // SourceToL.cmd())));
+    // SourceToL.done().onTrue(Commands.sequence(new SetIdleMode(), new
+    // Score().withTimeout(1)));
 
     return routine;
   }

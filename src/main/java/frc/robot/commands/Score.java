@@ -13,6 +13,7 @@ public class Score extends Command {
   public Score() {
     // Add requirements for command schedule interuption handling
     // addRequirements(subsystem);
+    addRequirements(CoralFunnel.getInstance());
   }
 
   // Called when the command is initially scheduled.
