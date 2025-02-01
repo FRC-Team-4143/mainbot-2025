@@ -8,7 +8,7 @@ import com.ctre.phoenix6.hardware.TalonFX;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
-import edu.wpi.first.wpilibj2.command.button.Trigger
+import edu.wpi.first.wpilibj2.command.button.Trigger;
 
 public class TalonFXTuner {
 
@@ -81,7 +81,7 @@ public class TalonFXTuner {
    *
    * @param request supports any ctre control request type, but is intened for ClosedLoop types
    * @param trigger wpilib trigger to start/stop the execution of the setpoint command
-  */
+   */
   public void bindSetpoint(ControlRequest request, Trigger trigger) {
     trigger.whileTrue(updateSetpoint(request));
   }
