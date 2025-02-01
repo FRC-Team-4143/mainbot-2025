@@ -164,10 +164,10 @@ public final class Constants {
             LOADER.getBoolValue("drive", "br", "INVERT_DRIVE"));
 
     // Drivetrain PID Controller
-    public static final PIDController TRAJECTORY_TRANSLATION = new PIDController(0.0, 0, 0.000);
-    public static final PIDController TRAJECTORY_HEADING = new PIDController(0.0, 0, 0.000);
+    public static final PIDController TRAJECTORY_TRANSLATION = new PIDController(10.0, 0, 0.000);
+    public static final PIDController TRAJECTORY_HEADING = new PIDController(10.0, 0, 0.000);
     public static final PIDController POSE_TRANSLATION = new PIDController(0.0, 0, 0.000);
-    public static final PIDController POSE_HEADING = new PIDController(0.0, 0, 0.000);
+    public static final PIDController POSE_HEADING = new PIDController(7.5, 0, 0.000);
   }
 
   public static final class FeederConstants {
