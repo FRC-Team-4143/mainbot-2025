@@ -8,6 +8,7 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import frc.lib.FieldConstants;
 import frc.robot.subsystems.Claw;
 import frc.robot.subsystems.Claw.ClawMode;
 import frc.robot.subsystems.PoseEstimator;
@@ -24,6 +25,7 @@ public class Robot extends TimedRobot {
     robot_container_ = RobotContainer.getInstance();
     AutoManager.getInstance();
     OI.configureBindings();
+    System.out.println(FieldConstants.FIELD_LENGTH);
   }
 
   @Override
