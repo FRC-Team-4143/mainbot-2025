@@ -43,23 +43,23 @@ public final class Constants {
     // The steer motor uses MotionMagicVoltage control
     private static final Slot0Configs STEER_GAINS =
         new Slot0Configs()
-            .withKP(LOADER.getDoubleValue("drive", "com", "DRIVE_GAINS_P"))
-            .withKI(LOADER.getDoubleValue("drive", "com", "DRIVE_GAINS_I"))
-            .withKD(LOADER.getDoubleValue("drive", "com", "DRIVE_GAINS_D"))
-            .withKS(LOADER.getDoubleValue("drive", "com", "DRIVE_GAINS_S"))
-            .withKV(LOADER.getDoubleValue("drive", "com", "DRIVE_GAINS_V"))
-            .withKA(LOADER.getDoubleValue("drive", "com", "DRIVE_GAINS_A"));
-    // When using closed-loop control, the drive motor uses:
-    // - VelocityVoltage, if DrivetrainConstants.SupportsPro is false (default)
-    // - VelocityTorqueCurrentFOC, if DrivetrainConstants.SupportsPro is true
-    private static final Slot0Configs DRIVE_GAINS =
-        new Slot0Configs()
             .withKP(LOADER.getDoubleValue("drive", "com", "STEER_GAINS_P"))
             .withKI(LOADER.getDoubleValue("drive", "com", "STEER_GAINS_I"))
             .withKD(LOADER.getDoubleValue("drive", "com", "STEER_GAINS_D"))
             .withKS(LOADER.getDoubleValue("drive", "com", "STEER_GAINS_S"))
             .withKV(LOADER.getDoubleValue("drive", "com", "STEER_GAINS_V"))
             .withKA(LOADER.getDoubleValue("drive", "com", "STEER_GAINS_A"));
+    // When using closed-loop control, the drive motor uses:
+    // - VelocityVoltage, if DrivetrainConstants.SupportsPro is false (default)
+    // - VelocityTorqueCurrentFOC, if DrivetrainConstants.SupportsPro is true
+    private static final Slot0Configs DRIVE_GAINS =
+        new Slot0Configs()
+            .withKP(LOADER.getDoubleValue("drive", "com", "DRIVE_GAINS_P"))
+            .withKI(LOADER.getDoubleValue("drive", "com", "DRIVE_GAINS_I"))
+            .withKD(LOADER.getDoubleValue("drive", "com", "DRIVE_GAINS_D"))
+            .withKS(LOADER.getDoubleValue("drive", "com", "DRIVE_GAINS_S"))
+            .withKV(LOADER.getDoubleValue("drive", "com", "DRIVE_GAINS_V"))
+            .withKA(LOADER.getDoubleValue("drive", "com", "DRIVE_GAINS_A"));
 
     private static final double SLIP_CURRENT_AMPS =
         LOADER.getDoubleValue("drive", "com", "SLIP_CURRENT");

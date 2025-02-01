@@ -179,8 +179,7 @@ public class Elevator extends Subsystem {
             * ElevatorConstants.ELEVATOR_ROTATIONS_TO_METERS;
     // io_.current_arm_angle =
     // arm_encoder_.getAbsolutePosition().getValue().in(Radians);
-    io_.current_arm_angle_ =
-        arm_motor_.getPosition().getValue().in(Radians);
+    io_.current_arm_angle_ = arm_motor_.getPosition().getValue().in(Radians);
   }
 
   /** Computes updated outputs for the actuators */
