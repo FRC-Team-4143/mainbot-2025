@@ -7,6 +7,7 @@ package frc.robot;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.mw_lib.util.Util;
 import frc.robot.subsystems.*;
 import frc.robot.subsystems.Claw.ClawMode;
@@ -15,6 +16,7 @@ public abstract class OI {
 
   // Sets up both controllers
   static CommandXboxController driver_controller_ = new CommandXboxController(0);
+  static CommandXboxController operator_controller_ = new CommandXboxController(1);
 
   static SwerveDrivetrain swerve_drivetrain_ = SwerveDrivetrain.getInstance();
   static Claw claw_ = Claw.getInstance();
@@ -93,5 +95,37 @@ public abstract class OI {
 
   public static double getDriverJoystickPOVangle() {
     return driver_controller_.getHID().getPOV();
+  }
+
+  public static Trigger getDriverJoystickAButtonTrigger() {
+    return driver_controller_.a();
+  }
+
+  public static Trigger getDriverJoystickBButtonTrigger() {
+    return driver_controller_.b();
+  }
+
+  public static Trigger getDriverJoystickYButtonTrigger() {
+    return driver_controller_.y();
+  }
+
+  public static Trigger getDriverJoystickXButtonTrigger() {
+    return driver_controller_.x();
+  }
+
+  public static Trigger getOperatorJoystickAButtonTrigger() {
+    return operator_controller_.a();
+  }
+
+  public static Trigger getOperatorJoystickBButtonTrigger() {
+    return operator_controller_.b();
+  }
+
+  public static Trigger getOperatorJoystickYButtonTrigger() {
+    return operator_controller_.y();
+  }
+
+  public static Trigger getOperatorJoystickXButtonTrigger() {
+    return operator_controller_.x();
   }
 }
