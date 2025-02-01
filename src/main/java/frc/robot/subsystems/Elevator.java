@@ -3,7 +3,7 @@ package frc.robot.subsystems;
 import static edu.wpi.first.units.Units.Rotations;
 
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
-import com.ctre.phoenix6.controls.MotionMagicExpoVoltage;
+import com.ctre.phoenix6.controls.MotionMagicVoltage;
 import com.ctre.phoenix6.controls.VoltageOut;
 import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.hardware.TalonFX;
@@ -44,8 +44,8 @@ public class Elevator extends Subsystem {
   private TalonFX arm_motor_;
   private TalonFXConfiguration elevator_config_;
   private TalonFXConfiguration arm_config_;
-  private final MotionMagicExpoVoltage elevator_request_;
-  private final MotionMagicExpoVoltage arm_request_;
+  private final MotionMagicVoltage elevator_request_;
+  private final MotionMagicVoltage arm_request_;
   private BooleanSupplier elevator_at_minimum_;
   private Trigger reset_elevator_trigger_;
   private DigitalInput elevator_limit_switch_;
@@ -94,8 +94,7 @@ public class Elevator extends Subsystem {
     elevator_config_.Slot0 = ElevatorConstants.ELEVATOR_GAINS;
     elevator_config_.MotionMagic.MotionMagicCruiseVelocity =
         ElevatorConstants.ELEVATOR_CRUISE_VELOCITY;
-    elevator_config_.MotionMagic.MotionMagicAcceleration = ElevatorConstants.ELEVATOR_ACCELERATION;
-    elevator_config_.MotionMagic.MotionMagicExpo_kV = ElevatorConstants.ELEVATOR_EXPO_KV;
+    elevator_config_.MotionMagic.MotionMagicAcceleration = ElevatorConstants.ELEVATOR_ACCEL;
     elevator_config_.MotionMagic.MotionMagicExpo_kA = ElevatorConstants.ELEVATOR_EXPO_KA;
     elevator_config_.MotorOutput.NeutralMode = NeutralModeValue.Brake;
     elevator_config_.SoftwareLimitSwitch.ForwardSoftLimitEnable = false; // TODO: set back to true
@@ -112,7 +111,8 @@ public class Elevator extends Subsystem {
 
     // Arm Configuration
     arm_config_ = new TalonFXConfiguration();
-    // arm_config_.Feedback.FeedbackRemoteSensorID = ElevatorConstants.ARM_ENCODER_ID;
+    // arm_config_.Feedback.FeedbackRemoteSensorID =
+    // ElevatorConstants.ARM_ENCODER_ID;
     arm_config_.Feedback.FeedbackSensorSource = FeedbackSensorSourceValue.RotorSensor;
     arm_config_.Slot0 = ElevatorConstants.ARM_GAINS;
     arm_config_.MotionMagic.MotionMagicCruiseVelocity = ElevatorConstants.ARM_CRUISE_VELOCITY;
@@ -125,8 +125,8 @@ public class Elevator extends Subsystem {
     arm_motor_.getConfigurator().apply(arm_config_);
 
     // System Behavior Setup
-    elevator_request_ = new MotionMagicExpoVoltage(0);
-    arm_request_ = new MotionMagicExpoVoltage(0);
+    elevator_request_ = new MotionMagicVoltage(0);
+    arm_request_ = new MotionMagicVoltage(0);
 
     elevator_at_minimum_ = () -> isElevatorAtMinimum();
     reset_elevator_trigger_ = new Trigger(elevator_at_minimum_);
@@ -159,15 +159,11 @@ public class Elevator extends Subsystem {
 
     // System Tuning
     elevator_tuner_ =
-        new TalonFXTuner(elevator_master_, new TalonFX[] {elevator_follower_}, "Elevator");
-    elevator_tuner_.bindSetpoint(
-        elevator_request_.withPosition(10.0), OI.getDriverJoystickAButtonTrigger());
-    elevator_tuner_.bindSetpoint(
-        elevator_request_.withPosition(5.0), OI.getDriverJoystickYButtonTrigger());
-    elevator_tuner_.bindSetpoint(new VoltageOut(-1), OI.getDriverJoystickXButtonTrigger());
-    elevator_tuner_.bindSetpoint(new VoltageOut(1), OI.getDriverJoystickBButtonTrigger());
+        new TalonFXTuner(elevator_master_, new TalonFX[] {elevator_follower_}, "Elevator", this);
+    // bindTuner(elevator_tuner_, 5, 10);
 
-    arm_tuner_ = new TalonFXTuner(arm_motor_, "Arm");
+    arm_tuner_ = new TalonFXTuner(arm_motor_, "Arm", this);
+    bindTuner(arm_tuner_, 1, 10);
   }
 
   /** Called to reset and configure the subsystem */
@@ -180,7 +176,8 @@ public class Elevator extends Subsystem {
     io_.current_elevator_height =
         ((io_.elevator_master_rotations_ + io_.elevator_follower_rotations_) / 2)
             * ElevatorConstants.ELEVATOR_ROTATIONS_TO_METERS;
-    //  io_.current_arm_angle = arm_encoder_.getAbsolutePosition().getValue().in(Radians);
+    // io_.current_arm_angle =
+    // arm_encoder_.getAbsolutePosition().getValue().in(Radians);
     io_.current_arm_angle_ =
         arm_motor_.getPosition().getValue().in(Rotations)
             * ElevatorConstants.ARM_ROTATIONS_TO_RADIANS;
@@ -250,18 +247,12 @@ public class Elevator extends Subsystem {
     // .withPosition(io_.target_elevator_height/ElevatorConstants.ELEVATOR_ROTATIONS_TO_METERS)
     // .withLimitReverseMotion(isElevatorAtMinimum()));
     // arm_motor_.setControl(arm_request_.withPosition(io_.target_arm_angle));
-    // elevator_follower_.setControl(new Follower(elevator_master_.getDeviceID(), true));
+    // elevator_follower_.setControl(new Follower(elevator_master_.getDeviceID(),
+    // true));
   }
 
   /** Outputs all logging information to the SmartDashboard */
   public void outputTelemetry(double timestamp) {
-    SmartDashboard.putNumber(
-        "Target Elevator Height",
-        elevator_master_.getClosedLoopReference().getValue()
-            * ElevatorConstants.ELEVATOR_ROTATIONS_TO_METERS);
-    SmartDashboard.putNumber("Current Elevator Height", io_.current_elevator_height);
-    SmartDashboard.putNumber(
-        "Elevator Applied Output", elevator_master_.getClosedLoopOutput().getValue());
     updateMechanism();
   }
 
@@ -341,6 +332,17 @@ public class Elevator extends Subsystem {
    */
   public boolean isElevatorAtMinimum() {
     return isLimitSwitchPressed() && isElevatorNearLimitSwitch();
+  }
+
+  public void bindTuner(TalonFXTuner tuner, double pos1, double pos2) {
+    tuner.bindSetpoint(new MotionMagicVoltage(pos1), OI.getDriverJoystickAButtonTrigger());
+    tuner.bindSetpoint(new MotionMagicVoltage(pos2), OI.getDriverJoystickYButtonTrigger());
+    tuner.bindSetpoint(new VoltageOut(-1), OI.getDriverJoystickXButtonTrigger());
+    tuner.bindSetpoint(new VoltageOut(1), OI.getDriverJoystickBButtonTrigger());
+    tuner.bindDynamicForward(OI.getOperatorJoystickAButtonTrigger());
+    tuner.bindDynamicReverse(OI.getOperatorJoystickBButtonTrigger());
+    tuner.bindQuasistaticForward(OI.getOperatorJoystickXButtonTrigger());
+    tuner.bindQuasistaticReverse(OI.getOperatorJoystickYButtonTrigger());
   }
 
   public class ElevatorPeriodicIo implements Logged {

@@ -188,27 +188,28 @@ public final class Constants {
         InvertedValue.CounterClockwise_Positive;
     public static final InvertedValue ELEVATOR_FOLLOWER_INVERSION =
         InvertedValue.Clockwise_Positive;
-    public static final double ELEVATOR_CRUISE_VELOCITY = 0;
-    public static final double ELEVATOR_ACCELERATION = 0;
-    public static final double ELEVATOR_EXPO_KV = 0;
-    public static final double ELEVATOR_EXPO_KA = 0;
+    // Units.inchesToMeters(Sprocket Circumference * Math.PI) / gearbox ratio *
+    // rigging
+    public static final double ELEVATOR_ROTATIONS_TO_METERS =
+        Units.inchesToMeters(1.751 * Math.PI) / 4 * 2;
+    public static final double ELEVATOR_CRUISE_VELOCITY = 5.0 / ELEVATOR_ROTATIONS_TO_METERS;
+    public static final double ELEVATOR_ACCEL = 3.0 / ELEVATOR_ROTATIONS_TO_METERS;
+    public static final double ELEVATOR_EXPO_KV = 0.11733;
+    public static final double ELEVATOR_EXPO_KA = 0.0070285;
     public static final double ELEVATOR_ZERO_THRESHOLD = 0; // In m
     public static final double ELEVATOR_STATOR_CURRENT_LIMIT = 40.0;
     public static final double MIN_ELEVATOR_HEIGHT = Units.inchesToMeters(23.75);
     public static final double ELEVATOR_HEIGHT_ABOVE_PIVOT = Units.inchesToMeters(13);
-    // Units.inchesToMeters(Sprocket Circumference * Math.PI) / gearbox ratio * rigging
-    public static final double ELEVATOR_ROTATIONS_TO_METERS =
-        Units.inchesToMeters(1.751 * Math.PI) / 4 * 2;
 
     public static final Slot0Configs ELEVATOR_GAINS =
         new Slot0Configs()
-            .withKP(5.0)
+            .withKP(1.0)
             .withKI(0.0) // <-DO NOT TOUCH!!!!!!!!!
-            .withKD(0.05)
-            .withKS(0.0)
-            .withKV(0.0)
-            .withKA(0.0)
-            .withKG(0.285)
+            .withKD(0.08)
+            .withKS(0.06766)
+            .withKV(0.11733)
+            .withKA(0.0070285)
+            .withKG(0.43)
             .withGravityType(GravityTypeValue.Elevator_Static);
 
     // Arm Constants:
@@ -219,8 +220,6 @@ public final class Constants {
     public static final double ARM_HOME_POSITION = 0;
     public static final double ARM_CRUISE_VELOCITY = 0;
     public static final double ARM_ACCELERATION = 0;
-    public static final double ARM_EXPO_KV = 0;
-    public static final double ARM_EXPO_KA = 0;
     public static final double ARM_LOWER_LIMIT = 0;
     public static final double MIN_ARM_LENGTH = Units.inchesToMeters(19.280);
     // ((shaft sprocket / pivot sprocket) / gearbox) * rotations to radians ratio)
@@ -228,13 +227,13 @@ public final class Constants {
 
     public static final Slot0Configs ARM_GAINS =
         new Slot0Configs()
-            .withKP(0.0)
+            .withKP(0.056898)
             .withKI(0.0) // DO NOT TOUCH!!!!!!!!!
             .withKD(0.0)
-            .withKS(0.0)
-            .withKV(0.0)
-            .withKA(0.0)
-            .withKG(0.0)
+            .withKS(0.030967)
+            .withKV(0.1097)
+            .withKA(0.0027189)
+            .withKG(0.00055752)
             .withGravityType(GravityTypeValue.Arm_Cosine);
   }
 }
