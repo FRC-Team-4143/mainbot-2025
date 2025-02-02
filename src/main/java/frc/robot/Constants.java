@@ -146,29 +146,11 @@ public final class Constants {
   }
 
   public static final class ClawConstants {
-    public static final int CLAMP_MOTOR_ID = 11;
-    public static final int WHEEL_MOTOR_ID = 12;
-    public static final double CLOSED_ANGLE = -0.02;
-    public static final double OPEN_ANGLE = 0.72622613981267;
-    public static final double LOAD_ANGLE = 0.30;
+    public static final int WHEEL_MOTOR_ID = 11;
     public static final double WHEEL_SHOOT_SPEED = 0.30;
     public static final double WHEEL_LOAD_SPEED = -0.2;
     public static final InvertedValue WHEEL_MOTOR_INVERTED =
         InvertedValue.CounterClockwise_Positive;
-    public static final double CLAMP_SENSOR_TO_MECHANISM_RATION = 36 / 11;
-    public static final double CLAMP_CURRENT_LIMIT = 10;
-    public static final double CLAMP_ZERO_OFFSET = 0.11962890625;
-    public static final double CLOSED_VOLTS = -1.0;
-
-    public static final Slot0Configs CLAMP_GAINS =
-        new Slot0Configs()
-            .withKP(20.0)
-            // .withKI(1.5) // DO NOT TOUCH!!!!!!!!!
-            .withKD(0.0)
-            .withKS(0.15)
-            .withKV(0.0)
-            .withKA(0.0)
-            .withKG(0.0);
   }
 
   public class ClimberConstants {
@@ -199,10 +181,10 @@ public final class Constants {
     public static final double ELEVATOR_EXPO_KA = 0.0070285;
     public static final double ELEVATOR_ZERO_THRESHOLD = 0; // In m
     public static final double ELEVATOR_STATOR_CURRENT_LIMIT = 40.0;
-    public static final double ELEVATOR_HEIGHT_ABOVE_PIVOT = Units.inchesToMeters(13);
+    public static final double ELEVATOR_HEIGHT_ABOVE_PIVOT = Units.inchesToMeters(15);
     public static final double ELEVATOR_MIN_HEIGHT = Units.inchesToMeters(23.75);
     public static final double ELEVATOR_MAX_HEIGHT =
-        Units.inchesToMeters(85.76) - ELEVATOR_HEIGHT_ABOVE_PIVOT - 0.1; // 0.1m of safety
+        Units.inchesToMeters(96.76) - ELEVATOR_HEIGHT_ABOVE_PIVOT - 0.1; // 0.1m of safety
 
     public static final Slot0Configs ELEVATOR_GAINS =
         new Slot0Configs()
@@ -224,10 +206,11 @@ public final class Constants {
     public static final double ARM_HOME_POSITION = 0;
     public static final double ARM_CRUISE_VELOCITY = 4;
     public static final double ARM_ACCELERATION = 2;
-    public static final double MIN_ARM_LENGTH = Units.inchesToMeters(12.5);
+    public static final double ARM_LENGTH = Units.inchesToMeters(12.5);
     // ((shaft sprocket / pivot sprocket) / gearbox) * rotations to radians ratio)
     public static final double SENSOR_TO_MECHANISM_RATIO = (1.0 / ((16.0 / 64.0) / 20.0));
-    public static final double ARM_Z_OFFSET = Units.inchesToMeters(15);
+    public static final double ARM_FORWARD_LIMT = Units.radiansToRotations(Math.PI);
+    public static final double ARM_REVERSE_LIMT = Units.radiansToRotations(-0.6626);
     public static final Slot0Configs ARM_GAINS =
         new Slot0Configs()
             .withKP(40.0)

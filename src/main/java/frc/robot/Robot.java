@@ -8,8 +8,6 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
-import frc.robot.subsystems.Claw;
-import frc.robot.subsystems.Claw.ClawMode;
 import frc.robot.subsystems.PoseEstimator;
 import frc.robot.subsystems.SwerveDrivetrain;
 import frc.robot.subsystems.SwerveDrivetrain.DriveMode;
@@ -55,8 +53,7 @@ public class Robot extends TimedRobot {
 
   @Override
   public void teleopInit() {
-    SwerveDrivetrain.getInstance().setDriveMode(DriveMode.ROBOT_CENTRIC);
-    Claw.getInstance().setClawMode(ClawMode.IDLE);
+    SwerveDrivetrain.getInstance().setDriveMode(DriveMode.FIELD_CENTRIC);
     CommandScheduler.getInstance().cancelAll();
   }
 

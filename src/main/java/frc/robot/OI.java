@@ -9,9 +9,11 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.mw_lib.util.Util;
+import frc.robot.commands.CoralStationLoad;
+import frc.robot.commands.SetReefLevel;
+import frc.robot.commands.SetReefLevel.ReefLevel;
 import frc.robot.subsystems.*;
 import frc.robot.subsystems.Claw.ClawMode;
-import frc.robot.subsystems.Elevator.TargetConfig;
 
 public abstract class OI {
 
@@ -43,55 +45,23 @@ public abstract class OI {
         .onTrue(
             Commands.runOnce(() -> swerve_drivetrain_.toggleFieldCentric(), swerve_drivetrain_));
 
+    // Score
     driver_controller_
         .rightBumper()
         .whileTrue(
             Commands.startEnd(
-                () -> claw_.setClawMode(ClawMode.SHOOT),
-                () -> claw_.setClawMode(ClawMode.IDLE),
-                claw_));
-    driver_controller_
-        .leftBumper()
-        .whileTrue(
-            Commands.startEnd(
-                () -> claw_.setClawMode(ClawMode.LOAD),
-                () -> claw_.setClawMode(ClawMode.IDLE),
-                claw_));
-    driver_controller_
-        .y()
-        .onTrue(
-            Commands.startEnd(
-                () -> elevator_.setCurrentTargetConfig(TargetConfig.L4),
-                () -> elevator_.setCurrentTargetConfig(TargetConfig.SOURCE),
-                elevator_));
-    driver_controller_
-        .x()
-        .onTrue(
-            Commands.startEnd(
-                () -> elevator_.setCurrentTargetConfig(TargetConfig.L3),
-                () -> elevator_.setCurrentTargetConfig(TargetConfig.SOURCE),
-                elevator_));
-    driver_controller_
-        .b()
-        .onTrue(
-            Commands.startEnd(
-                () -> elevator_.setCurrentTargetConfig(TargetConfig.L2),
-                () -> elevator_.setCurrentTargetConfig(TargetConfig.SOURCE),
-                elevator_));
-    driver_controller_
-        .a()
-        .onTrue(
-            Commands.startEnd(
-                () -> elevator_.setCurrentTargetConfig(TargetConfig.L1),
-                () -> elevator_.setCurrentTargetConfig(TargetConfig.SOURCE),
-                elevator_));
+                () -> claw_.setClawMode(ClawMode.SHOOT), () -> claw_.setClawMode(ClawMode.IDLE)));
+    driver_controller_.y().toggleOnTrue(new SetReefLevel(ReefLevel.L4));
+    driver_controller_.x().toggleOnTrue(new SetReefLevel(ReefLevel.L2));
+    driver_controller_.b().toggleOnTrue(new SetReefLevel(ReefLevel.L3));
+    driver_controller_.a().toggleOnTrue(new CoralStationLoad());
+    // driver_controller_.a().whileTrue(new setReefLevel(ReefLevel.L1));
   }
 
   public static double getDriverJoystickLeftX() {
     double val = driver_controller_.getLeftX();
     double output = val * val;
     output = Math.copySign(output, val);
-    // return output;
     return val;
   }
 
@@ -99,7 +69,6 @@ public abstract class OI {
     double val = driver_controller_.getLeftY();
     double output = val * val;
     output = Math.copySign(output, val);
-    // return output;
     return val;
   }
 
@@ -107,7 +76,6 @@ public abstract class OI {
     double val = driver_controller_.getRightX();
     double output = val * val;
     output = Math.copySign(output, val);
-    // return output;
     return val;
   }
 
