@@ -38,7 +38,7 @@ public final class Constants {
     // Cam mounted facing forward, half a meter forward of center, half a meter up from center.
     public static final Transform3d kRobotToCam =
         new Transform3d(
-            new Translation3d(0.05, 0.0, 0.5), new Rotation3d(0, 0, Units.degreesToRadians(180)));
+            new Translation3d(-0.05, 0.0, 0.5), new Rotation3d(0, 0, Units.degreesToRadians(180)));
 
     // The layout of the AprilTags on the field
     public static final AprilTagFieldLayout kTagLayout =
