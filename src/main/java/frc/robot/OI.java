@@ -11,6 +11,7 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.mw_lib.util.Util;
 import frc.robot.subsystems.*;
 import frc.robot.subsystems.Claw.ClawMode;
+import frc.robot.subsystems.Elevator.TargetConfig;
 
 public abstract class OI {
 
@@ -20,6 +21,7 @@ public abstract class OI {
 
   static SwerveDrivetrain swerve_drivetrain_ = SwerveDrivetrain.getInstance();
   static Claw claw_ = Claw.getInstance();
+  static Elevator elevator_ = Elevator.getInstance();
 
   public static void configureBindings() {
 
@@ -32,36 +34,57 @@ public abstract class OI {
                 () ->
                     swerve_drivetrain_.seedFieldRelative(swerve_drivetrain_.getDriverPrespective()))
             .ignoringDisable(true));
+    SmartDashboard.putData(
+        "Zero Elevator & Arm",
+        Commands.runOnce(() -> elevator_.elevatorAndArmPoseReset()).ignoringDisable(true));
 
     driver_controller_
         .rightStick()
         .onTrue(
             Commands.runOnce(() -> swerve_drivetrain_.toggleFieldCentric(), swerve_drivetrain_));
 
-    // driver_controller_.leftTrigger().whileTrue(new Feed());
-
-    // driver_controller_.rightTrigger().whileTrue(new Score());
     driver_controller_
-        .a()
+        .rightBumper()
         .whileTrue(
             Commands.startEnd(
                 () -> claw_.setClawMode(ClawMode.SHOOT),
                 () -> claw_.setClawMode(ClawMode.IDLE),
                 claw_));
     driver_controller_
-        .y()
+        .leftBumper()
         .whileTrue(
             Commands.startEnd(
                 () -> claw_.setClawMode(ClawMode.LOAD),
-                () -> claw_.setClawMode(ClawMode.CLOSED),
+                () -> claw_.setClawMode(ClawMode.IDLE),
                 claw_));
     driver_controller_
-        .b()
-        .whileTrue(
+        .y()
+        .onTrue(
             Commands.startEnd(
-                () -> claw_.setClawMode(ClawMode.OPEN),
-                () -> claw_.setClawMode(ClawMode.CLOSED),
-                claw_));
+                () -> elevator_.setCurrentTargetConfig(TargetConfig.L4),
+                () -> elevator_.setCurrentTargetConfig(TargetConfig.SOURCE),
+                elevator_));
+    driver_controller_
+        .x()
+        .onTrue(
+            Commands.startEnd(
+                () -> elevator_.setCurrentTargetConfig(TargetConfig.L3),
+                () -> elevator_.setCurrentTargetConfig(TargetConfig.SOURCE),
+                elevator_));
+    driver_controller_
+        .b()
+        .onTrue(
+            Commands.startEnd(
+                () -> elevator_.setCurrentTargetConfig(TargetConfig.L2),
+                () -> elevator_.setCurrentTargetConfig(TargetConfig.SOURCE),
+                elevator_));
+    driver_controller_
+        .a()
+        .onTrue(
+            Commands.startEnd(
+                () -> elevator_.setCurrentTargetConfig(TargetConfig.L1),
+                () -> elevator_.setCurrentTargetConfig(TargetConfig.SOURCE),
+                elevator_));
   }
 
   public static double getDriverJoystickLeftX() {
@@ -91,6 +114,10 @@ public abstract class OI {
   public static boolean getDriverJoystickRightY() {
     double val = driver_controller_.getRightY();
     return Util.epislonEquals(val, 0, 0.1);
+  }
+
+  public static double getDriverJoystickRightTriggerAxis() {
+    return driver_controller_.getRightTriggerAxis();
   }
 
   public static double getDriverJoystickPOVangle() {

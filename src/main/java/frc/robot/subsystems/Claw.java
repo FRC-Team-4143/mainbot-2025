@@ -55,8 +55,8 @@ public class Claw extends Subsystem {
     // Create io object first in subsystem configuration
     io_ = new ClawPeriodicIo();
 
-    clamp_motor_ = new TalonFX(ClawConstants.CLAMP_MOTOR_ID);
-    wheel_motor_ = new TalonFX(ClawConstants.WHEEL_MOTOR_ID);
+    clamp_motor_ = new TalonFX(ClawConstants.CLAMP_MOTOR_ID, "CANivore");
+    wheel_motor_ = new TalonFX(ClawConstants.WHEEL_MOTOR_ID, "CANivore");
     voltage_clamp_request_ = new VoltageOut(0);
     position_clamp_request_ = new PositionVoltage(0).withSlot(0);
     current_clamp_request_ = voltage_clamp_request_;
@@ -64,6 +64,7 @@ public class Claw extends Subsystem {
     wheel_config_ = new TalonFXConfiguration();
 
     wheel_config_.MotorOutput.NeutralMode = NeutralModeValue.Brake;
+    wheel_config_.MotorOutput.Inverted = ClawConstants.WHEEL_MOTOR_INVERTED;
 
     clamp_config_.MotorOutput.NeutralMode = NeutralModeValue.Brake;
     clamp_config_.CurrentLimits.SupplyCurrentLimit = ClawConstants.CLAMP_CURRENT_LIMIT;

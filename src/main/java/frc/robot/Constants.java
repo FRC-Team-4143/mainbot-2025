@@ -152,7 +152,9 @@ public final class Constants {
     public static final double OPEN_ANGLE = 0.72622613981267;
     public static final double LOAD_ANGLE = 0.30;
     public static final double WHEEL_SHOOT_SPEED = 0.30;
-    public static final double WHEEL_LOAD_SPEED = -0.1;
+    public static final double WHEEL_LOAD_SPEED = -0.2;
+    public static final InvertedValue WHEEL_MOTOR_INVERTED =
+        InvertedValue.CounterClockwise_Positive;
     public static final double CLAMP_SENSOR_TO_MECHANISM_RATION = 36 / 11;
     public static final double CLAMP_CURRENT_LIMIT = 10;
     public static final double CLAMP_ZERO_OFFSET = 0.11962890625;
@@ -183,7 +185,6 @@ public final class Constants {
     public static final int ELEVATOR_FOLLOWER_ID = 22;
     public static final int ELEVATOR_LIMIT_SWITCH_PORT_NUMBER = 4;
     public static final double ELEVATOR_TARGET_THRESHOLD = 0.25; // In m
-    public static final double ELEVATOR_MAX_HEIGHT = 9000; // In m
     public static final InvertedValue ELEVATOR_MASTER_INVERSION_ =
         InvertedValue.CounterClockwise_Positive;
     public static final InvertedValue ELEVATOR_FOLLOWER_INVERSION =
@@ -198,8 +199,10 @@ public final class Constants {
     public static final double ELEVATOR_EXPO_KA = 0.0070285;
     public static final double ELEVATOR_ZERO_THRESHOLD = 0; // In m
     public static final double ELEVATOR_STATOR_CURRENT_LIMIT = 40.0;
-    public static final double MIN_ELEVATOR_HEIGHT = Units.inchesToMeters(23.75);
     public static final double ELEVATOR_HEIGHT_ABOVE_PIVOT = Units.inchesToMeters(13);
+    public static final double ELEVATOR_MIN_HEIGHT = Units.inchesToMeters(23.75);
+    public static final double ELEVATOR_MAX_HEIGHT =
+        Units.inchesToMeters(85.76) - ELEVATOR_HEIGHT_ABOVE_PIVOT - 0.1; // 0.1m of safety
 
     public static final Slot0Configs ELEVATOR_GAINS =
         new Slot0Configs()
@@ -221,11 +224,10 @@ public final class Constants {
     public static final double ARM_HOME_POSITION = 0;
     public static final double ARM_CRUISE_VELOCITY = 4;
     public static final double ARM_ACCELERATION = 2;
-    public static final double ARM_LOWER_LIMIT = 0;
-    public static final double MIN_ARM_LENGTH = Units.inchesToMeters(19.280);
+    public static final double MIN_ARM_LENGTH = Units.inchesToMeters(12.5);
     // ((shaft sprocket / pivot sprocket) / gearbox) * rotations to radians ratio)
     public static final double SENSOR_TO_MECHANISM_RATIO = (1.0 / ((16.0 / 64.0) / 20.0));
-
+    public static final double ARM_Z_OFFSET = Units.inchesToMeters(15);
     public static final Slot0Configs ARM_GAINS =
         new Slot0Configs()
             .withKP(40.0)
