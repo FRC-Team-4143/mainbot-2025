@@ -14,6 +14,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.mw_lib.controls.TalonFXTuner;
 import frc.mw_lib.subsystem.Subsystem;
 import frc.robot.Constants.ClimberConstants;
+import frc.robot.OI;
 import monologue.Annotations.Log;
 import monologue.Logged;
 
@@ -49,12 +50,19 @@ public class Climber extends Subsystem {
     climber_motor_ = new TalonFX(ClimberConstants.CLIMBER_ID);
     climber_request_ = new PositionVoltage(0).withSlot(0);
 
+    climber_config_ = new TalonFXConfiguration();
     climber_config_.MotorOutput.NeutralMode = NeutralModeValue.Brake;
     climber_config_.Slot0 = ClimberConstants.CLIMBER_GAINS;
 
     climber_motor_.getConfigurator().apply(climber_config_);
 
     climber_tuner_ = new TalonFXTuner(climber_motor_, "climber", this);
+    climber_tuner_.bindSetpoint(
+        new PositionVoltage(ClimberConstants.DEPLOYED_ROTATIONS),
+        OI.getOperatorJoystickYButtonTrigger());
+    climber_tuner_.bindSetpoint(
+        new PositionVoltage(ClimberConstants.RETRACTED_ROTATIONS),
+        OI.getOperatorJoystickAButtonTrigger());
 
     // Call reset last in subsystem configuration
     reset();
@@ -87,13 +95,13 @@ public class Climber extends Subsystem {
   public void updateLogic(double timestamp) {
     switch (io_.current_mode_) {
       case DEPLOYED:
-        io_.current_request_ = climber_request_.withPosition(ClimberConstants.DEPLOYED_ROTATIONS);
+        io_.desired_rotation_ = ClimberConstants.DEPLOYED_ROTATIONS;
         break;
       case RETRACTED:
-        io_.current_request_ = climber_request_.withPosition(ClimberConstants.RETRACTED_ROTATIONS);
+        io_.desired_rotation_ = ClimberConstants.RETRACTED_ROTATIONS;
         break;
       default:
-        io_.current_request_ = climber_request_.withPosition(ClimberConstants.RETRACTED_ROTATIONS);
+        io_.desired_rotation_ = ClimberConstants.RETRACTED_ROTATIONS;
         break;
     }
   }
@@ -105,7 +113,8 @@ public class Climber extends Subsystem {
    */
   @Override
   public void writePeriodicOutputs(double timestamp) {
-    climber_motor_.setControl(io_.current_request_);
+
+    climber_motor_.setControl(climber_request_.withPosition(io_.desired_rotation_));
   }
 
   /**
@@ -149,14 +158,10 @@ public class Climber extends Subsystem {
   }
 
   public class ClimberPeriodicIo implements Logged {
-    @Log.File private double current_rotations_ = 0;
-
-    @Log.File
-    private PositionVoltage current_request_ =
-        climber_request_.withPosition(ClimberConstants.RETRACTED_ROTATIONS);
-
-    @Log.File private ClimberMode current_mode_ = ClimberMode.RETRACTED;
-    @Log.File private double current_amps_;
+    @Log.File public double current_rotations_ = 0;
+    @Log.File public double desired_rotation_ = ClimberConstants.RETRACTED_ROTATIONS;
+    @Log.File public ClimberMode current_mode_ = ClimberMode.RETRACTED;
+    @Log.File public double current_amps_;
   }
 
   @Override
