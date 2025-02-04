@@ -316,24 +316,24 @@ public class SwerveDrivetrain extends Subsystem {
     current_state_pub.set(io_.current_module_states_);
     requested_state_pub.set(io_.requested_module_states_);
     current_state_proxy_pub.set(ChassisProxyServer.getModuleStates());
-
-    SmartDashboard.putNumber("Rotation Control/Target Rotation", io_.target_rotation_.getDegrees());
-    SmartDashboard.putNumber("Rotation Control/Current Yaw", io_.robot_yaw_.getDegrees());
+    SmartDashboard.putString("Debug/Swerve/Mode", io_.drive_mode_.toString());
     SmartDashboard.putNumber(
-        "Debug/Driver Prespective", io_.drivers_station_perspective_.getDegrees());
-    SmartDashboard.putNumber("Debug/Chassis Speed/X", io_.chassis_speeds_.vxMetersPerSecond);
-    SmartDashboard.putNumber("Debug/Chassis Speed/Y", io_.chassis_speeds_.vyMetersPerSecond);
+        "Debug/Swerve/Rotation Control/Target Rotation", io_.target_rotation_.getDegrees());
     SmartDashboard.putNumber(
-        "Debug/Chassis Speed/Omega", io_.chassis_speeds_.omegaRadiansPerSecond);
+        "Debug/Swerve/Rotation Control/Current Yaw", io_.robot_yaw_.getDegrees());
+    SmartDashboard.putNumber(
+        "Debug/Swerve/Driver Prespective", io_.drivers_station_perspective_.getDegrees());
+    SmartDashboard.putNumber("Debug/Swerve/Chassis Speed/X", io_.chassis_speeds_.vxMetersPerSecond);
+    SmartDashboard.putNumber("Debug/Swerve/Chassis Speed/Y", io_.chassis_speeds_.vyMetersPerSecond);
+    SmartDashboard.putNumber(
+        "Debug/Swerve/Chassis Speed/Omega", io_.chassis_speeds_.omegaRadiansPerSecond);
 
     Twist2d chassis_proxy_twist = ChassisProxyServer.getTwist();
-    SmartDashboard.putNumber("Debug/Chassis Proxy Speed/X", chassis_proxy_twist.dx);
-    SmartDashboard.putNumber("Debug/Chassis Proxy Speed/Y", chassis_proxy_twist.dy);
-    SmartDashboard.putNumber("Debug/Chassis Proxy Speed/Omega", chassis_proxy_twist.dtheta);
+    SmartDashboard.putNumber("Debug/Swerve/Chassis Proxy Speed/X", chassis_proxy_twist.dx);
+    SmartDashboard.putNumber("Debug/Swerve/Chassis Proxy Speed/Y", chassis_proxy_twist.dy);
+    SmartDashboard.putNumber("Debug/Swerve/Chassis Proxy Speed/Omega", chassis_proxy_twist.dtheta);
     field_.setRobotPose(ChassisProxyServer.getPose());
     SmartDashboard.putData("Chassis Proxy Pose", field_);
-
-    SmartDashboard.putString("drive mode", io_.drive_mode_.toString());
   }
 
   public Rotation2d getRobotRotation() {

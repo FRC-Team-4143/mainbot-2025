@@ -12,7 +12,7 @@ import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.FeedbackSensorSourceValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.util.Units;
+import edu.wpi.first.wpilibj.DataLogManager;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.smartdashboard.Mechanism2d;
 import edu.wpi.first.wpilibj.smartdashboard.MechanismLigament2d;
@@ -22,7 +22,6 @@ import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj.util.Color8Bit;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
-import frc.lib.FieldConstants;
 import frc.mw_lib.ElevatorKinematics;
 import frc.mw_lib.controls.TalonFXTuner;
 import frc.mw_lib.subsystem.Subsystem;
@@ -35,30 +34,32 @@ import monologue.Logged;
 
 public class Elevator extends Subsystem {
   // Singleton pattern
-  private static Elevator elevatorInstance = null;
+  private static Elevator elevator_instance_ = null;
 
   public static Elevator getInstance() {
-    if (elevatorInstance == null) {
-      elevatorInstance = new Elevator();
+    if (elevator_instance_ == null) {
+      elevator_instance_ = new Elevator();
     }
-    return elevatorInstance;
+    return elevator_instance_;
   }
 
-  // Elevator/Arm motors
+  // Hardware
   private TalonFX elevator_master_;
   private TalonFX elevator_follower_;
   private TalonFX arm_motor_;
   private TalonFXConfiguration elevator_config_;
   private TalonFXConfiguration arm_config_;
-  private final MotionMagicVoltage elevator_request_;
-  private final MotionMagicVoltage arm_request_;
+  private MotionMagicVoltage elevator_request_;
+  private MotionMagicVoltage arm_request_;
   private BooleanSupplier elevator_at_minimum_;
   private Trigger reset_elevator_trigger_;
   private DigitalInput elevator_limit_switch_;
   private CANcoder arm_encoder_;
 
+  // Control Behavior
   private ElevatorKinematics kinematics_;
 
+  // Mechanisms
   private Mechanism2d system_mech_;
   private MechanismRoot2d mech_root_;
   private MechanismLigament2d elevator_mech_;
@@ -69,19 +70,9 @@ public class Elevator extends Subsystem {
   TalonFXTuner arm_tuner_;
 
   // Enums for Elevator/Arm
-  public enum TargetConfig {
-    L1,
-    L2,
-    L3,
-    L4,
-    ALGAE_HIGH,
-    ALGAE_LOW,
-    SOURCE,
-    GROUND,
-    PROCESSOR,
-    BARGE,
-    STOW,
-    IDLE
+  public enum ControlMode {
+    END_EFFECTOR,
+    PIVOT
   }
 
   private ElevatorPeriodicIo io_;
@@ -131,6 +122,10 @@ public class Elevator extends Subsystem {
     arm_config_.MotionMagic.MotionMagicAcceleration = ElevatorConstants.ARM_ACCELERATION;
     arm_config_.MotorOutput.NeutralMode = NeutralModeValue.Brake;
     arm_config_.ClosedLoopGeneral.ContinuousWrap = true;
+    arm_config_.SoftwareLimitSwitch.ForwardSoftLimitEnable = true;
+    arm_config_.SoftwareLimitSwitch.ForwardSoftLimitThreshold = ElevatorConstants.ARM_FORWARD_LIMT;
+    arm_config_.SoftwareLimitSwitch.ReverseSoftLimitEnable = true;
+    arm_config_.SoftwareLimitSwitch.ReverseSoftLimitThreshold = ElevatorConstants.ARM_REVERSE_LIMT;
     arm_motor_.getConfigurator().apply(arm_config_);
 
     // System Behavior Setup
@@ -140,8 +135,7 @@ public class Elevator extends Subsystem {
     elevator_at_minimum_ = () -> isElevatorAtMinimum();
     reset_elevator_trigger_ = new Trigger(elevator_at_minimum_);
 
-    kinematics_ =
-        new ElevatorKinematics(ElevatorConstants.MIN_ARM_LENGTH, ElevatorConstants.ARM_Z_OFFSET);
+    kinematics_ = new ElevatorKinematics(ElevatorConstants.ARM_LENGTH);
 
     reset_elevator_trigger_.onTrue(Commands.runOnce(() -> elevatorPoseReset()));
 
@@ -159,7 +153,7 @@ public class Elevator extends Subsystem {
     arm_mech_ =
         elevator_mech_.append(
             new MechanismLigament2d(
-                "Arm", ElevatorConstants.MIN_ARM_LENGTH, 0, 6, new Color8Bit(Color.kOrange)));
+                "Arm", ElevatorConstants.ARM_LENGTH, 0, 6, new Color8Bit(Color.kOrange)));
     elevator_max_mech_ =
         elevator_mech_.append(
             new MechanismLigament2d(
@@ -195,92 +189,60 @@ public class Elevator extends Subsystem {
 
   /** Computes updated outputs for the actuators */
   public void updateLogic(double timestamp) {
-    switch (io_.current_target_config) {
-      case L1:
-        io_.target_arm_angle = Rotation2d.fromDegrees(-75).getRadians();
-        io_.target_arm_height = FieldConstants.ReefHeight.L1.HEIGHT;
+    switch (io_.current_control_mode) {
+      case END_EFFECTOR:
+        io_.target_elevator_height =
+            kinematics_.desiredElevatorZ(io_.target_arm_height, io_.target_arm_angle);
         break;
-      case L2:
-        io_.target_arm_angle = Rotation2d.fromDegrees(55).getRadians();
-        io_.target_arm_height = FieldConstants.ReefHeight.L2.HEIGHT;
-        break;
-      case L3:
-        io_.target_arm_angle = Rotation2d.fromDegrees(55).getRadians();
-        io_.target_arm_height = FieldConstants.ReefHeight.L3.HEIGHT;
-        break;
-      case L4:
-        io_.target_arm_angle = Rotation2d.fromDegrees(55).getRadians();
-        io_.target_arm_height = FieldConstants.ReefHeight.L4.HEIGHT;
-        break;
-      case ALGAE_HIGH:
-        io_.target_elevator_height = ElevatorConstants.ELEVATOR_MIN_HEIGHT;
-        io_.target_arm_angle = 0;
-        break;
-      case ALGAE_LOW:
-        io_.target_elevator_height = ElevatorConstants.ELEVATOR_MIN_HEIGHT;
-        io_.target_arm_angle = 0;
-        break;
-      case SOURCE:
-        io_.target_arm_angle = Units.degreesToRadians(230);
-        io_.target_arm_height = FieldConstants.ReefHeight.L2.HEIGHT;
-        break;
-      case GROUND:
-        io_.target_elevator_height = ElevatorConstants.ELEVATOR_MIN_HEIGHT;
-        io_.target_arm_angle = 0;
-        break;
-      case PROCESSOR:
-        io_.target_elevator_height = ElevatorConstants.ELEVATOR_MIN_HEIGHT;
-        io_.target_arm_angle = 0;
-        break;
-      case BARGE:
-        io_.target_elevator_height = ElevatorConstants.ELEVATOR_MIN_HEIGHT;
-        io_.target_arm_angle = 0;
-        break;
-      case STOW:
-        io_.target_elevator_height = ElevatorConstants.ELEVATOR_MIN_HEIGHT;
-        io_.target_arm_angle = 0;
-        break;
-      case IDLE:
-      default:
-        io_.target_elevator_height = ElevatorConstants.ELEVATOR_MIN_HEIGHT;
-        io_.target_arm_angle = 0;
+      case PIVOT:
+        // target_elevator_height is set by external commands
         break;
     }
 
-    io_.target_elevator_height =
-        kinematics_.desiredElevatorZ(io_.target_arm_height, io_.target_arm_angle);
+    if (io_.target_elevator_height < ElevatorConstants.ELEVATOR_MIN_HEIGHT) {
+      DataLogManager.log(
+          "ERROR: Target Elevator Height: "
+              + io_.target_elevator_height
+              + " Min Elevator Height: "
+              + ElevatorConstants.ELEVATOR_MIN_HEIGHT);
+      io_.target_elevator_height = ElevatorConstants.ELEVATOR_MIN_HEIGHT;
+    }
+    if (io_.target_elevator_height > ElevatorConstants.ELEVATOR_MAX_HEIGHT) {
+      DataLogManager.log(
+          "ERROR: Target Elevator Height: "
+              + io_.target_elevator_height
+              + " Min Elevator Height: "
+              + ElevatorConstants.ELEVATOR_MAX_HEIGHT);
+      io_.target_elevator_height = ElevatorConstants.ELEVATOR_MAX_HEIGHT;
+    }
   }
 
   /** Writes the periodic outputs to actuators (motors and etc...) */
   public void writePeriodicOutputs(double timestamp) {
-    if (OI.getDriverJoystickRightTriggerAxis() > 0.5) {
-      elevator_master_.setControl(
-          elevator_request_
-              .withPosition(
-                  io_.target_elevator_height / ElevatorConstants.ELEVATOR_ROTATIONS_TO_METERS)
-              .withLimitReverseMotion(isElevatorAtMinimum()));
-      elevator_follower_.setControl(new StrictFollower(elevator_master_.getDeviceID()));
-      arm_motor_.setControl(
-          arm_request_.withPosition(Units.radiansToRotations(io_.target_arm_angle)));
-    } else {
-      elevator_master_.setControl(new VoltageOut(0));
-      elevator_follower_.setControl(new VoltageOut(0));
-      arm_motor_.setControl(new VoltageOut(0));
-    }
+    elevator_master_.setControl(
+        elevator_request_
+            .withPosition(
+                io_.target_elevator_height / ElevatorConstants.ELEVATOR_ROTATIONS_TO_METERS)
+            .withLimitReverseMotion(isElevatorAtMinimum()));
+    elevator_follower_.setControl(new StrictFollower(elevator_master_.getDeviceID()));
+    arm_motor_.setControl(arm_request_.withPosition(io_.target_arm_angle.getRotations()));
   }
 
   /** Outputs all logging information to the SmartDashboard */
   public void outputTelemetry(double timestamp) {
-    double curr_arm_height =
-        kinematics_.effectorZ(io_.current_elevator_height, io_.current_arm_angle_);
-    SmartDashboard.putNumber("Current Arm Height", curr_arm_height);
-    SmartDashboard.putNumber("Target Arm Height", io_.target_arm_height);
+    SmartDashboard.putString("Debug/Elevator/Control Mode", io_.current_control_mode.toString());
+    SmartDashboard.putNumber("Debug/Elevator/Target Height", io_.target_elevator_height);
+    SmartDashboard.putNumber("Debug/Elevator/Current Height", io_.current_elevator_height);
 
-    SmartDashboard.putNumber("Arm Offset", kinematics_.calZOffset(io_.current_arm_angle_));
-    SmartDashboard.putNumber("Target Elevator Height", io_.target_elevator_height);
-    SmartDashboard.putNumber("Current Elevator Height", io_.current_elevator_height);
-    SmartDashboard.putNumber("Current Arm Angle", io_.current_arm_angle_);
-    SmartDashboard.putNumber("Target Arm Angle", io_.target_arm_angle);
+    SmartDashboard.putString("Debug/Arm/Control Mode", io_.current_control_mode.toString());
+    SmartDashboard.putNumber("Debug/Arm/Current Angle", io_.current_arm_angle_);
+    SmartDashboard.putNumber("Debug/Arm/Target Angle", io_.target_arm_angle.getRadians());
+    SmartDashboard.putNumber(
+        "Debug/Arm/Current Height",
+        kinematics_.effectorZ(io_.current_elevator_height, io_.current_arm_angle_));
+    SmartDashboard.putNumber("Debug/Arm/Target Height", io_.target_arm_height);
+    SmartDashboard.putNumber(
+        "Debug/Arm/Height Offset", kinematics_.calZOffset(io_.current_arm_angle_));
     updateMechanism();
   }
 
@@ -295,7 +257,9 @@ public class Elevator extends Subsystem {
    */
   public boolean isArmAtTarget() {
     return Util.epislonEquals(
-        io_.current_arm_angle_, io_.target_arm_angle, ElevatorConstants.ARM_TARGET_THRESHOLD);
+        io_.current_arm_angle_,
+        io_.target_arm_angle.getRadians(),
+        ElevatorConstants.ARM_TARGET_THRESHOLD);
   }
 
   /**
@@ -348,13 +312,22 @@ public class Elevator extends Subsystem {
     armPoseReset();
   }
 
-  /**
-   * Set the target config of arm and elevator
-   *
-   * @param newConfig The new target config
-   */
-  public void setCurrentTargetConfig(TargetConfig newConfig) {
-    io_.current_target_config = newConfig;
+  /** */
+  public void setPivotHeight(double height, Rotation2d angle) {
+    io_.current_control_mode = ControlMode.PIVOT;
+    io_.target_arm_angle = angle;
+    io_.target_elevator_height = height;
+  }
+
+  /** */
+  public void setEndEffectorHeight(double height, Rotation2d angle) {
+    io_.current_control_mode = ControlMode.END_EFFECTOR;
+    io_.target_arm_angle = angle;
+    io_.target_arm_height = height;
+  }
+
+  public void stowElevator() {
+    setPivotHeight(ElevatorConstants.ELEVATOR_MIN_HEIGHT, new Rotation2d());
   }
 
   /**
@@ -377,11 +350,11 @@ public class Elevator extends Subsystem {
 
   public class ElevatorPeriodicIo implements Logged {
     // IO container for all variables
-    @Log.File public TargetConfig current_target_config = TargetConfig.SOURCE;
+    @Log.File public ControlMode current_control_mode = ControlMode.PIVOT;
     @Log.File public double current_elevator_height = 0;
-    @Log.File public double target_elevator_height = 0;
+    @Log.File public double target_elevator_height = ElevatorConstants.ELEVATOR_MIN_HEIGHT;
     @Log.File public double current_arm_angle_ = 0;
-    @Log.File public double target_arm_angle = 0;
+    @Log.File public Rotation2d target_arm_angle = new Rotation2d();
     @Log.File public double target_arm_height = 0;
     @Log.File public double elevator_master_rotations_ = 0;
     @Log.File public double elevator_follower_rotations_ = 0;

@@ -9,9 +9,9 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.mw_lib.util.Util;
+import frc.robot.commands.*;
+import frc.robot.commands.SetReefLevel.ReefLevel;
 import frc.robot.subsystems.*;
-import frc.robot.subsystems.Claw.ClawMode;
-import frc.robot.subsystems.Elevator.TargetConfig;
 
 public abstract class OI {
 
@@ -25,73 +25,43 @@ public abstract class OI {
 
   public static void configureBindings() {
 
+    // Set Wheel Offsets
     SmartDashboard.putData(
         "Set Wheel Offsets",
         Commands.runOnce(() -> swerve_drivetrain_.tareEverything()).ignoringDisable(true));
+    // Seed Field Centric Forward Direction
     SmartDashboard.putData(
         "Seed Field Centric",
         Commands.runOnce(
                 () ->
                     swerve_drivetrain_.seedFieldRelative(swerve_drivetrain_.getDriverPrespective()))
             .ignoringDisable(true));
+    // Sync Elevator and Arm Sensor to "Home" Position
     SmartDashboard.putData(
         "Zero Elevator & Arm",
         Commands.runOnce(() -> elevator_.elevatorAndArmPoseReset()).ignoringDisable(true));
 
+    // Swap Between Robot Centric and Field Centric
     driver_controller_
         .rightStick()
         .onTrue(
-            Commands.runOnce(() -> swerve_drivetrain_.toggleFieldCentric(), swerve_drivetrain_));
+            Commands.runOnce(() -> swerve_drivetrain_.toggleFieldCentric(), swerve_drivetrain_).ignoringDisable(true));
 
+    // Score
     driver_controller_
         .rightBumper()
-        .whileTrue(
-            Commands.startEnd(
-                () -> claw_.setClawMode(ClawMode.SHOOT),
-                () -> claw_.setClawMode(ClawMode.IDLE),
-                claw_));
-    driver_controller_
-        .leftBumper()
-        .whileTrue(
-            Commands.startEnd(
-                () -> claw_.setClawMode(ClawMode.LOAD),
-                () -> claw_.setClawMode(ClawMode.IDLE),
-                claw_));
-    driver_controller_
-        .y()
-        .onTrue(
-            Commands.startEnd(
-                () -> elevator_.setCurrentTargetConfig(TargetConfig.L4),
-                () -> elevator_.setCurrentTargetConfig(TargetConfig.SOURCE),
-                elevator_));
-    driver_controller_
-        .x()
-        .onTrue(
-            Commands.startEnd(
-                () -> elevator_.setCurrentTargetConfig(TargetConfig.L3),
-                () -> elevator_.setCurrentTargetConfig(TargetConfig.SOURCE),
-                elevator_));
-    driver_controller_
-        .b()
-        .onTrue(
-            Commands.startEnd(
-                () -> elevator_.setCurrentTargetConfig(TargetConfig.L2),
-                () -> elevator_.setCurrentTargetConfig(TargetConfig.SOURCE),
-                elevator_));
-    driver_controller_
-        .a()
-        .onTrue(
-            Commands.startEnd(
-                () -> elevator_.setCurrentTargetConfig(TargetConfig.L1),
-                () -> elevator_.setCurrentTargetConfig(TargetConfig.SOURCE),
-                elevator_));
+        .whileTrue(new CoralEject());
+    driver_controller_.y().toggleOnTrue(new SetReefLevel(ReefLevel.L4));
+    driver_controller_.x().toggleOnTrue(new SetReefLevel(ReefLevel.L2));
+    driver_controller_.b().toggleOnTrue(new SetReefLevel(ReefLevel.L3));
+    driver_controller_.a().toggleOnTrue(new CoralStationLoad());
+    // driver_controller_.a().whileTrue(new setReefLevel(ReefLevel.L1)); TODO: Fix Effector Collision with Frame
   }
 
   public static double getDriverJoystickLeftX() {
     double val = driver_controller_.getLeftX();
     double output = val * val;
     output = Math.copySign(output, val);
-    // return output;
     return val;
   }
 
@@ -99,7 +69,6 @@ public abstract class OI {
     double val = driver_controller_.getLeftY();
     double output = val * val;
     output = Math.copySign(output, val);
-    // return output;
     return val;
   }
 
@@ -107,7 +76,6 @@ public abstract class OI {
     double val = driver_controller_.getRightX();
     double output = val * val;
     output = Math.copySign(output, val);
-    // return output;
     return val;
   }
 

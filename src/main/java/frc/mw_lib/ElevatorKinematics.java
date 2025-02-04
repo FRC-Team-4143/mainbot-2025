@@ -1,17 +1,17 @@
 package frc.mw_lib;
 
+import edu.wpi.first.math.geometry.Rotation2d;
+
 public class ElevatorKinematics {
   private double arm_length_ = 0;
-  private double arm_z_offset_ = 0;
 
   /**
    * Elevator Kinematic's Constructor
    *
    * @param arm_length The Length of the robot's arm in meters
    */
-  public ElevatorKinematics(double arm_length, double arm_z_off) {
+  public ElevatorKinematics(double arm_length) {
     arm_length_ = arm_length;
-    arm_z_offset_ = arm_z_off;
   }
 
   /**
@@ -22,8 +22,8 @@ public class ElevatorKinematics {
    * @param desiredAngle the current angle of the pivot arm
    * @return the needed z for the wanted z position of the elevator
    */
-  public double desiredElevatorZ(double desiredZ, double desiredAngle) {
-    return desiredZ - calZOffset(desiredAngle) + (Math.cos(desiredAngle) * arm_z_offset_);
+  public double desiredElevatorZ(double desiredZ, Rotation2d desiredAngle) {
+    return desiredZ - calZOffset(desiredAngle.getRadians());
   }
 
   /**
@@ -35,7 +35,7 @@ public class ElevatorKinematics {
    * @return the needed z for the wanted z position of the elevator
    */
   public double effectorZ(double current_z, double current_angle) {
-    return current_z + calZOffset(current_angle) - (Math.cos(current_angle) * arm_z_offset_);
+    return current_z + calZOffset(current_angle);
   }
 
   /**
