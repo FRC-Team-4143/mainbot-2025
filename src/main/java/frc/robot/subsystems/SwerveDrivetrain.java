@@ -188,7 +188,7 @@ public class SwerveDrivetrain extends Subsystem {
             .withSteerRequestType(SwerveModule.SteerRequestType.MotionMagic)
             .withDeadband(DrivetrainConstants.MAX_DRIVE_SPEED * 0.01)
             .withRotationalDeadband(DrivetrainConstants.MAX_DRIVE_ANGULAR_RATE * 0.01);
-    target_facing = 
+    target_facing =
         new SwerveRequest.FieldCentricFacingAngle()
             .withDriveRequestType(SwerveModule.DriveRequestType.OpenLoopVoltage)
             .withSteerRequestType(SwerveModule.SteerRequestType.MotionMagic)

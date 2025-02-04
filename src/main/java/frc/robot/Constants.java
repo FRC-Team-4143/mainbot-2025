@@ -34,7 +34,7 @@ import frc.mw_lib.util.ConstantsLoader;
  */
 public final class Constants {
   public static class Vision {
-    public static final String kCameraName = "PC_Camera (1)";
+    public static final String kCameraName = "OV9281-10";
     // Cam mounted facing forward, half a meter forward of center, half a meter up from center.
     public static final Transform3d kRobotToCam =
         new Transform3d(
@@ -164,9 +164,9 @@ public final class Constants {
             LOADER.getBoolValue("drive", "br", "INVERT_DRIVE"));
 
     // Drivetrain PID Controller
-    public static final PIDController X_TRAJECTORY_TRANSLATION = new PIDController(2, 0, 0.000);
-    public static final PIDController Y_TRAJECTORY_TRANSLATION = new PIDController(2, 0, 0.000);
-    public static final PIDController TRAJECTORY_HEADING = new PIDController(2, 0, 0.000);
+    public static final PIDController X_TRAJECTORY_TRANSLATION = new PIDController(0, 0, 0.000);
+    public static final PIDController Y_TRAJECTORY_TRANSLATION = new PIDController(0, 0, 0.000);
+    public static final PIDController TRAJECTORY_HEADING = new PIDController(0, 0, 0.000);
     public static final PIDController X_POSE_TRANSLATION = new PIDController(0.1, 0, 0.000);
     public static final PIDController Y_POSE_TRANSLATION = new PIDController(0.1, 0, 0.000);
     public static final PIDController POSE_HEADING = new PIDController(.075, 0, 0.000);
