@@ -11,6 +11,7 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.mw_lib.util.Util;
 import frc.robot.subsystems.*;
 import frc.robot.subsystems.Claw.ClawMode;
+import frc.robot.subsystems.Climber.ClimberMode;
 import frc.robot.subsystems.Elevator.TargetConfig;
 
 public abstract class OI {
@@ -22,6 +23,7 @@ public abstract class OI {
   static SwerveDrivetrain swerve_drivetrain_ = SwerveDrivetrain.getInstance();
   static Claw claw_ = Claw.getInstance();
   static Elevator elevator_ = Elevator.getInstance();
+  static Climber climber_ = Climber.getInstance();
 
   public static void configureBindings() {
 
@@ -85,6 +87,21 @@ public abstract class OI {
                 () -> elevator_.setCurrentTargetConfig(TargetConfig.L1),
                 () -> elevator_.setCurrentTargetConfig(TargetConfig.SOURCE),
                 elevator_));
+    operator_controller_
+        .y()
+        .onTrue(
+            Commands.startEnd(
+              () -> climber_.setClimberMode(ClimberMode.DEPLOYED),
+              () -> climber_.setClimberMode(ClimberMode.DEPLOYED),
+              climber_));
+    operator_controller_
+        .a()
+        .onTrue(
+            Commands.startEnd(
+              () -> climber_.setClimberMode(ClimberMode.RETRACTED),
+              () -> climber_.setClimberMode(ClimberMode.RETRACTED),
+              climber_));
+    
   }
 
   public static double getDriverJoystickLeftX() {

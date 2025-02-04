@@ -11,6 +11,7 @@ import com.ctre.phoenix6.controls.PositionVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import frc.mw_lib.controls.TalonFXTuner;
 import frc.mw_lib.subsystem.Subsystem;
 import frc.robot.Constants.ClimberConstants;
 import monologue.Annotations.Log;
@@ -21,8 +22,9 @@ public class Climber extends Subsystem {
   private TalonFX climber_motor_;
   private TalonFXConfiguration climber_config_;
   private PositionVoltage climber_request_;
+  private TalonFXTuner climber_tuner_;
 
-  enum ClimberMode {
+  public enum ClimberMode {
     DEPLOYED,
     RETRACTED
   }
@@ -41,7 +43,7 @@ public class Climber extends Subsystem {
   /** Class Members */
   private ClimberPeriodicIo io_;
 
-  private Climber() {
+  public Climber() {
     // Create io object first in subsystem configuration
     io_ = new ClimberPeriodicIo();
     climber_motor_ = new TalonFX(ClimberConstants.CLIMBER_ID);
@@ -51,6 +53,8 @@ public class Climber extends Subsystem {
     climber_config_.Slot0 = ClimberConstants.CLIMBER_GAINS;
 
     climber_motor_.getConfigurator().apply(climber_config_);
+
+    climber_tuner_ = new TalonFXTuner(climber_motor_, "climber", this);
 
     // Call reset last in subsystem configuration
     reset();
