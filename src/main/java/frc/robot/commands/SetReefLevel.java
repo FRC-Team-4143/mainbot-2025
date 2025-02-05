@@ -5,7 +5,7 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.lib.FieldConstants;
+import frc.robot.Constants;
 import frc.robot.subsystems.Elevator;
 
 public class SetReefLevel extends Command {
@@ -31,20 +31,16 @@ public class SetReefLevel extends Command {
   public void initialize() {
     switch (requested_level_) {
       case L1:
-        elevator_.setEndEffectorHeight(
-            FieldConstants.ReefHeight.L1.HEIGHT, FieldConstants.ReefHeight.L1.PITCH);
+        // elevator_.setTarget(Constants.ElevatorConstants.Target.);
         break;
       case L2:
-        elevator_.setEndEffectorHeight(
-            FieldConstants.ReefHeight.L2.HEIGHT, FieldConstants.ReefHeight.L2.PITCH);
+        elevator_.setTarget(Constants.ElevatorConstants.Target.L2);
         break;
       case L3:
-        elevator_.setEndEffectorHeight(
-            FieldConstants.ReefHeight.L3.HEIGHT, FieldConstants.ReefHeight.L3.PITCH);
+        elevator_.setTarget(Constants.ElevatorConstants.Target.L3);
         break;
       case L4:
-        elevator_.setEndEffectorHeight(
-            FieldConstants.ReefHeight.L4.HEIGHT, FieldConstants.ReefHeight.L4.PITCH);
+        elevator_.setTarget(Constants.ElevatorConstants.Target.L4);
         break;
     }
   }

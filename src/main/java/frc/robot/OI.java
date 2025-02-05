@@ -45,17 +45,17 @@ public abstract class OI {
     driver_controller_
         .rightStick()
         .onTrue(
-            Commands.runOnce(() -> swerve_drivetrain_.toggleFieldCentric(), swerve_drivetrain_).ignoringDisable(true));
+            Commands.runOnce(() -> swerve_drivetrain_.toggleFieldCentric(), swerve_drivetrain_)
+                .ignoringDisable(true));
 
     // Score
-    driver_controller_
-        .rightBumper()
-        .whileTrue(new CoralEject());
+    driver_controller_.rightBumper().whileTrue(new CoralEject());
     driver_controller_.y().toggleOnTrue(new SetReefLevel(ReefLevel.L4));
     driver_controller_.x().toggleOnTrue(new SetReefLevel(ReefLevel.L2));
     driver_controller_.b().toggleOnTrue(new SetReefLevel(ReefLevel.L3));
     driver_controller_.a().toggleOnTrue(new CoralStationLoad());
-    // driver_controller_.a().whileTrue(new setReefLevel(ReefLevel.L1)); TODO: Fix Effector Collision with Frame
+    // driver_controller_.a().whileTrue(new setReefLevel(ReefLevel.L1)); TODO: Fix Effector
+    // Collision with Frame
   }
 
   public static double getDriverJoystickLeftX() {

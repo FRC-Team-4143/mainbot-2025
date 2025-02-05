@@ -8,7 +8,9 @@ import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.signals.GravityTypeValue;
 import com.ctre.phoenix6.signals.InvertedValue;
 import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.util.Units;
+import frc.lib.FieldConstants;
 import frc.mw_lib.swerve.SwerveModule.ClosedLoopOutputType;
 import frc.mw_lib.swerve.SwerveModuleConstants;
 import frc.mw_lib.swerve.SwerveModuleConstants.SteerFeedbackType;
@@ -181,8 +183,8 @@ public final class Constants {
     public static final double ELEVATOR_EXPO_KA = 0.0070285;
     public static final double ELEVATOR_ZERO_THRESHOLD = 0; // In m
     public static final double ELEVATOR_STATOR_CURRENT_LIMIT = 40.0;
-    public static final double ELEVATOR_HEIGHT_ABOVE_PIVOT = Units.inchesToMeters(15);
-    public static final double ELEVATOR_MIN_HEIGHT = Units.inchesToMeters(23.75);
+    public static final double ELEVATOR_HEIGHT_ABOVE_PIVOT = Units.inchesToMeters(8.0);
+    public static final double ELEVATOR_MIN_HEIGHT = Units.inchesToMeters(28.25);
     public static final double ELEVATOR_MAX_HEIGHT =
         Units.inchesToMeters(96.76) - ELEVATOR_HEIGHT_ABOVE_PIVOT - 0.1; // 0.1m of safety
 
@@ -210,7 +212,8 @@ public final class Constants {
     // ((shaft sprocket / pivot sprocket) / gearbox) * rotations to radians ratio)
     public static final double SENSOR_TO_MECHANISM_RATIO = (1.0 / ((16.0 / 64.0) / 20.0));
     public static final double ARM_FORWARD_LIMT = Units.radiansToRotations(Math.PI);
-    public static final double ARM_REVERSE_LIMT = Units.radiansToRotations(-0.6626);
+    public static final double ARM_REVERSE_LIMT =
+        Units.radiansToRotations(Units.degreesToRadians(-95));
     public static final Slot0Configs ARM_GAINS =
         new Slot0Configs()
             .withKP(40.0)
@@ -221,5 +224,34 @@ public final class Constants {
             .withKA(0.25148)
             .withKG(0.28)
             .withGravityType(GravityTypeValue.Arm_Cosine);
+
+    public enum Target {
+      L4(
+          FieldConstants.ReefHeight.L4.HEIGHT + Units.inchesToMeters(13),
+          Rotation2d.fromDegrees(130),
+          false),
+      L3(
+          FieldConstants.ReefHeight.L3.HEIGHT + Units.inchesToMeters(12),
+          Rotation2d.fromDegrees(125),
+          false),
+      L2(
+          FieldConstants.ReefHeight.L2.HEIGHT + Units.inchesToMeters(12),
+          Rotation2d.fromDegrees(125),
+          false),
+
+      STATION(1.076666, Rotation2d.fromRadians(-1.027767), true),
+      CLIMB(ELEVATOR_MIN_HEIGHT, new Rotation2d(0), true),
+      STOW(0, Rotation2d.fromDegrees(-90), true);
+
+      Target(double height, Rotation2d angle, boolean isPivotHeightTarget) {
+        this.angle = angle;
+        this.height = height;
+        this.isPivotHeightTarget = isPivotHeightTarget;
+      }
+
+      public final double height;
+      public final Rotation2d angle;
+      public final boolean isPivotHeightTarget;
+    }
   }
 }
