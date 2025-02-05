@@ -172,11 +172,13 @@ public final class Constants {
   }
 
   public class ClimberConstants {
-    public static final int CLIMBER_ID = 35;
-    public static final double DEPLOYED_ROTATIONS = 30;
-    public static final double RETRACTED_ROTATIONS = 30;
+    public static final int CLIMBER_ID = 50;
+    public static final double DEPLOYED_ROTATIONS = 0.0;
+    public static final double RETRACTED_ROTATIONS = 50.0;
+    public static final InvertedValue CLIMBER_INVERSION_ = InvertedValue.Clockwise_Positive;
+
     public static final Slot0Configs CLIMBER_GAINS =
-        new Slot0Configs().withKP(0.0).withKD(0.0).withKS(0.0).withKV(0.0).withKA(0.0);
+        new Slot0Configs().withKP(2.0).withKD(0.0).withKS(0.0).withKV(0.0).withKA(0.0);
   }
 
   public class ElevatorConstants {

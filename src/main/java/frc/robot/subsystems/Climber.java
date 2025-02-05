@@ -21,7 +21,6 @@ import monologue.Logged;
 public class Climber extends Subsystem {
 
   private TalonFX climber_motor_;
-  private TalonFXConfiguration climber_config_;
   private PositionVoltage climber_request_;
   private TalonFXTuner climber_tuner_;
 
@@ -50,11 +49,12 @@ public class Climber extends Subsystem {
     climber_motor_ = new TalonFX(ClimberConstants.CLIMBER_ID);
     climber_request_ = new PositionVoltage(0).withSlot(0);
 
-    climber_config_ = new TalonFXConfiguration();
-    climber_config_.MotorOutput.NeutralMode = NeutralModeValue.Brake;
-    climber_config_.Slot0 = ClimberConstants.CLIMBER_GAINS;
+    TalonFXConfiguration climber_config = new TalonFXConfiguration();
+    climber_config.MotorOutput.NeutralMode = NeutralModeValue.Brake;
+    climber_config.Slot0 = ClimberConstants.CLIMBER_GAINS;
+    climber_config.MotorOutput.Inverted = ClimberConstants.CLIMBER_INVERSION_;
 
-    climber_motor_.getConfigurator().apply(climber_config_);
+    climber_motor_.getConfigurator().apply(climber_config);
 
     climber_tuner_ = new TalonFXTuner(climber_motor_, "climber", this);
     climber_tuner_.bindSetpoint(
