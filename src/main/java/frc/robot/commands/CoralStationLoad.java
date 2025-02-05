@@ -4,9 +4,8 @@
 
 package frc.robot.commands;
 
-import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.Constants;
 import frc.robot.subsystems.Claw;
 import frc.robot.subsystems.Claw.ClawMode;
 import frc.robot.subsystems.Elevator;
@@ -27,7 +26,7 @@ public class CoralStationLoad extends Command {
   @Override
   public void initialize() {
     claw_.setClawMode(ClawMode.LOAD);
-    elevator_.setEndEffectorHeight(Units.inchesToMeters(28), Rotation2d.fromDegrees(-40));
+    elevator_.setTarget(Constants.ElevatorConstants.Target.STATION);
   }
 
   // Called every time the scheduler runs while the command is scheduled.

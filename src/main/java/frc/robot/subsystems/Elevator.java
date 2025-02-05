@@ -27,6 +27,7 @@ import frc.mw_lib.controls.TalonFXTuner;
 import frc.mw_lib.subsystem.Subsystem;
 import frc.mw_lib.util.Util;
 import frc.robot.Constants.ElevatorConstants;
+import frc.robot.Constants.ElevatorConstants.Target;
 import frc.robot.OI;
 import java.util.function.BooleanSupplier;
 import monologue.Annotations.Log;
@@ -121,7 +122,7 @@ public class Elevator extends Subsystem {
     arm_config_.MotionMagic.MotionMagicCruiseVelocity = ElevatorConstants.ARM_CRUISE_VELOCITY;
     arm_config_.MotionMagic.MotionMagicAcceleration = ElevatorConstants.ARM_ACCELERATION;
     arm_config_.MotorOutput.NeutralMode = NeutralModeValue.Brake;
-    arm_config_.ClosedLoopGeneral.ContinuousWrap = true;
+    arm_config_.ClosedLoopGeneral.ContinuousWrap = false;
     arm_config_.SoftwareLimitSwitch.ForwardSoftLimitEnable = true;
     arm_config_.SoftwareLimitSwitch.ForwardSoftLimitThreshold = ElevatorConstants.ARM_FORWARD_LIMT;
     arm_config_.SoftwareLimitSwitch.ReverseSoftLimitEnable = true;
@@ -313,21 +314,29 @@ public class Elevator extends Subsystem {
   }
 
   /** */
-  public void setPivotHeight(double height, Rotation2d angle) {
+  private void setPivotHeight(double height, Rotation2d angle) {
     io_.current_control_mode = ControlMode.PIVOT;
     io_.target_arm_angle = angle;
     io_.target_elevator_height = height;
   }
 
   /** */
-  public void setEndEffectorHeight(double height, Rotation2d angle) {
+  private void setEndEffectorHeight(double height, Rotation2d angle) {
     io_.current_control_mode = ControlMode.END_EFFECTOR;
     io_.target_arm_angle = angle;
     io_.target_arm_height = height;
   }
 
+  public void setTarget(Target target) {
+    if (target.isPivotHeightTarget) {
+      setPivotHeight(target.height, target.angle);
+    } else {
+      setEndEffectorHeight(target.height, target.angle);
+    }
+  }
+
   public void stowElevator() {
-    setPivotHeight(ElevatorConstants.ELEVATOR_MIN_HEIGHT, new Rotation2d());
+    setTarget(ElevatorConstants.Target.STOW);
   }
 
   /**
@@ -354,7 +363,8 @@ public class Elevator extends Subsystem {
     @Log.File public double current_elevator_height = 0;
     @Log.File public double target_elevator_height = ElevatorConstants.ELEVATOR_MIN_HEIGHT;
     @Log.File public double current_arm_angle_ = 0;
-    @Log.File public Rotation2d target_arm_angle = new Rotation2d();
+    @Log.File public Rotation2d target_arm_angle = Rotation2d.fromDegrees(-90);
+
     @Log.File public double target_arm_height = 0;
     @Log.File public double elevator_master_rotations_ = 0;
     @Log.File public double elevator_follower_rotations_ = 0;
