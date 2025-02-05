@@ -143,12 +143,18 @@ public class SwerveDrivetrain extends Subsystem {
     pigeon_imu.optimizeBusUtilization();
 
     // PID Controllers
-    x_traj_controller_ = Constants.DrivetrainConstants.TRAJECTORY_TRANSLATION;
-    y_traj_controller_ = Constants.DrivetrainConstants.TRAJECTORY_TRANSLATION;
+    x_traj_controller_ = Constants.DrivetrainConstants.X_TRAJECTORY_TRANSLATION;
+    y_traj_controller_ = Constants.DrivetrainConstants.Y_TRAJECTORY_TRANSLATION;
     heading_traj_controller_ = Constants.DrivetrainConstants.TRAJECTORY_HEADING;
-    x_pose_controller_ = Constants.DrivetrainConstants.POSE_TRANSLATION;
-    y_pose_controller_ = Constants.DrivetrainConstants.POSE_TRANSLATION;
+    heading_traj_controller_.enableContinuousInput(-Math.PI, Math.PI);
+    x_pose_controller_ = Constants.DrivetrainConstants.X_POSE_TRANSLATION;
+    y_pose_controller_ = Constants.DrivetrainConstants.Y_POSE_TRANSLATION;
     heading_pose_controller_ = Constants.DrivetrainConstants.POSE_HEADING;
+    heading_pose_controller_.enableContinuousInput(-Math.PI, Math.PI);
+
+    SmartDashboard.putData(x_traj_controller_);
+    SmartDashboard.putData(y_traj_controller_);
+    SmartDashboard.putData(heading_traj_controller_);
 
     // Begin configuring swerve modules
     module_locations = new Translation2d[modules.length];
@@ -243,6 +249,11 @@ public class SwerveDrivetrain extends Subsystem {
     io_.field_relative_chassis_speed_ =
         ChassisSpeeds.fromRobotRelativeSpeeds(io_.chassis_speeds_, io_.robot_yaw_);
 
+    io_.chassis_speed_magnitude_ =
+        Math.sqrt(
+            (io_.chassis_speeds_.vxMetersPerSecond * io_.chassis_speeds_.vxMetersPerSecond)
+                + (io_.chassis_speeds_.vyMetersPerSecond * io_.chassis_speeds_.vyMetersPerSecond));
+
     // recieve new chassis info
     ChassisProxyServer.updateData();
   }
@@ -292,6 +303,8 @@ public class SwerveDrivetrain extends Subsystem {
         break;
       case IDLE:
         setControl(new SwerveRequest.Idle());
+        break;
+      case AUTONOMOUS:
       default:
         // yes these dont do anything for auto...
         break;
@@ -325,7 +338,7 @@ public class SwerveDrivetrain extends Subsystem {
     SmartDashboard.putNumber("Debug/Chassis Speed/Y", io_.chassis_speeds_.vyMetersPerSecond);
     SmartDashboard.putNumber(
         "Debug/Chassis Speed/Omega", io_.chassis_speeds_.omegaRadiansPerSecond);
-
+    SmartDashboard.putNumber("chassis_speed_magnitude_", io_.chassis_speed_magnitude_);
     Twist2d chassis_proxy_twist = ChassisProxyServer.getTwist();
     SmartDashboard.putNumber("Debug/Chassis Proxy Speed/X", chassis_proxy_twist.dx);
     SmartDashboard.putNumber("Debug/Chassis Proxy Speed/Y", chassis_proxy_twist.dy);
@@ -334,6 +347,13 @@ public class SwerveDrivetrain extends Subsystem {
     SmartDashboard.putData("Chassis Proxy Pose", field_);
 
     SmartDashboard.putString("drive mode", io_.drive_mode_.toString());
+
+    SmartDashboard.putNumber("Encoder:0", swerve_modules[0].getEncoderValue() * 360);
+    SmartDashboard.putNumber("Encoder:1", swerve_modules[1].getEncoderValue() * 360);
+    SmartDashboard.putNumber("Encoder:2", swerve_modules[2].getEncoderValue() * 360);
+    SmartDashboard.putNumber("Encoder:3", swerve_modules[3].getEncoderValue() * 360);
+
+    SmartDashboard.putString("requestType", request_to_apply.toString());
   }
 
   public Rotation2d getRobotRotation() {
@@ -449,6 +469,7 @@ public class SwerveDrivetrain extends Subsystem {
   }
 
   public void followTrajectory(SwerveSample sample) {
+    io_.drive_mode_ = DriveMode.AUTONOMOUS;
     Pose2d pose = PoseEstimator.getInstance().getFieldPose();
     this.setControl(
         auto_request

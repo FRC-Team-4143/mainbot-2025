@@ -8,6 +8,8 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.mw_lib.util.Util;
+import frc.robot.commands.Feed;
+import frc.robot.commands.Score;
 import frc.robot.subsystems.*;
 import frc.robot.subsystems.Claw.ClawMode;
 
@@ -15,7 +17,7 @@ public abstract class OI {
 
   // Sets up both controllers
   static CommandXboxController driver_controller_ = new CommandXboxController(0);
-
+  static PoseEstimator pose_estimator_ = PoseEstimator.getInstance();
   static SwerveDrivetrain swerve_drivetrain_ = SwerveDrivetrain.getInstance();
   static Claw claw_ = Claw.getInstance();
 
@@ -30,15 +32,18 @@ public abstract class OI {
                 () ->
                     swerve_drivetrain_.seedFieldRelative(swerve_drivetrain_.getDriverPrespective()))
             .ignoringDisable(true));
+    SmartDashboard.putData(
+        "Disturb Pose",
+        Commands.runOnce(() -> pose_estimator_.disturbPose()).ignoringDisable(true));
 
     driver_controller_
         .rightStick()
         .onTrue(
             Commands.runOnce(() -> swerve_drivetrain_.toggleFieldCentric(), swerve_drivetrain_));
 
-    // driver_controller_.leftTrigger().whileTrue(new Feed());
+    driver_controller_.leftTrigger().whileTrue(new Feed());
 
-    // driver_controller_.rightTrigger().whileTrue(new Score());
+    driver_controller_.rightTrigger().whileTrue(new Score());
     driver_controller_
         .a()
         .whileTrue(

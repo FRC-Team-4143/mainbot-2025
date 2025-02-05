@@ -7,7 +7,16 @@ package frc.robot;
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.signals.GravityTypeValue;
 import com.ctre.phoenix6.signals.InvertedValue;
+import edu.wpi.first.apriltag.AprilTagFieldLayout;
+import edu.wpi.first.apriltag.AprilTagFields;
+import edu.wpi.first.math.Matrix;
+import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.math.geometry.Rotation3d;
+import edu.wpi.first.math.geometry.Transform3d;
+import edu.wpi.first.math.geometry.Translation3d;
+import edu.wpi.first.math.numbers.N1;
+import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.math.util.Units;
 import frc.mw_lib.swerve.SwerveModule.ClosedLoopOutputType;
 import frc.mw_lib.swerve.SwerveModuleConstants;
@@ -24,6 +33,22 @@ import frc.mw_lib.util.ConstantsLoader;
  * constants are needed, to reduce verbosity.
  */
 public final class Constants {
+  public static class Vision {
+    public static final String kCameraName = "OV9281-10";
+    // Cam mounted facing forward, half a meter forward of center, half a meter up from center.
+    public static final Transform3d kRobotToCam =
+        new Transform3d(
+            new Translation3d(-0.05, 0.0, 0.5), new Rotation3d(0, 0, Units.degreesToRadians(180)));
+
+    // The layout of the AprilTags on the field
+    public static final AprilTagFieldLayout kTagLayout =
+        AprilTagFieldLayout.loadField(AprilTagFields.kDefaultField);
+
+    // The standard deviations of our vision estimated poses, which affect correction rate
+    // (Fake values. Experiment and determine estimation noise on an actual robot.)
+    public static final Matrix<N3, N1> kSingleTagStdDevs = VecBuilder.fill(4, 4, 8);
+    public static final Matrix<N3, N1> kMultiTagStdDevs = VecBuilder.fill(0.5, 0.5, 1);
+  }
 
   private static final ConstantsLoader LOADER = ConstantsLoader.getInstance();
 
@@ -41,7 +66,7 @@ public final class Constants {
 
     // Both sets of gains need to be tuned to your individual robot
     // The steer motor uses MotionMagicVoltage control
-    private static final Slot0Configs STEER_GAINS =
+    private static final Slot0Configs DRIVE_GAINS =
         new Slot0Configs()
             .withKP(LOADER.getDoubleValue("drive", "com", "DRIVE_GAINS_P"))
             .withKI(LOADER.getDoubleValue("drive", "com", "DRIVE_GAINS_I"))
@@ -52,7 +77,7 @@ public final class Constants {
     // When using closed-loop control, the drive motor uses:
     // - VelocityVoltage, if DrivetrainConstants.SupportsPro is false (default)
     // - VelocityTorqueCurrentFOC, if DrivetrainConstants.SupportsPro is true
-    private static final Slot0Configs DRIVE_GAINS =
+    private static final Slot0Configs STEER_GAINS =
         new Slot0Configs()
             .withKP(LOADER.getDoubleValue("drive", "com", "STEER_GAINS_P"))
             .withKI(LOADER.getDoubleValue("drive", "com", "STEER_GAINS_I"))
@@ -139,10 +164,12 @@ public final class Constants {
             LOADER.getBoolValue("drive", "br", "INVERT_DRIVE"));
 
     // Drivetrain PID Controller
-    public static final PIDController TRAJECTORY_TRANSLATION = new PIDController(0.0, 0, 0.000);
-    public static final PIDController TRAJECTORY_HEADING = new PIDController(0.0, 0, 0.000);
-    public static final PIDController POSE_TRANSLATION = new PIDController(0.0, 0, 0.000);
-    public static final PIDController POSE_HEADING = new PIDController(0.0, 0, 0.000);
+    public static final PIDController X_TRAJECTORY_TRANSLATION = new PIDController(0, 0, 0.000);
+    public static final PIDController Y_TRAJECTORY_TRANSLATION = new PIDController(0, 0, 0.000);
+    public static final PIDController TRAJECTORY_HEADING = new PIDController(0, 0, 0.000);
+    public static final PIDController X_POSE_TRANSLATION = new PIDController(0.1, 0, 0.000);
+    public static final PIDController Y_POSE_TRANSLATION = new PIDController(0.1, 0, 0.000);
+    public static final PIDController POSE_HEADING = new PIDController(.075, 0, 0.000);
   }
 
   public static final class FeederConstants {
@@ -151,7 +178,7 @@ public final class Constants {
     public static final boolean LEFT_FEEDER_INVERTED = true;
     public static final boolean RIGHT_FEEDER_INVERTED = false;
     public static final double FEEDER_SPEED = 0.15;
-    public static final double SCORE_SPEED = 0.5;
+    public static final double SCORE_SPEED = 0.4;
     public static final double IDLE_SPEED = 0;
     public static final double AMP_SPIKE_THRESHHOLD = 25;
   }

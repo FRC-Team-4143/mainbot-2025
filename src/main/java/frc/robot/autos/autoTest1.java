@@ -5,6 +5,8 @@ import choreo.auto.AutoRoutine;
 import choreo.auto.AutoTrajectory;
 import edu.wpi.first.wpilibj2.command.Commands;
 import frc.robot.AutoManager;
+import frc.robot.subsystems.SwerveDrivetrain;
+import frc.robot.subsystems.SwerveDrivetrain.DriveMode;
 
 public class autoTest1 {
 
@@ -15,6 +17,10 @@ public class autoTest1 {
     AutoTrajectory driveforward = routine.trajectory("Move Forward");
 
     routine.active().onTrue(Commands.sequence(driveforward.resetOdometry(), driveforward.cmd()));
+    driveforward
+        .done()
+        .onTrue(
+            Commands.runOnce(() -> SwerveDrivetrain.getInstance().setDriveMode(DriveMode.IDLE)));
 
     return routine;
   }
