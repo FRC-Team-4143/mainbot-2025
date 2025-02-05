@@ -19,6 +19,8 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import frc.lib.FieldConstants;
+import frc.mw_lib.geometry.PolygonRegion;
 import frc.mw_lib.subsystem.Subsystem;
 import frc.robot.Vision;
 import monologue.Annotations.Log;
@@ -45,6 +47,9 @@ public class PoseEstimator extends Subsystem {
   private ProtobufPublisher<Pose2d> odom_publisher_;
   private ProtobufPublisher<Pose2d> pose_publisher_;
   private DoubleArraySubscriber vision_std_devs_subscriber;
+  private PolygonRegion currentAlgaeRegion;
+  private PolygonRegion currentCoralRegion;
+  private StructPublisher<Pose2d> camPosePublisher;
 
   int update_counter_ = 2;
   double[] vision_std_devs_ = {1, 1, 1};
@@ -138,6 +143,18 @@ public class PoseEstimator extends Subsystem {
     io_.vision_filtered_pose_ =
         vision_filtered_odometry_.updateWithTime(
             timestamp, drive.getImuYaw(), drive.getModulePositions());
+
+    // finds the algae
+    for (PolygonRegion region : FieldConstants.ALGAE_REGIONS)
+      if (region.contains(getFieldPose())) {
+        currentAlgaeRegion = region;
+      }
+
+    // finds the coral region
+    for (PolygonRegion region : FieldConstants.CORAL_REGIONS)
+      if (region.contains(getFieldPose())) {
+        currentCoralRegion = region;
+      }
   }
 
   @Override
@@ -164,6 +181,14 @@ public class PoseEstimator extends Subsystem {
   public void outputTelemetry(double timestamp) {
     field_.setRobotPose(io_.vision_filtered_pose_);
     SmartDashboard.putData("Field", field_);
+<<<<<<< HEAD
+    // SmartDashboard.putBoolean("Is Vision Paused", io_.ignore_vision);
+
+    // outputs the current reigon to smart dashboard
+    SmartDashboard.putString("Coral Region", currentCoralRegion.getName());
+    SmartDashboard.putString("Coral Region", currentAlgaeRegion.getName());
+=======
+>>>>>>> L2_Vision
   }
   ;
 
@@ -182,16 +207,17 @@ public class PoseEstimator extends Subsystem {
   }
 
   // public boolean isRobotInMidFeild() {
-  //     return Util.epislonEquals(io_.vision_filtered_pose_.getX(), 8.29564, 2.423); // 8.29564 is
+  // return Util.epislonEquals(io_.vision_filtered_pose_.getX(), 8.29564, 2.423);
+  // // 8.29564 is
   // the center field line
-  //                                                                                  // | 2.423 is
+  // // | 2.423 is
   // the center line to
-  //                                                                                  // wing line
+  // // wing line
   // }
 
   // public boolean isCloseToTarget() {
-  //     return Util.epislonEquals(io_.vision_filtered_pose_.getTranslation(),
-  //             ShooterSubsystem.getInstance().getTarget().toPose2d().getTranslation(), 1.9);
+  // return Util.epislonEquals(io_.vision_filtered_pose_.getTranslation(),
+  // ShooterSubsystem.getInstance().getTarget().toPose2d().getTranslation(), 1.9);
   // }
 
   public SwerveDrivePoseEstimator getOdometryPose() {
@@ -214,7 +240,8 @@ public class PoseEstimator extends Subsystem {
   public void setRobotOdometry(Pose2d pose) {
     var drive = SwerveDrivetrain.getInstance();
     SwerveDrivetrain.getInstance().seedFieldRelative(pose.getRotation());
-    // vision_filtered_odometry_.resetPosition(drive.getImuYaw(), drive.getModulePositions(), pose);
+    // vision_filtered_odometry_.resetPosition(drive.getImuYaw(),
+    // drive.getModulePositions(), pose);
     vision_filtered_odometry_.resetPosition(pose.getRotation(), drive.getModulePositions(), pose);
   }
 
