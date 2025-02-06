@@ -4,11 +4,15 @@
 
 package frc.robot.subsystems;
 
+import static edu.wpi.first.units.Units.Amps;
+
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj2.command.Command;
 import frc.mw_lib.subsystem.Subsystem;
+import frc.robot.Constants;
 import frc.robot.Constants.ClawConstants;
 import monologue.Annotations.Log;
 import monologue.Logged;
@@ -22,6 +26,11 @@ public class Claw extends Subsystem {
     SHOOT,
     LOAD,
     IDLE
+  }
+
+  public enum GamePiece {
+    CORAL,
+    ALGAE
   }
 
   // Singleton pattern
@@ -66,7 +75,9 @@ public class Claw extends Subsystem {
    * function.
    */
   @Override
-  public void readPeriodicInputs(double timestamp) {}
+  public void readPeriodicInputs(double timestamp) {
+    io_.current_output_ = wheel_motor_.getSupplyCurrent().getValue().in(Amps);
+  }
 
   /**
    * Inside this function, all of the LOGIC should compute updates to output variables in the
@@ -75,17 +86,32 @@ public class Claw extends Subsystem {
    */
   @Override
   public void updateLogic(double timestamp) {
-    switch (io_.claw_mode_) {
-      case SHOOT:
-        io_.wheel_output_ = ClawConstants.WHEEL_SHOOT_SPEED;
-        break;
-      case LOAD:
-        io_.wheel_output_ = ClawConstants.WHEEL_LOAD_SPEED;
-        break;
-      case IDLE:
-      default:
-        io_.wheel_output_ = 0;
-        break;
+    if (io_.game_piece_ == GamePiece.CORAL) {
+      switch (io_.claw_mode_) {
+        case SHOOT:
+          io_.wheel_output_ = ClawConstants.WHEEL_SHOOT_SPEED;
+          break;
+        case LOAD:
+          io_.wheel_output_ = ClawConstants.WHEEL_LOAD_SPEED;
+          break;
+        case IDLE:
+        default:
+          io_.wheel_output_ = 0;
+          break;
+      }
+    } else {
+      switch (io_.claw_mode_) {
+        case SHOOT:
+          io_.wheel_output_ = -ClawConstants.WHEEL_SHOOT_SPEED;
+          break;
+        case LOAD:
+          io_.wheel_output_ = -ClawConstants.WHEEL_LOAD_SPEED;
+          break;
+        case IDLE:
+        default:
+          io_.wheel_output_ = ClawConstants.ALGAE_IDLE_SPEED;
+          break;
+      }
     }
   }
 
@@ -108,6 +134,12 @@ public class Claw extends Subsystem {
   @Override
   public void outputTelemetry(double timestamp) {
     SmartDashboard.putString("Debug/Claw/Mode", io_.claw_mode_.toString());
+    SmartDashboard.putNumber("Debug/Claw/Current_Output", io_.current_output_);
+    SmartDashboard.putString(
+        "Game Piece Mode",
+        (io_.game_piece_ == GamePiece.CORAL)
+            ? Constants.ClawConstants.CORAL_COLOR
+            : Constants.ClawConstants.ALGAE_COLOR);
   }
 
   /**
@@ -119,9 +151,34 @@ public class Claw extends Subsystem {
     io_.claw_mode_ = claw_mode;
   }
 
+  public void setGamePiece(GamePiece gamePiece) {
+    io_.game_piece_ = gamePiece;
+  }
+
+  public Command toggleGamePiece() {
+    return this.runOnce(
+        () -> {
+          if (io_.game_piece_ == GamePiece.CORAL) {
+            setGamePiece(GamePiece.ALGAE);
+          } else {
+            setGamePiece(GamePiece.CORAL);
+          }
+        });
+  }
+
+  public boolean isCoralMode() {
+    return io_.game_piece_ == GamePiece.CORAL;
+  }
+
+  public boolean isAlgaeMode() {
+    return io_.game_piece_ == GamePiece.ALGAE;
+  }
+
   public class ClawPeriodicIo implements Logged {
     @Log.File public ClawMode claw_mode_ = ClawMode.IDLE;
+    @Log.File public GamePiece game_piece_ = GamePiece.CORAL;
     @Log.File public double wheel_output_ = 0;
+    @Log.File public double current_output_ = 0;
   }
 
   @Override

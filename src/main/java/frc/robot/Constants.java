@@ -10,6 +10,7 @@ import com.ctre.phoenix6.signals.InvertedValue;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.wpilibj.util.Color;
 import frc.lib.FieldConstants;
 import frc.mw_lib.swerve.SwerveModule.ClosedLoopOutputType;
 import frc.mw_lib.swerve.SwerveModuleConstants;
@@ -151,6 +152,9 @@ public final class Constants {
     public static final int WHEEL_MOTOR_ID = 11;
     public static final double WHEEL_SHOOT_SPEED = 0.30;
     public static final double WHEEL_LOAD_SPEED = -0.2;
+    public static final double ALGAE_IDLE_SPEED = 0.1;
+    public static final String CORAL_COLOR = new Color(255, 255, 255).toHexString();
+    public static final String ALGAE_COLOR = new Color(0, 255, 255).toHexString();
     public static final InvertedValue WHEEL_MOTOR_INVERTED =
         InvertedValue.CounterClockwise_Positive;
   }

@@ -223,7 +223,8 @@ public class Elevator extends Subsystem {
     elevator_master_.setControl(
         elevator_request_
             .withPosition(
-                io_.target_elevator_height / ElevatorConstants.ELEVATOR_ROTATIONS_TO_METERS)
+                (io_.target_elevator_height - ElevatorConstants.ELEVATOR_MIN_HEIGHT)
+                    / ElevatorConstants.ELEVATOR_ROTATIONS_TO_METERS)
             .withLimitReverseMotion(isElevatorAtMinimum()));
     elevator_follower_.setControl(new StrictFollower(elevator_master_.getDeviceID()));
     arm_motor_.setControl(arm_request_.withPosition(io_.target_arm_angle.getRotations()));
@@ -296,10 +297,8 @@ public class Elevator extends Subsystem {
 
   /** Reset the elevator pose to zero */
   public void elevatorPoseReset() {
-    elevator_master_.setPosition(
-        ElevatorConstants.ELEVATOR_MIN_HEIGHT / ElevatorConstants.ELEVATOR_ROTATIONS_TO_METERS);
-    elevator_follower_.setPosition(
-        ElevatorConstants.ELEVATOR_MIN_HEIGHT / ElevatorConstants.ELEVATOR_ROTATIONS_TO_METERS);
+    elevator_master_.setPosition(0);
+    elevator_follower_.setPosition(0);
   }
 
   /** Reset the arm pose to home */
