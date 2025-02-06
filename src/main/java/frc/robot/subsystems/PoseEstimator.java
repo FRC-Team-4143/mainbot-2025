@@ -53,7 +53,6 @@ public class PoseEstimator extends Subsystem {
 
   int update_counter_ = 2;
   double[] vision_std_devs_ = {1, 1, 1};
-  StructPublisher<Pose2d> camPosePublisher;
 
   PoseEstimator() {
     io_ = new PoseEstimatorPeriodicIo();
@@ -145,12 +144,14 @@ public class PoseEstimator extends Subsystem {
             timestamp, drive.getImuYaw(), drive.getModulePositions());
 
     // finds the algae
+    currentAlgaeRegion = null;
     for (PolygonRegion region : FieldConstants.ALGAE_REGIONS)
       if (region.contains(getFieldPose())) {
         currentAlgaeRegion = region;
       }
 
     // finds the coral region
+    currentCoralRegion = null;
     for (PolygonRegion region : FieldConstants.CORAL_REGIONS)
       if (region.contains(getFieldPose())) {
         currentCoralRegion = region;
@@ -181,16 +182,14 @@ public class PoseEstimator extends Subsystem {
   public void outputTelemetry(double timestamp) {
     field_.setRobotPose(io_.vision_filtered_pose_);
     SmartDashboard.putData("Field", field_);
-<<<<<<< HEAD
     // SmartDashboard.putBoolean("Is Vision Paused", io_.ignore_vision);
 
     // outputs the current reigon to smart dashboard
-    SmartDashboard.putString("Coral Region", currentCoralRegion.getName());
-    SmartDashboard.putString("Coral Region", currentAlgaeRegion.getName());
-=======
->>>>>>> L2_Vision
+    SmartDashboard.putString(
+        "Coral Region", currentCoralRegion == null ? "null" : currentCoralRegion.getName());
+    SmartDashboard.putString(
+        "Algae Region", currentAlgaeRegion == null ? "null" : currentAlgaeRegion.getName());
   }
-  ;
 
   // SmartDashboard.putBoolean("Is Vision Paused", io_.ignore_vision);
 
