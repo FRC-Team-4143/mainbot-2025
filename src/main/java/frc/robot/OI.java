@@ -6,6 +6,7 @@ package frc.robot;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.ConditionalCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.mw_lib.util.Util;
@@ -48,8 +49,12 @@ public abstract class OI {
             Commands.runOnce(() -> swerve_drivetrain_.toggleFieldCentric(), swerve_drivetrain_)
                 .ignoringDisable(true));
 
+    driver_controller_.rightBumper().onTrue(claw_.toggleGamePiece());
+    driver_controller_.leftTrigger().whileTrue(new AlgaeLoad());
     // Score
-    driver_controller_.rightBumper().whileTrue(new CoralEject());
+    driver_controller_
+        .rightTrigger()
+        .whileTrue(new ConditionalCommand(new CoralEject(), new AlgaeEject(), claw_::isCoralMode));
     driver_controller_.y().toggleOnTrue(new SetReefLevel(ReefLevel.L4));
     driver_controller_.x().toggleOnTrue(new SetReefLevel(ReefLevel.L2));
     driver_controller_.b().toggleOnTrue(new SetReefLevel(ReefLevel.L3));

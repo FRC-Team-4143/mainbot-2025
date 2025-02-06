@@ -8,6 +8,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants;
 import frc.robot.subsystems.Claw;
 import frc.robot.subsystems.Claw.ClawMode;
+import frc.robot.subsystems.Claw.GamePiece;
 import frc.robot.subsystems.Elevator;
 
 public class CoralStationLoad extends Command {
@@ -25,6 +26,7 @@ public class CoralStationLoad extends Command {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
+    claw_.setGamePiece(GamePiece.CORAL);
     claw_.setClawMode(ClawMode.LOAD);
     elevator_.setTarget(Constants.ElevatorConstants.Target.STATION);
   }

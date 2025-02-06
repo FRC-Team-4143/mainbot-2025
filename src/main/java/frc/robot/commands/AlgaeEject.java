@@ -9,12 +9,12 @@ import frc.robot.subsystems.Claw;
 import frc.robot.subsystems.Claw.ClawMode;
 import frc.robot.subsystems.Claw.GamePiece;
 
-public class CoralEject extends Command {
+public class AlgaeEject extends Command {
 
   static Claw claw_;
 
   /** Creates a new CoralEject. */
-  public CoralEject() {
+  public AlgaeEject() {
     claw_ = Claw.getInstance();
     addRequirements(claw_);
   }
@@ -22,7 +22,7 @@ public class CoralEject extends Command {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    claw_.setGamePiece(GamePiece.CORAL);
+    claw_.setGamePiece(GamePiece.ALGAE);
     claw_.setClawMode(ClawMode.SHOOT);
   }
 
