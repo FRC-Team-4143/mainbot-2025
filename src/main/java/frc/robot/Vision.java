@@ -33,6 +33,8 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import frc.robot.subsystems.PoseEstimator;
 import java.util.List;
 import java.util.Optional;
 import org.photonvision.EstimatedRobotPose;
@@ -108,22 +110,30 @@ public class Vision {
   public Optional<EstimatedRobotPose> getEstimatedGlobalPose() {
     Optional<EstimatedRobotPose> visionEst = Optional.empty();
     for (var change : camera.getAllUnreadResults()) {
+      SmartDashboard.putBoolean("MultiTag", change.getMultiTagResult().isPresent());
+      SmartDashboard.putBoolean(
+          "multitag failure", change.getMultiTagResult().isEmpty() && change.targets.size() > 1);
+      SmartDashboard.putBoolean(
+          "SingleTag", change.getMultiTagResult().isEmpty() && change.targets.size() == 1);
+
       visionEst = photonEstimator.update(change);
       updateEstimationStdDevs(visionEst, change.getTargets());
-
-      if (Robot.isSimulation()) {
-        visionEst.ifPresentOrElse(
-            est ->
-                getSimDebugField()
-                    .getObject("VisionEstimation")
-                    .setPose(est.estimatedPose.toPose2d()),
-            () -> {
-              getSimDebugField().getObject("VisionEstimation").setPoses();
-            });
-      }
     }
-    if (numTags > 1) return visionEst;
-    else return Optional.empty();
+    visionEst.ifPresentOrElse(
+        (est) -> {
+          var rotation = est.estimatedPose.getRotation().toRotation2d().getDegrees();
+          var x = est.estimatedPose.getX();
+          var y = est.estimatedPose.getY();
+
+          var vision_filtered_odometry = PoseEstimator.getInstance().getFieldPose();
+          SmartDashboard.putBoolean(
+              "rotation error",
+              Math.abs(rotation - vision_filtered_odometry.getRotation().getDegrees()) > 5);
+        },
+        () -> {
+          SmartDashboard.putBoolean("rotation error", false);
+        });
+    return visionEst;
   }
 
   /**
