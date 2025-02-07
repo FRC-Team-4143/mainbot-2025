@@ -244,8 +244,10 @@ public final class Constants {
           false),
 
       STATION(1.076666, Rotation2d.fromRadians(-1.027767), true),
-      CLIMB(ELEVATOR_MIN_HEIGHT, new Rotation2d(0), true),
-      STOW(0, Rotation2d.fromDegrees(-90), true);
+      CLIMB(ELEVATOR_MIN_HEIGHT, new Rotation2d(), true),
+      STOW(0, Rotation2d.fromDegrees(-90), true),
+      ALGAE_LOW(0.23665818349136578, Rotation2d.fromRadians(2.4942527611020524), false),
+      ALGAE_HIGH(1.200, Rotation2d.fromDegrees(90 + 33), false);
 
       Target(double height, Rotation2d angle, boolean isPivotHeightTarget) {
         this.angle = angle;
