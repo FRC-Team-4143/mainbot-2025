@@ -80,7 +80,8 @@ public class SwerveDrivetrain extends Subsystem {
     TARGET,
     AUTONOMOUS,
     AUTONOMOUS_TARGET,
-    IDLE
+    IDLE,
+    PROFILE
   }
 
   // Robot Hardware
@@ -260,6 +261,7 @@ public class SwerveDrivetrain extends Subsystem {
 
   @Override
   public void updateLogic(double timestamp) {
+    request_parameters.currentPose = new Pose2d(0, 0, io_.robot_yaw_);
     switch (io_.drive_mode_) {
       case ROBOT_CENTRIC:
         setControl(
@@ -305,13 +307,16 @@ public class SwerveDrivetrain extends Subsystem {
         setControl(new SwerveRequest.Idle());
         break;
       case AUTONOMOUS:
+        request_parameters.currentPose =
+            PoseEstimator.getInstance().getFieldPose(); // new Pose2d(0, 0, io_.robot_yaw_);
       default:
         // yes these dont do anything for auto...
+
         break;
     }
 
     /* And now that we've got the new odometry, update the controls */
-    request_parameters.currentPose = new Pose2d(0, 0, io_.robot_yaw_);
+
     request_parameters.kinematics = kinematics;
     request_parameters.swervePositions = module_locations;
     request_parameters.updatePeriod = timestamp - request_parameters.timestamp;
@@ -479,6 +484,7 @@ public class SwerveDrivetrain extends Subsystem {
                 (sample.omega)
                     + heading_traj_controller_.calculate(
                         pose.getRotation().getRadians(), sample.heading)));
+    io_.trajectory_target_ = new Pose2d(sample.x, sample.y, new Rotation2d(sample.heading));
   }
 
   public void tractorBeam(Pose2d targetPose) {
@@ -524,6 +530,7 @@ public class SwerveDrivetrain extends Subsystem {
     @Log.File public double chassis_speed_magnitude_;
     @Log.File public boolean is_locked_with_gyro = false;
     @Log.File public double tractor_beam_scaling_factor_ = 0.0;
+    @Log.File public Pose2d trajectory_target_ = new Pose2d();
   }
 
   @Override

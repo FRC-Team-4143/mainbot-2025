@@ -4,12 +4,14 @@
 
 package frc.robot;
 
+import edu.wpi.first.wpilibj.RobotState;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.mw_lib.util.Util;
 import frc.robot.commands.Feed;
 import frc.robot.commands.Score;
+import frc.robot.commands.SwerveProfile;
 import frc.robot.subsystems.*;
 import frc.robot.subsystems.Claw.ClawMode;
 
@@ -65,6 +67,8 @@ public abstract class OI {
                 () -> claw_.setClawMode(ClawMode.OPEN),
                 () -> claw_.setClawMode(ClawMode.CLOSED),
                 claw_));
+
+    driver_controller_.x().whileTrue(new SwerveProfile(1.5, 0, 0).onlyIf(RobotState::isTest));
   }
 
   public static double getDriverJoystickLeftX() {

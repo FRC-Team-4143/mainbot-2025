@@ -124,7 +124,7 @@ public final class Constants {
             .withCouplingGearRatio(COUPLE_RATIO)
             .withSteerMotorInverted(STEER_MOTOR_REVERSED)
             .withSteerMotorClosedLoopOutput(ClosedLoopOutputType.Voltage)
-            .withDriveMotorClosedLoopOutput(ClosedLoopOutputType.TorqueCurrentFOC);
+            .withDriveMotorClosedLoopOutput(ClosedLoopOutputType.Voltage);
 
     public static final SwerveModuleConstants FL_MODULE_CONSTANTS =
         ConstantCreator.createModuleConstants(
@@ -164,9 +164,9 @@ public final class Constants {
             LOADER.getBoolValue("drive", "br", "INVERT_DRIVE"));
 
     // Drivetrain PID Controller
-    public static final PIDController X_TRAJECTORY_TRANSLATION = new PIDController(0, 0, 0.000);
-    public static final PIDController Y_TRAJECTORY_TRANSLATION = new PIDController(0, 0, 0.000);
-    public static final PIDController TRAJECTORY_HEADING = new PIDController(0, 0, 0.000);
+    public static final PIDController X_TRAJECTORY_TRANSLATION = new PIDController(0.5, 0, 0.000);
+    public static final PIDController Y_TRAJECTORY_TRANSLATION = new PIDController(0.5, 0, 0.000);
+    public static final PIDController TRAJECTORY_HEADING = new PIDController(2, 0, 0.000);
     public static final PIDController X_POSE_TRANSLATION = new PIDController(0.1, 0, 0.000);
     public static final PIDController Y_POSE_TRANSLATION = new PIDController(0.1, 0, 0.000);
     public static final PIDController POSE_HEADING = new PIDController(.075, 0, 0.000);

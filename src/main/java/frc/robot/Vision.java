@@ -58,6 +58,7 @@ public class Vision {
   private final PhotonCamera camera;
   private final PhotonPoseEstimator photonEstimator;
   private Matrix<N3, N1> curStdDevs;
+  private int numTags;
 
   // Simulation
   private PhotonCameraSim cameraSim;
@@ -121,7 +122,8 @@ public class Vision {
             });
       }
     }
-    return visionEst;
+    if (numTags > 1) return visionEst;
+    else return Optional.empty();
   }
 
   /**
@@ -140,7 +142,8 @@ public class Vision {
     } else {
       // Pose present. Start running Heuristic
       var estStdDevs = kSingleTagStdDevs;
-      int numTags = 0;
+      // int numTags = 0;
+      numTags = 0;
       double avgDist = 0;
 
       // Precalculation - see how many tags we found, and calculate an average-distance metric
