@@ -71,7 +71,7 @@ public class SwerveDrivetrain extends Subsystem {
   }
 
   // Subsystem data class
-  private SwerveDriverainPeriodicIo io_;
+  private SwerveDrivetrainPeriodicIo io_;
 
   // Drive Mode Selections
   public enum DriveMode {
@@ -132,7 +132,7 @@ public class SwerveDrivetrain extends Subsystem {
   public SwerveDrivetrain(SwerveModuleConstants... modules) {
 
     // make new io instance
-    io_ = new SwerveDriverainPeriodicIo();
+    io_ = new SwerveDrivetrainPeriodicIo();
 
     // configure chassis server for comms
     ChassisProxyServer.configureServer();
@@ -486,7 +486,7 @@ public class SwerveDrivetrain extends Subsystem {
    * Plain-Old-Data class holding the state of the swerve drivetrain. This encapsulates most data
    * that is relevant for telemetry or decision-making from the Swerve Drive.
    */
-  public class SwerveDriverainPeriodicIo implements Logged {
+  public class SwerveDrivetrainPeriodicIo implements Logged {
     @Log.File public SwerveModuleState[] current_module_states_, requested_module_states_;
     @Log.File public SwerveModulePosition[] module_positions;
     @Log.File public Rotation2d robot_yaw_ = new Rotation2d();
