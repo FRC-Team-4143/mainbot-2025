@@ -19,8 +19,6 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import frc.lib.FieldConstants;
-import frc.mw_lib.geometry.PolygonRegion;
 import frc.mw_lib.subsystem.Subsystem;
 import frc.robot.Vision;
 import monologue.Annotations.Log;
@@ -47,13 +45,10 @@ public class PoseEstimator extends Subsystem {
   private ProtobufPublisher<Pose2d> odom_publisher_;
   private ProtobufPublisher<Pose2d> pose_publisher_;
   private DoubleArraySubscriber vision_std_devs_subscriber;
-  private PolygonRegion currentAlgaeRegion;
-  private PolygonRegion currentCoralRegion;
   private StructPublisher<Pose2d> camPosePublisher;
 
   int update_counter_ = 2;
   double[] vision_std_devs_ = {1, 1, 1};
-  StructPublisher<Pose2d> camPosePublisher;
 
   PoseEstimator() {
     io_ = new PoseEstimatorPeriodicIo();
@@ -143,18 +138,6 @@ public class PoseEstimator extends Subsystem {
     io_.vision_filtered_pose_ =
         vision_filtered_odometry_.updateWithTime(
             timestamp, drive.getImuYaw(), drive.getModulePositions());
-
-    // finds the algae
-    for (PolygonRegion region : FieldConstants.ALGAE_REGIONS)
-      if (region.contains(getFieldPose())) {
-        currentAlgaeRegion = region;
-      }
-
-    // finds the coral region
-    for (PolygonRegion region : FieldConstants.CORAL_REGIONS)
-      if (region.contains(getFieldPose())) {
-        currentCoralRegion = region;
-      }
   }
 
   @Override
@@ -181,18 +164,9 @@ public class PoseEstimator extends Subsystem {
   public void outputTelemetry(double timestamp) {
     field_.setRobotPose(io_.vision_filtered_pose_);
     SmartDashboard.putData("Field", field_);
-<<<<<<< HEAD
     // SmartDashboard.putBoolean("Is Vision Paused", io_.ignore_vision);
-
-    // outputs the current reigon to smart dashboard
-    SmartDashboard.putString("Coral Region", currentCoralRegion.getName());
-    SmartDashboard.putString("Coral Region", currentAlgaeRegion.getName());
-=======
->>>>>>> L2_Vision
   }
   ;
-
-  // SmartDashboard.putBoolean("Is Vision Paused", io_.ignore_vision);
 
   public Field2d getFieldWidget() {
     return field_;
