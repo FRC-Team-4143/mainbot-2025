@@ -5,6 +5,7 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.networktables.StructArrayPublisher;
+import frc.lib.FieldConstants;
 
 /**
  * This class models a region of the field. It is defined by its center and radius Credit to
@@ -30,12 +31,12 @@ public class CircularRegion implements Region {
         NetworkTableInstance.getDefault()
             .getStructArrayTopic("Regions/" + name_, Translation2d.struct)
             .publish();
-    constructAllianceRegion(center);
+    constructAllianceRegion(false);
     logPoints();
   }
 
-  public void constructAllianceRegion(Translation2d center) {
-    center_ = center;
+  public void constructAllianceRegion(boolean flip) {
+    center_.rotateAround(FieldConstants.FIELD_CENTER, Rotation2d.fromDegrees(180));
   }
 
   /**
