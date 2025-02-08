@@ -59,6 +59,8 @@ public abstract class OI {
     driver_controller_.x().toggleOnTrue(new SetReefLevel(ReefLevel.L2));
     driver_controller_.b().toggleOnTrue(new SetReefLevel(ReefLevel.L3));
     driver_controller_.a().toggleOnTrue(new CoralStationLoad());
+    driver_controller_.povDown().toggleOnTrue(new SetReefLevel(ReefLevel.ALGAE_LOW));
+    driver_controller_.povUp().toggleOnTrue(new SetReefLevel(ReefLevel.ALGAE_HIGH));
     // driver_controller_.a().whileTrue(new setReefLevel(ReefLevel.L1)); TODO: Fix Effector
     // Collision with Frame
   }

@@ -14,7 +14,9 @@ public class SetReefLevel extends Command {
     L1,
     L2,
     L3,
-    L4
+    L4,
+    ALGAE_HIGH,
+    ALGAE_LOW
   }
 
   private ReefLevel requested_level_;
@@ -41,6 +43,12 @@ public class SetReefLevel extends Command {
         break;
       case L4:
         elevator_.setTarget(Constants.ElevatorConstants.Target.L4);
+        break;
+      case ALGAE_HIGH:
+        elevator_.setTarget(Constants.ElevatorConstants.Target.ALGAE_HIGH);
+        break;
+      case ALGAE_LOW:
+        elevator_.setTarget(Constants.ElevatorConstants.Target.ALGAE_LOW);
         break;
     }
   }
