@@ -10,6 +10,7 @@ import edu.wpi.first.wpilibj2.command.ConditionalCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.mw_lib.util.Util;
+import frc.robot.GameStateManager.ScoringTarget;
 import frc.robot.commands.*;
 import frc.robot.commands.SetReefLevel.ReefLevel;
 import frc.robot.subsystems.*;
@@ -18,6 +19,7 @@ public abstract class OI {
 
   // Sets up both controllers
   static CommandXboxController driver_controller_ = new CommandXboxController(0);
+  static PoseEstimator pose_estimator_ = PoseEstimator.getInstance();
   static CommandXboxController operator_controller_ = new CommandXboxController(1);
 
   static SwerveDrivetrain swerve_drivetrain_ = SwerveDrivetrain.getInstance();
@@ -37,6 +39,9 @@ public abstract class OI {
                 () ->
                     swerve_drivetrain_.seedFieldRelative(swerve_drivetrain_.getDriverPrespective()))
             .ignoringDisable(true));
+    SmartDashboard.putData(
+        "Disturb Pose",
+        Commands.runOnce(() -> pose_estimator_.disturbPose()).ignoringDisable(true));
     // Sync Elevator and Arm Sensor to "Home" Position
     SmartDashboard.putData(
         "Zero Elevator & Arm",
@@ -50,15 +55,26 @@ public abstract class OI {
                 .ignoringDisable(true));
 
     driver_controller_.rightBumper().onTrue(claw_.toggleGamePiece());
-    driver_controller_.leftTrigger().whileTrue(new AlgaeLoad());
+    driver_controller_
+        .leftTrigger()
+        .whileTrue(
+            new ConditionalCommand(new AlgaeLoad(), new CoralStationLoad(), claw_::isAlgaeMode));
     // Score
     driver_controller_
         .rightTrigger()
         .whileTrue(new ConditionalCommand(new CoralEject(), new AlgaeEject(), claw_::isCoralMode));
-    driver_controller_.y().toggleOnTrue(new SetReefLevel(ReefLevel.L4));
-    driver_controller_.x().toggleOnTrue(new SetReefLevel(ReefLevel.L2));
-    driver_controller_.b().toggleOnTrue(new SetReefLevel(ReefLevel.L3));
-    driver_controller_.a().toggleOnTrue(new CoralStationLoad());
+    operator_controller_
+        .y()
+        .toggleOnTrue(Commands.runOnce(() -> GameStateManager.wantedTarget(ScoringTarget.REEF_L4)));
+    operator_controller_
+        .x()
+        .toggleOnTrue(Commands.runOnce(() -> GameStateManager.wantedTarget(ScoringTarget.REEF_L2)));
+    operator_controller_
+        .b()
+        .toggleOnTrue(Commands.runOnce(() -> GameStateManager.wantedTarget(ScoringTarget.REEF_L3)));
+    // operator_controller_.a().toggleOnTrue(());
+    operator_controller_.povDown().toggleOnTrue(new SetReefLevel(ReefLevel.ALGAE_LOW));
+    operator_controller_.povUp().toggleOnTrue(new SetReefLevel(ReefLevel.ALGAE_HIGH));
     // driver_controller_.a().whileTrue(new setReefLevel(ReefLevel.L1)); TODO: Fix Effector
     // Collision with Frame
   }
