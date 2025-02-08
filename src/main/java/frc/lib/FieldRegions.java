@@ -3,6 +3,7 @@ package frc.lib;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.util.Units;
 import frc.lib.FieldConstants.Barge;
+import frc.mw_lib.geometry.CircularRegion;
 import frc.mw_lib.geometry.PolygonRegion;
 
 public class FieldRegions {
@@ -134,9 +135,10 @@ public class FieldRegions {
 
   // region lists
   public static PolygonRegion[] ALGAE_REGIONS = {BARGE_REGION, PROCESSOR_REGION};
-  public static PolygonRegion[] CORAL_REGIONS = {
-    RIGHT_CORAL_STATION_REGION,
-    LEFT_CORAL_STATION_REGION,
+  public static PolygonRegion[] STATION_REGIONS = {
+    RIGHT_CORAL_STATION_REGION, LEFT_CORAL_STATION_REGION
+  };
+  public static PolygonRegion[] REEF_REGIONS = {
     REEF_FACE0_REGION,
     REEF_FACE1_REGION,
     REEF_FACE2_REGION,
@@ -146,12 +148,22 @@ public class FieldRegions {
     REEF_FACE5_REGION
   };
 
+  public static CircularRegion REEF_ENTER =
+      new CircularRegion(FieldConstants.Reef.CENTER, 2, "reef_enter");
+  public static CircularRegion REEF_EXIT =
+      new CircularRegion(FieldConstants.Reef.CENTER, 3, "reef_exit");
+
   public static void constructRegions(boolean flip) {
     for (PolygonRegion region : ALGAE_REGIONS) {
       region.constructAllianceRegion(flip);
     }
-    for (PolygonRegion region : CORAL_REGIONS) {
+    for (PolygonRegion region : REEF_REGIONS) {
       region.constructAllianceRegion(flip);
     }
+    for (PolygonRegion region : STATION_REGIONS) {
+      region.constructAllianceRegion(flip);
+    }
+    REEF_ENTER.constructAllianceRegion(flip);
+    REEF_EXIT.constructAllianceRegion(flip);
   }
 }

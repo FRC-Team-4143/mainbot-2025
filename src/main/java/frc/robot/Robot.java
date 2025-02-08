@@ -37,6 +37,7 @@ public class Robot extends TimedRobot {
   @Override
   public void disabledInit() {
     SwerveDrivetrain.getInstance().setDriveMode(DriveMode.IDLE);
+    FieldRegions.constructRegions(false);
   }
 
   @Override
@@ -54,15 +55,13 @@ public class Robot extends TimedRobot {
                 : swerve_drivetrain_.blueAlliancePerspectiveRotation);
         // Update Field Regions
         FieldRegions.constructRegions(true);
-      } else {
-        FieldRegions.constructRegions(false);
       }
     }
   }
 
   @Override
   public void autonomousInit() {
-    swerve_drivetrain_.setDriveMode(DriveMode.AUTONOMOUS);
+    swerve_drivetrain_.setDriveMode(DriveMode.TRAJECTORY);
   }
 
   @Override

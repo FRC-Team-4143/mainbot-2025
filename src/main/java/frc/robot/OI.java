@@ -10,6 +10,7 @@ import edu.wpi.first.wpilibj2.command.ConditionalCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.mw_lib.util.Util;
+import frc.robot.GameStateManager.ScoringTarget;
 import frc.robot.commands.*;
 import frc.robot.commands.SetReefLevel.ReefLevel;
 import frc.robot.subsystems.*;
@@ -54,17 +55,26 @@ public abstract class OI {
                 .ignoringDisable(true));
 
     driver_controller_.rightBumper().onTrue(claw_.toggleGamePiece());
-    driver_controller_.leftTrigger().whileTrue(new AlgaeLoad());
+    driver_controller_
+        .leftTrigger()
+        .whileTrue(
+            new ConditionalCommand(new AlgaeLoad(), new CoralStationLoad(), claw_::isAlgaeMode));
     // Score
     driver_controller_
         .rightTrigger()
         .whileTrue(new ConditionalCommand(new CoralEject(), new AlgaeEject(), claw_::isCoralMode));
-    driver_controller_.y().toggleOnTrue(new SetReefLevel(ReefLevel.L4));
-    driver_controller_.x().toggleOnTrue(new SetReefLevel(ReefLevel.L2));
-    driver_controller_.b().toggleOnTrue(new SetReefLevel(ReefLevel.L3));
-    driver_controller_.a().toggleOnTrue(new CoralStationLoad());
-    driver_controller_.povDown().toggleOnTrue(new SetReefLevel(ReefLevel.ALGAE_LOW));
-    driver_controller_.povUp().toggleOnTrue(new SetReefLevel(ReefLevel.ALGAE_HIGH));
+    operator_controller_
+        .y()
+        .toggleOnTrue(Commands.runOnce(() -> GameStateManager.wantedTarget(ScoringTarget.REEF_L4)));
+    operator_controller_
+        .x()
+        .toggleOnTrue(Commands.runOnce(() -> GameStateManager.wantedTarget(ScoringTarget.REEF_L2)));
+    operator_controller_
+        .b()
+        .toggleOnTrue(Commands.runOnce(() -> GameStateManager.wantedTarget(ScoringTarget.REEF_L3)));
+    // operator_controller_.a().toggleOnTrue(());
+    operator_controller_.povDown().toggleOnTrue(new SetReefLevel(ReefLevel.ALGAE_LOW));
+    operator_controller_.povUp().toggleOnTrue(new SetReefLevel(ReefLevel.ALGAE_HIGH));
     // driver_controller_.a().whileTrue(new setReefLevel(ReefLevel.L1)); TODO: Fix Effector
     // Collision with Frame
   }

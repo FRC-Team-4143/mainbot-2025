@@ -12,4 +12,6 @@ public interface Region {
 
   /** Returns true if the region contains a given Pose2d. */
   public boolean contains(Pose2d other);
+
+  public String getName();
 }

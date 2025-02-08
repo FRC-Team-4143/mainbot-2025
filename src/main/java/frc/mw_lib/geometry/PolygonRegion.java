@@ -1,11 +1,10 @@
 package frc.mw_lib.geometry;
 
 import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.networktables.StructArrayPublisher;
-import frc.lib.FieldConstants;
+import frc.lib.AllianceFlipUtil;
 import java.awt.geom.*;
 
 /**
@@ -37,7 +36,7 @@ public class PolygonRegion implements Region {
 
   public void constructAllianceRegion(boolean flip) {
     for (Translation2d point : points_) {
-      point.rotateAround(FieldConstants.FIELD_CENTER, Rotation2d.fromDegrees(180));
+      point = AllianceFlipUtil.apply(point, flip);
     }
 
     shape_ = new Path2D.Double(Path2D.WIND_EVEN_ODD, points_.length);
@@ -66,5 +65,9 @@ public class PolygonRegion implements Region {
    */
   public boolean contains(Pose2d other) {
     return shape_.contains(new Point2D.Double(other.getX(), other.getY()));
+  }
+
+  public String getName() {
+    return name_;
   }
 }

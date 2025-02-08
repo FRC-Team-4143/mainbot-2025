@@ -36,7 +36,6 @@ import frc.mw_lib.util.Util;
 import frc.robot.Constants;
 import frc.robot.Constants.DrivetrainConstants;
 import frc.robot.OI;
-import java.util.Optional;
 import java.util.function.Supplier;
 import monologue.Annotations.Log;
 import monologue.Logged;
@@ -78,8 +77,8 @@ public class SwerveDrivetrain extends Subsystem {
     ROBOT_CENTRIC,
     FIELD_CENTRIC,
     TARGET,
-    AUTONOMOUS,
-    AUTONOMOUS_TARGET,
+    TRAJECTORY,
+    TRACTOR_BEAM,
     IDLE,
     PROFILE
   }
@@ -255,6 +254,8 @@ public class SwerveDrivetrain extends Subsystem {
             (io_.chassis_speeds_.vxMetersPerSecond * io_.chassis_speeds_.vxMetersPerSecond)
                 + (io_.chassis_speeds_.vyMetersPerSecond * io_.chassis_speeds_.vyMetersPerSecond));
 
+    io_.pose_ = PoseEstimator.getInstance().getFieldPose();
+
     // recieve new chassis info
     ChassisProxyServer.updateData();
   }
@@ -301,14 +302,47 @@ public class SwerveDrivetrain extends Subsystem {
                 // Set Robots target rotation
                 .withTargetDirection(io_.target_rotation_)
                 // Use current robot rotation
-                .useGyroForRotation(io_.is_locked_with_gyro));
+                .useGyroForRotation(false));
         break;
       case IDLE:
         setControl(new SwerveRequest.Idle());
         break;
-      case AUTONOMOUS:
-        request_parameters.currentPose =
-            PoseEstimator.getInstance().getFieldPose(); // new Pose2d(0, 0, io_.robot_yaw_);
+      case TRAJECTORY:
+        this.setControl(
+            auto_request
+                .withVelocityX(
+                    io_.target_twist_.vx
+                        + x_traj_controller_.calculate(io_.pose_.getX(), io_.target_twist_.x))
+                .withVelocityY(
+                    io_.target_twist_.vy
+                        + y_traj_controller_.calculate(io_.pose_.getY(), io_.target_twist_.y))
+                .withRotationalRate(
+                    (io_.target_twist_.omega)
+                        + heading_traj_controller_.calculate(
+                            io_.pose_.getRotation().getRadians(), io_.target_twist_.heading)));
+        request_parameters.currentPose = io_.target_pose_;
+        break;
+      case TRACTOR_BEAM:
+        io_.tractor_beam_scaling_factor_ =
+            Math.sqrt(
+                Math.pow(io_.driver_joystick_leftX_, 2)
+                    + Math.pow(io_.driver_joystick_leftY_, 2)
+                    + Math.pow(io_.driver_joystick_rightX_, 2));
+        this.setControl(
+            auto_request
+                .withVelocityX(
+                    x_pose_controller_.calculate(io_.pose_.getX(), io_.target_pose_.getX())
+                        * io_.tractor_beam_scaling_factor_)
+                .withVelocityY(
+                    y_pose_controller_.calculate(io_.pose_.getY(), io_.target_pose_.getY())
+                        * io_.tractor_beam_scaling_factor_)
+                .withRotationalRate(
+                    heading_pose_controller_.calculate(
+                            io_.pose_.getRotation().getRadians(),
+                            io_.target_pose_.getRotation().getRadians())
+                        * io_.tractor_beam_scaling_factor_));
+        request_parameters.currentPose = io_.target_pose_;
+        break;
       default:
         // yes these dont do anything for auto...
 
@@ -439,13 +473,6 @@ public class SwerveDrivetrain extends Subsystem {
     io_.driver_POVx = target_angle_.getSin();
   }
 
-  public Optional<Rotation2d> getAutoTargetRotation() {
-    if (io_.drive_mode_ == DriveMode.AUTONOMOUS_TARGET) {
-      return Optional.of(io_.target_rotation_.rotateBy(io_.drivers_station_perspective_));
-    }
-    return Optional.empty();
-  }
-
   /**
    * updates the mode flag thats changes what request is applied to the drive train
    *
@@ -474,44 +501,16 @@ public class SwerveDrivetrain extends Subsystem {
     return io_.drivers_station_perspective_;
   }
 
-  public void rotationTargetWithGyro(boolean state) {
-    io_.is_locked_with_gyro = state;
-  }
-
   public void followTrajectory(SwerveSample sample) {
-    io_.drive_mode_ = DriveMode.AUTONOMOUS;
-    Pose2d pose = PoseEstimator.getInstance().getFieldPose();
-    this.setControl(
-        auto_request
-            .withVelocityX(sample.vx + x_traj_controller_.calculate(pose.getX(), sample.x))
-            .withVelocityY(sample.vy + y_traj_controller_.calculate(pose.getY(), sample.y))
-            .withRotationalRate(
-                (sample.omega)
-                    + heading_traj_controller_.calculate(
-                        pose.getRotation().getRadians(), sample.heading)));
-    io_.trajectory_target_ = new Pose2d(sample.x, sample.y, new Rotation2d(sample.heading));
+    io_.drive_mode_ = DriveMode.TRAJECTORY;
+    io_.target_twist_ = sample;
+
+    io_.target_pose_ = new Pose2d(sample.x, sample.y, new Rotation2d(sample.heading));
   }
 
   public void tractorBeam(Pose2d targetPose) {
-    io_.tractor_beam_scaling_factor_ =
-        Math.sqrt(
-            Math.pow(io_.driver_joystick_leftX_, 2)
-                + Math.pow(io_.driver_joystick_leftY_, 2)
-                + Math.pow(io_.driver_joystick_rightX_, 2));
-
-    Pose2d pose = PoseEstimator.getInstance().getFieldPose();
-    this.setControl(
-        auto_request
-            .withVelocityX(
-                x_pose_controller_.calculate(pose.getX(), targetPose.getX())
-                    * io_.tractor_beam_scaling_factor_)
-            .withVelocityY(
-                y_pose_controller_.calculate(pose.getY(), targetPose.getY())
-                    * io_.tractor_beam_scaling_factor_)
-            .withRotationalRate(
-                heading_pose_controller_.calculate(
-                        pose.getRotation().getRadians(), targetPose.getRotation().getRadians())
-                    * io_.tractor_beam_scaling_factor_));
+    io_.drive_mode_ = DriveMode.TRACTOR_BEAM;
+    io_.target_pose_ = targetPose;
   }
 
   /**
@@ -533,9 +532,13 @@ public class SwerveDrivetrain extends Subsystem {
     @Log.File public double driver_POVy = 0.0;
     @Log.File public Rotation2d drivers_station_perspective_ = new Rotation2d();
     @Log.File public double chassis_speed_magnitude_;
-    @Log.File public boolean is_locked_with_gyro = false;
     @Log.File public double tractor_beam_scaling_factor_ = 0.0;
-    @Log.File public Pose2d trajectory_target_ = new Pose2d();
+    @Log.File public Pose2d target_pose_ = new Pose2d();
+
+    @Log.File
+    public SwerveSample target_twist_ = new SwerveSample(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, null, null);
+
+    @Log.File public Pose2d pose_ = new Pose2d();
   }
 
   @Override
