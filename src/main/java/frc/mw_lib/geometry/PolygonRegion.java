@@ -6,7 +6,6 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.networktables.StructArrayPublisher;
 import frc.lib.FieldConstants;
-
 import java.awt.geom.*;
 
 /**
@@ -17,10 +16,7 @@ public class PolygonRegion implements Region {
   private Path2D shape_;
   private String name_;
   private Translation2d[] points_;
-  private StructArrayPublisher<Translation2d> array_publisher_ =
-        NetworkTableInstance.getDefault()
-            .getStructArrayTopic(name_, Translation2d.struct)
-            .publish();
+  private StructArrayPublisher<Translation2d> array_publisher_;
 
   /**
    * Create a Region2d, a polygon, from an array of Translation2d specifying vertices of a polygon.
@@ -32,11 +28,15 @@ public class PolygonRegion implements Region {
   public PolygonRegion(Translation2d[] points, String regionName) {
     name_ = regionName;
     points_ = points;
-    constructAllianceRegion(false );
+    array_publisher_ =
+        NetworkTableInstance.getDefault()
+            .getStructArrayTopic("Regions/" + name_, Translation2d.struct)
+            .publish();
+    constructAllianceRegion(false);
   }
 
-  public void constructAllianceRegion(boolean flip){
-    for(Translation2d point : points_){
+  public void constructAllianceRegion(boolean flip) {
+    for (Translation2d point : points_) {
       point.rotateAround(FieldConstants.FIELD_CENTER, Rotation2d.fromDegrees(180));
     }
 
@@ -67,5 +67,4 @@ public class PolygonRegion implements Region {
   public boolean contains(Pose2d other) {
     return shape_.contains(new Point2D.Double(other.getX(), other.getY()));
   }
-
 }

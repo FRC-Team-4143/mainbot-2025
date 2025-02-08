@@ -14,10 +14,7 @@ public class CircularRegion implements Region {
   private Translation2d center_;
   private String name_;
   private double radius_;
-  private StructArrayPublisher<Translation2d> array_publisher_ =
-        NetworkTableInstance.getDefault()
-            .getStructArrayTopic(name_, Translation2d.struct)
-            .publish();
+  private StructArrayPublisher<Translation2d> array_publisher_;
 
   /**
    * Create a Region2d, a polygon, from an array of Translation2d specifying vertices of a polygon.
@@ -29,11 +26,15 @@ public class CircularRegion implements Region {
   public CircularRegion(Translation2d center, double radius, String region_name) {
     radius_ = radius;
     name_ = region_name;
+    array_publisher_ =
+        NetworkTableInstance.getDefault()
+            .getStructArrayTopic("Regions/" + name_, Translation2d.struct)
+            .publish();
     constructAllianceRegion(center);
     logPoints();
   }
 
-  public void constructAllianceRegion(Translation2d center){
+  public void constructAllianceRegion(Translation2d center) {
     center_ = center;
   }
 

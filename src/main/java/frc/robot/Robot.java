@@ -53,7 +53,9 @@ public class Robot extends TimedRobot {
                 ? swerve_drivetrain_.redAlliancePerspectiveRotation
                 : swerve_drivetrain_.blueAlliancePerspectiveRotation);
         // Update Field Regions
-        FieldRegions.flipAllianceRegions();
+        FieldRegions.constructRegions(true);
+      } else {
+        FieldRegions.constructRegions(false);
       }
     }
   }

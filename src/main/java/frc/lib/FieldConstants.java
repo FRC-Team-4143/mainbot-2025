@@ -22,7 +22,8 @@ import java.util.Map;
 public class FieldConstants {
   public static final double FIELD_LENGTH = Units.inchesToMeters(690.876);
   public static final double FIELD_WIDTH = Units.inchesToMeters(317);
-  public static final Translation2d FIELD_CENTER = new Translation2d(FIELD_LENGTH/2, FIELD_WIDTH/2);
+  public static final Translation2d FIELD_CENTER =
+      new Translation2d(FIELD_LENGTH / 2, FIELD_WIDTH / 2);
   public static final double STARTING_LINE_X =
       Units.inchesToMeters(299.438); // Measured from the inside of starting line
   public static final double ALGAE_DIAMETER = Units.inchesToMeters(16);

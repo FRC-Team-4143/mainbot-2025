@@ -2,8 +2,6 @@ package frc.lib;
 
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.util.Units;
-import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import frc.lib.FieldConstants.Barge;
 import frc.mw_lib.geometry.PolygonRegion;
 
@@ -18,7 +16,7 @@ public class FieldRegions {
             new Translation2d(8, 0),
             new Translation2d(4, 0),
           },
-          "processorRegion");
+          "Processor");
 
   public static PolygonRegion BARGE_REGION =
       new PolygonRegion(
@@ -29,7 +27,7 @@ public class FieldRegions {
                 (FieldConstants.FIELD_LENGTH / 2) - 2, FieldConstants.FIELD_WIDTH / 2),
             new Translation2d(FieldConstants.FIELD_LENGTH / 2, FieldConstants.FIELD_WIDTH / 2)
           },
-          "bargeRegion");
+          "Barge");
   public static PolygonRegion RIGHT_CORAL_STATION_REGION =
       new PolygonRegion(
           new Translation2d[] {
@@ -38,7 +36,7 @@ public class FieldRegions {
             new Translation2d(4, FieldConstants.FIELD_WIDTH / 2),
             new Translation2d(4, 0)
           },
-          "rightCoralStation");
+          "RightCoralStation");
 
   public static PolygonRegion LEFT_CORAL_STATION_REGION =
       new PolygonRegion(
@@ -48,7 +46,7 @@ public class FieldRegions {
             new Translation2d(4, FieldConstants.FIELD_WIDTH / 2),
             new Translation2d(0, FieldConstants.FIELD_WIDTH / 2)
           },
-          "leftCoralStation");
+          "LeftCoralStation");
 
   // add regions
   public static PolygonRegion REEF_FACE0_REGION =
@@ -61,7 +59,7 @@ public class FieldRegions {
             new Translation2d(0, FieldConstants.FIELD_WIDTH - Units.feetToMeters(4)),
             FieldConstants.Reef.CENTER,
           },
-          "reefFace0Region");
+          "ReefFace0");
 
   public static PolygonRegion REEF_FACE1_REGION =
       new PolygonRegion(
@@ -77,7 +75,7 @@ public class FieldRegions {
                 Units.feetToMeters(4) + Units.feetToMeters(10), FieldConstants.FIELD_WIDTH),
             FieldConstants.Reef.CENTER,
           },
-          "reefFace1Region");
+          "ReefFace1");
 
   public static PolygonRegion REEF_FACE2_REGION =
       new PolygonRegion(
@@ -92,7 +90,7 @@ public class FieldRegions {
             FieldConstants.Reef.CENTER,
           }, // FieldConstants.Reef.center cage
           // constant
-          "reefFace2Region");
+          "ReefFace2");
 
   public static PolygonRegion REEF_FACE3_REGION =
       new PolygonRegion(
@@ -103,7 +101,7 @@ public class FieldRegions {
             new Translation2d(FieldConstants.FIELD_LENGTH / 2, Units.inchesToMeters(56)),
             FieldConstants.Reef.CENTER,
           },
-          "reefFace3Region");
+          "ReefFace3");
 
   public static PolygonRegion REEF_FACE4_REGION =
       new PolygonRegion(
@@ -117,7 +115,7 @@ public class FieldRegions {
             new Translation2d(FieldConstants.FIELD_LENGTH / 2, Units.inchesToMeters(56)),
             FieldConstants.Reef.CENTER,
           },
-          "reefFace4Region");
+          "ReefFace4");
 
   public static PolygonRegion REEF_FACE5_REGION =
       new PolygonRegion(
@@ -132,7 +130,7 @@ public class FieldRegions {
             new Translation2d(0, Units.feetToMeters(4)),
             FieldConstants.Reef.CENTER,
           },
-          "reefFace5Region");
+          "ReefFace5");
 
   // region lists
   public static PolygonRegion[] ALGAE_REGIONS = {BARGE_REGION, PROCESSOR_REGION};
@@ -148,12 +146,12 @@ public class FieldRegions {
     REEF_FACE5_REGION
   };
 
-  public static void flipAllianceRegions() {
+  public static void constructRegions(boolean flip) {
     for (PolygonRegion region : ALGAE_REGIONS) {
-      region.constructAllianceRegion(true);
+      region.constructAllianceRegion(flip);
     }
     for (PolygonRegion region : CORAL_REGIONS) {
-      region.constructAllianceRegion(true);
+      region.constructAllianceRegion(flip);
     }
   }
 }
