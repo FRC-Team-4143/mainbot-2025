@@ -5,6 +5,7 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.networktables.StructArrayPublisher;
+import frc.lib.FieldConstants;
 
 /**
  * This class models a region of the field. It is defined by its center and radius Credit to
@@ -12,7 +13,9 @@ import edu.wpi.first.networktables.StructArrayPublisher;
  */
 public class CircularRegion implements Region {
   private Translation2d center_;
+  private String name_;
   private double radius_;
+  private StructArrayPublisher<Translation2d> array_publisher_;
 
   /**
    * Create a Region2d, a polygon, from an array of Translation2d specifying vertices of a polygon.
@@ -21,18 +24,26 @@ public class CircularRegion implements Region {
    * @param points the array of Translation2d that define the vertices of the region.
    * @param regionName the name of the region that is used for logging
    */
-  public CircularRegion(Translation2d center_, double radius_, String region_name_) {
-    this.center_ = center_;
-    this.radius_ = radius_;
+  public CircularRegion(Translation2d center, double radius, String region_name) {
+    radius_ = radius;
+    name_ = region_name;
+    array_publisher_ =
+        NetworkTableInstance.getDefault()
+            .getStructArrayTopic("Regions/" + name_, Translation2d.struct)
+            .publish();
+    constructAllianceRegion(false);
+    logPoints();
+  }
 
-    logPoints(new Translation2d[] {}, region_name_);
+  public void constructAllianceRegion(boolean flip) {
+    center_.rotateAround(FieldConstants.FIELD_CENTER, Rotation2d.fromDegrees(180));
   }
 
   /**
    * Log the circumference of the circle in 360 points. These can be visualized using AdvantageScope
    * to confirm that the regions are properly defined.
    */
-  public void logPoints(Translation2d[] point, String regionName) {
+  public void logPoints() {
     Translation2d[] points = new Translation2d[360];
     for (int i = 0; i < 360; i++) {
       points[i] =
@@ -40,11 +51,7 @@ public class CircularRegion implements Region {
               .plus(new Translation2d(radius_, 0))
               .rotateAround(center_, Rotation2d.fromDegrees(i));
     }
-    StructArrayPublisher<Translation2d> arrayPublisher =
-        NetworkTableInstance.getDefault()
-            .getStructArrayTopic(regionName, Translation2d.struct)
-            .publish();
-    arrayPublisher.set(points);
+    array_publisher_.set(points);
   }
 
   /**

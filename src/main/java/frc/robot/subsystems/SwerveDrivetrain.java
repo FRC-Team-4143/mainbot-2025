@@ -342,6 +342,8 @@ public class SwerveDrivetrain extends Subsystem {
     SmartDashboard.putNumber(
         "Debug/Chassis Speed/Omega", io_.chassis_speeds_.omegaRadiansPerSecond);
     SmartDashboard.putNumber("chassis_speed_magnitude_", io_.chassis_speed_magnitude_);
+    SmartDashboard.putNumber(
+        "Debug/Swerve/Driver Prespective", io_.drivers_station_perspective_.getDegrees());
     SmartDashboard.putNumber("Debug/Swerve/Chassis Speed/X", io_.chassis_speeds_.vxMetersPerSecond);
     SmartDashboard.putNumber("Debug/Swerve/Chassis Speed/Y", io_.chassis_speeds_.vyMetersPerSecond);
     SmartDashboard.putNumber(

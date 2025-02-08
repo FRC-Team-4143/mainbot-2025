@@ -1,9 +1,11 @@
 package frc.mw_lib.geometry;
 
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.networktables.StructArrayPublisher;
+import frc.lib.FieldConstants;
 import java.awt.geom.*;
 
 /**
@@ -11,8 +13,10 @@ import java.awt.geom.*;
  * base code
  */
 public class PolygonRegion implements Region {
-  private Path2D shape;
-  private String name;
+  private Path2D shape_;
+  private String name_;
+  private Translation2d[] points_;
+  private StructArrayPublisher<Translation2d> array_publisher_;
 
   /**
    * Create a Region2d, a polygon, from an array of Translation2d specifying vertices of a polygon.
@@ -22,32 +26,36 @@ public class PolygonRegion implements Region {
    * @param regionName the name of the region that is used for logging
    */
   public PolygonRegion(Translation2d[] points, String regionName) {
-    this.shape = new Path2D.Double(Path2D.WIND_EVEN_ODD, points.length);
-    this.shape.moveTo(points[0].getX(), points[0].getY());
-
-    for (int i = 1; i < points.length; i++) {
-      this.shape.lineTo(points[i].getX(), points[i].getY());
-    }
-    name = regionName;
-    this.shape.closePath();
-    logPoints(points, regionName);
+    name_ = regionName;
+    points_ = points;
+    array_publisher_ =
+        NetworkTableInstance.getDefault()
+            .getStructArrayTopic("Regions/" + name_, Translation2d.struct)
+            .publish();
+    constructAllianceRegion(false);
   }
 
-  public String getName() {
-    return name;
+  public void constructAllianceRegion(boolean flip) {
+    for (Translation2d point : points_) {
+      point.rotateAround(FieldConstants.FIELD_CENTER, Rotation2d.fromDegrees(180));
+    }
+
+    shape_ = new Path2D.Double(Path2D.WIND_EVEN_ODD, points_.length);
+    shape_.moveTo(points_[0].getX(), points_[0].getY());
+
+    for (int i = 1; i < points_.length; i++) {
+      shape_.lineTo(points_[i].getX(), points_[i].getY());
+    }
+    shape_.closePath();
+    logPoints();
   }
 
   /**
    * Log the bounding points of the region. These can be visualized using AdvantageScope to confirm
    * that the regions are properly defined.
    */
-  public void logPoints(Translation2d[] points, String regionName) {
-
-    StructArrayPublisher<Translation2d> arrayPublisher =
-        NetworkTableInstance.getDefault()
-            .getStructArrayTopic(regionName, Translation2d.struct)
-            .publish();
-    arrayPublisher.set(points);
+  public void logPoints() {
+    array_publisher_.set(points_);
   }
 
   /**
@@ -57,7 +65,6 @@ public class PolygonRegion implements Region {
    * @return if the pose is inside the region
    */
   public boolean contains(Pose2d other) {
-
-    return this.shape.contains(new Point2D.Double(other.getX(), other.getY()));
+    return shape_.contains(new Point2D.Double(other.getX(), other.getY()));
   }
 }
