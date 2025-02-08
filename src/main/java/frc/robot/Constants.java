@@ -17,7 +17,10 @@ import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.wpilibj.util.Color;
+import frc.lib.FieldConstants;
 import frc.mw_lib.swerve.SwerveModule.ClosedLoopOutputType;
 import frc.mw_lib.swerve.SwerveModuleConstants;
 import frc.mw_lib.swerve.SwerveModuleConstants.SteerFeedbackType;
@@ -66,15 +69,7 @@ public final class Constants {
 
     // Both sets of gains need to be tuned to your individual robot
     // The steer motor uses MotionMagicVoltage control
-    private static final Slot0Configs DRIVE_GAINS =
-        new Slot0Configs()
-            .withKP(LOADER.getDoubleValue("drive", "com", "DRIVE_GAINS_P"))
-            .withKI(LOADER.getDoubleValue("drive", "com", "DRIVE_GAINS_I"))
-            .withKD(LOADER.getDoubleValue("drive", "com", "DRIVE_GAINS_D"))
-            .withKS(LOADER.getDoubleValue("drive", "com", "DRIVE_GAINS_S"))
-            .withKV(LOADER.getDoubleValue("drive", "com", "DRIVE_GAINS_V"))
-            .withKA(LOADER.getDoubleValue("drive", "com", "DRIVE_GAINS_A"));
-    // When using closed-loop control, the drive motor uses:
+
     // - VelocityVoltage, if DrivetrainConstants.SupportsPro is false (default)
     // - VelocityTorqueCurrentFOC, if DrivetrainConstants.SupportsPro is true
     private static final Slot0Configs STEER_GAINS =
@@ -85,6 +80,17 @@ public final class Constants {
             .withKS(LOADER.getDoubleValue("drive", "com", "STEER_GAINS_S"))
             .withKV(LOADER.getDoubleValue("drive", "com", "STEER_GAINS_V"))
             .withKA(LOADER.getDoubleValue("drive", "com", "STEER_GAINS_A"));
+    // When using closed-loop control, the drive motor uses:
+    // - VelocityVoltage, if DrivetrainConstants.SupportsPro is false (default)
+    // - VelocityTorqueCurrentFOC, if DrivetrainConstants.SupportsPro is true
+    private static final Slot0Configs DRIVE_GAINS =
+        new Slot0Configs()
+            .withKP(LOADER.getDoubleValue("drive", "com", "DRIVE_GAINS_P"))
+            .withKI(LOADER.getDoubleValue("drive", "com", "DRIVE_GAINS_I"))
+            .withKD(LOADER.getDoubleValue("drive", "com", "DRIVE_GAINS_D"))
+            .withKS(LOADER.getDoubleValue("drive", "com", "DRIVE_GAINS_S"))
+            .withKV(LOADER.getDoubleValue("drive", "com", "DRIVE_GAINS_V"))
+            .withKA(LOADER.getDoubleValue("drive", "com", "DRIVE_GAINS_A"));
 
     private static final double SLIP_CURRENT_AMPS =
         LOADER.getDoubleValue("drive", "com", "SLIP_CURRENT");
@@ -184,27 +190,14 @@ public final class Constants {
   }
 
   public static final class ClawConstants {
-    public static final int CLAMP_MOTOR_ID = 11;
-    public static final int WHEEL_MOTOR_ID = 12;
-    public static final double CLOSED_ANGLE = -0.02;
-    public static final double OPEN_ANGLE = 0.72622613981267;
-    public static final double LOAD_ANGLE = 0.30;
+    public static final int WHEEL_MOTOR_ID = 11;
     public static final double WHEEL_SHOOT_SPEED = 0.30;
-    public static final double WHEEL_LOAD_SPEED = -0.1;
-    public static final double CLAMP_SENSOR_TO_MECHANISM_RATION = 36 / 11;
-    public static final double CLAMP_CURRENT_LIMIT = 10;
-    public static final double CLAMP_ZERO_OFFSET = 0.11962890625;
-    public static final double CLOSED_VOLTS = -1.0;
-
-    public static final Slot0Configs CLAMP_GAINS =
-        new Slot0Configs()
-            .withKP(20.0)
-            // .withKI(1.5) // DO NOT TOUCH!!!!!!!!!
-            .withKD(0.0)
-            .withKS(0.15)
-            .withKV(0.0)
-            .withKA(0.0)
-            .withKG(0.0);
+    public static final double WHEEL_LOAD_SPEED = -0.2;
+    public static final double ALGAE_IDLE_SPEED = 0.1;
+    public static final String CORAL_COLOR = new Color(255, 255, 255).toHexString();
+    public static final String ALGAE_COLOR = new Color(0, 255, 255).toHexString();
+    public static final InvertedValue WHEEL_MOTOR_INVERTED =
+        InvertedValue.CounterClockwise_Positive;
   }
 
   public class ClimberConstants {
@@ -221,51 +214,91 @@ public final class Constants {
     public static final int ELEVATOR_FOLLOWER_ID = 22;
     public static final int ELEVATOR_LIMIT_SWITCH_PORT_NUMBER = 4;
     public static final double ELEVATOR_TARGET_THRESHOLD = 0.25; // In m
-    public static final double ELEVATOR_MAX_HEIGHT = 0.0; // In m
-    public static final InvertedValue ELEVATOR_MASTER_INVERSION_ = InvertedValue.Clockwise_Positive;
-    public static final InvertedValue ELEVATOR_FOLLOWER_INVERSION =
+    public static final InvertedValue ELEVATOR_MASTER_INVERSION_ =
         InvertedValue.CounterClockwise_Positive;
-    public static final double ELEVATOR_SENSOR_TO_MECHANISM_RATIO = 0;
-    public static final double ELEVATOR_CRUISE_VELOCITY = 0;
-    public static final double ELEVATOR_ACCELERATION = 0;
-    public static final double ELEVATOR_EXPO_KV = 0;
-    public static final double ELEVATOR_EXPO_KA = 0;
+    public static final InvertedValue ELEVATOR_FOLLOWER_INVERSION =
+        InvertedValue.Clockwise_Positive;
+    // Units.inchesToMeters(Sprocket Circumference * Math.PI) / gearbox ratio *
+    // rigging
+    public static final double ELEVATOR_ROTATIONS_TO_METERS =
+        Units.inchesToMeters(1.751 * Math.PI) / 4 * 2;
+    public static final double ELEVATOR_CRUISE_VELOCITY = 5.0 / ELEVATOR_ROTATIONS_TO_METERS;
+    public static final double ELEVATOR_ACCEL = 3.0 / ELEVATOR_ROTATIONS_TO_METERS;
+    public static final double ELEVATOR_EXPO_KV = 0.11733;
+    public static final double ELEVATOR_EXPO_KA = 0.0070285;
     public static final double ELEVATOR_ZERO_THRESHOLD = 0; // In m
-    public static final double ROTOR_TO_CENSOR_RATIO = 1;
+    public static final double ELEVATOR_STATOR_CURRENT_LIMIT = 40.0;
+    public static final double ELEVATOR_HEIGHT_ABOVE_PIVOT = Units.inchesToMeters(8.0);
+    public static final double ELEVATOR_MIN_HEIGHT = Units.inchesToMeters(28.25);
+    public static final double ELEVATOR_MAX_HEIGHT =
+        Units.inchesToMeters(96.76) - ELEVATOR_HEIGHT_ABOVE_PIVOT - 0.1; // 0.1m of safety
+
+    public static final Slot0Configs ELEVATOR_GAINS =
+        new Slot0Configs()
+            .withKP(1.0)
+            .withKI(0.0) // <-DO NOT TOUCH!!!!!!!!!
+            .withKD(0.08)
+            .withKS(0.06766)
+            .withKV(0.11733)
+            .withKA(0.0070285)
+            .withKG(0.43)
+            .withGravityType(GravityTypeValue.Elevator_Static);
 
     // Arm Constants:
     public static final int ARM_MOTOR_ID = 23;
     public static final int ARM_ENCODER_ID = 24;
     public static final double ARM_TARGET_THRESHOLD = 0.25; // In rads
-    public static final InvertedValue ARM_FOLLOWER_INVERSION = InvertedValue.Clockwise_Positive;
+    public static final InvertedValue ARM_FOLLOWER_INVERSION =
+        InvertedValue.CounterClockwise_Positive;
     public static final double ARM_HOME_POSITION = 0;
-    public static final double ARM_SENSOR_TO_MECHANISM_RATIO = 0;
-    public static final double ARM_CRUISE_VELOCITY = 0;
-    public static final double ARM_ACCELERATION = 0;
-    public static final double ARM_EXPO_KV = 0;
-    public static final double ARM_EXPO_KA = 0;
-    public static final double ARM_LOWER_LIMIT = 0;
-
-    public static final Slot0Configs ELEVATOR_GAINS =
-        new Slot0Configs()
-            .withKP(0.0)
-            .withKI(0.0) // <-DO NOT TOUCH!!!!!!!!!
-            .withKD(0.0)
-            .withKS(0.0)
-            .withKV(0.0)
-            .withKA(0.0)
-            .withKG(0.0)
-            .withGravityType(GravityTypeValue.Elevator_Static);
-
+    public static final double ARM_CRUISE_VELOCITY = 4;
+    public static final double ARM_ACCELERATION = 2;
+    public static final double ARM_LENGTH = Units.inchesToMeters(12.5);
+    // ((shaft sprocket / pivot sprocket) / gearbox) * rotations to radians ratio)
+    public static final double SENSOR_TO_MECHANISM_RATIO = (1.0 / ((16.0 / 64.0) / 20.0));
+    public static final double ARM_FORWARD_LIMT = Units.radiansToRotations(Math.PI);
+    public static final double ARM_REVERSE_LIMT =
+        Units.radiansToRotations(Units.degreesToRadians(-95));
     public static final Slot0Configs ARM_GAINS =
         new Slot0Configs()
-            .withKP(0.0)
+            .withKP(40.0)
             .withKI(0.0) // DO NOT TOUCH!!!!!!!!!
             .withKD(0.0)
-            .withKS(0.0)
-            .withKV(0.0)
-            .withKA(0.0)
-            .withKG(0.0)
+            .withKS(0.024495)
+            .withKV(8.778)
+            .withKA(0.25148)
+            .withKG(0.28)
             .withGravityType(GravityTypeValue.Arm_Cosine);
+
+    public enum Target {
+      L4(
+          FieldConstants.ReefHeight.L4.HEIGHT + Units.inchesToMeters(13),
+          Rotation2d.fromDegrees(130),
+          false),
+      L3(
+          FieldConstants.ReefHeight.L3.HEIGHT + Units.inchesToMeters(12),
+          Rotation2d.fromDegrees(125),
+          false),
+      L2(
+          FieldConstants.ReefHeight.L2.HEIGHT + Units.inchesToMeters(12),
+          Rotation2d.fromDegrees(125),
+          false),
+
+      STATION(1.076666, Rotation2d.fromRadians(-1.027767), true),
+      CLIMB(ELEVATOR_MIN_HEIGHT, new Rotation2d(), true),
+      STOW(0, Rotation2d.fromDegrees(-90), true),
+      ALGAE_LOW(0.23665818349136578, Rotation2d.fromRadians(2.4942527611020524), false),
+      ALGAE_HIGH(1.200, Rotation2d.fromDegrees(90 + 33), false);
+
+      Target(double height, Rotation2d angle, boolean isPivotHeightTarget) {
+        this.angle = angle;
+        this.height = height;
+        this.isPivotHeightTarget = isPivotHeightTarget;
+      }
+
+      public final double height;
+      public final Rotation2d angle;
+      public final boolean isPivotHeightTarget;
+    }
   }
 }

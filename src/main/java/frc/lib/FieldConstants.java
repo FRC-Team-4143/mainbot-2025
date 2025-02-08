@@ -193,9 +193,7 @@ public class FieldConstants {
                           .getY(),
                       level.HEIGHT),
                   new Rotation3d(
-                      0,
-                      Units.degreesToRadians(level.PITCH),
-                      poseDirection.getRotation().getRadians())));
+                      0, (level.PITCH.getRadians()), poseDirection.getRotation().getRadians())));
           fillLeft.put(
               level,
               new Pose3d(
@@ -208,9 +206,7 @@ public class FieldConstants {
                           .getY(),
                       level.HEIGHT),
                   new Rotation3d(
-                      0,
-                      Units.degreesToRadians(level.PITCH),
-                      poseDirection.getRotation().getRadians())));
+                      0, (level.PITCH.getRadians()), poseDirection.getRotation().getRadians())));
         }
         BRANCH_POSITIONS.add(fillRight);
         BRANCH_POSITIONS.add(fillLeft);
@@ -311,17 +307,17 @@ public class FieldConstants {
   }
 
   public enum ReefHeight {
-    L4(Units.inchesToMeters(72), -90),
-    L3(Units.inchesToMeters(47.625), -35),
-    L2(Units.inchesToMeters(31.875), -35),
-    L1(Units.inchesToMeters(18), 0);
+    L4(Units.inchesToMeters(72), Rotation2d.fromDegrees(-90)),
+    L3(Units.inchesToMeters(47.625), Rotation2d.fromDegrees(-35)),
+    L2(Units.inchesToMeters(31.875), Rotation2d.fromDegrees(-35)),
+    L1(Units.inchesToMeters(18), Rotation2d.fromDegrees(0));
 
-    ReefHeight(double height, double pitch) {
+    ReefHeight(double height, Rotation2d pitch) {
       this.HEIGHT = height;
       this.PITCH = pitch; // in degrees
     }
 
     public final double HEIGHT;
-    public final double PITCH;
+    public final Rotation2d PITCH;
   }
 }
