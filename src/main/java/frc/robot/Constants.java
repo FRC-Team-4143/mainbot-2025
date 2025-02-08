@@ -258,6 +258,18 @@ public final class Constants {
       public final double height;
       public final Rotation2d angle;
       public final boolean isPivotHeightTarget;
+
     }
   }
+
+  public class PickupConstants {
+    // Algae Loader constants
+    public static final double ALGAE_PICKUP_TOF_IDLE_DISTANCE = 0.0; // In cm
+    public static final double ALGAE_PICKUP_TOF_LOADED_DISTANCE = 0.0; // In cm
+    public static final double ROLLER_FORWARD = 0.0; 
+    public static final double ROLLER_BACKWARD = 0.0; 
+    public static final double ROTATE_IN_SPEED = 0.0;
+    public static final double ROTATE_OUT_SPEED = 0.0;
+  }
+
 }
