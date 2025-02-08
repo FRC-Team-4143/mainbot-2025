@@ -32,9 +32,10 @@ public class FieldConstants {
   public static final PolygonRegion[] ALGAE_REGIONS = {
     Barge.BARGE_REGION, Processor.PROCESSOR_REGION
   };
+  public static final PolygonRegion[] SOURCE_REGIONS = {
+    CoralStation.RIGHT_CORAL_STATION_REGION, CoralStation.LEFT_CORAL_STATION_REGION
+  };
   public static final PolygonRegion[] CORAL_REGIONS = {
-    CoralStation.RIGHT_CORAL_STATION_REGION,
-    CoralStation.LEFT_CORAL_STATION_REGION,
     Reef.REEF_FACE0_REGION,
     Reef.REEF_FACE1_REGION,
     Reef.REEF_FACE2_REGION,
