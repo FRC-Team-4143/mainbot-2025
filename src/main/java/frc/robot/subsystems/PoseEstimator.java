@@ -10,8 +10,6 @@ import edu.wpi.first.networktables.StructPublisher;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import frc.lib.FieldConstants;
-import frc.mw_lib.geometry.PolygonRegion;
 import frc.mw_lib.subsystem.Subsystem;
 import frc.robot.Vision;
 import monologue.Annotations.Log;
@@ -32,9 +30,6 @@ public class PoseEstimator extends Subsystem {
   private Field2d field_;
   private SwerveDrivePoseEstimator odometry_;
   private SwerveDrivePoseEstimator vision_filtered_odometry_;
-  private PolygonRegion currentAlgaeRegion;
-  private PolygonRegion currentCoralRegion;
-  private PolygonRegion currentSourceRegion;
   private StructPublisher<Pose2d> camPosePublisher;
 
   int update_counter_ = 2;
@@ -100,27 +95,6 @@ public class PoseEstimator extends Subsystem {
     io_.vision_filtered_pose_ =
         vision_filtered_odometry_.updateWithTime(
             timestamp, drive.getImuYaw(), drive.getModulePositions());
-
-    // finds the algae
-    currentAlgaeRegion = null;
-    for (PolygonRegion region : FieldConstants.ALGAE_REGIONS)
-      if (region.contains(getFieldPose())) {
-        currentAlgaeRegion = region;
-      }
-
-    // find the source region
-    currentSourceRegion = null;
-    for (PolygonRegion region : FieldConstants.SOURCE_REGIONS)
-      if (region.contains(getFieldPose())) {
-        currentSourceRegion = region;
-      }
-
-    // finds the coral region
-    currentCoralRegion = null;
-    for (PolygonRegion region : FieldConstants.CORAL_REGIONS)
-      if (region.contains(getFieldPose())) {
-        currentCoralRegion = region;
-      }
   }
 
   @Override
@@ -130,13 +104,6 @@ public class PoseEstimator extends Subsystem {
   public void outputTelemetry(double timestamp) {
     field_.setRobotPose(io_.vision_filtered_pose_);
     SmartDashboard.putData("Field", field_);
-    // outputs the current reigon to smart dashboard
-    SmartDashboard.putString(
-        "Coral Region", currentCoralRegion == null ? "null" : currentCoralRegion.getName());
-    SmartDashboard.putString(
-        "Algae Region", currentAlgaeRegion == null ? "null" : currentAlgaeRegion.getName());
-    SmartDashboard.putString(
-        "Source Region", currentSourceRegion == null ? "null" : currentSourceRegion.getName());
   }
 
   public Field2d getFieldWidget() {

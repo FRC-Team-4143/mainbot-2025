@@ -7,25 +7,22 @@ package frc.robot;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.TimedRobot;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
-import frc.robot.subsystems.PoseEstimator;
+import frc.lib.FieldRegions;
 import frc.robot.subsystems.SwerveDrivetrain;
 import frc.robot.subsystems.SwerveDrivetrain.DriveMode;
+import java.util.Optional;
 
 public class Robot extends TimedRobot {
   private RobotContainer robot_container_;
-  private Vision vision;
   static SwerveDrivetrain swerve_drivetrain_ = SwerveDrivetrain.getInstance();
-  static PoseEstimator pose_estimator_ = PoseEstimator.getInstance();
+  private Alliance allaince_ = Alliance.Blue;
 
   @Override
   public void robotInit() {
     robot_container_ = RobotContainer.getInstance();
     AutoManager.getInstance();
-    vision = Vision.getInstance();
     OI.configureBindings();
-    SmartDashboard.putData("Commands", CommandScheduler.getInstance());
   }
 
   @Override
@@ -44,7 +41,21 @@ public class Robot extends TimedRobot {
 
   @Override
   public void disabledPeriodic() {
-    updateDriverPrespective();
+    Optional<Alliance> alliance = DriverStation.getAlliance();
+    // Drives Station is Connected
+    if (alliance.isPresent()) {
+      // Alliance Has Changed
+      if (alliance.get() != allaince_) {
+        allaince_ = alliance.get();
+        // Update Driver Prespective
+        swerve_drivetrain_.setDriverPrespective(
+            allaince_ == Alliance.Red
+                ? swerve_drivetrain_.redAlliancePerspectiveRotation
+                : swerve_drivetrain_.blueAlliancePerspectiveRotation);
+        // Update Field Regions
+        FieldRegions.flipAllianceRegions();
+      }
+    }
   }
 
   @Override
@@ -71,13 +82,4 @@ public class Robot extends TimedRobot {
 
   @Override
   public void testPeriodic() {}
-
-  private void updateDriverPrespective() {
-    if (DriverStation.getAlliance().isPresent()) {
-      swerve_drivetrain_.setDriverPrespective(
-          DriverStation.getAlliance().get() == Alliance.Red
-              ? swerve_drivetrain_.redAlliancePerspectiveRotation
-              : swerve_drivetrain_.blueAlliancePerspectiveRotation);
-    }
-  }
 }
