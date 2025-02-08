@@ -4,12 +4,14 @@
 
 package frc.robot;
 
+import edu.wpi.first.wpilibj.RobotState;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.ConditionalCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.mw_lib.util.Util;
+import frc.robot.commands.SwerveProfile;
 import frc.robot.commands.*;
 import frc.robot.commands.SetReefLevel.ReefLevel;
 import frc.robot.subsystems.*;
@@ -18,6 +20,7 @@ public abstract class OI {
 
   // Sets up both controllers
   static CommandXboxController driver_controller_ = new CommandXboxController(0);
+  static PoseEstimator pose_estimator_ = PoseEstimator.getInstance();
   static CommandXboxController operator_controller_ = new CommandXboxController(1);
 
   static SwerveDrivetrain swerve_drivetrain_ = SwerveDrivetrain.getInstance();
@@ -37,6 +40,9 @@ public abstract class OI {
                 () ->
                     swerve_drivetrain_.seedFieldRelative(swerve_drivetrain_.getDriverPrespective()))
             .ignoringDisable(true));
+    SmartDashboard.putData(
+        "Disturb Pose",
+        Commands.runOnce(() -> pose_estimator_.disturbPose()).ignoringDisable(true));
     // Sync Elevator and Arm Sensor to "Home" Position
     SmartDashboard.putData(
         "Zero Elevator & Arm",

@@ -4,7 +4,10 @@ import choreo.auto.AutoChooser;
 import choreo.auto.AutoFactory;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.button.RobotModeTriggers;
+import frc.robot.autos.ThreeCoralAuto;
+import frc.robot.autos.autoPresentation;
 import frc.robot.autos.autoTest1;
+import frc.robot.autos.autoTest2;
 import frc.robot.subsystems.PoseEstimator;
 import frc.robot.subsystems.SwerveDrivetrain;
 
@@ -34,6 +37,9 @@ public class AutoManager {
 
     // Add options to the chooser
     autoChooser.addRoutine("Move Forward", autoTest1::getAutoRoutine);
+    autoChooser.addRoutine("Score1Back", autoTest2::getAutoRoutine);
+    autoChooser.addRoutine("Presentation", autoPresentation::getAutoRoutine);
+    autoChooser.addRoutine("Three_Coral_Auto", ThreeCoralAuto::getAutoRoutine);
 
     // Put the auto chooser on the dashboard
     SmartDashboard.putData("autopicker", autoChooser);
