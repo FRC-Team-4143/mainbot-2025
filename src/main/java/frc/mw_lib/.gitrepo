@@ -1,0 +1,12 @@
+; DO NOT EDIT (unless you know what you are doing)
+;
+; This subdirectory is a git "subrepo", and this file is maintained by the
+; git-subrepo command. See https://github.com/ingydotnet/git-subrepo#readme
+;
+[subrepo]
+	remote = git@github.com:FRC-Team-4143/MW-Lib.git
+	branch = develop
+	commit = 5d783d4c01daa73ce3efd02f106638391eb397ff
+	parent = 0fbe14e217f0f719969bb79bc6208a13411b8c6a
+	method = merge
+	cmdver = 0.4.9

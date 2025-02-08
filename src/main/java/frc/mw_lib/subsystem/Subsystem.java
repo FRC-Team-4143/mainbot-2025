@@ -1,4 +1,4 @@
-package frc.lib.subsystem;
+package frc.mw_lib.subsystem;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import monologue.Logged;

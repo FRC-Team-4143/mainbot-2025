@@ -6,65 +6,128 @@ package frc.robot;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.ConditionalCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
-import frc.lib.Util;
+import edu.wpi.first.wpilibj2.command.button.Trigger;
+import frc.mw_lib.util.Util;
+import frc.robot.commands.*;
+import frc.robot.commands.SetReefLevel.ReefLevel;
 import frc.robot.subsystems.*;
 
 public abstract class OI {
 
   // Sets up both controllers
-  static CommandXboxController driver_joystick_ = new CommandXboxController(0);
+  static CommandXboxController driver_controller_ = new CommandXboxController(0);
+  static CommandXboxController operator_controller_ = new CommandXboxController(1);
 
   static SwerveDrivetrain swerve_drivetrain_ = SwerveDrivetrain.getInstance();
+  static Claw claw_ = Claw.getInstance();
+  static Elevator elevator_ = Elevator.getInstance();
 
   public static void configureBindings() {
 
+    // Set Wheel Offsets
     SmartDashboard.putData(
         "Set Wheel Offsets",
         Commands.runOnce(() -> swerve_drivetrain_.tareEverything()).ignoringDisable(true));
+    // Seed Field Centric Forward Direction
     SmartDashboard.putData(
         "Seed Field Centric",
         Commands.runOnce(
                 () ->
                     swerve_drivetrain_.seedFieldRelative(swerve_drivetrain_.getDriverPrespective()))
             .ignoringDisable(true));
+    // Sync Elevator and Arm Sensor to "Home" Position
+    SmartDashboard.putData(
+        "Zero Elevator & Arm",
+        Commands.runOnce(() -> elevator_.elevatorAndArmPoseReset()).ignoringDisable(true));
 
-    driver_joystick_
+    // Swap Between Robot Centric and Field Centric
+    driver_controller_
         .rightStick()
         .onTrue(
-            Commands.runOnce(() -> swerve_drivetrain_.toggleFieldCentric(), swerve_drivetrain_));
+            Commands.runOnce(() -> swerve_drivetrain_.toggleFieldCentric(), swerve_drivetrain_)
+                .ignoringDisable(true));
+
+    driver_controller_.rightBumper().onTrue(claw_.toggleGamePiece());
+    driver_controller_.leftTrigger().whileTrue(new AlgaeLoad());
+    // Score
+    driver_controller_
+        .rightTrigger()
+        .whileTrue(new ConditionalCommand(new CoralEject(), new AlgaeEject(), claw_::isCoralMode));
+    driver_controller_.y().toggleOnTrue(new SetReefLevel(ReefLevel.L4));
+    driver_controller_.x().toggleOnTrue(new SetReefLevel(ReefLevel.L2));
+    driver_controller_.b().toggleOnTrue(new SetReefLevel(ReefLevel.L3));
+    driver_controller_.a().toggleOnTrue(new CoralStationLoad());
+    driver_controller_.povDown().toggleOnTrue(new SetReefLevel(ReefLevel.ALGAE_LOW));
+    driver_controller_.povUp().toggleOnTrue(new SetReefLevel(ReefLevel.ALGAE_HIGH));
+    // driver_controller_.a().whileTrue(new setReefLevel(ReefLevel.L1)); TODO: Fix Effector
+    // Collision with Frame
   }
 
   public static double getDriverJoystickLeftX() {
-    double val = driver_joystick_.getLeftX();
+    double val = driver_controller_.getLeftX();
     double output = val * val;
     output = Math.copySign(output, val);
-    // return output;
     return val;
   }
 
   public static double getDriverJoystickLeftY() {
-    double val = driver_joystick_.getLeftY();
+    double val = driver_controller_.getLeftY();
     double output = val * val;
     output = Math.copySign(output, val);
-    // return output;
     return val;
   }
 
   public static double getDriverJoystickRightX() {
-    double val = driver_joystick_.getRightX();
+    double val = driver_controller_.getRightX();
     double output = val * val;
     output = Math.copySign(output, val);
-    // return output;
     return val;
   }
 
   public static boolean getDriverJoystickRightY() {
-    double val = driver_joystick_.getRightY();
+    double val = driver_controller_.getRightY();
     return Util.epislonEquals(val, 0, 0.1);
   }
 
+  public static double getDriverJoystickRightTriggerAxis() {
+    return driver_controller_.getRightTriggerAxis();
+  }
+
   public static double getDriverJoystickPOVangle() {
-    return driver_joystick_.getHID().getPOV();
+    return driver_controller_.getHID().getPOV();
+  }
+
+  public static Trigger getDriverJoystickAButtonTrigger() {
+    return driver_controller_.a();
+  }
+
+  public static Trigger getDriverJoystickBButtonTrigger() {
+    return driver_controller_.b();
+  }
+
+  public static Trigger getDriverJoystickYButtonTrigger() {
+    return driver_controller_.y();
+  }
+
+  public static Trigger getDriverJoystickXButtonTrigger() {
+    return driver_controller_.x();
+  }
+
+  public static Trigger getOperatorJoystickAButtonTrigger() {
+    return operator_controller_.a();
+  }
+
+  public static Trigger getOperatorJoystickBButtonTrigger() {
+    return operator_controller_.b();
+  }
+
+  public static Trigger getOperatorJoystickYButtonTrigger() {
+    return operator_controller_.y();
+  }
+
+  public static Trigger getOperatorJoystickXButtonTrigger() {
+    return operator_controller_.x();
   }
 }
