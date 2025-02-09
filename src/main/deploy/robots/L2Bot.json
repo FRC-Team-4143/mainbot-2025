@@ -25,32 +25,32 @@
             "STEER_GAINS_A": 0
         },
         "fl": {
-            "DRIVE_ID": 3,
-            "STEER_ID": 4,
+            "DRIVE_ID": 1,
+            "STEER_ID": 2,
             "ENCODER_ID": 0,
             "X_POSITION": 7.5,
             "Y_POSITION": 7.5,
             "INVERT_DRIVE": false
         },
         "fr": {
-            "DRIVE_ID": 1,
-            "STEER_ID": 2,
+            "DRIVE_ID": 3,
+            "STEER_ID": 4,
             "ENCODER_ID": 1,
             "X_POSITION": 7.5,
             "Y_POSITION": -7.5,
             "INVERT_DRIVE": false
         },
         "bl": {
-            "DRIVE_ID": 7,
-            "STEER_ID": 8,
+            "DRIVE_ID": 5,
+            "STEER_ID": 6,
             "ENCODER_ID": 2,
             "X_POSITION": -7.5,
             "Y_POSITION": 7.5,
             "INVERT_DRIVE": false
         },
         "br": {
-            "DRIVE_ID": 5,
-            "STEER_ID": 6,
+            "DRIVE_ID": 7,
+            "STEER_ID": 8,
             "ENCODER_ID": 3,
             "X_POSITION": -7.5,
             "Y_POSITION": -7.5,
