@@ -57,9 +57,9 @@ public class FieldRegions {
           new Translation2d[] {
             FieldConstants.Reef.CENTER,
             // approximation of the right side of the right coral station
-            new Translation2d(0, Units.feetToMeters(4)),
+            new Translation2d(0, Units.inchesToMeters(50)),
             // approximation of the left side of the left coral station
-            new Translation2d(0, FieldConstants.FIELD_WIDTH - Units.feetToMeters(4)),
+            new Translation2d(0, FieldConstants.FIELD_WIDTH - Units.inchesToMeters(50)),
             FieldConstants.Reef.CENTER,
           },
           "ReefFace0");
@@ -69,13 +69,13 @@ public class FieldRegions {
           new Translation2d[] {
             FieldConstants.Reef.CENTER,
             // approximation of the left side of the left coral station
-            new Translation2d(0, FieldConstants.FIELD_WIDTH - Units.feetToMeters(4)),
+            new Translation2d(0, FieldConstants.FIELD_WIDTH - Units.inchesToMeters(50)),
             // approximation of the right side of the left coral station
-            new Translation2d(Units.feetToMeters(6), FieldConstants.FIELD_WIDTH),
+            new Translation2d(Units.inchesToMeters(68), FieldConstants.FIELD_WIDTH),
             // approximation of an imaginary line drawn from the left side of face1
             // to the left side of the field
             new Translation2d(
-                Units.feetToMeters(4) + Units.feetToMeters(10), FieldConstants.FIELD_WIDTH),
+                Units.inchesToMeters(176), FieldConstants.FIELD_WIDTH),
             FieldConstants.Reef.CENTER,
           },
           "ReefFace1");
@@ -87,7 +87,7 @@ public class FieldRegions {
             // approximation of an imaginary line drawn from the right side of face2
             // to the left side of the field
             new Translation2d(
-                Units.feetToMeters(4) + Units.feetToMeters(10), FieldConstants.FIELD_WIDTH),
+                Units.inchesToMeters(176), FieldConstants.FIELD_WIDTH),
             new Translation2d(FieldConstants.FIELD_LENGTH / 2, FieldConstants.FIELD_WIDTH),
             Barge.MIDDLE_CAGE,
             FieldConstants.Reef.CENTER,
@@ -112,7 +112,7 @@ public class FieldRegions {
             FieldConstants.Reef.CENTER,
             // approximation of an imaginary line drawn from the left side of face4
             // to the right side of the field
-            new Translation2d(Units.feetToMeters(4) + Units.feetToMeters(10), 0),
+            new Translation2d(Units.inchesToMeters(176), 0),
             new Translation2d(FieldConstants.FIELD_LENGTH / 2, 0),
             // approximation of the opponents FieldConstants.Reef.center cage
             new Translation2d(FieldConstants.FIELD_LENGTH / 2, Units.inchesToMeters(56)),
@@ -126,11 +126,11 @@ public class FieldRegions {
             FieldConstants.Reef.CENTER,
             // approximation of an imaginary line drawn from the left side of the
             // face to the right side of the field
-            new Translation2d(Units.feetToMeters(4) + Units.feetToMeters(10), 0),
+            new Translation2d(Units.inchesToMeters(176), 0),
             // approximation of the left side of the right coral station
-            new Translation2d(Units.feetToMeters(6), 0),
+            new Translation2d(Units.inchesToMeters(68), 0),
             // approximation of the right side of the right coral station
-            new Translation2d(0, Units.feetToMeters(4)),
+            new Translation2d(0, Units.inchesToMeters(50)),
             FieldConstants.Reef.CENTER,
           },
           "ReefFace5");
