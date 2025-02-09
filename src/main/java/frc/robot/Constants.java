@@ -170,12 +170,36 @@ public final class Constants {
             LOADER.getBoolValue("drive", "br", "INVERT_DRIVE"));
 
     // Drivetrain PID Controller
-    public static final PIDController X_TRAJECTORY_TRANSLATION = new PIDController(0.5, 0, 0.000);
-    public static final PIDController Y_TRAJECTORY_TRANSLATION = new PIDController(0.5, 0, 0.000);
-    public static final PIDController TRAJECTORY_HEADING = new PIDController(2, 0, 0.000);
-    public static final PIDController X_POSE_TRANSLATION = new PIDController(0.1, 0, 0.000);
-    public static final PIDController Y_POSE_TRANSLATION = new PIDController(0.1, 0, 0.000);
-    public static final PIDController POSE_HEADING = new PIDController(.075, 0, 0.000);
+    public static final PIDController X_TRAJECTORY_TRANSLATION = new PIDController(
+        LOADER.getDoubleValue("drive", "traj-controller", "TRANSLATION_P"),
+        LOADER.getDoubleValue("drive", "traj-controller", "TRANSLATION_I"),
+        LOADER.getDoubleValue("drive", "traj-controller", "TRANSLATION_D")
+    );
+    public static final PIDController Y_TRAJECTORY_TRANSLATION = new PIDController(
+        LOADER.getDoubleValue("drive", "traj-controller", "TRANSLATION_P"),
+        LOADER.getDoubleValue("drive", "traj-controller", "TRANSLATION_I"),
+        LOADER.getDoubleValue("drive", "traj-controller", "TRANSLATION_D")
+    );
+    public static final PIDController TRAJECTORY_HEADING = new PIDController(
+        LOADER.getDoubleValue("drive", "traj-controller", "HEADING_P"),
+        LOADER.getDoubleValue("drive", "traj-controller", "HEADING_I"),
+        LOADER.getDoubleValue("drive", "traj-controller", "HEADING_D")
+    );
+    public static final PIDController X_POSE_TRANSLATION = new PIDController(
+        LOADER.getDoubleValue("drive", "pose-controller", "TRANSLATION_P"),
+        LOADER.getDoubleValue("drive", "pose-controller", "TRANSLATION_I"),
+        LOADER.getDoubleValue("drive", "pose-controller", "TRANSLATION_D")
+    );
+    public static final PIDController Y_POSE_TRANSLATION = new PIDController(
+        LOADER.getDoubleValue("drive", "pose-controller", "TRANSLATION_P"),
+        LOADER.getDoubleValue("drive", "pose-controller", "TRANSLATION_I"),
+        LOADER.getDoubleValue("drive", "pose-controller", "TRANSLATION_D")
+    );
+    public static final PIDController POSE_HEADING = new PIDController(
+        LOADER.getDoubleValue("drive", "pose-controller", "HEADING_P"),
+        LOADER.getDoubleValue("drive", "pose-controller", "HEADING_I"),
+        LOADER.getDoubleValue("drive", "pose-controller", "HEADING_D")
+    );
   }
 
   public static final class FeederConstants {
