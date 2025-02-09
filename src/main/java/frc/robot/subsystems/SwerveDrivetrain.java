@@ -308,43 +308,54 @@ public class SwerveDrivetrain extends Subsystem {
                 .useGyroForRotation(false));
         break;
       case TRAJECTORY:
-        this.setControl(
-            auto_request_
-                .withVelocityX(
-                    io_.target_sample_.vx
-                        + x_traj_controller_.calculate(
-                            io_.current_pose_.getX(), io_.target_sample_.x))
-                .withVelocityY(
-                    io_.target_sample_.vy
-                        + y_traj_controller_.calculate(
-                            io_.current_pose_.getY(), io_.target_sample_.y))
-                .withRotationalRate(
-                    (io_.target_sample_.omega)
-                        + heading_traj_controller_.calculate(
-                            io_.current_pose_.getRotation().getRadians(),
-                            io_.target_sample_.heading)));
-        request_parameters_.currentPose = io_.current_pose_;
+        {
+          double x_velocity =
+              io_.target_sample_.vx
+                  + x_traj_controller_.calculate(io_.current_pose_.getX(), io_.target_sample_.x);
+          double y_velocity =
+              io_.target_sample_.vy
+                  + y_traj_controller_.calculate(io_.current_pose_.getY(), io_.target_sample_.y);
+          double omega =
+              (io_.target_sample_.omega)
+                  + heading_traj_controller_.calculate(
+                      io_.current_pose_.getRotation().getRadians(), io_.target_sample_.heading);
+          this.setControl(
+              auto_request_
+                  .withVelocityX(x_velocity)
+                  .withVelocityY(y_velocity)
+                  .withRotationalRate(omega));
+          request_parameters_.currentPose = io_.current_pose_;
+        }
         break;
       case TRACTOR_BEAM:
-        io_.tractor_beam_scaling_factor_ =
-            Math.sqrt(
-                Math.pow(io_.driver_joystick_leftX_, 2)
-                    + Math.pow(io_.driver_joystick_leftY_, 2)
-                    + Math.pow(io_.driver_joystick_rightX_, 2));
-        this.setControl(
-            auto_request_
-                .withVelocityX(
-                    x_pose_controller_.calculate(io_.current_pose_.getX(), io_.target_pose_.getX())
-                        * io_.tractor_beam_scaling_factor_)
-                .withVelocityY(
-                    y_pose_controller_.calculate(io_.current_pose_.getY(), io_.target_pose_.getY())
-                        * io_.tractor_beam_scaling_factor_)
-                .withRotationalRate(
-                    heading_pose_controller_.calculate(
-                            io_.current_pose_.getRotation().getRadians(),
-                            io_.target_pose_.getRotation().getRadians())
-                        * io_.tractor_beam_scaling_factor_));
-        request_parameters_.currentPose = io_.current_pose_;
+        {
+          io_.tractor_beam_scaling_factor_ =
+              Math.sqrt(
+                      Math.pow(io_.driver_joystick_leftX_, 2)
+                          + Math.pow(io_.driver_joystick_leftY_, 2)
+                          + Math.pow(io_.driver_joystick_rightX_, 2))
+                  * DrivetrainConstants.MAX_DRIVE_SPEED;
+          double x_velocity =
+              Util.clamp(
+                  x_pose_controller_.calculate(io_.current_pose_.getX(), io_.target_pose_.getX()),
+                  io_.tractor_beam_scaling_factor_);
+          double y_velocity =
+              Util.clamp(
+                  y_pose_controller_.calculate(io_.current_pose_.getY(), io_.target_pose_.getY()),
+                  io_.tractor_beam_scaling_factor_);
+          double omega =
+              Util.clamp(
+                  heading_pose_controller_.calculate(
+                      io_.current_pose_.getRotation().getRadians(),
+                      io_.target_pose_.getRotation().getRadians()),
+                  io_.tractor_beam_scaling_factor_);
+          this.setControl(
+              auto_request_
+                  .withVelocityX(x_velocity)
+                  .withVelocityY(y_velocity)
+                  .withRotationalRate(omega));
+          request_parameters_.currentPose = io_.current_pose_;
+        }
         break;
       case IDLE:
         setControl(new SwerveRequest.Idle());
