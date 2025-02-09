@@ -28,6 +28,7 @@ import frc.mw_lib.subsystem.Subsystem;
 import frc.mw_lib.util.Util;
 import frc.robot.Constants.ElevatorConstants;
 import frc.robot.Constants.ElevatorConstants.Target;
+import frc.robot.Constants.ElevatorConstants.Target.ControlType;
 import frc.robot.OI;
 import java.util.function.BooleanSupplier;
 import monologue.Annotations.Log;
@@ -327,9 +328,9 @@ public class Elevator extends Subsystem {
   }
 
   public void setTarget(Target target) {
-    if (target.isPivotHeightTarget) {
+    if (target.type == ControlType.PIVOT) {
       setPivotHeight(target.height, target.angle);
-    } else {
+    } else if (target.type == ControlType.EFFECTOR) {
       setEndEffectorHeight(target.height, target.angle);
     }
   }

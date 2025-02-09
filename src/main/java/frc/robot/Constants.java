@@ -274,31 +274,38 @@ public final class Constants {
       L4(
           FieldConstants.ReefHeight.L4.HEIGHT + Units.inchesToMeters(13),
           Rotation2d.fromDegrees(130),
-          false),
+          ControlType.EFFECTOR),
       L3(
           FieldConstants.ReefHeight.L3.HEIGHT + Units.inchesToMeters(12),
           Rotation2d.fromDegrees(125),
-          false),
+          ControlType.EFFECTOR),
       L2(
           FieldConstants.ReefHeight.L2.HEIGHT + Units.inchesToMeters(12),
           Rotation2d.fromDegrees(125),
-          false),
+          ControlType.EFFECTOR),
 
-      STATION(1.076666, Rotation2d.fromRadians(-1.027767), true),
-      CLIMB(ELEVATOR_MIN_HEIGHT, new Rotation2d(), true),
-      STOW(0, Rotation2d.fromDegrees(-90), true),
-      ALGAE_LOW(0.23665818349136578, Rotation2d.fromRadians(2.4942527611020524), false),
-      ALGAE_HIGH(1.200, Rotation2d.fromDegrees(90 + 33), false);
+      STATION(1.076666, Rotation2d.fromRadians(-1.027767), ControlType.PIVOT),
+      CLIMB(ELEVATOR_MIN_HEIGHT, new Rotation2d(), ControlType.PIVOT),
+      STOW(0, Rotation2d.fromDegrees(-90), ControlType.PIVOT),
+      ALGAE_LOW(
+          0.23665818349136578, Rotation2d.fromRadians(2.4942527611020524), ControlType.EFFECTOR),
+      ALGAE_HIGH(1.200, Rotation2d.fromDegrees(90 + 33), ControlType.EFFECTOR);
 
-      Target(double height, Rotation2d angle, boolean isPivotHeightTarget) {
+      Target(double height, Rotation2d angle, ControlType type) {
         this.angle = angle;
         this.height = height;
-        this.isPivotHeightTarget = isPivotHeightTarget;
+        this.type = type;
       }
 
       public final double height;
       public final Rotation2d angle;
-      public final boolean isPivotHeightTarget;
+
+      public enum ControlType {
+        PIVOT,
+        EFFECTOR
+      }
+
+      public final ControlType type;
     }
   }
 }
