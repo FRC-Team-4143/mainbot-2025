@@ -47,13 +47,13 @@ public class PoseEstimator extends Subsystem {
   public void reset() {
     odometry_ =
         new SwerveDrivePoseEstimator(
-            SwerveDrivetrain.getInstance().kinematics,
+            SwerveDrivetrain.getInstance().kinematics_,
             new Rotation2d(),
             SwerveDrivetrain.getInstance().getModulePositions(),
             new Pose2d());
     vision_filtered_odometry_ =
         new SwerveDrivePoseEstimator(
-            SwerveDrivetrain.getInstance().kinematics,
+            SwerveDrivetrain.getInstance().kinematics_,
             new Rotation2d(),
             SwerveDrivetrain.getInstance().getModulePositions(),
             new Pose2d());

@@ -55,18 +55,18 @@ import monologue.Logged;
  * get the 3rd index (0-indexed) module, corresponding to the Back Left module.
  */
 public class SwerveDrivetrain extends Subsystem {
-  private static SwerveDrivetrain instance;
+  private static SwerveDrivetrain instance_;
 
   public static SwerveDrivetrain getInstance() {
-    if (instance == null) {
-      instance =
+    if (instance_ == null) {
+      instance_ =
           new SwerveDrivetrain(
               DrivetrainConstants.FL_MODULE_CONSTANTS,
               DrivetrainConstants.FR_MODULE_CONSTANTS,
               DrivetrainConstants.BL_MODULE_CONSTANTS,
               DrivetrainConstants.BR_MODULE_CONSTANTS);
     }
-    return instance;
+    return instance_;
   }
 
   // Subsystem data class
@@ -76,7 +76,7 @@ public class SwerveDrivetrain extends Subsystem {
   public enum DriveMode {
     ROBOT_CENTRIC,
     FIELD_CENTRIC,
-    TARGET,
+    TARGET_FACING,
     TRAJECTORY,
     TRACTOR_BEAM,
     IDLE,
@@ -84,33 +84,33 @@ public class SwerveDrivetrain extends Subsystem {
   }
 
   // Robot Hardware
-  private final Pigeon2 pigeon_imu;
-  private final SwerveModule[] swerve_modules;
+  private final Pigeon2 pigeon_imu_;
+  private final SwerveModule[] swerve_modules_;
 
   // Drivetrain config
-  final SwerveDriveKinematics kinematics;
-  private final Translation2d[] module_locations;
+  final SwerveDriveKinematics kinematics_;
+  private final Translation2d[] module_locations_;
 
   // Drive requests
-  private SwerveRequest.FieldCentric auto_request;
-  private SwerveRequest.FieldCentric field_centric;
-  private SwerveRequest.RobotCentric robot_centric;
-  private SwerveRequest.FieldCentricFacingAngle target_facing;
+  private SwerveRequest.FieldCentric auto_request_;
+  private SwerveRequest.FieldCentric field_centric_;
+  private SwerveRequest.RobotCentric robot_centric_;
+  private SwerveRequest.FieldCentricFacingAngle field_centric_target_facing_;
 
-  private SwerveRequest request_to_apply;
-  private SwerveControlRequestParameters request_parameters;
+  private SwerveRequest request_to_apply_;
+  private SwerveControlRequestParameters request_parameters_;
 
   /* Blue alliance sees forward as 0 degrees (toward red alliance wall) */
-  public final Rotation2d blueAlliancePerspectiveRotation = Rotation2d.fromDegrees(0);
+  public final Rotation2d BLUE_ALLIANCE_HEADING = Rotation2d.fromDegrees(0);
   /* Red alliance sees forward as 180 degrees (toward blue alliance wall) */
-  public final Rotation2d redAlliancePerspectiveRotation = Rotation2d.fromDegrees(180);
-  /* Keep track if we've ever applied the operator perspective before or not */
-  public boolean hasAppliedOperatorPerspective = false;
+  public final Rotation2d RED_ALLIANCE_HEADING = Rotation2d.fromDegrees(180);
 
   // NT publishers
-  private StructArrayPublisher<SwerveModuleState> current_state_pub,
-      requested_state_pub,
-      current_state_proxy_pub;
+  private StructArrayPublisher<SwerveModuleState> current_state_pub_,
+      requested_state_pub_,
+      current_state_proxy_pub_;
+
+  // Field Widget for displaying poses
   private Field2d field_ = new Field2d();
 
   // PID Controllers
@@ -138,9 +138,9 @@ public class SwerveDrivetrain extends Subsystem {
     ChassisProxyServer.configureServer();
 
     // Setup the Pigeon IMU
-    pigeon_imu =
+    pigeon_imu_ =
         new Pigeon2(DrivetrainConstants.PIGEON2_ID, DrivetrainConstants.MODULE_CANBUS_NAME[0]);
-    pigeon_imu.optimizeBusUtilization();
+    pigeon_imu_.optimizeBusUtilization();
 
     // PID Controllers
     x_traj_controller_ = Constants.DrivetrainConstants.X_TRAJECTORY_TRANSLATION;
@@ -157,62 +157,62 @@ public class SwerveDrivetrain extends Subsystem {
     SmartDashboard.putData(heading_traj_controller_);
 
     // Begin configuring swerve modules
-    module_locations = new Translation2d[modules.length];
-    swerve_modules = new SwerveModule[modules.length];
-    io_.module_positions = new SwerveModulePosition[modules.length];
+    module_locations_ = new Translation2d[modules.length];
+    swerve_modules_ = new SwerveModule[modules.length];
+    io_.module_positions_ = new SwerveModulePosition[modules.length];
     io_.current_module_states_ = new SwerveModuleState[modules.length];
     io_.requested_module_states_ = new SwerveModuleState[modules.length];
 
     // Construct the swerve modules
     for (int i = 0; i < modules.length; i++) {
       SwerveModuleConstants module = modules[i];
-      swerve_modules[i] = new SwerveModule(module, DrivetrainConstants.MODULE_CANBUS_NAME[i]);
-      module_locations[i] = new Translation2d(module.LocationX, module.LocationY);
-      io_.module_positions[i] = swerve_modules[i].getPosition(true);
-      io_.current_module_states_[i] = swerve_modules[i].getCurrentState();
-      io_.requested_module_states_[i] = swerve_modules[i].getTargetState();
+      swerve_modules_[i] = new SwerveModule(module, DrivetrainConstants.MODULE_CANBUS_NAME[i]);
+      module_locations_[i] = new Translation2d(module.LocationX, module.LocationY);
+      io_.module_positions_[i] = swerve_modules_[i].getPosition(true);
+      io_.current_module_states_[i] = swerve_modules_[i].getCurrentState();
+      io_.requested_module_states_[i] = swerve_modules_[i].getTargetState();
     }
-    kinematics = new SwerveDriveKinematics(module_locations);
+    kinematics_ = new SwerveDriveKinematics(module_locations_);
 
     // Drive mode requests
-    field_centric =
+    field_centric_ =
         new SwerveRequest.FieldCentric()
             .withDriveRequestType(SwerveModule.DriveRequestType.OpenLoopVoltage)
             .withSteerRequestType(SwerveModule.SteerRequestType.MotionMagic)
             .withDeadband(DrivetrainConstants.MAX_DRIVE_SPEED * 0.01)
             .withRotationalDeadband(DrivetrainConstants.MAX_DRIVE_ANGULAR_RATE * 0.01);
-    field_centric.ForwardReference = ForwardReference.OperatorPerspective;
-    robot_centric =
+    field_centric_.ForwardReference = ForwardReference.OperatorPerspective;
+    robot_centric_ =
         new SwerveRequest.RobotCentric()
             .withDriveRequestType(SwerveModule.DriveRequestType.OpenLoopVoltage)
             .withSteerRequestType(SwerveModule.SteerRequestType.MotionMagic)
             .withDeadband(DrivetrainConstants.MAX_DRIVE_SPEED * 0.01)
             .withRotationalDeadband(DrivetrainConstants.MAX_DRIVE_ANGULAR_RATE * 0.01);
-    target_facing =
+    field_centric_target_facing_ =
         new SwerveRequest.FieldCentricFacingAngle()
             .withDriveRequestType(SwerveModule.DriveRequestType.OpenLoopVoltage)
             .withSteerRequestType(SwerveModule.SteerRequestType.MotionMagic)
             .withDeadband(DrivetrainConstants.MAX_DRIVE_SPEED * 0.01)
             .withRotationalDeadband(DrivetrainConstants.MAX_DRIVE_ANGULAR_RATE * 0.01);
-    target_facing.ForwardReference = ForwardReference.OperatorPerspective;
-    auto_request =
+    field_centric_target_facing_.ForwardReference = ForwardReference.OperatorPerspective;
+    auto_request_ =
         new SwerveRequest.FieldCentric()
             .withDriveRequestType(SwerveModule.DriveRequestType.Velocity)
             .withSteerRequestType(SwerveModule.SteerRequestType.MotionMagic);
-    auto_request.ForwardReference = ForwardReference.RedAlliance;
-    request_parameters = new SwerveControlRequestParameters();
-    request_to_apply = new SwerveRequest.Idle();
+    auto_request_.ForwardReference = ForwardReference.RedAlliance;
+    request_parameters_ = new SwerveControlRequestParameters();
+    request_to_apply_ = new SwerveRequest.Idle();
 
     // NT Publishers
-    requested_state_pub =
+    requested_state_pub_ =
         NetworkTableInstance.getDefault()
             .getStructArrayTopic("module_states/requested", SwerveModuleState.struct)
             .publish();
-    current_state_pub =
+    current_state_pub_ =
         NetworkTableInstance.getDefault()
             .getStructArrayTopic("module_states/current", SwerveModuleState.struct)
             .publish();
-    current_state_proxy_pub =
+    current_state_proxy_pub_ =
         NetworkTableInstance.getDefault()
             .getStructArrayTopic("module_states/current_proxy", SwerveModuleState.struct)
             .publish();
@@ -221,31 +221,31 @@ public class SwerveDrivetrain extends Subsystem {
   @Override
   public void reset() {
     // 4 signals for each module + 2 for Pigeon2
-    for (int i = 0; i < swerve_modules.length; ++i) {
-      BaseStatusSignal.setUpdateFrequencyForAll(100, swerve_modules[i].getSignals());
-      swerve_modules[i].optimizeCan();
-      swerve_modules[i].resetToAbsolute();
+    for (int i = 0; i < swerve_modules_.length; ++i) {
+      BaseStatusSignal.setUpdateFrequencyForAll(100, swerve_modules_[i].getSignals());
+      swerve_modules_[i].optimizeCan();
+      swerve_modules_[i].resetToAbsolute();
     }
-    BaseStatusSignal[] imuSignals = {pigeon_imu.getYaw()};
+    BaseStatusSignal[] imuSignals = {pigeon_imu_.getYaw()};
     BaseStatusSignal.setUpdateFrequencyForAll(100, imuSignals);
-    pigeon_imu.optimizeBusUtilization();
+    pigeon_imu_.optimizeBusUtilization();
   }
 
   @Override
   public void readPeriodicInputs(double timestamp) {
-    for (int i = 0; i < swerve_modules.length; ++i) {
-      io_.module_positions[i] = swerve_modules[i].getPosition(true);
-      io_.current_module_states_[i] = swerve_modules[i].getCurrentState();
-      io_.requested_module_states_[i] = swerve_modules[i].getTargetState();
+    for (int i = 0; i < swerve_modules_.length; ++i) {
+      io_.module_positions_[i] = swerve_modules_[i].getPosition(true);
+      io_.current_module_states_[i] = swerve_modules_[i].getCurrentState();
+      io_.requested_module_states_[i] = swerve_modules_[i].getTargetState();
     }
     io_.driver_joystick_leftX_ = OI.getDriverJoystickLeftX();
     io_.driver_joystick_leftY_ = OI.getDriverJoystickLeftY();
     io_.driver_joystick_rightX_ = OI.getDriverJoystickRightX();
 
     io_.robot_yaw_ =
-        Rotation2d.fromRadians(MathUtil.angleModulus(pigeon_imu.getYaw().getValue().in(Radians)));
+        Rotation2d.fromRadians(MathUtil.angleModulus(pigeon_imu_.getYaw().getValue().in(Radians)));
 
-    io_.chassis_speeds_ = kinematics.toChassisSpeeds(io_.current_module_states_);
+    io_.chassis_speeds_ = kinematics_.toChassisSpeeds(io_.current_module_states_);
     io_.field_relative_chassis_speed_ =
         ChassisSpeeds.fromRobotRelativeSpeeds(io_.chassis_speeds_, io_.robot_yaw_);
 
@@ -254,7 +254,7 @@ public class SwerveDrivetrain extends Subsystem {
             (io_.chassis_speeds_.vxMetersPerSecond * io_.chassis_speeds_.vxMetersPerSecond)
                 + (io_.chassis_speeds_.vyMetersPerSecond * io_.chassis_speeds_.vyMetersPerSecond));
 
-    io_.pose_ = PoseEstimator.getInstance().getFieldPose();
+    io_.current_pose_ = PoseEstimator.getInstance().getFieldPose();
 
     // recieve new chassis info
     ChassisProxyServer.updateData();
@@ -262,11 +262,11 @@ public class SwerveDrivetrain extends Subsystem {
 
   @Override
   public void updateLogic(double timestamp) {
-    request_parameters.currentPose = new Pose2d(0, 0, io_.robot_yaw_);
+    request_parameters_.currentPose = new Pose2d(0, 0, io_.robot_yaw_);
     switch (io_.drive_mode_) {
       case ROBOT_CENTRIC:
         setControl(
-            robot_centric
+            robot_centric_
                 // Drive forward with negative Y (forward)
                 .withVelocityX(-io_.driver_joystick_leftY_ * DrivetrainConstants.MAX_DRIVE_SPEED)
                 // Drive left with negative X (left)
@@ -277,7 +277,7 @@ public class SwerveDrivetrain extends Subsystem {
         break;
       case FIELD_CENTRIC:
         setControl(
-            field_centric
+            field_centric_
                 // Drive forward with negative Y (forward)
                 .withVelocityX(-io_.driver_joystick_leftY_ * DrivetrainConstants.MAX_DRIVE_SPEED)
                 // Drive left with negative X (left)
@@ -286,9 +286,9 @@ public class SwerveDrivetrain extends Subsystem {
                 .withRotationalRate(
                     -io_.driver_joystick_rightX_ * DrivetrainConstants.MAX_DRIVE_ANGULAR_RATE));
         break;
-      case TARGET:
+      case TARGET_FACING:
         setControl(
-            target_facing
+            field_centric_target_facing_
                 // Drive forward with negative Y (forward)
                 .withVelocityX(
                     Util.clamp(
@@ -304,23 +304,23 @@ public class SwerveDrivetrain extends Subsystem {
                 // Use current robot rotation
                 .useGyroForRotation(false));
         break;
-      case IDLE:
-        setControl(new SwerveRequest.Idle());
-        break;
       case TRAJECTORY:
         this.setControl(
-            auto_request
+            auto_request_
                 .withVelocityX(
-                    io_.target_twist_.vx
-                        + x_traj_controller_.calculate(io_.pose_.getX(), io_.target_twist_.x))
+                    io_.target_sample_.vx
+                        + x_traj_controller_.calculate(
+                            io_.current_pose_.getX(), io_.target_sample_.x))
                 .withVelocityY(
-                    io_.target_twist_.vy
-                        + y_traj_controller_.calculate(io_.pose_.getY(), io_.target_twist_.y))
+                    io_.target_sample_.vy
+                        + y_traj_controller_.calculate(
+                            io_.current_pose_.getY(), io_.target_sample_.y))
                 .withRotationalRate(
-                    (io_.target_twist_.omega)
+                    (io_.target_sample_.omega)
                         + heading_traj_controller_.calculate(
-                            io_.pose_.getRotation().getRadians(), io_.target_twist_.heading)));
-        request_parameters.currentPose = io_.target_pose_;
+                            io_.current_pose_.getRotation().getRadians(),
+                            io_.target_sample_.heading)));
+        request_parameters_.currentPose = io_.target_pose_;
         break;
       case TRACTOR_BEAM:
         io_.tractor_beam_scaling_factor_ =
@@ -329,45 +329,46 @@ public class SwerveDrivetrain extends Subsystem {
                     + Math.pow(io_.driver_joystick_leftY_, 2)
                     + Math.pow(io_.driver_joystick_rightX_, 2));
         this.setControl(
-            auto_request
+            auto_request_
                 .withVelocityX(
-                    x_pose_controller_.calculate(io_.pose_.getX(), io_.target_pose_.getX())
+                    x_pose_controller_.calculate(io_.current_pose_.getX(), io_.target_pose_.getX())
                         * io_.tractor_beam_scaling_factor_)
                 .withVelocityY(
-                    y_pose_controller_.calculate(io_.pose_.getY(), io_.target_pose_.getY())
+                    y_pose_controller_.calculate(io_.current_pose_.getY(), io_.target_pose_.getY())
                         * io_.tractor_beam_scaling_factor_)
                 .withRotationalRate(
                     heading_pose_controller_.calculate(
-                            io_.pose_.getRotation().getRadians(),
+                            io_.current_pose_.getRotation().getRadians(),
                             io_.target_pose_.getRotation().getRadians())
                         * io_.tractor_beam_scaling_factor_));
-        request_parameters.currentPose = io_.target_pose_;
+        request_parameters_.currentPose = io_.target_pose_;
+        break;
+      case IDLE:
+        setControl(new SwerveRequest.Idle());
         break;
       default:
-        // yes these dont do anything for auto...
-
         break;
     }
 
     /* And now that we've got the new odometry, update the controls */
 
-    request_parameters.kinematics = kinematics;
-    request_parameters.swervePositions = module_locations;
-    request_parameters.updatePeriod = timestamp - request_parameters.timestamp;
-    request_parameters.timestamp = timestamp;
-    request_parameters.operatorForwardDirection = io_.drivers_station_perspective_;
+    request_parameters_.kinematics = kinematics_;
+    request_parameters_.swervePositions = module_locations_;
+    request_parameters_.updatePeriod = timestamp - request_parameters_.timestamp;
+    request_parameters_.timestamp = timestamp;
+    request_parameters_.operatorForwardDirection = io_.drivers_station_perspective_;
   }
 
   @Override
   public void writePeriodicOutputs(double timestamp) {
-    request_to_apply.apply(request_parameters, swerve_modules);
+    request_to_apply_.apply(request_parameters_, swerve_modules_);
   }
 
   @Override
   public void outputTelemetry(double timestamp) {
-    current_state_pub.set(io_.current_module_states_);
-    requested_state_pub.set(io_.requested_module_states_);
-    current_state_proxy_pub.set(ChassisProxyServer.getModuleStates());
+    current_state_pub_.set(io_.current_module_states_);
+    requested_state_pub_.set(io_.requested_module_states_);
+    current_state_proxy_pub_.set(ChassisProxyServer.getModuleStates());
     SmartDashboard.putString("Debug/Swerve/Mode", io_.drive_mode_.toString());
     SmartDashboard.putNumber(
         "Debug/Swerve/Rotation Control/Target Rotation", io_.target_rotation_.getDegrees());
@@ -392,16 +393,12 @@ public class SwerveDrivetrain extends Subsystem {
 
     SmartDashboard.putString("drive mode", io_.drive_mode_.toString());
 
-    SmartDashboard.putNumber("Encoder:0", swerve_modules[0].getEncoderValue() * 360);
-    SmartDashboard.putNumber("Encoder:1", swerve_modules[1].getEncoderValue() * 360);
-    SmartDashboard.putNumber("Encoder:2", swerve_modules[2].getEncoderValue() * 360);
-    SmartDashboard.putNumber("Encoder:3", swerve_modules[3].getEncoderValue() * 360);
+    SmartDashboard.putNumber("Encoder:0", swerve_modules_[0].getEncoderValue() * 360);
+    SmartDashboard.putNumber("Encoder:1", swerve_modules_[1].getEncoderValue() * 360);
+    SmartDashboard.putNumber("Encoder:2", swerve_modules_[2].getEncoderValue() * 360);
+    SmartDashboard.putNumber("Encoder:3", swerve_modules_[3].getEncoderValue() * 360);
 
-    SmartDashboard.putString("requestType", request_to_apply.toString());
-  }
-
-  public Rotation2d getRobotRotation() {
-    return io_.robot_yaw_;
+    SmartDashboard.putString("requestType", request_to_apply_.toString());
   }
 
   public Command applyRequest(Supplier<SwerveRequest> requestSupplier) {
@@ -411,10 +408,17 @@ public class SwerveDrivetrain extends Subsystem {
   /**
    * Takes the current orientation of the robot and makes it X forward for field-relative maneuvers.
    */
-  public void seedFieldRelative(Rotation2d offset) {
-    pigeon_imu.setYaw(offset.getDegrees());
+  public void seedFieldRelative(Rotation2d seed_rotation) {
+    pigeon_imu_.setYaw(seed_rotation.getDegrees());
     io_.robot_yaw_ =
-        Rotation2d.fromRadians(MathUtil.angleModulus(pigeon_imu.getYaw().getValue().in(Radians)));
+        Rotation2d.fromRadians(MathUtil.angleModulus(pigeon_imu_.getYaw().getValue().in(Radians)));
+  }
+
+  /**
+   * Takes the current orientation of the robot and makes it X forward for field-relative maneuvers.
+   */
+  public Command seedFieldRelativeCommand() {
+    return Commands.runOnce(() -> seedFieldRelative(io_.drivers_station_perspective_));
   }
 
   /**
@@ -423,23 +427,27 @@ public class SwerveDrivetrain extends Subsystem {
    * @param request Request to apply
    */
   public void setControl(SwerveRequest request) {
-    request_to_apply = request;
+    request_to_apply_ = request;
   }
 
+  /**
+   * Applies the specified control request to this swerve drivetrain.
+   *
+   * @param request Request to apply
+   */
   public void applyChassisSpeeds(ChassisSpeeds speeds) {
     this.setControl(new SwerveRequest.ApplyChassisSpeeds().withSpeeds(speeds));
   }
 
   /**
-   * Zero's this swerve drive's odometry entirely.
-   *
-   * <p>This will zero the entire odometry, and place the robot at 0,0
+   * Zero's this swerve drive's odometry entirely. This will zero the entire odometry, and place the
+   * robot at 0,0
    */
   public void tareEverything() {
-    for (int i = 0; i < swerve_modules.length; ++i) {
-      swerve_modules[i].resetPosition();
-      swerve_modules[i].setWheelOffsets();
-      io_.module_positions[i] = swerve_modules[i].getPosition(true);
+    for (int i = 0; i < swerve_modules_.length; ++i) {
+      swerve_modules_[i].resetPosition();
+      swerve_modules_[i].setWheelOffsets();
+      io_.module_positions_[i] = swerve_modules_[i].getPosition(true);
     }
   }
 
@@ -453,7 +461,7 @@ public class SwerveDrivetrain extends Subsystem {
    * FrontRight, BackLeft, BackRight]
    */
   public SwerveModulePosition[] getModulePositions() {
-    return io_.module_positions;
+    return io_.module_positions_;
   }
 
   /**
@@ -464,53 +472,64 @@ public class SwerveDrivetrain extends Subsystem {
     return io_.current_module_states_;
   }
 
-  public void setTargetRotation(Rotation2d target_angle_) {
-    io_.target_rotation_ = target_angle_;
-  }
-
-  public void setCrabRequest(Rotation2d target_angle_) {
-    io_.driver_POVy = target_angle_.getCos();
-    io_.driver_POVx = target_angle_.getSin();
-  }
-
   /**
    * updates the mode flag thats changes what request is applied to the drive train
    *
-   * @param mode drive to switch to [ROBOT_CENTRIC, FIELD_CENTRIC]
+   * @param mode requewt drive mode
    */
   public void setDriveMode(DriveMode mode) {
     io_.drive_mode_ = mode;
   }
 
-  public void toggleFieldCentric() {
-    io_.drive_mode_ =
-        (io_.drive_mode_ == DriveMode.FIELD_CENTRIC)
-            ? DriveMode.ROBOT_CENTRIC
-            : DriveMode.FIELD_CENTRIC;
+  /** Toggles between FIELD_CENTRIC and ROBOT_CENTRIC drive modes */
+  public Command toggleFieldCentric() {
+    return Commands.runOnce(
+        () -> {
+          io_.drive_mode_ =
+              (io_.drive_mode_ == DriveMode.FIELD_CENTRIC)
+                  ? DriveMode.ROBOT_CENTRIC
+                  : DriveMode.FIELD_CENTRIC;
+        });
   }
 
-  public DriveMode getDriveMode() {
-    return io_.drive_mode_;
-  }
-
-  public void setDriverPrespective(Rotation2d prespective) {
+  /**
+   * Sets the drivers perspective for field relative requests
+   *
+   * @param prespective rotation to set as forward perspective
+   */
+  public void setDriverPerspective(Rotation2d prespective) {
     io_.drivers_station_perspective_ = prespective;
   }
 
-  public Rotation2d getDriverPrespective() {
-    return io_.drivers_station_perspective_;
-  }
-
-  public void followTrajectory(SwerveSample sample) {
+  /**
+   * Updates the internal target for the robot to follow and begins TRAJECTORY mode
+   *
+   * @param sample swerve drive sample that includes target twist and pose
+   */
+  public void setTargetSample(SwerveSample sample) {
     io_.drive_mode_ = DriveMode.TRAJECTORY;
-    io_.target_twist_ = sample;
-
+    io_.target_sample_ = sample;
     io_.target_pose_ = new Pose2d(sample.x, sample.y, new Rotation2d(sample.heading));
   }
 
-  public void tractorBeam(Pose2d targetPose) {
+  /**
+   * Updates the internal target for the robot to reach and begins TRACTOR_BEAM mode
+   *
+   * @param target_pose target pose for the robot to reach
+   */
+  public void setTargetPose(Pose2d target_pose) {
     io_.drive_mode_ = DriveMode.TRACTOR_BEAM;
-    io_.target_pose_ = targetPose;
+    io_.target_pose_ = target_pose;
+  }
+
+  /**
+   * Updates the internal target for the robot to point at and begins TARGET_FACING mode
+   *
+   * @param target_angle
+   */
+  public void setTargetRotation(Rotation2d target_angle) {
+    io_.drive_mode_ = DriveMode.TARGET_FACING;
+    io_.target_rotation_ = target_angle;
   }
 
   /**
@@ -519,26 +538,25 @@ public class SwerveDrivetrain extends Subsystem {
    */
   public class SwerveDrivetrainPeriodicIo implements Logged {
     @Log.File public SwerveModuleState[] current_module_states_, requested_module_states_;
-    @Log.File public SwerveModulePosition[] module_positions;
-    @Log.File public Rotation2d robot_yaw_ = new Rotation2d();
+    @Log.File public SwerveModulePosition[] module_positions_;
     @Log.File public double driver_joystick_leftX_ = 0.0;
     @Log.File public double driver_joystick_leftY_ = 0.0;
     @Log.File public double driver_joystick_rightX_ = 0.0;
+    @Log.File public Rotation2d robot_yaw_ = new Rotation2d();
     @Log.File public ChassisSpeeds chassis_speeds_ = new ChassisSpeeds();
     @Log.File public ChassisSpeeds field_relative_chassis_speed_ = new ChassisSpeeds();
+    @Log.File public double chassis_speed_magnitude_ = 0.0;
     @Log.File public Rotation2d target_rotation_ = new Rotation2d();
     @Log.File public DriveMode drive_mode_ = DriveMode.IDLE;
     @Log.File public double driver_POVx = 0.0;
     @Log.File public double driver_POVy = 0.0;
     @Log.File public Rotation2d drivers_station_perspective_ = new Rotation2d();
-    @Log.File public double chassis_speed_magnitude_;
     @Log.File public double tractor_beam_scaling_factor_ = 0.0;
+    @Log.File public Pose2d current_pose_ = new Pose2d();
     @Log.File public Pose2d target_pose_ = new Pose2d();
 
     @Log.File
-    public SwerveSample target_twist_ = new SwerveSample(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, null, null);
-
-    @Log.File public Pose2d pose_ = new Pose2d();
+    public SwerveSample target_sample_ = new SwerveSample(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, null, null);
   }
 
   @Override

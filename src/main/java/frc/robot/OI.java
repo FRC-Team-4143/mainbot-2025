@@ -34,11 +34,7 @@ public abstract class OI {
         Commands.runOnce(() -> swerve_drivetrain_.tareEverything()).ignoringDisable(true));
     // Seed Field Centric Forward Direction
     SmartDashboard.putData(
-        "Seed Field Centric",
-        Commands.runOnce(
-                () ->
-                    swerve_drivetrain_.seedFieldRelative(swerve_drivetrain_.getDriverPrespective()))
-            .ignoringDisable(true));
+        "Seed Field Centric", swerve_drivetrain_.seedFieldRelativeCommand().ignoringDisable(true));
     SmartDashboard.putData(
         "Disturb Pose",
         Commands.runOnce(() -> pose_estimator_.disturbPose()).ignoringDisable(true));

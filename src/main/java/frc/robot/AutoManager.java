@@ -26,7 +26,7 @@ public class AutoManager {
         new AutoFactory(
             PoseEstimator.getInstance()::getFieldPose,
             PoseEstimator.getInstance()::setRobotOdometry,
-            SwerveDrivetrain.getInstance()::followTrajectory,
+            SwerveDrivetrain.getInstance()::setTargetSample,
             true, // enables auto flipping
             SwerveDrivetrain.getInstance());
     // Create the auto chooser
