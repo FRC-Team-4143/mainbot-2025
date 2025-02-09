@@ -4,19 +4,21 @@ import edu.wpi.first.math.geometry.Pose2d;
 import frc.lib.FieldRegions;
 import frc.lib.ReefSectionState;
 import frc.mw_lib.geometry.PolygonRegion;
+import frc.robot.Constants.ElevatorConstants;
 import frc.robot.subsystems.Elevator;
 import frc.robot.subsystems.PoseEstimator;
 import frc.robot.subsystems.SwerveDrivetrain;
 import java.util.Optional;
+import monologue.Annotations.Log;
 
 public class GameStateManager {
 
-  private static ScoringTarget scoring_target_ = ScoringTarget.TURTLE;
-  private static ReefSectionState reef_section_state_ = new ReefSectionState();
-  private static RobotState robot_state_ = RobotState.TELEOP_CONTROL;
-  private static Optional<Pose2d> reef_target;
-  private static Optional<Pose2d> station_target;
-  private static Optional<Pose2d> algae_target;
+  @Log.File private static ScoringTarget scoring_target_ = ScoringTarget.TURTLE;
+  @Log.File private static ReefSectionState reef_section_state_ = new ReefSectionState();
+  @Log.File private static RobotState robot_state_ = RobotState.TELEOP_CONTROL;
+  @Log.File private static Optional<Pose2d> reef_target = Optional.empty();
+  @Log.File private static Optional<Pose2d> station_target = Optional.empty();
+  @Log.File private static Optional<Pose2d> algae_target = Optional.empty();
 
   static Elevator elevator_;
   static PoseEstimator poseEstimator_;
@@ -29,8 +31,6 @@ public class GameStateManager {
     LEAVING,
     TELEOP_CONTROL
   }
-
-  public static enum GamePieceConfig {}
 
   public static enum ScoringTarget {
     TURTLE,
@@ -58,7 +58,7 @@ public class GameStateManager {
     switch (robot_state_) {
       case TARGET_ACQUISITION:
         if (reef_target.isPresent()) {
-          drivetrain_.tractorBeam(reef_target.get());
+          drivetrain_.setTargetPose(reef_target.get());
         }
         break;
       case APPROACHING_TARGET:
@@ -82,56 +82,68 @@ public class GameStateManager {
   public static void elevatorTargetSwitch() {
     switch (scoring_target_) {
       case REEF_L2:
-        elevator_.setTarget(Constants.ElevatorConstants.Target.L2);
+        elevator_.setTarget(ElevatorConstants.Target.L2);
         break;
       case REEF_L3:
-        elevator_.setTarget(Constants.ElevatorConstants.Target.L3);
+        elevator_.setTarget(ElevatorConstants.Target.L3);
         break;
       case REEF_L4:
-        elevator_.setTarget(Constants.ElevatorConstants.Target.L4);
+        elevator_.setTarget(ElevatorConstants.Target.L4);
         break;
       case REEF_ALGAE:
         // ask where algae is then go to that height
         break;
       case TURTLE:
       default:
-        elevator_.setTarget(Constants.ElevatorConstants.Target.STOW);
+        elevator_.setTarget(ElevatorConstants.Target.STOW);
         break;
       case IDLE:
         break;
     }
   }
 
-  // public static Optional<Pose2d> findTarget() {
-
-  // }
-
   public static void wantedTarget(ScoringTarget target_score) {
     scoring_target_ = target_score;
   }
 
+  /**
+   * Returns a target pose when robot is in an load station region If not in a region empty is
+   * returned.
+   *
+   * @return target pose
+   */
   public static Optional<Pose2d> loadStationPose() {
-    for (PolygonRegion loadStations : FieldRegions.STATION_REGIONS) {
-      if (loadStations.contains(poseEstimator_.getFieldPose())) {
-        // && do not have any coral or algae
-
+    for (PolygonRegion region : FieldRegions.STATION_REGIONS) {
+      if (region.contains(poseEstimator_.getFieldPose())) {
+        return Optional.of(FieldRegions.REGION_POSE_TABLE.get(region.getName()));
       }
     }
     return Optional.empty();
   }
 
+  /**
+   * Returns a target pose when robot is in an reef region If not in a region empty is returned.
+   *
+   * @return target pose
+   */
   public static Optional<Pose2d> reefPose() {
-    for (PolygonRegion reefFaces : FieldRegions.REEF_REGIONS) {
-      if (reefFaces.contains(poseEstimator_.getFieldPose())) {}
+    for (PolygonRegion region : FieldRegions.REEF_REGIONS) {
+      if (region.contains(poseEstimator_.getFieldPose())) {
+        return Optional.of(FieldRegions.REGION_POSE_TABLE.get(region.getName()));
+      }
     }
     return Optional.empty();
   }
 
+  /**
+   * Returns a target pose when robot is in an algae region If not in a region empty is returned.
+   *
+   * @return target pose
+   */
   public static Optional<Pose2d> algaePose() {
-    for (PolygonRegion algae : FieldRegions.ALGAE_REGIONS) {
-      if (algae.contains(poseEstimator_.getFieldPose())) {
-        // && have an algae
-
+    for (PolygonRegion region : FieldRegions.ALGAE_REGIONS) {
+      if (region.contains(poseEstimator_.getFieldPose())) {
+        return Optional.of(FieldRegions.REGION_POSE_TABLE.get(region.getName()));
       }
     }
     return Optional.empty();

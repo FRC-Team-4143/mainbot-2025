@@ -1,10 +1,12 @@
 package frc.lib;
 
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.util.Units;
 import frc.lib.FieldConstants.Barge;
 import frc.mw_lib.geometry.CircularRegion;
 import frc.mw_lib.geometry.PolygonRegion;
+import java.util.Hashtable;
 
 public class FieldRegions {
 
@@ -133,7 +135,7 @@ public class FieldRegions {
           },
           "ReefFace5");
 
-  // region lists
+  // Region Lists
   public static PolygonRegion[] ALGAE_REGIONS = {BARGE_REGION, PROCESSOR_REGION};
   public static PolygonRegion[] STATION_REGIONS = {
     RIGHT_CORAL_STATION_REGION, LEFT_CORAL_STATION_REGION
@@ -147,6 +149,9 @@ public class FieldRegions {
     REEF_FACE0_REGION,
     REEF_FACE5_REGION
   };
+
+  // Region to Target Pose Map
+  public static Hashtable<String, Pose2d> REGION_POSE_TABLE = new Hashtable<>();
 
   public static CircularRegion REEF_ENTER =
       new CircularRegion(FieldConstants.Reef.CENTER, 2, "reef_enter");
@@ -165,5 +170,18 @@ public class FieldRegions {
     }
     REEF_ENTER.constructAllianceRegion(flip);
     REEF_EXIT.constructAllianceRegion(flip);
+
+    REGION_POSE_TABLE.put(BARGE_REGION.getName(), AllianceFlipUtil.apply(new Pose2d(), flip));
+    REGION_POSE_TABLE.put(PROCESSOR_REGION.getName(), AllianceFlipUtil.apply(new Pose2d(), flip));
+    REGION_POSE_TABLE.put(
+        RIGHT_CORAL_STATION_REGION.getName(), AllianceFlipUtil.apply(new Pose2d(), flip));
+    REGION_POSE_TABLE.put(
+        LEFT_CORAL_STATION_REGION.getName(), AllianceFlipUtil.apply(new Pose2d(), flip));
+    REGION_POSE_TABLE.put(REEF_FACE0_REGION.getName(), AllianceFlipUtil.apply(new Pose2d(), flip));
+    REGION_POSE_TABLE.put(REEF_FACE1_REGION.getName(), AllianceFlipUtil.apply(new Pose2d(), flip));
+    REGION_POSE_TABLE.put(REEF_FACE2_REGION.getName(), AllianceFlipUtil.apply(new Pose2d(), flip));
+    REGION_POSE_TABLE.put(REEF_FACE3_REGION.getName(), AllianceFlipUtil.apply(new Pose2d(), flip));
+    REGION_POSE_TABLE.put(REEF_FACE4_REGION.getName(), AllianceFlipUtil.apply(new Pose2d(), flip));
+    REGION_POSE_TABLE.put(REEF_FACE5_REGION.getName(), AllianceFlipUtil.apply(new Pose2d(), flip));
   }
 }
