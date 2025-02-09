@@ -1,6 +1,7 @@
 {
     "drive": {
         "com": {
+            "CENTER_OFFSET_X": 0,
             "SLIP_CURRENT": 50,
             "SPEED_AT_12V": 4.4,
             "COUPLE_RATIO": 3.5,
@@ -55,7 +56,7 @@
             "Y_POSITION": -7.5,
             "INVERT_DRIVE": false
         },
-        "traj-controller": {
+        "traj_controller": {
             "TRANSLATION_P": 0.5,
             "TRANSLATION_I" : 0.0,
             "TRANSLATION_D" : 0.0,
@@ -63,7 +64,7 @@
             "HEADING_I" : 0.0,
             "HEADING_D" : 0.0
         },
-        "pose-controller": {
+        "pose_controller": {
             "TRANSLATION_P": 0.0,
             "TRANSLATION_I" : 0.0,
             "TRANSLATION_D" : 0.0,

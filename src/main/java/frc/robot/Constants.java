@@ -200,6 +200,8 @@ public final class Constants {
         LOADER.getDoubleValue("drive", "pose-controller", "HEADING_I"),
         LOADER.getDoubleValue("drive", "pose-controller", "HEADING_D")
     );
+
+    public static final double CENTER_OFFSET_X = LOADER.getDoubleValue("drive", "com", "CENTER_OFFSET_X");
   }
 
   public static final class FeederConstants {
