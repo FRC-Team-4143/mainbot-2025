@@ -1,11 +1,14 @@
 package frc.lib;
 
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.util.Units;
 import frc.lib.FieldConstants.Barge;
 import frc.mw_lib.geometry.CircularRegion;
 import frc.mw_lib.geometry.PolygonRegion;
+import frc.robot.Constants;
 import java.util.Hashtable;
 
 public class FieldRegions {
@@ -74,8 +77,7 @@ public class FieldRegions {
             new Translation2d(Units.inchesToMeters(68), FieldConstants.FIELD_WIDTH),
             // approximation of an imaginary line drawn from the left side of face1
             // to the left side of the field
-            new Translation2d(
-                Units.inchesToMeters(176), FieldConstants.FIELD_WIDTH),
+            new Translation2d(Units.inchesToMeters(176), FieldConstants.FIELD_WIDTH),
             FieldConstants.Reef.CENTER,
           },
           "ReefFace1");
@@ -86,8 +88,7 @@ public class FieldRegions {
             FieldConstants.Reef.CENTER,
             // approximation of an imaginary line drawn from the right side of face2
             // to the left side of the field
-            new Translation2d(
-                Units.inchesToMeters(176), FieldConstants.FIELD_WIDTH),
+            new Translation2d(Units.inchesToMeters(176), FieldConstants.FIELD_WIDTH),
             new Translation2d(FieldConstants.FIELD_LENGTH / 2, FieldConstants.FIELD_WIDTH),
             Barge.MIDDLE_CAGE,
             FieldConstants.Reef.CENTER,
@@ -152,11 +153,15 @@ public class FieldRegions {
 
   // Region to Target Pose Map
   public static Hashtable<String, Pose2d> REGION_POSE_TABLE = new Hashtable<>();
+  public static final Transform2d OFF_SET =
+      new Transform2d(
+          new Translation2d(Constants.DrivetrainConstants.CENTER_OFFSET_X, 0),
+          Rotation2d.fromDegrees(180));
 
   public static CircularRegion REEF_ENTER =
-      new CircularRegion(FieldConstants.Reef.CENTER, 2, "reef_enter");
+      new CircularRegion(FieldConstants.Reef.CENTER, 2, "Reef Enter");
   public static CircularRegion REEF_EXIT =
-      new CircularRegion(FieldConstants.Reef.CENTER, 3, "reef_exit");
+      new CircularRegion(FieldConstants.Reef.CENTER, 3, "Reef Exit");
 
   public static void constructRegions(boolean flip) {
     for (PolygonRegion region : ALGAE_REGIONS) {
@@ -177,11 +182,23 @@ public class FieldRegions {
         RIGHT_CORAL_STATION_REGION.getName(), AllianceFlipUtil.apply(new Pose2d(), flip));
     REGION_POSE_TABLE.put(
         LEFT_CORAL_STATION_REGION.getName(), AllianceFlipUtil.apply(new Pose2d(), flip));
-    REGION_POSE_TABLE.put(REEF_FACE0_REGION.getName(), AllianceFlipUtil.apply(new Pose2d(), flip));
-    REGION_POSE_TABLE.put(REEF_FACE1_REGION.getName(), AllianceFlipUtil.apply(new Pose2d(), flip));
-    REGION_POSE_TABLE.put(REEF_FACE2_REGION.getName(), AllianceFlipUtil.apply(new Pose2d(), flip));
-    REGION_POSE_TABLE.put(REEF_FACE3_REGION.getName(), AllianceFlipUtil.apply(new Pose2d(), flip));
-    REGION_POSE_TABLE.put(REEF_FACE4_REGION.getName(), AllianceFlipUtil.apply(new Pose2d(), flip));
-    REGION_POSE_TABLE.put(REEF_FACE5_REGION.getName(), AllianceFlipUtil.apply(new Pose2d(), flip));
+    REGION_POSE_TABLE.put(
+        REEF_FACE0_REGION.getName(),
+        AllianceFlipUtil.apply(FieldConstants.Reef.CENTER_FACES[0].transformBy(OFF_SET), flip));
+    REGION_POSE_TABLE.put(
+        REEF_FACE1_REGION.getName(),
+        AllianceFlipUtil.apply(FieldConstants.Reef.CENTER_FACES[1].transformBy(OFF_SET), flip));
+    REGION_POSE_TABLE.put(
+        REEF_FACE2_REGION.getName(),
+        AllianceFlipUtil.apply(FieldConstants.Reef.CENTER_FACES[2].transformBy(OFF_SET), flip));
+    REGION_POSE_TABLE.put(
+        REEF_FACE3_REGION.getName(),
+        AllianceFlipUtil.apply(FieldConstants.Reef.CENTER_FACES[3].transformBy(OFF_SET), flip));
+    REGION_POSE_TABLE.put(
+        REEF_FACE4_REGION.getName(),
+        AllianceFlipUtil.apply(FieldConstants.Reef.CENTER_FACES[4].transformBy(OFF_SET), flip));
+    REGION_POSE_TABLE.put(
+        REEF_FACE5_REGION.getName(),
+        AllianceFlipUtil.apply(FieldConstants.Reef.CENTER_FACES[5].transformBy(OFF_SET), flip));
   }
 }

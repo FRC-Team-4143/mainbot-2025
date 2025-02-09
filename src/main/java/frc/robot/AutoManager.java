@@ -36,7 +36,7 @@ public class AutoManager {
     autoChooser.addRoutine("Move Forward", autoTest1::getAutoRoutine);
 
     // Put the auto chooser on the dashboard
-    SmartDashboard.putData("autopicker", autoChooser);
+    SmartDashboard.putData("Auto Chooser", autoChooser);
 
     // Schedule the selected auto during the autonomous period
     RobotModeTriggers.autonomous().whileTrue(autoChooser.selectedCommandScheduler());

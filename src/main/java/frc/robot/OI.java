@@ -6,13 +6,11 @@ package frc.robot;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Commands;
-import edu.wpi.first.wpilibj2.command.ConditionalCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.mw_lib.util.Util;
-import frc.robot.GameStateManager.ScoringTarget;
+import frc.robot.GameStateManager.RobotState;
 import frc.robot.commands.*;
-import frc.robot.commands.SetReefLevel.ReefLevel;
 import frc.robot.subsystems.*;
 
 public abstract class OI {
@@ -25,6 +23,7 @@ public abstract class OI {
   static SwerveDrivetrain swerve_drivetrain_ = SwerveDrivetrain.getInstance();
   static Claw claw_ = Claw.getInstance();
   static Elevator elevator_ = Elevator.getInstance();
+  private static GameStateManager game_state_manager = new GameStateManager();
 
   public static void configureBindings() {
 
@@ -50,29 +49,40 @@ public abstract class OI {
             Commands.runOnce(() -> swerve_drivetrain_.toggleFieldCentric(), swerve_drivetrain_)
                 .ignoringDisable(true));
 
-    driver_controller_.rightBumper().onTrue(claw_.toggleGamePiece());
+    // driver_controller_.rightBumper().onTrue(claw_.toggleGamePiece());
+    // driver_controller_
+    //     .leftTrigger()
+    //     .whileTrue(
+    //         new ConditionalCommand(new AlgaeLoad(), new CoralStationLoad(), claw_::isAlgaeMode));
+    // // Score
+    // driver_controller_
+    //     .rightTrigger()
+    //     .whileTrue(new ConditionalCommand(new CoralEject(), new AlgaeEject(),
+    // claw_::isCoralMode));
+    // operator_controller_
+    //     .y()
+    //     .toggleOnTrue(Commands.runOnce(() ->
+    // GameStateManager.wantedTarget(ScoringTarget.REEF_L4)));
+    // operator_controller_
+    //     .x()
+    //     .toggleOnTrue(Commands.runOnce(() ->
+    // GameStateManager.wantedTarget(ScoringTarget.REEF_L2)));
+    // operator_controller_
+    //     .b()
+    //     .toggleOnTrue(Commands.runOnce(() ->
+    // GameStateManager.wantedTarget(ScoringTarget.REEF_L3)));
+    // // operator_controller_.a().toggleOnTrue(());
+    // operator_controller_.povDown().toggleOnTrue(new SetReefLevel(ReefLevel.ALGAE_LOW));
+    // operator_controller_.povUp().toggleOnTrue(new SetReefLevel(ReefLevel.ALGAE_HIGH));
+    // // driver_controller_.a().whileTrue(new setReefLevel(ReefLevel.L1)); TODO: Fix Effector
+    // // Collision with Frame
+
     driver_controller_
-        .leftTrigger()
+        .rightBumper()
         .whileTrue(
-            new ConditionalCommand(new AlgaeLoad(), new CoralStationLoad(), claw_::isAlgaeMode));
-    // Score
-    driver_controller_
-        .rightTrigger()
-        .whileTrue(new ConditionalCommand(new CoralEject(), new AlgaeEject(), claw_::isCoralMode));
-    operator_controller_
-        .y()
-        .toggleOnTrue(Commands.runOnce(() -> GameStateManager.wantedTarget(ScoringTarget.REEF_L4)));
-    operator_controller_
-        .x()
-        .toggleOnTrue(Commands.runOnce(() -> GameStateManager.wantedTarget(ScoringTarget.REEF_L2)));
-    operator_controller_
-        .b()
-        .toggleOnTrue(Commands.runOnce(() -> GameStateManager.wantedTarget(ScoringTarget.REEF_L3)));
-    // operator_controller_.a().toggleOnTrue(());
-    operator_controller_.povDown().toggleOnTrue(new SetReefLevel(ReefLevel.ALGAE_LOW));
-    operator_controller_.povUp().toggleOnTrue(new SetReefLevel(ReefLevel.ALGAE_HIGH));
-    // driver_controller_.a().whileTrue(new setReefLevel(ReefLevel.L1)); TODO: Fix Effector
-    // Collision with Frame
+            Commands.startEnd(
+                () -> game_state_manager.setRobotState(RobotState.TARGET_ACQUISITION),
+                () -> game_state_manager.setRobotState(RobotState.TELEOP_CONTROL)));
   }
 
   public static double getDriverJoystickLeftX() {

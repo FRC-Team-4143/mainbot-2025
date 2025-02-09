@@ -11,12 +11,12 @@ public abstract class GitLogger {
 
   private static DataLog log = DataLogManager.getLog();
 
-  private static StringLogEntry project_name = new StringLogEntry(log, "/git/PROJECT_NAME");
-  private static StringLogEntry git_sha = new StringLogEntry(log, "/git/GIT_SHA");
-  private static StringLogEntry git_date = new StringLogEntry(log, "/git/GIT_DATE");
-  private static StringLogEntry git_branch = new StringLogEntry(log, "/git/GIT_BRANCH");
-  private static StringLogEntry build_date = new StringLogEntry(log, "/git/BUILD_DATE");
-  private static BooleanLogEntry dirty = new BooleanLogEntry(log, "/git/DIRTY");
+  private static StringLogEntry project_name = new StringLogEntry(log, "/Metadata/PROJECT_NAME");
+  private static StringLogEntry git_sha = new StringLogEntry(log, "/Metadata/GIT_SHA");
+  private static StringLogEntry git_date = new StringLogEntry(log, "/Metadata/GIT_DATE");
+  private static StringLogEntry git_branch = new StringLogEntry(log, "/Metadata/GIT_BRANCH");
+  private static StringLogEntry build_date = new StringLogEntry(log, "/Metadata/BUILD_DATE");
+  private static BooleanLogEntry dirty = new BooleanLogEntry(log, "/Metadata/DIRTY");
 
   public static void logGitData() {
     project_name.append(BuildConstants.MAVEN_NAME);

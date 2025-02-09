@@ -17,6 +17,7 @@ public class Robot extends TimedRobot {
   private RobotContainer robot_container_;
   static SwerveDrivetrain swerve_drivetrain_ = SwerveDrivetrain.getInstance();
   private Alliance allaince_ = Alliance.Blue;
+  private GameStateManager game_state_manager = new GameStateManager();
 
   @Override
   public void robotInit() {
@@ -74,7 +75,9 @@ public class Robot extends TimedRobot {
   }
 
   @Override
-  public void teleopPeriodic() {}
+  public void teleopPeriodic() {
+    game_state_manager.updateGameState();
+  }
 
   @Override
   public void testInit() {

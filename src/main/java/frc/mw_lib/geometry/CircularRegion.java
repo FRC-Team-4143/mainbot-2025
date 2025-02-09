@@ -27,6 +27,7 @@ public class CircularRegion implements Region {
   public CircularRegion(Translation2d center, double radius, String region_name) {
     radius_ = radius;
     name_ = region_name;
+    center_ = center;
     array_publisher_ =
         NetworkTableInstance.getDefault()
             .getStructArrayTopic("Regions/" + name_, Translation2d.struct)

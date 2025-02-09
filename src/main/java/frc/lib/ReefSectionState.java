@@ -10,6 +10,14 @@ public class ReefSectionState implements Logged {
   @Log.File public boolean[] algae = {false, false};
   @Log.File public boolean[] right_column = {false, false, false};
 
+  public ReefSectionState(boolean[] leftColumn, boolean[] algaeColumn, boolean[] rightColumn) {
+    left_column = leftColumn;
+    algae = algaeColumn;
+    right_column = rightColumn;
+  }
+
+  public ReefSectionState() {}
+
   public static ReefSectionState averageReefSections(
       ArrayList<ReefSectionState> givenStates, double threshold) {
     ReefSectionState final_reef_section_state = new ReefSectionState();

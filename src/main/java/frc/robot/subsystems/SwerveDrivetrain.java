@@ -152,9 +152,12 @@ public class SwerveDrivetrain extends Subsystem {
     heading_pose_controller_ = Constants.DrivetrainConstants.POSE_HEADING;
     heading_pose_controller_.enableContinuousInput(-Math.PI, Math.PI);
 
-    SmartDashboard.putData(x_traj_controller_);
-    SmartDashboard.putData(y_traj_controller_);
-    SmartDashboard.putData(heading_traj_controller_);
+    SmartDashboard.putData("X Traj Controller", x_traj_controller_);
+    SmartDashboard.putData("Y Traj Controller", y_traj_controller_);
+    SmartDashboard.putData("Heading Traj Controller", heading_traj_controller_);
+    SmartDashboard.putData("X Pose Controller", x_pose_controller_);
+    SmartDashboard.putData("Y Pose Controller", y_pose_controller_);
+    SmartDashboard.putData("Heading Pose Controller", heading_pose_controller_);
 
     // Begin configuring swerve modules
     module_locations_ = new Translation2d[modules.length];
@@ -320,7 +323,7 @@ public class SwerveDrivetrain extends Subsystem {
                         + heading_traj_controller_.calculate(
                             io_.current_pose_.getRotation().getRadians(),
                             io_.target_sample_.heading)));
-        request_parameters_.currentPose = io_.target_pose_;
+        request_parameters_.currentPose = io_.current_pose_;
         break;
       case TRACTOR_BEAM:
         io_.tractor_beam_scaling_factor_ =
@@ -341,7 +344,7 @@ public class SwerveDrivetrain extends Subsystem {
                             io_.current_pose_.getRotation().getRadians(),
                             io_.target_pose_.getRotation().getRadians())
                         * io_.tractor_beam_scaling_factor_));
-        request_parameters_.currentPose = io_.target_pose_;
+        request_parameters_.currentPose = io_.current_pose_;
         break;
       case IDLE:
         setControl(new SwerveRequest.Idle());

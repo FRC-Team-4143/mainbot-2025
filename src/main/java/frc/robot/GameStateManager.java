@@ -1,6 +1,8 @@
 package frc.robot;
 
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.networktables.NetworkTableInstance;
+import edu.wpi.first.networktables.StructPublisher;
 import frc.lib.FieldRegions;
 import frc.lib.ReefSectionState;
 import frc.mw_lib.geometry.PolygonRegion;
@@ -8,6 +10,7 @@ import frc.robot.Constants.ElevatorConstants;
 import frc.robot.subsystems.Elevator;
 import frc.robot.subsystems.PoseEstimator;
 import frc.robot.subsystems.SwerveDrivetrain;
+import frc.robot.subsystems.SwerveDrivetrain.DriveMode;
 import java.util.Optional;
 import monologue.Annotations.Log;
 
@@ -19,6 +22,10 @@ public class GameStateManager {
   @Log.File private static Optional<Pose2d> reef_target = Optional.empty();
   @Log.File private static Optional<Pose2d> station_target = Optional.empty();
   @Log.File private static Optional<Pose2d> algae_target = Optional.empty();
+  @Log.File private static int selected_reef_level_ = 2;
+
+  private StructPublisher<Pose2d> reef_target_publisher =
+      NetworkTableInstance.getDefault().getStructTopic("ReefTarget", Pose2d.struct).publish();
 
   static Elevator elevator_;
   static PoseEstimator poseEstimator_;
@@ -32,6 +39,13 @@ public class GameStateManager {
     TELEOP_CONTROL
   }
 
+  public static enum Intent {
+    INTAKE_CORAL,
+    INTAKE_ALGAE,
+    SCORE_CORAL,
+    SCORE_ALGAE
+  }
+
   public static enum ScoringTarget {
     TURTLE,
     REEF_L1,
@@ -42,15 +56,22 @@ public class GameStateManager {
     BARGE,
     PROCESSOR,
     SOURCE,
-    IDLE
+    TELEOP_CONTROL
   }
 
-  public GameStateManager() {}
+  public GameStateManager() {
+    elevator_ = Elevator.getInstance();
+    poseEstimator_ = PoseEstimator.getInstance();
+    drivetrain_ = SwerveDrivetrain.getInstance();
+  }
 
-  public static void updateGameState() {
+  public void updateGameState() {
     reef_target = reefPose();
     station_target = loadStationPose();
     algae_target = algaePose();
+    if (reef_target.isPresent()) {
+      reef_target_publisher.set(reef_target.get());
+    }
     robotStateSwitch();
   }
 
@@ -74,7 +95,8 @@ public class GameStateManager {
         break;
       case TELEOP_CONTROL:
       default:
-        scoring_target_ = ScoringTarget.IDLE;
+        scoring_target_ = ScoringTarget.TELEOP_CONTROL;
+        drivetrain_.setDriveMode(DriveMode.FIELD_CENTRIC);
         break;
     }
   }
@@ -97,7 +119,7 @@ public class GameStateManager {
       default:
         elevator_.setTarget(ElevatorConstants.Target.STOW);
         break;
-      case IDLE:
+      case TELEOP_CONTROL:
         break;
     }
   }
@@ -147,5 +169,13 @@ public class GameStateManager {
       }
     }
     return Optional.empty();
+  }
+
+  public void setSelectedReefLevel(int level) {
+    selected_reef_level_ = level;
+  }
+
+  public void setRobotState(RobotState state) {
+    robot_state_ = state;
   }
 }
