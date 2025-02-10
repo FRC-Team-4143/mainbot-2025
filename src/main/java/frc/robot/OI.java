@@ -17,17 +17,16 @@ import java.util.Optional;
 public abstract class OI {
 
   // Sets up both controllers
-  static CommandXboxController driver_controller_ = new CommandXboxController(0);
-  static CommandXboxController operator_controller_ = new CommandXboxController(1);
+  private static CommandXboxController driver_controller_ = new CommandXboxController(0);
+  private static CommandXboxController operator_controller_ = new CommandXboxController(1);
 
-  static PoseEstimator pose_estimator_ = PoseEstimator.getInstance();
-  static SwerveDrivetrain swerve_drivetrain_ = SwerveDrivetrain.getInstance();
-  static Claw claw_ = Claw.getInstance();
-  static Elevator elevator_ = Elevator.getInstance();
+  private static PoseEstimator pose_estimator_ = PoseEstimator.getInstance();
+  private static SwerveDrivetrain swerve_drivetrain_ = SwerveDrivetrain.getInstance();
+  private static Claw claw_ = Claw.getInstance();
+  private static Elevator elevator_ = Elevator.getInstance();
   private static GameStateManager game_state_manager = new GameStateManager();
 
   public static void configureBindings() {
-
     // Set Wheel Offsets
     SmartDashboard.putData(
         "Set Wheel Offsets",
