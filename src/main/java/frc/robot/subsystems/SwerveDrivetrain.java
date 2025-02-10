@@ -16,14 +16,13 @@ import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
-import edu.wpi.first.math.geometry.Twist2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.networktables.StructArrayPublisher;
-import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
@@ -110,9 +109,6 @@ public class SwerveDrivetrain extends Subsystem {
       requested_state_pub_,
       current_state_proxy_pub_;
 
-  // Field Widget for displaying poses
-  private Field2d field_ = new Field2d();
-
   // PID Controllers
   private final PIDController x_traj_controller_;
   private final PIDController y_traj_controller_;
@@ -152,6 +148,7 @@ public class SwerveDrivetrain extends Subsystem {
     heading_pose_controller_ = Constants.DrivetrainConstants.POSE_HEADING;
     heading_pose_controller_.enableContinuousInput(-Math.PI, Math.PI);
 
+    // Allow PID Configuration for Traj / Pose Controll on the Dashboard
     SmartDashboard.putData("X Traj Controller", x_traj_controller_);
     SmartDashboard.putData("Y Traj Controller", y_traj_controller_);
     SmartDashboard.putData("Heading Traj Controller", heading_traj_controller_);
@@ -362,8 +359,6 @@ public class SwerveDrivetrain extends Subsystem {
         break;
     }
 
-    /* And now that we've got the new odometry, update the controls */
-
     request_parameters_.kinematics = kinematics_;
     request_parameters_.swervePositions = module_locations_;
     request_parameters_.updatePeriod = timestamp - request_parameters_.timestamp;
@@ -396,21 +391,16 @@ public class SwerveDrivetrain extends Subsystem {
     SmartDashboard.putNumber(
         "Debug/Swerve/Chassis Speed/Omega", io_.chassis_speeds_.omegaRadiansPerSecond);
 
-    Twist2d chassis_proxy_twist = ChassisProxyServer.getTwist();
-    SmartDashboard.putNumber("Debug/Swerve/Chassis Proxy Speed/X", chassis_proxy_twist.dx);
-    SmartDashboard.putNumber("Debug/Swerve/Chassis Proxy Speed/Y", chassis_proxy_twist.dy);
-    SmartDashboard.putNumber("Debug/Swerve/Chassis Proxy Speed/Omega", chassis_proxy_twist.dtheta);
-    field_.setRobotPose(ChassisProxyServer.getPose());
-    SmartDashboard.putData("Chassis Proxy Pose", field_);
+    SmartDashboard.putNumber(
+        "Debug/Swerve/FL Encoder", Units.rotationsToDegrees(swerve_modules_[0].getEncoderValue()));
+    SmartDashboard.putNumber(
+        "Debug/Swerve/FR Encoder", Units.rotationsToDegrees(swerve_modules_[1].getEncoderValue()));
+    SmartDashboard.putNumber(
+        "Debug/Swerve/FL Encoder", Units.rotationsToDegrees(swerve_modules_[2].getEncoderValue()));
+    SmartDashboard.putNumber(
+        "Debug/Swerve/BR Encoder", Units.rotationsToDegrees(swerve_modules_[3].getEncoderValue()));
 
-    SmartDashboard.putString("drive mode", io_.drive_mode_.toString());
-
-    SmartDashboard.putNumber("Encoder:0", swerve_modules_[0].getEncoderValue() * 360);
-    SmartDashboard.putNumber("Encoder:1", swerve_modules_[1].getEncoderValue() * 360);
-    SmartDashboard.putNumber("Encoder:2", swerve_modules_[2].getEncoderValue() * 360);
-    SmartDashboard.putNumber("Encoder:3", swerve_modules_[3].getEncoderValue() * 360);
-
-    SmartDashboard.putString("requestType", request_to_apply_.toString());
+    SmartDashboard.putString("Debug/Swerve/Request Type", request_to_apply_.toString());
   }
 
   public Command applyRequest(Supplier<SwerveRequest> requestSupplier) {
