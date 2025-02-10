@@ -40,8 +40,7 @@ public final class Constants {
     public static final String kCameraName = "OV9281-10";
     // Cam mounted facing forward, half a meter forward of center, half a meter up from center.
     public static final Transform3d kRobotToCam =
-        new Transform3d(
-            new Translation3d(-0.05, 0.0, 0.5), new Rotation3d(0, 0, Units.degreesToRadians(180)));
+        new Transform3d(new Translation3d(0.05, 0.0, 0.5), new Rotation3d(0, 0, 0));
 
     // The layout of the AprilTags on the field
     public static final AprilTagFieldLayout kTagLayout =
@@ -111,7 +110,7 @@ public final class Constants {
     public static final double MAX_DRIVE_ANGULAR_RATE =
         LOADER.getDoubleValue("drive", "com", "MAX_DRIVE_ANGULAR_RATE");
 
-    public static final double CRAWL_DRIVE_SPEED = 0.4;
+    public static final double CRAWL_DRIVE_SPEED = MAX_DRIVE_SPEED * 0.2;
     public static final double MAX_TARGET_SPEED = 1;
 
     private static final SwerveModuleConstantsFactory ConstantCreator =
@@ -170,12 +169,39 @@ public final class Constants {
             LOADER.getBoolValue("drive", "br", "INVERT_DRIVE"));
 
     // Drivetrain PID Controller
-    public static final PIDController X_TRAJECTORY_TRANSLATION = new PIDController(0.5, 0, 0.000);
-    public static final PIDController Y_TRAJECTORY_TRANSLATION = new PIDController(0.5, 0, 0.000);
-    public static final PIDController TRAJECTORY_HEADING = new PIDController(2, 0, 0.000);
-    public static final PIDController X_POSE_TRANSLATION = new PIDController(0.1, 0, 0.000);
-    public static final PIDController Y_POSE_TRANSLATION = new PIDController(0.1, 0, 0.000);
-    public static final PIDController POSE_HEADING = new PIDController(.075, 0, 0.000);
+    public static final PIDController X_TRAJECTORY_TRANSLATION =
+        new PIDController(
+            LOADER.getDoubleValue("drive", "traj_controller", "TRANSLATION_P"),
+            LOADER.getDoubleValue("drive", "traj_controller", "TRANSLATION_I"),
+            LOADER.getDoubleValue("drive", "traj_controller", "TRANSLATION_D"));
+    public static final PIDController Y_TRAJECTORY_TRANSLATION =
+        new PIDController(
+            LOADER.getDoubleValue("drive", "traj_controller", "TRANSLATION_P"),
+            LOADER.getDoubleValue("drive", "traj_controller", "TRANSLATION_I"),
+            LOADER.getDoubleValue("drive", "traj_controller", "TRANSLATION_D"));
+    public static final PIDController TRAJECTORY_HEADING =
+        new PIDController(
+            LOADER.getDoubleValue("drive", "traj_controller", "HEADING_P"),
+            LOADER.getDoubleValue("drive", "traj_controller", "HEADING_I"),
+            LOADER.getDoubleValue("drive", "traj_controller", "HEADING_D"));
+    public static final PIDController X_POSE_TRANSLATION =
+        new PIDController(
+            LOADER.getDoubleValue("drive", "pose_controller", "TRANSLATION_P"),
+            LOADER.getDoubleValue("drive", "pose_controller", "TRANSLATION_I"),
+            LOADER.getDoubleValue("drive", "pose_controller", "TRANSLATION_D"));
+    public static final PIDController Y_POSE_TRANSLATION =
+        new PIDController(
+            LOADER.getDoubleValue("drive", "pose_controller", "TRANSLATION_P"),
+            LOADER.getDoubleValue("drive", "pose_controller", "TRANSLATION_I"),
+            LOADER.getDoubleValue("drive", "pose_controller", "TRANSLATION_D"));
+    public static final PIDController POSE_HEADING =
+        new PIDController(
+            LOADER.getDoubleValue("drive", "pose_controller", "HEADING_P"),
+            LOADER.getDoubleValue("drive", "pose_controller", "HEADING_I"),
+            LOADER.getDoubleValue("drive", "pose_controller", "HEADING_D"));
+
+    public static final double CENTER_OFFSET_X =
+        Units.inchesToMeters(LOADER.getDoubleValue("drive", "com", "CENTER_OFFSET_X"));
   }
 
   public static final class FeederConstants {
@@ -274,31 +300,38 @@ public final class Constants {
       L4(
           FieldConstants.ReefHeight.L4.HEIGHT + Units.inchesToMeters(13),
           Rotation2d.fromDegrees(130),
-          false),
+          ControlType.EFFECTOR),
       L3(
           FieldConstants.ReefHeight.L3.HEIGHT + Units.inchesToMeters(12),
           Rotation2d.fromDegrees(125),
-          false),
+          ControlType.EFFECTOR),
       L2(
           FieldConstants.ReefHeight.L2.HEIGHT + Units.inchesToMeters(12),
           Rotation2d.fromDegrees(125),
-          false),
+          ControlType.EFFECTOR),
 
-      STATION(1.076666, Rotation2d.fromRadians(-1.027767), true),
-      CLIMB(ELEVATOR_MIN_HEIGHT, new Rotation2d(), true),
-      STOW(0, Rotation2d.fromDegrees(-90), true),
-      ALGAE_LOW(0.23665818349136578, Rotation2d.fromRadians(2.4942527611020524), false),
-      ALGAE_HIGH(1.200, Rotation2d.fromDegrees(90 + 33), false);
+      STATION(1.076666, Rotation2d.fromRadians(-1.027767), ControlType.PIVOT),
+      CLIMB(ELEVATOR_MIN_HEIGHT, new Rotation2d(), ControlType.PIVOT),
+      STOW(0, Rotation2d.fromDegrees(-90), ControlType.PIVOT),
+      ALGAE_LOW(
+          0.23665818349136578, Rotation2d.fromRadians(2.4942527611020524), ControlType.EFFECTOR),
+      ALGAE_HIGH(1.200, Rotation2d.fromDegrees(90 + 33), ControlType.EFFECTOR);
 
-      Target(double height, Rotation2d angle, boolean isPivotHeightTarget) {
+      Target(double height, Rotation2d angle, ControlType type) {
         this.angle = angle;
         this.height = height;
-        this.isPivotHeightTarget = isPivotHeightTarget;
+        this.type = type;
       }
 
       public final double height;
       public final Rotation2d angle;
-      public final boolean isPivotHeightTarget;
+
+      public enum ControlType {
+        PIVOT,
+        EFFECTOR
+      }
+
+      public final ControlType type;
     }
   }
 }

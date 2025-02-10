@@ -14,7 +14,6 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
-import frc.robot.subsystems.PoseEstimator;
 
 /**
  * Container for all the Swerve Requests. Use this to find all applicable swerve drive requests.
@@ -367,8 +366,6 @@ public interface SwerveRequest {
     /** The perspective to use when determining which direction is forward. */
     public ForwardReference ForwardReference = SwerveRequest.ForwardReference.OperatorPerspective;
 
-    public boolean useGyroForRotation = false;
-
     public StatusCode apply(
         SwerveControlRequestParameters parameters, SwerveModule... modulesToApply) {
       double toApplyX = VelocityX;
@@ -385,13 +382,7 @@ public interface SwerveRequest {
         angleToFace = angleToFace.rotateBy(parameters.operatorForwardDirection);
       }
 
-      Pose2d currentRobotPose;
-      if (useGyroForRotation) {
-        currentRobotPose = parameters.currentPose;
-      } else {
-        currentRobotPose = PoseEstimator.getInstance().getFieldPose();
-      }
-
+      Pose2d currentRobotPose = parameters.currentPose;
       double rotationRate =
           HeadingController.calculate(
               currentRobotPose.getRotation().getRadians(),
@@ -512,18 +503,6 @@ public interface SwerveRequest {
     public FieldCentricFacingAngle withSteerRequestType(
         SwerveModule.SteerRequestType steerRequestType) {
       this.SteerRequestType = steerRequestType;
-      return this;
-    }
-
-    /**
-     * Determines which robot rotation is used for current in PID
-     *
-     * @param useGyroForRotation TTrue will use the gyro for rotation and False will use
-     *     PoseEstimator
-     * @return this request
-     */
-    public FieldCentricFacingAngle useGyroForRotation(boolean useGyroForRotation) {
-      this.useGyroForRotation = useGyroForRotation;
       return this;
     }
   }

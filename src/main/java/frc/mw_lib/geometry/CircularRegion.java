@@ -5,7 +5,7 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.networktables.StructArrayPublisher;
-import frc.lib.FieldConstants;
+import frc.lib.AllianceFlipUtil;
 
 /**
  * This class models a region of the field. It is defined by its center and radius Credit to
@@ -27,6 +27,7 @@ public class CircularRegion implements Region {
   public CircularRegion(Translation2d center, double radius, String region_name) {
     radius_ = radius;
     name_ = region_name;
+    center_ = center;
     array_publisher_ =
         NetworkTableInstance.getDefault()
             .getStructArrayTopic("Regions/" + name_, Translation2d.struct)
@@ -36,7 +37,7 @@ public class CircularRegion implements Region {
   }
 
   public void constructAllianceRegion(boolean flip) {
-    center_.rotateAround(FieldConstants.FIELD_CENTER, Rotation2d.fromDegrees(180));
+    center_ = AllianceFlipUtil.apply(center_, flip);
   }
 
   /**
@@ -62,5 +63,9 @@ public class CircularRegion implements Region {
    */
   public boolean contains(Pose2d other) {
     return center_.getDistance(other.getTranslation()) < radius_;
+  }
+
+  public String getName() {
+    return name_;
   }
 }

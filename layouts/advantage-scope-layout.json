@@ -16,9 +16,13 @@
             "/NT/Robot/subsystems_ios/ElevatorPeriodicIo[3]",
             "/NT/SmartDashboard",
             "/SmartDashboard/TalonFXTuner - climber",
-            "/CamPose",
-            "/CameraPublisher",
-            "/Regions"
+            "/SmartDashboard",
+            "/Regions",
+            "/CameraPublisher/photonvision_Port_1181_Input_MJPEG_Server",
+            "/module_states",
+            "/SmartDashboard/Debug",
+            "/SmartDashboard/Debug/Swerve",
+            "/SmartDashboard/Debug/Swerve/Rotation Control"
           ]
         },
         "tabs": {
@@ -136,6 +140,54 @@
                       "color": "#00ffff",
                       "size": "normal"
                     }
+                  },
+                  {
+                    "type": "robotLegacy",
+                    "logKey": "NT:/SmartDashboard/Field/Robot",
+                    "logType": "NumberArray",
+                    "visible": true,
+                    "options": {
+                      "model": "KitBot",
+                      "format": "Pose2d",
+                      "units": "degrees"
+                    }
+                  },
+                  {
+                    "type": "mechanism",
+                    "logKey": "NT:/SmartDashboard/Elevator System Mech",
+                    "logType": "Mechanism2d",
+                    "visible": true,
+                    "options": {}
+                  },
+                  {
+                    "type": "ghost",
+                    "logKey": "NT:ReefTarget",
+                    "logType": "Pose2d",
+                    "visible": true,
+                    "options": {
+                      "model": "KitBot",
+                      "color": "#ff8c00"
+                    }
+                  },
+                  {
+                    "type": "trajectory",
+                    "logKey": "NT:Regions/reef_enter",
+                    "logType": "Translation2d[]",
+                    "visible": true,
+                    "options": {
+                      "color": "#00ff00",
+                      "size": "normal"
+                    }
+                  },
+                  {
+                    "type": "trajectory",
+                    "logKey": "NT:Regions/reef_exit",
+                    "logType": "Translation2d[]",
+                    "visible": true,
+                    "options": {
+                      "color": "#00ff00",
+                      "size": "normal"
+                    }
                   }
                 ],
                 "game": "2025 Field",
@@ -146,17 +198,115 @@
                 "cameraIndex": -1,
                 "orbitFov": 50,
                 "cameraPosition": [
-                  -4.995650656811533,
-                  11.478890585035874,
-                  -2.4473918045123786
+                  7.016310702469221,
+                  10.847679801506441,
+                  -1.3770501157942774
                 ],
                 "cameraTarget": [
-                  -3.9594340777050543,
-                  -1.5930556559817368,
-                  0.18976800382045494
+                  3.7570899350930143,
+                  -5.432321895958732,
+                  -0.6150974370091279
                 ]
               },
               "controlsHeight": 337
+            },
+            {
+              "type": 3,
+              "title": "Vision",
+              "controller": {
+                "sources": [
+                  {
+                    "type": "ghost",
+                    "logKey": "NT:CamPose",
+                    "logType": "Pose2d",
+                    "visible": true,
+                    "options": {
+                      "model": "2025 KitBot",
+                      "color": "#00ff00"
+                    }
+                  },
+                  {
+                    "type": "robotLegacy",
+                    "logKey": "NT:/SmartDashboard/Field/Robot",
+                    "logType": "NumberArray",
+                    "visible": true,
+                    "options": {
+                      "model": "KitBot",
+                      "format": "Pose2d",
+                      "units": "degrees"
+                    }
+                  },
+                  {
+                    "type": "mechanism",
+                    "logKey": "NT:/SmartDashboard/Elevator System Mech",
+                    "logType": "Mechanism2d",
+                    "visible": true,
+                    "options": {}
+                  }
+                ],
+                "game": "2025 Field",
+                "origin": "blue"
+              },
+              "controllerUUID": "6c9ydva4vasbvbuzq0gp0hkrbqlra9fp",
+              "renderer": {
+                "cameraIndex": -1,
+                "orbitFov": 50,
+                "cameraPosition": [
+                  3.990090792966833,
+                  5.999999999999999,
+                  -11.317207052266973
+                ],
+                "cameraTarget": [
+                  0,
+                  0.5,
+                  0
+                ]
+              },
+              "controlsHeight": 200
+            },
+            {
+              "type": 9,
+              "title": "Swerve",
+              "controller": {
+                "sources": [
+                  {
+                    "type": "states",
+                    "logKey": "NT:module_states/current",
+                    "logType": "SwerveModuleState[]",
+                    "visible": true,
+                    "options": {
+                      "color": "#ff0000",
+                      "arrangement": "0,1,2,3"
+                    }
+                  },
+                  {
+                    "type": "states",
+                    "logKey": "NT:module_states/requested",
+                    "logType": "SwerveModuleState[]",
+                    "visible": true,
+                    "options": {
+                      "color": "#0000ff",
+                      "arrangement": "0,1,2,3"
+                    }
+                  },
+                  {
+                    "type": "rotationLegacy",
+                    "logKey": "NT:/SmartDashboard/Debug/Swerve/Rotation Control/Current Yaw",
+                    "logType": "Number",
+                    "visible": true,
+                    "options": {
+                      "units": "radians"
+                    }
+                  }
+                ],
+                "maxSpeed": 5,
+                "sizeX": 0.65,
+                "sizeY": 0.65,
+                "orientation": 1
+              },
+              "controllerUUID": "a3wcwir2whtqie2y28ks4tpl9vp7rny0",
+              "renderer": null,
+              "controlsHeight": 200
             }
           ]
         }

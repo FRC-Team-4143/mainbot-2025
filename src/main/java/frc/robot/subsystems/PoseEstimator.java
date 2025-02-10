@@ -47,13 +47,13 @@ public class PoseEstimator extends Subsystem {
   public void reset() {
     odometry_ =
         new SwerveDrivePoseEstimator(
-            SwerveDrivetrain.getInstance().kinematics,
+            SwerveDrivetrain.getInstance().kinematics_,
             new Rotation2d(),
             SwerveDrivetrain.getInstance().getModulePositions(),
             new Pose2d());
     vision_filtered_odometry_ =
         new SwerveDrivePoseEstimator(
-            SwerveDrivetrain.getInstance().kinematics,
+            SwerveDrivetrain.getInstance().kinematics_,
             new Rotation2d(),
             SwerveDrivetrain.getInstance().getModulePositions(),
             new Pose2d());
@@ -122,14 +122,6 @@ public class PoseEstimator extends Subsystem {
     return vision_filtered_odometry_;
   }
 
-  public void pauseVisionFilter() {
-    io_.vision_paused = !io_.vision_paused;
-  }
-
-  public void setIgnoreVision(boolean ignore) {
-    io_.ignore_vision = ignore;
-  }
-
   /**
    * Resets the robot odom and set the robot pose to supplier Pose
    *
@@ -152,9 +144,6 @@ public class PoseEstimator extends Subsystem {
     @Log.File public Pose2d odom_pose_ = new Pose2d();
     @Log.File public Pose2d vision_filtered_pose_ = new Pose2d();
     @Log.File public double last_vision_timestamp_ = 0.0;
-    @Log.File public boolean vision_ready_status_ = false;
-    @Log.File public boolean vision_paused = false;
-    @Log.File public boolean ignore_vision = false;
   }
 
   @Override
