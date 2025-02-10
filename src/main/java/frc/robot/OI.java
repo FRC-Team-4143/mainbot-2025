@@ -8,7 +8,6 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
-import frc.mw_lib.util.Util;
 import frc.robot.GameStateManager.RobotState;
 import frc.robot.commands.*;
 import frc.robot.subsystems.*;
@@ -17,9 +16,9 @@ public abstract class OI {
 
   // Sets up both controllers
   static CommandXboxController driver_controller_ = new CommandXboxController(0);
-  static PoseEstimator pose_estimator_ = PoseEstimator.getInstance();
   static CommandXboxController operator_controller_ = new CommandXboxController(1);
 
+  static PoseEstimator pose_estimator_ = PoseEstimator.getInstance();
   static SwerveDrivetrain swerve_drivetrain_ = SwerveDrivetrain.getInstance();
   static Claw claw_ = Claw.getInstance();
   static Elevator elevator_ = Elevator.getInstance();
@@ -85,6 +84,9 @@ public abstract class OI {
                 () -> game_state_manager.setRobotState(RobotState.TELEOP_CONTROL)));
   }
 
+  /**
+   * @return driver controller left joystick x axis scaled quadratically
+   */
   public static double getDriverJoystickLeftX() {
     double val = driver_controller_.getLeftX();
     double output = val * val;
@@ -92,6 +94,9 @@ public abstract class OI {
     return val;
   }
 
+  /**
+   * @return driver controller left joystick y axis scaled quadratically
+   */
   public static double getDriverJoystickLeftY() {
     double val = driver_controller_.getLeftY();
     double output = val * val;
@@ -99,6 +104,9 @@ public abstract class OI {
     return val;
   }
 
+  /**
+   * @return driver controller right joystick x axis scaled quadratically
+   */
   public static double getDriverJoystickRightX() {
     double val = driver_controller_.getRightX();
     double output = val * val;
@@ -106,47 +114,73 @@ public abstract class OI {
     return val;
   }
 
-  public static boolean getDriverJoystickRightY() {
-    double val = driver_controller_.getRightY();
-    return Util.epislonEquals(val, 0, 0.1);
-  }
+  /*
+   *
+   * The OI methods below are used for the TalonFX Tuner Bindings.
+   * These should not be used in telop robot control.
+   *
+   */
 
-  public static double getDriverJoystickRightTriggerAxis() {
-    return driver_controller_.getRightTriggerAxis();
-  }
-
-  public static double getDriverJoystickPOVangle() {
-    return driver_controller_.getHID().getPOV();
-  }
-
+  /**
+   * @return event trigger bound to driver controller A button
+   * @implNote DO NOT USE FOR TELEOP CONTROL
+   */
   public static Trigger getDriverJoystickAButtonTrigger() {
     return driver_controller_.a();
   }
 
+  /**
+   * @return event trigger bound to driver controller B button
+   * @implNote DO NOT USE FOR TELEOP CONTROL
+   */
   public static Trigger getDriverJoystickBButtonTrigger() {
     return driver_controller_.b();
   }
 
+  /**
+   * @return event trigger bound to driver controller Y button
+   * @implNote DO NOT USE FOR TELEOP CONTROL
+   */
   public static Trigger getDriverJoystickYButtonTrigger() {
     return driver_controller_.y();
   }
 
+  /**
+   * @return event trigger bound to driver controller X button
+   * @implNote DO NOT USE FOR TELEOP CONTROL
+   */
   public static Trigger getDriverJoystickXButtonTrigger() {
     return driver_controller_.x();
   }
 
+  /**
+   * @return event trigger bound to operator controller A button
+   * @implNote DO NOT USE FOR TELEOP CONTROL
+   */
   public static Trigger getOperatorJoystickAButtonTrigger() {
     return operator_controller_.a();
   }
 
+  /**
+   * @return event trigger bound to driver controller B button
+   * @implNote DO NOT USE FOR TELEOP CONTROL
+   */
   public static Trigger getOperatorJoystickBButtonTrigger() {
     return operator_controller_.b();
   }
 
+  /**
+   * @return event trigger bound to driver controller X button
+   * @implNote DO NOT USE FOR TELEOP CONTROL
+   */
   public static Trigger getOperatorJoystickYButtonTrigger() {
     return operator_controller_.y();
   }
 
+  /**
+   * @return event trigger bound to driver controller Y button
+   * @implNote DO NOT USE FOR TELEOP CONTROL
+   */
   public static Trigger getOperatorJoystickXButtonTrigger() {
     return operator_controller_.x();
   }
