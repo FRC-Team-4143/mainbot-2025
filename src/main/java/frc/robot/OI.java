@@ -7,13 +7,14 @@ package frc.robot;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.ConditionalCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.GameStateManager.RobotState;
 import frc.robot.commands.*;
+import frc.robot.commands.SetReefLevel.ReefLevel;
 import frc.robot.subsystems.*;
 import frc.robot.subsystems.SwerveDrivetrain.DriveMode;
-
 import java.util.Optional;
 
 public abstract class OI {
@@ -31,6 +32,13 @@ public abstract class OI {
   private static Trigger driver_pov_active_ = new Trigger(getDriverJoystickPOV()::isPresent);
 
   public static void configureBindings() {
+
+    /*
+     * 
+     * Smart Dashboard Bindings
+     * 
+     */
+
     // Set Wheel Offsets
     SmartDashboard.putData(
         "Set Wheel Offsets",
@@ -53,16 +61,29 @@ public abstract class OI {
             Commands.runOnce(() -> swerve_drivetrain_.toggleFieldCentric(), swerve_drivetrain_)
                 .ignoringDisable(true));
 
-    // driver_controller_.rightBumper().onTrue(claw_.toggleGamePiece());
-    // driver_controller_
-    //     .leftTrigger()
-    //     .whileTrue(
-    //         new ConditionalCommand(new AlgaeLoad(), new CoralStationLoad(), claw_::isAlgaeMode));
-    // // Score
-    // driver_controller_
-    //     .rightTrigger()
-    //     .whileTrue(new ConditionalCommand(new CoralEject(), new AlgaeEject(),
-    // claw_::isCoralMode));
+    /*
+     * 
+     * Manual Teleop Bindings
+     * 
+     */
+
+    driver_controller_.rightBumper().onTrue(claw_.toggleGamePiece());
+    driver_controller_
+        .leftTrigger()
+        .whileTrue(
+            new ConditionalCommand(new AlgaeLoad(), new CoralStationLoad(), claw_::isAlgaeMode));
+    driver_controller_
+        .rightTrigger()
+        .whileTrue(new ConditionalCommand(new CoralEject(), new AlgaeEject(), claw_::isCoralMode));
+    driver_controller_.y().toggleOnTrue(new SetReefLevel(ReefLevel.L4));
+    driver_controller_.x().toggleOnTrue(new SetReefLevel(ReefLevel.L2));
+    driver_controller_.b().toggleOnTrue(new SetReefLevel(ReefLevel.L3));
+
+    /*
+     * 
+     * Game State Manager Bindings
+     * 
+     */
     // operator_controller_
     //     .y()
     //     .toggleOnTrue(Commands.runOnce(() ->
@@ -75,11 +96,9 @@ public abstract class OI {
     //     .b()
     //     .toggleOnTrue(Commands.runOnce(() ->
     // GameStateManager.wantedTarget(ScoringTarget.REEF_L3)));
-    // // operator_controller_.a().toggleOnTrue(());
+    // operator_controller_.a().toggleOnTrue(());
     // operator_controller_.povDown().toggleOnTrue(new SetReefLevel(ReefLevel.ALGAE_LOW));
     // operator_controller_.povUp().toggleOnTrue(new SetReefLevel(ReefLevel.ALGAE_HIGH));
-    // // driver_controller_.a().whileTrue(new setReefLevel(ReefLevel.L1)); TODO: Fix Effector
-    // // Collision with Frame
 
     driver_controller_
         .rightBumper()
@@ -88,10 +107,10 @@ public abstract class OI {
                 () -> game_state_manager.setRobotState(RobotState.TARGET_ACQUISITION),
                 () -> game_state_manager.setRobotState(RobotState.TELEOP_CONTROL)));
 
-    driver_pov_active_.onTrue(Commands.startEnd(
-      () -> swerve_drivetrain_.setDriveMode(DriveMode.CRAWL),
-      () -> swerve_drivetrain_.restoreDefaultDriveMode()));
-
+    driver_pov_active_.onTrue(
+        Commands.startEnd(
+            () -> swerve_drivetrain_.setDriveMode(DriveMode.CRAWL),
+            () -> swerve_drivetrain_.restoreDefaultDriveMode()));
   }
 
   /**

@@ -483,21 +483,19 @@ public class SwerveDrivetrain extends Subsystem {
   }
 
   /**
-   * updates the mode flag thats changes what request is applied to the drive train.
-   * If request modes are ROBOT_CENTRIC or FIELD_CENTIC the default request is updated.
+   * updates the mode flag thats changes what request is applied to the drive train. If request
+   * modes are ROBOT_CENTRIC or FIELD_CENTIC the default request is updated.
    *
    * @param mode request drive mode
    */
   public void setDriveMode(DriveMode mode) {
-    if(mode == DriveMode.FIELD_CENTRIC) io_.defaut_drive_mode_ = mode;
-    if(mode == DriveMode.ROBOT_CENTRIC) io_.defaut_drive_mode_ = mode;
+    if (mode == DriveMode.FIELD_CENTRIC) io_.defaut_drive_mode_ = mode;
+    if (mode == DriveMode.ROBOT_CENTRIC) io_.defaut_drive_mode_ = mode;
     io_.drive_mode_ = mode;
   }
 
-  /**
-   * Updates the internal drive mode to the default teleop drive mode
-   */
-  public void restoreDefaultDriveMode(){
+  /** Updates the internal drive mode to the default teleop drive mode */
+  public void restoreDefaultDriveMode() {
     io_.drive_mode_ = io_.defaut_drive_mode_;
   }
 
@@ -505,7 +503,7 @@ public class SwerveDrivetrain extends Subsystem {
   public Command toggleFieldCentric() {
     return Commands.runOnce(
         () -> {
-          if(io_.drive_mode_ == DriveMode.FIELD_CENTRIC) setDriveMode(DriveMode.ROBOT_CENTRIC);
+          if (io_.drive_mode_ == DriveMode.FIELD_CENTRIC) setDriveMode(DriveMode.ROBOT_CENTRIC);
           else setDriveMode(DriveMode.FIELD_CENTRIC);
         });
   }
