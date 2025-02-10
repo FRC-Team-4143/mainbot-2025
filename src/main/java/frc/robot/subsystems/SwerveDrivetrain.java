@@ -157,6 +157,20 @@ public class SwerveDrivetrain extends Subsystem {
     SmartDashboard.putData("Y Pose Controller", y_pose_controller_);
     SmartDashboard.putData("Heading Pose Controller", heading_pose_controller_);
 
+    // NT Publishers
+    requested_state_pub_ =
+        NetworkTableInstance.getDefault()
+            .getStructArrayTopic("Swerve/Module States/Request", SwerveModuleState.struct)
+            .publish();
+    current_state_pub_ =
+        NetworkTableInstance.getDefault()
+            .getStructArrayTopic("Swerve/Module States/Current", SwerveModuleState.struct)
+            .publish();
+    chassis_speeds_pub_ =
+        NetworkTableInstance.getDefault()
+            .getStructTopic("Swerve/Chassis Speeds", ChassisSpeeds.struct)
+            .publish();
+
     // Begin configuring swerve modules
     module_locations_ = new Translation2d[modules.length];
     swerve_modules_ = new SwerveModule[modules.length];
@@ -203,20 +217,6 @@ public class SwerveDrivetrain extends Subsystem {
     auto_request_.ForwardReference = ForwardReference.RedAlliance;
     request_parameters_ = new SwerveControlRequestParameters();
     request_to_apply_ = new SwerveRequest.Idle();
-
-    // NT Publishers
-    requested_state_pub_ =
-        NetworkTableInstance.getDefault()
-            .getStructArrayTopic("Swerve/Module States/Request", SwerveModuleState.struct)
-            .publish();
-    current_state_pub_ =
-        NetworkTableInstance.getDefault()
-            .getStructArrayTopic("Swerve/Module States/Current", SwerveModuleState.struct)
-            .publish();
-    chassis_speeds_pub_ =
-        NetworkTableInstance.getDefault()
-            .getStructTopic("Swerve/Chassis Speeds", ChassisSpeeds.struct)
-            .publish();
   }
 
   @Override
@@ -234,27 +234,20 @@ public class SwerveDrivetrain extends Subsystem {
 
   @Override
   public void readPeriodicInputs(double timestamp) {
+    // Module States
     for (int i = 0; i < swerve_modules_.length; ++i) {
       io_.module_positions_[i] = swerve_modules_[i].getPosition(true);
       io_.current_module_states_[i] = swerve_modules_[i].getCurrentState();
       io_.requested_module_states_[i] = swerve_modules_[i].getTargetState();
     }
-    io_.driver_joystick_leftX_ = OI.getDriverJoystickLeftX();
-    io_.driver_joystick_leftY_ = OI.getDriverJoystickLeftY();
-    io_.driver_joystick_rightX_ = OI.getDriverJoystickRightX();
-
+    // Control Imputs
+    io_.joystick_left_x_ = OI.getDriverJoystickLeftX();
+    io_.joystick_left_y_ = OI.getDriverJoystickLeftY();
+    io_.joystick_right_x_ = OI.getDriverJoystickRightX();
+    // Position and Odom Info
     io_.robot_yaw_ =
         Rotation2d.fromRadians(MathUtil.angleModulus(pigeon_imu_.getYaw().getValue().in(Radians)));
-
     io_.chassis_speeds_ = kinematics_.toChassisSpeeds(io_.current_module_states_);
-    io_.field_relative_chassis_speed_ =
-        ChassisSpeeds.fromRobotRelativeSpeeds(io_.chassis_speeds_, io_.robot_yaw_);
-
-    io_.chassis_speed_magnitude_ =
-        Math.sqrt(
-            (io_.chassis_speeds_.vxMetersPerSecond * io_.chassis_speeds_.vxMetersPerSecond)
-                + (io_.chassis_speeds_.vyMetersPerSecond * io_.chassis_speeds_.vyMetersPerSecond));
-
     io_.current_pose_ = PoseEstimator.getInstance().getFieldPose();
 
     // recieve new chassis info
@@ -266,42 +259,48 @@ public class SwerveDrivetrain extends Subsystem {
     request_parameters_.currentPose = new Pose2d(0, 0, io_.robot_yaw_);
     switch (io_.drive_mode_) {
       case ROBOT_CENTRIC:
+        {
         setControl(
             robot_centric_
                 // Drive forward with negative Y (forward)
-                .withVelocityX(-io_.driver_joystick_leftY_ * DrivetrainConstants.MAX_DRIVE_SPEED)
+                  .withVelocityX(-io_.joystick_left_y_ * DrivetrainConstants.MAX_DRIVE_SPEED)
                 // Drive left with negative X (left)
-                .withVelocityY(-io_.driver_joystick_leftX_ * DrivetrainConstants.MAX_DRIVE_SPEED)
+                  .withVelocityY(-io_.joystick_left_x_ * DrivetrainConstants.MAX_DRIVE_SPEED)
                 // Drive counterclockwise with negative X (left)
                 .withRotationalRate(
-                    -io_.driver_joystick_rightX_ * DrivetrainConstants.MAX_DRIVE_ANGULAR_RATE));
+                      -io_.joystick_right_x_ * DrivetrainConstants.MAX_DRIVE_ANGULAR_RATE));
+        }
         break;
       case FIELD_CENTRIC:
+        {
         setControl(
             field_centric_
                 // Drive forward with negative Y (forward)
-                .withVelocityX(-io_.driver_joystick_leftY_ * DrivetrainConstants.MAX_DRIVE_SPEED)
+                  .withVelocityX(-io_.joystick_left_y_ * DrivetrainConstants.MAX_DRIVE_SPEED)
                 // Drive left with negative X (left)
-                .withVelocityY(-io_.driver_joystick_leftX_ * DrivetrainConstants.MAX_DRIVE_SPEED)
+                  .withVelocityY(-io_.joystick_left_x_ * DrivetrainConstants.MAX_DRIVE_SPEED)
                 // Drive counterclockwise with negative X (left)
                 .withRotationalRate(
-                    -io_.driver_joystick_rightX_ * DrivetrainConstants.MAX_DRIVE_ANGULAR_RATE));
+                      -io_.joystick_right_x_ * DrivetrainConstants.MAX_DRIVE_ANGULAR_RATE));
+        }
         break;
       case TARGET_FACING:
+        {
         setControl(
             field_centric_target_facing_
                 // Drive forward with negative Y (forward)
                 .withVelocityX(
                     Util.clamp(
-                        -io_.driver_joystick_leftY_ * DrivetrainConstants.MAX_DRIVE_SPEED,
+                          -io_.joystick_left_y_ * DrivetrainConstants.MAX_DRIVE_SPEED,
                         DrivetrainConstants.MAX_TARGET_SPEED))
                 // Drive left with negative X (left)
                 .withVelocityY(
                     Util.clamp(
-                        -io_.driver_joystick_leftX_ * DrivetrainConstants.MAX_DRIVE_SPEED,
+                          -io_.joystick_left_x_ * DrivetrainConstants.MAX_DRIVE_SPEED,
                         DrivetrainConstants.MAX_TARGET_SPEED))
                 // Set Robots target rotation
                 .withTargetDirection(io_.target_rotation_));
+        }
         break;
       case TRAJECTORY:
         {
@@ -327,9 +326,9 @@ public class SwerveDrivetrain extends Subsystem {
         {
           io_.tractor_beam_scaling_factor_ =
               Math.sqrt(
-                      Math.pow(io_.driver_joystick_leftX_, 2)
-                          + Math.pow(io_.driver_joystick_leftY_, 2)
-                          + Math.pow(io_.driver_joystick_rightX_, 2))
+                      Math.pow(io_.joystick_left_x_, 2)
+                          + Math.pow(io_.joystick_left_y_, 2)
+                          + Math.pow(io_.joystick_right_x_, 2))
                   * DrivetrainConstants.MAX_DRIVE_SPEED;
           double x_velocity =
               Util.clamp(
@@ -354,7 +353,9 @@ public class SwerveDrivetrain extends Subsystem {
         }
         break;
       case IDLE:
+        {
         setControl(new SwerveRequest.Idle());
+        }
         break;
       default:
         break;
@@ -379,20 +380,9 @@ public class SwerveDrivetrain extends Subsystem {
     chassis_speeds_pub_.set(io_.chassis_speeds_);
 
     SmartDashboard.putString("Debug/Swerve/Mode", io_.drive_mode_.toString());
-    SmartDashboard.putNumber(
-        "Debug/Swerve/Rotation Control/Target Rotation", io_.target_rotation_.getDegrees());
-    SmartDashboard.putNumber(
-        "Debug/Swerve/Rotation Control/Current Yaw", io_.robot_yaw_.getDegrees());
-    SmartDashboard.putNumber(
-        "Debug/Chassis Speed/Omega", io_.chassis_speeds_.omegaRadiansPerSecond);
-    SmartDashboard.putNumber("chassis_speed_magnitude_", io_.chassis_speed_magnitude_);
+    SmartDashboard.putString("Debug/Swerve/Request Type", request_to_apply_.toString());
     SmartDashboard.putNumber(
         "Debug/Swerve/Driver Prespective", io_.drivers_station_perspective_.getDegrees());
-    SmartDashboard.putNumber("Debug/Swerve/Chassis Speed/X", io_.chassis_speeds_.vxMetersPerSecond);
-    SmartDashboard.putNumber("Debug/Swerve/Chassis Speed/Y", io_.chassis_speeds_.vyMetersPerSecond);
-    SmartDashboard.putNumber(
-        "Debug/Swerve/Chassis Speed/Omega", io_.chassis_speeds_.omegaRadiansPerSecond);
-
     SmartDashboard.putNumber(
         "Debug/Swerve/FL Encoder", Units.rotationsToDegrees(swerve_modules_[0].getEncoderValue()));
     SmartDashboard.putNumber(
@@ -401,8 +391,6 @@ public class SwerveDrivetrain extends Subsystem {
         "Debug/Swerve/FL Encoder", Units.rotationsToDegrees(swerve_modules_[2].getEncoderValue()));
     SmartDashboard.putNumber(
         "Debug/Swerve/BR Encoder", Units.rotationsToDegrees(swerve_modules_[3].getEncoderValue()));
-
-    SmartDashboard.putString("Debug/Swerve/Request Type", request_to_apply_.toString());
   }
 
   public Command applyRequest(Supplier<SwerveRequest> requestSupplier) {
@@ -543,18 +531,14 @@ public class SwerveDrivetrain extends Subsystem {
   public class SwerveDrivetrainPeriodicIo implements Logged {
     @Log.File public SwerveModuleState[] current_module_states_, requested_module_states_;
     @Log.File public SwerveModulePosition[] module_positions_;
-    @Log.File public double driver_joystick_leftX_ = 0.0;
-    @Log.File public double driver_joystick_leftY_ = 0.0;
-    @Log.File public double driver_joystick_rightX_ = 0.0;
+    @Log.File public DriveMode drive_mode_ = DriveMode.IDLE;
+    @Log.File public double joystick_left_x_ = 0.0;
+    @Log.File public double joystick_left_y_ = 0.0;
+    @Log.File public double joystick_right_x_ = 0.0;
+    @Log.File public Rotation2d drivers_station_perspective_ = new Rotation2d();
     @Log.File public Rotation2d robot_yaw_ = new Rotation2d();
     @Log.File public ChassisSpeeds chassis_speeds_ = new ChassisSpeeds();
-    @Log.File public ChassisSpeeds field_relative_chassis_speed_ = new ChassisSpeeds();
-    @Log.File public double chassis_speed_magnitude_ = 0.0;
     @Log.File public Rotation2d target_rotation_ = new Rotation2d();
-    @Log.File public DriveMode drive_mode_ = DriveMode.IDLE;
-    @Log.File public double driver_POVx = 0.0;
-    @Log.File public double driver_POVy = 0.0;
-    @Log.File public Rotation2d drivers_station_perspective_ = new Rotation2d();
     @Log.File public double tractor_beam_scaling_factor_ = 0.0;
     @Log.File public Pose2d current_pose_ = new Pose2d();
     @Log.File public Pose2d target_pose_ = new Pose2d();
