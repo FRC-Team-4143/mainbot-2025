@@ -36,6 +36,7 @@ import frc.mw_lib.util.Util;
 import frc.robot.Constants;
 import frc.robot.Constants.DrivetrainConstants;
 import frc.robot.OI;
+import java.util.Optional;
 import java.util.function.Supplier;
 import monologue.Annotations.Log;
 import monologue.Logged;
@@ -79,6 +80,7 @@ public class SwerveDrivetrain extends Subsystem {
     TARGET_FACING,
     TRAJECTORY,
     TRACTOR_BEAM,
+    CRAWL,
     IDLE,
     PROFILE
   }
@@ -244,6 +246,8 @@ public class SwerveDrivetrain extends Subsystem {
     io_.joystick_left_x_ = OI.getDriverJoystickLeftX();
     io_.joystick_left_y_ = OI.getDriverJoystickLeftY();
     io_.joystick_right_x_ = OI.getDriverJoystickRightX();
+    io_.joystick_pov = OI.getDriverJoystickPOV();
+
     // Position and Odom Info
     io_.robot_yaw_ =
         Rotation2d.fromRadians(MathUtil.angleModulus(pigeon_imu_.getYaw().getValue().in(Radians)));
@@ -260,46 +264,46 @@ public class SwerveDrivetrain extends Subsystem {
     switch (io_.drive_mode_) {
       case ROBOT_CENTRIC:
         {
-        setControl(
-            robot_centric_
-                // Drive forward with negative Y (forward)
+          setControl(
+              robot_centric_
+                  // Drive forward with negative Y (forward)
                   .withVelocityX(-io_.joystick_left_y_ * DrivetrainConstants.MAX_DRIVE_SPEED)
-                // Drive left with negative X (left)
+                  // Drive left with negative X (left)
                   .withVelocityY(-io_.joystick_left_x_ * DrivetrainConstants.MAX_DRIVE_SPEED)
-                // Drive counterclockwise with negative X (left)
-                .withRotationalRate(
+                  // Drive counterclockwise with negative X (left)
+                  .withRotationalRate(
                       -io_.joystick_right_x_ * DrivetrainConstants.MAX_DRIVE_ANGULAR_RATE));
         }
         break;
       case FIELD_CENTRIC:
         {
-        setControl(
-            field_centric_
-                // Drive forward with negative Y (forward)
+          setControl(
+              field_centric_
+                  // Drive forward with negative Y (forward)
                   .withVelocityX(-io_.joystick_left_y_ * DrivetrainConstants.MAX_DRIVE_SPEED)
-                // Drive left with negative X (left)
+                  // Drive left with negative X (left)
                   .withVelocityY(-io_.joystick_left_x_ * DrivetrainConstants.MAX_DRIVE_SPEED)
-                // Drive counterclockwise with negative X (left)
-                .withRotationalRate(
+                  // Drive counterclockwise with negative X (left)
+                  .withRotationalRate(
                       -io_.joystick_right_x_ * DrivetrainConstants.MAX_DRIVE_ANGULAR_RATE));
         }
         break;
       case TARGET_FACING:
         {
-        setControl(
-            field_centric_target_facing_
-                // Drive forward with negative Y (forward)
-                .withVelocityX(
-                    Util.clamp(
+          setControl(
+              field_centric_target_facing_
+                  // Drive forward with negative Y (forward)
+                  .withVelocityX(
+                      Util.clamp(
                           -io_.joystick_left_y_ * DrivetrainConstants.MAX_DRIVE_SPEED,
-                        DrivetrainConstants.MAX_TARGET_SPEED))
-                // Drive left with negative X (left)
-                .withVelocityY(
-                    Util.clamp(
+                          DrivetrainConstants.MAX_TARGET_SPEED))
+                  // Drive left with negative X (left)
+                  .withVelocityY(
+                      Util.clamp(
                           -io_.joystick_left_x_ * DrivetrainConstants.MAX_DRIVE_SPEED,
-                        DrivetrainConstants.MAX_TARGET_SPEED))
-                // Set Robots target rotation
-                .withTargetDirection(io_.target_rotation_));
+                          DrivetrainConstants.MAX_TARGET_SPEED))
+                  // Set Robots target rotation
+                  .withTargetDirection(io_.target_rotation_));
         }
         break;
       case TRAJECTORY:
@@ -352,9 +356,23 @@ public class SwerveDrivetrain extends Subsystem {
           request_parameters_.currentPose = io_.current_pose_;
         }
         break;
+      case CRAWL:
+        {
+          setControl(
+              robot_centric_
+                  // Drive forward with negative Y (forward)
+                  .withVelocityX(
+                      Math.round(io_.joystick_pov.get().getCos())
+                          * DrivetrainConstants.CRAWL_DRIVE_SPEED)
+                  // Drive left with negative X (left)
+                  .withVelocityY(
+                      Math.round(io_.joystick_pov.get().getSin())
+                          * DrivetrainConstants.CRAWL_DRIVE_SPEED));
+        }
+        break;
       case IDLE:
         {
-        setControl(new SwerveRequest.Idle());
+          setControl(new SwerveRequest.Idle());
         }
         break;
       default:
@@ -535,6 +553,7 @@ public class SwerveDrivetrain extends Subsystem {
     @Log.File public double joystick_left_x_ = 0.0;
     @Log.File public double joystick_left_y_ = 0.0;
     @Log.File public double joystick_right_x_ = 0.0;
+    @Log.File public Optional<Rotation2d> joystick_pov = Optional.empty();
     @Log.File public Rotation2d drivers_station_perspective_ = new Rotation2d();
     @Log.File public Rotation2d robot_yaw_ = new Rotation2d();
     @Log.File public ChassisSpeeds chassis_speeds_ = new ChassisSpeeds();

@@ -4,6 +4,7 @@
 
 package frc.robot;
 
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
@@ -11,6 +12,7 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.GameStateManager.RobotState;
 import frc.robot.commands.*;
 import frc.robot.subsystems.*;
+import java.util.Optional;
 
 public abstract class OI {
 
@@ -112,6 +114,14 @@ public abstract class OI {
     double output = val * val;
     output = Math.copySign(output, val);
     return val;
+  }
+
+  /**
+   * @return driver controller joystick pov angle in degs. empty if nothing is pressed
+   */
+  public static Optional<Rotation2d> getDriverJoystickPOV() {
+    int pov = driver_controller_.getHID().getPOV();
+    return (pov != -1) ? Optional.of(Rotation2d.fromDegrees(pov)) : Optional.empty();
   }
 
   /*
