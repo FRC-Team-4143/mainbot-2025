@@ -27,16 +27,16 @@ public abstract class OI {
   private static SwerveDrivetrain swerve_drivetrain_ = SwerveDrivetrain.getInstance();
   private static Claw claw_ = Claw.getInstance();
   private static Elevator elevator_ = Elevator.getInstance();
-  private static GameStateManager game_state_manager = new GameStateManager();
+  private static GameStateManager game_state_manager = GameStateManager.getInstance();
 
   private static Trigger driver_pov_active_ = new Trigger(getDriverJoystickPOV()::isPresent);
 
   public static void configureBindings() {
 
     /*
-     * 
+     *
      * Smart Dashboard Bindings
-     * 
+     *
      */
 
     // Set Wheel Offsets
@@ -62,9 +62,9 @@ public abstract class OI {
                 .ignoringDisable(true));
 
     /*
-     * 
+     *
      * Manual Teleop Bindings
-     * 
+     *
      */
 
     driver_controller_.rightBumper().onTrue(claw_.toggleGamePiece());
@@ -80,9 +80,9 @@ public abstract class OI {
     driver_controller_.b().toggleOnTrue(new SetReefLevel(ReefLevel.L3));
 
     /*
-     * 
+     *
      * Game State Manager Bindings
-     * 
+     *
      */
     // operator_controller_
     //     .y()

@@ -15,6 +15,16 @@ import monologue.Annotations.Log;
 
 public class GameStateManager {
 
+  // Singleton pattern
+  private static GameStateManager instance_ = null;
+
+  public static GameStateManager getInstance() {
+    if (instance_ == null) {
+      instance_ = new GameStateManager();
+    }
+    return instance_;
+  }
+
   @Log.File private static ScoringTarget scoring_target_ = ScoringTarget.TURTLE;
   @Log.File private static ReefSectionState reef_section_state_ = new ReefSectionState();
   @Log.File private static RobotState robot_state_ = RobotState.TELEOP_CONTROL;
@@ -58,7 +68,7 @@ public class GameStateManager {
     TELEOP_CONTROL
   }
 
-  public GameStateManager() {
+  private GameStateManager() {
     elevator_ = Elevator.getInstance();
     poseEstimator_ = PoseEstimator.getInstance();
     drivetrain_ = SwerveDrivetrain.getInstance();

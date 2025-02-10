@@ -17,7 +17,7 @@ public class Robot extends TimedRobot {
   private RobotContainer robot_container_;
   static SwerveDrivetrain swerve_drivetrain_ = SwerveDrivetrain.getInstance();
   private Alliance allaince_ = Alliance.Blue;
-  private GameStateManager game_state_manager = new GameStateManager();
+  private GameStateManager game_state_manager = GameStateManager.getInstance();
 
   @Override
   public void robotInit() {
