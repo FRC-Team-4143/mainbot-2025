@@ -70,7 +70,7 @@ public class Robot extends TimedRobot {
 
   @Override
   public void teleopInit() {
-    SwerveDrivetrain.getInstance().restoreDefaultDriveMode();
+    swerve_drivetrain_.restoreDefaultDriveMode();
     CommandScheduler.getInstance().cancelAll();
   }
 
