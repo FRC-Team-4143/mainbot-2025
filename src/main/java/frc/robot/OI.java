@@ -12,6 +12,8 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.GameStateManager.RobotState;
 import frc.robot.commands.*;
 import frc.robot.subsystems.*;
+import frc.robot.subsystems.SwerveDrivetrain.DriveMode;
+
 import java.util.Optional;
 
 public abstract class OI {
@@ -25,6 +27,8 @@ public abstract class OI {
   private static Claw claw_ = Claw.getInstance();
   private static Elevator elevator_ = Elevator.getInstance();
   private static GameStateManager game_state_manager = new GameStateManager();
+
+  private static Trigger driver_pov_active_ = new Trigger(getDriverJoystickPOV()::isPresent);
 
   public static void configureBindings() {
     // Set Wheel Offsets
@@ -83,6 +87,11 @@ public abstract class OI {
             Commands.startEnd(
                 () -> game_state_manager.setRobotState(RobotState.TARGET_ACQUISITION),
                 () -> game_state_manager.setRobotState(RobotState.TELEOP_CONTROL)));
+
+    driver_pov_active_.onTrue(Commands.startEnd(
+      () -> swerve_drivetrain_.setDriveMode(DriveMode.CRAWL),
+      () -> swerve_drivetrain_.setDriveMode(DriveMode.FIELD_CENTRIC)));
+
   }
 
   /**
