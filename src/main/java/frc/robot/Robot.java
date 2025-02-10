@@ -15,9 +15,7 @@ import java.util.Optional;
 
 public class Robot extends TimedRobot {
   private RobotContainer robot_container_;
-  static SwerveDrivetrain swerve_drivetrain_ = SwerveDrivetrain.getInstance();
   private Alliance allaince_ = Alliance.Blue;
-  private GameStateManager game_state_manager = GameStateManager.getInstance();
 
   @Override
   public void robotInit() {
@@ -37,7 +35,7 @@ public class Robot extends TimedRobot {
 
   @Override
   public void disabledInit() {
-    swerve_drivetrain_.setDriveMode(DriveMode.IDLE);
+    SwerveDrivetrain.getInstance().setDriveMode(DriveMode.IDLE);
     FieldRegions.constructRegions(false);
   }
 
@@ -50,10 +48,10 @@ public class Robot extends TimedRobot {
       if (alliance.get() != allaince_) {
         allaince_ = alliance.get();
         // Update Driver Prespective
-        swerve_drivetrain_.setDriverPerspective(
+        SwerveDrivetrain.getInstance().setDriverPerspective(
             allaince_ == Alliance.Red
-                ? swerve_drivetrain_.RED_ALLIANCE_HEADING
-                : swerve_drivetrain_.BLUE_ALLIANCE_HEADING);
+                ? SwerveDrivetrain.getInstance().RED_ALLIANCE_HEADING
+                : SwerveDrivetrain.getInstance().BLUE_ALLIANCE_HEADING);
         // Update Field Regions
         FieldRegions.constructRegions(true);
       }
@@ -62,7 +60,7 @@ public class Robot extends TimedRobot {
 
   @Override
   public void autonomousInit() {
-    swerve_drivetrain_.setDriveMode(DriveMode.TRAJECTORY);
+    SwerveDrivetrain.getInstance().setDriveMode(DriveMode.TRAJECTORY);
   }
 
   @Override
@@ -70,13 +68,13 @@ public class Robot extends TimedRobot {
 
   @Override
   public void teleopInit() {
-    swerve_drivetrain_.restoreDefaultDriveMode();
+    SwerveDrivetrain.getInstance().restoreDefaultDriveMode();
     CommandScheduler.getInstance().cancelAll();
   }
 
   @Override
   public void teleopPeriodic() {
-    game_state_manager.updateGameState();
+    GameStateManager.getInstance().updateGameState();
   }
 
   @Override

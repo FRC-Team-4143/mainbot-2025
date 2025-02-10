@@ -23,12 +23,6 @@ public abstract class OI {
   private static CommandXboxController driver_controller_ = new CommandXboxController(0);
   private static CommandXboxController operator_controller_ = new CommandXboxController(1);
 
-  private static PoseEstimator pose_estimator_ = PoseEstimator.getInstance();
-  private static SwerveDrivetrain swerve_drivetrain_ = SwerveDrivetrain.getInstance();
-  private static Claw claw_ = Claw.getInstance();
-  private static Elevator elevator_ = Elevator.getInstance();
-  private static GameStateManager game_state_manager = GameStateManager.getInstance();
-
   private static Trigger driver_pov_active_ = new Trigger(getDriverJoystickPOV()::isPresent);
 
   public static void configureBindings() {
@@ -42,23 +36,23 @@ public abstract class OI {
     // Set Wheel Offsets
     SmartDashboard.putData(
         "Set Wheel Offsets",
-        Commands.runOnce(() -> swerve_drivetrain_.tareEverything()).ignoringDisable(true));
+        Commands.runOnce(() -> SwerveDrivetrain.getInstance().tareEverything()).ignoringDisable(true));
     // Seed Field Centric Forward Direction
     SmartDashboard.putData(
-        "Seed Field Centric", swerve_drivetrain_.seedFieldRelativeCommand().ignoringDisable(true));
+        "Seed Field Centric", SwerveDrivetrain.getInstance().seedFieldRelativeCommand().ignoringDisable(true));
     SmartDashboard.putData(
         "Disturb Pose",
-        Commands.runOnce(() -> pose_estimator_.disturbPose()).ignoringDisable(true));
+        Commands.runOnce(() -> PoseEstimator.getInstance().disturbPose()).ignoringDisable(true));
     // Sync Elevator and Arm Sensor to "Home" Position
     SmartDashboard.putData(
         "Zero Elevator & Arm",
-        Commands.runOnce(() -> elevator_.elevatorAndArmPoseReset()).ignoringDisable(true));
+        Commands.runOnce(() -> Elevator.getInstance().elevatorAndArmPoseReset()).ignoringDisable(true));
 
     // Swap Between Robot Centric and Field Centric
     driver_controller_
         .rightStick()
         .onTrue(
-            Commands.runOnce(() -> swerve_drivetrain_.toggleFieldCentric(), swerve_drivetrain_)
+            Commands.runOnce(() -> SwerveDrivetrain.getInstance().toggleFieldCentric(), SwerveDrivetrain.getInstance())
                 .ignoringDisable(true));
 
     /*
@@ -67,14 +61,14 @@ public abstract class OI {
      *
      */
 
-    driver_controller_.rightBumper().onTrue(claw_.toggleGamePiece());
+    driver_controller_.rightBumper().onTrue(Claw.getInstance().toggleGamePiece());
     driver_controller_
         .leftTrigger()
         .whileTrue(
-            new ConditionalCommand(new AlgaeLoad(), new CoralStationLoad(), claw_::isAlgaeMode));
+            new ConditionalCommand(new AlgaeLoad(), new CoralStationLoad(), Claw.getInstance()::isAlgaeMode));
     driver_controller_
         .rightTrigger()
-        .whileTrue(new ConditionalCommand(new CoralEject(), new AlgaeEject(), claw_::isCoralMode));
+        .whileTrue(new ConditionalCommand(new CoralEject(), new AlgaeEject(), Claw.getInstance()::isCoralMode));
     driver_controller_.y().toggleOnTrue(new SetReefLevel(ReefLevel.L4));
     driver_controller_.x().toggleOnTrue(new SetReefLevel(ReefLevel.L2));
     driver_controller_.b().toggleOnTrue(new SetReefLevel(ReefLevel.L3));
@@ -85,32 +79,34 @@ public abstract class OI {
      *
      */
     // operator_controller_
-    //     .y()
-    //     .toggleOnTrue(Commands.runOnce(() ->
+    // .y()
+    // .toggleOnTrue(Commands.runOnce(() ->
     // GameStateManager.wantedTarget(ScoringTarget.REEF_L4)));
     // operator_controller_
-    //     .x()
-    //     .toggleOnTrue(Commands.runOnce(() ->
+    // .x()
+    // .toggleOnTrue(Commands.runOnce(() ->
     // GameStateManager.wantedTarget(ScoringTarget.REEF_L2)));
     // operator_controller_
-    //     .b()
-    //     .toggleOnTrue(Commands.runOnce(() ->
+    // .b()
+    // .toggleOnTrue(Commands.runOnce(() ->
     // GameStateManager.wantedTarget(ScoringTarget.REEF_L3)));
     // operator_controller_.a().toggleOnTrue(());
-    // operator_controller_.povDown().toggleOnTrue(new SetReefLevel(ReefLevel.ALGAE_LOW));
-    // operator_controller_.povUp().toggleOnTrue(new SetReefLevel(ReefLevel.ALGAE_HIGH));
+    // operator_controller_.povDown().toggleOnTrue(new
+    // SetReefLevel(ReefLevel.ALGAE_LOW));
+    // operator_controller_.povUp().toggleOnTrue(new
+    // SetReefLevel(ReefLevel.ALGAE_HIGH));
 
     driver_controller_
         .rightBumper()
         .whileTrue(
             Commands.startEnd(
-                () -> game_state_manager.setRobotState(RobotState.TARGET_ACQUISITION),
-                () -> game_state_manager.setRobotState(RobotState.TELEOP_CONTROL)));
+                () -> GameStateManager.getInstance().setRobotState(RobotState.TARGET_ACQUISITION),
+                () -> GameStateManager.getInstance().setRobotState(RobotState.TELEOP_CONTROL)));
 
     driver_pov_active_.onTrue(
         Commands.startEnd(
-            () -> swerve_drivetrain_.setDriveMode(DriveMode.CRAWL),
-            () -> swerve_drivetrain_.restoreDefaultDriveMode()));
+            () -> SwerveDrivetrain.getInstance().setDriveMode(DriveMode.CRAWL),
+            () -> SwerveDrivetrain.getInstance().restoreDefaultDriveMode()));
   }
 
   /**
@@ -144,7 +140,8 @@ public abstract class OI {
   }
 
   /**
-   * @return driver controller joystick pov angle in degs. empty if nothing is pressed
+   * @return driver controller joystick pov angle in degs. empty if nothing is
+   *         pressed
    */
   public static Optional<Rotation2d> getDriverJoystickPOV() {
     int pov = driver_controller_.getHID().getPOV();
