@@ -153,7 +153,7 @@ public class FieldRegions {
 
   // Region to Target Pose Map
   public static Hashtable<String, Pose2d> REGION_POSE_TABLE = new Hashtable<>();
-  public static final Transform2d OFF_SET =
+  public static final Transform2d REEF_FACE_OFFSET =
       new Transform2d(
           new Translation2d(Constants.DrivetrainConstants.CENTER_OFFSET_X, 0),
           Rotation2d.fromDegrees(180));
@@ -184,21 +184,27 @@ public class FieldRegions {
         LEFT_CORAL_STATION_REGION.getName(), AllianceFlipUtil.apply(new Pose2d(), flip));
     REGION_POSE_TABLE.put(
         REEF_FACE0_REGION.getName(),
-        AllianceFlipUtil.apply(FieldConstants.Reef.CENTER_FACES[0].transformBy(OFF_SET), flip));
+        AllianceFlipUtil.apply(
+            FieldConstants.Reef.CENTER_FACES[0].transformBy(REEF_FACE_OFFSET), flip));
     REGION_POSE_TABLE.put(
         REEF_FACE1_REGION.getName(),
-        AllianceFlipUtil.apply(FieldConstants.Reef.CENTER_FACES[1].transformBy(OFF_SET), flip));
+        AllianceFlipUtil.apply(
+            FieldConstants.Reef.CENTER_FACES[1].transformBy(REEF_FACE_OFFSET), flip));
     REGION_POSE_TABLE.put(
         REEF_FACE2_REGION.getName(),
-        AllianceFlipUtil.apply(FieldConstants.Reef.CENTER_FACES[2].transformBy(OFF_SET), flip));
+        AllianceFlipUtil.apply(
+            FieldConstants.Reef.CENTER_FACES[2].transformBy(REEF_FACE_OFFSET), flip));
     REGION_POSE_TABLE.put(
         REEF_FACE3_REGION.getName(),
-        AllianceFlipUtil.apply(FieldConstants.Reef.CENTER_FACES[3].transformBy(OFF_SET), flip));
+        AllianceFlipUtil.apply(
+            FieldConstants.Reef.CENTER_FACES[3].transformBy(REEF_FACE_OFFSET), flip));
     REGION_POSE_TABLE.put(
         REEF_FACE4_REGION.getName(),
-        AllianceFlipUtil.apply(FieldConstants.Reef.CENTER_FACES[4].transformBy(OFF_SET), flip));
+        AllianceFlipUtil.apply(
+            FieldConstants.Reef.CENTER_FACES[4].transformBy(REEF_FACE_OFFSET), flip));
     REGION_POSE_TABLE.put(
         REEF_FACE5_REGION.getName(),
-        AllianceFlipUtil.apply(FieldConstants.Reef.CENTER_FACES[5].transformBy(OFF_SET), flip));
+        AllianceFlipUtil.apply(
+            FieldConstants.Reef.CENTER_FACES[5].transformBy(REEF_FACE_OFFSET), flip));
   }
 }
