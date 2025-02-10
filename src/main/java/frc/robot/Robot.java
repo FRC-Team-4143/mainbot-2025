@@ -37,7 +37,7 @@ public class Robot extends TimedRobot {
 
   @Override
   public void disabledInit() {
-    SwerveDrivetrain.getInstance().setDriveMode(DriveMode.IDLE);
+    swerve_drivetrain_.setDriveMode(DriveMode.IDLE);
     FieldRegions.constructRegions(false);
   }
 
