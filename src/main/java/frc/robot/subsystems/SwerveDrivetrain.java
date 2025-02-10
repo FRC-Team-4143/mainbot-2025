@@ -303,9 +303,7 @@ public class SwerveDrivetrain extends Subsystem {
                         -io_.driver_joystick_leftX_ * DrivetrainConstants.MAX_DRIVE_SPEED,
                         DrivetrainConstants.MAX_TARGET_SPEED))
                 // Set Robots target rotation
-                .withTargetDirection(io_.target_rotation_)
-                // Use current robot rotation
-                .useGyroForRotation(false));
+                .withTargetDirection(io_.target_rotation_));
         break;
       case TRAJECTORY:
         {
