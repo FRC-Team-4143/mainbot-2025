@@ -23,6 +23,7 @@ import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.networktables.StructArrayPublisher;
+import edu.wpi.first.networktables.StructPublisher;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
@@ -105,9 +106,9 @@ public class SwerveDrivetrain extends Subsystem {
   public final Rotation2d RED_ALLIANCE_HEADING = Rotation2d.fromDegrees(180);
 
   // NT publishers
-  private StructArrayPublisher<SwerveModuleState> current_state_pub_,
-      requested_state_pub_,
-      current_state_proxy_pub_;
+  private StructArrayPublisher<SwerveModuleState> current_state_pub_;
+  private StructArrayPublisher<SwerveModuleState> requested_state_pub_;
+  private StructPublisher<ChassisSpeeds> chassis_speeds_pub_;
 
   // PID Controllers
   private final PIDController x_traj_controller_;
@@ -206,15 +207,15 @@ public class SwerveDrivetrain extends Subsystem {
     // NT Publishers
     requested_state_pub_ =
         NetworkTableInstance.getDefault()
-            .getStructArrayTopic("module_states/requested", SwerveModuleState.struct)
+            .getStructArrayTopic("Swerve/Module States/Request", SwerveModuleState.struct)
             .publish();
     current_state_pub_ =
         NetworkTableInstance.getDefault()
-            .getStructArrayTopic("module_states/current", SwerveModuleState.struct)
+            .getStructArrayTopic("Swerve/Module States/Current", SwerveModuleState.struct)
             .publish();
-    current_state_proxy_pub_ =
+    chassis_speeds_pub_ =
         NetworkTableInstance.getDefault()
-            .getStructArrayTopic("module_states/current_proxy", SwerveModuleState.struct)
+            .getStructTopic("Swerve/Chassis Speeds", ChassisSpeeds.struct)
             .publish();
   }
 
@@ -375,7 +376,8 @@ public class SwerveDrivetrain extends Subsystem {
   public void outputTelemetry(double timestamp) {
     current_state_pub_.set(io_.current_module_states_);
     requested_state_pub_.set(io_.requested_module_states_);
-    current_state_proxy_pub_.set(ChassisProxyServer.getModuleStates());
+    chassis_speeds_pub_.set(io_.chassis_speeds_);
+
     SmartDashboard.putString("Debug/Swerve/Mode", io_.drive_mode_.toString());
     SmartDashboard.putNumber(
         "Debug/Swerve/Rotation Control/Target Rotation", io_.target_rotation_.getDegrees());
