@@ -96,7 +96,7 @@ public class GameStateManager {
       case TELEOP_CONTROL:
       default:
         scoring_target_ = ScoringTarget.TELEOP_CONTROL;
-        drivetrain_.setDriveMode(DriveMode.FIELD_CENTRIC);
+        drivetrain_.restoreDefaultDriveMode();
         break;
     }
   }

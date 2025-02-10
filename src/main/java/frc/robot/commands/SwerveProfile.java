@@ -48,7 +48,7 @@ public class SwerveProfile extends Command {
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    SwerveDrivetrain.getInstance().setDriveMode(DriveMode.FIELD_CENTRIC);
+    SwerveDrivetrain.getInstance().restoreDefaultDriveMode();
   }
 
   // Returns true when the command should end.

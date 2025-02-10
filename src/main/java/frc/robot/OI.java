@@ -90,7 +90,7 @@ public abstract class OI {
 
     driver_pov_active_.onTrue(Commands.startEnd(
       () -> swerve_drivetrain_.setDriveMode(DriveMode.CRAWL),
-      () -> swerve_drivetrain_.setDriveMode(DriveMode.FIELD_CENTRIC)));
+      () -> swerve_drivetrain_.restoreDefaultDriveMode()));
 
   }
 

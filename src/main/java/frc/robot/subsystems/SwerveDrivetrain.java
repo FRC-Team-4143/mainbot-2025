@@ -483,22 +483,30 @@ public class SwerveDrivetrain extends Subsystem {
   }
 
   /**
-   * updates the mode flag thats changes what request is applied to the drive train
+   * updates the mode flag thats changes what request is applied to the drive train.
+   * If request modes are ROBOT_CENTRIC or FIELD_CENTIC the default request is updated.
    *
-   * @param mode requewt drive mode
+   * @param mode request drive mode
    */
   public void setDriveMode(DriveMode mode) {
+    if(mode == DriveMode.FIELD_CENTRIC) io_.defaut_drive_mode_ = mode;
+    if(mode == DriveMode.ROBOT_CENTRIC) io_.defaut_drive_mode_ = mode;
     io_.drive_mode_ = mode;
+  }
+
+  /**
+   * Updates the internal drive mode to the default teleop drive mode
+   */
+  public void restoreDefaultDriveMode(){
+    io_.drive_mode_ = io_.defaut_drive_mode_;
   }
 
   /** Toggles between FIELD_CENTRIC and ROBOT_CENTRIC drive modes */
   public Command toggleFieldCentric() {
     return Commands.runOnce(
         () -> {
-          io_.drive_mode_ =
-              (io_.drive_mode_ == DriveMode.FIELD_CENTRIC)
-                  ? DriveMode.ROBOT_CENTRIC
-                  : DriveMode.FIELD_CENTRIC;
+          if(io_.drive_mode_ == DriveMode.FIELD_CENTRIC) setDriveMode(DriveMode.ROBOT_CENTRIC);
+          else setDriveMode(DriveMode.FIELD_CENTRIC);
         });
   }
 
@@ -550,6 +558,7 @@ public class SwerveDrivetrain extends Subsystem {
     @Log.File public SwerveModuleState[] current_module_states_, requested_module_states_;
     @Log.File public SwerveModulePosition[] module_positions_;
     @Log.File public DriveMode drive_mode_ = DriveMode.IDLE;
+    @Log.File public DriveMode defaut_drive_mode_ = DriveMode.FIELD_CENTRIC;
     @Log.File public double joystick_left_x_ = 0.0;
     @Log.File public double joystick_left_y_ = 0.0;
     @Log.File public double joystick_right_x_ = 0.0;
