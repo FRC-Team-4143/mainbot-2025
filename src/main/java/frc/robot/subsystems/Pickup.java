@@ -81,7 +81,11 @@ public class Pickup extends Subsystem {
     /**
      * Called to reset and configure the subsystem
      */
-    public void reset() {}
+    public void reset() {
+        stopRollerMotors();
+        setIdlePosition();
+        stopRotateMotors();
+    }
 
     public void setPickupStage(PickupStages mode) {
         io_.pickup_stages_ = mode;
