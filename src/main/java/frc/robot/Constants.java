@@ -264,6 +264,9 @@ public final class Constants {
 
   public class PickupConstants {
     // Algae Loader constants
+    public static final int ROLLER_MOTOR_ID = 0;
+    public static final int ROTATE_MOTOR_ID = 0;
+    public static final int PICKUP_LOADED_SENSOR_ID = 0;
     public static final double ALGAE_PICKUP_TOF_IDLE_DISTANCE = 0.0; // In cm
     public static final double ALGAE_PICKUP_TOF_LOADED_DISTANCE = 0.0; // In cm
     public static final double ROLLER_FORWARD = 0.0; 
