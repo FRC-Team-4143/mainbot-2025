@@ -7,12 +7,10 @@ package frc.robot;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Commands;
-import edu.wpi.first.wpilibj2.command.ConditionalCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.GameStateManager.RobotState;
 import frc.robot.commands.*;
-import frc.robot.commands.SetReefLevel.ReefLevel;
 import frc.robot.subsystems.*;
 import frc.robot.subsystems.SwerveDrivetrain.DriveMode;
 import java.util.Optional;
@@ -105,10 +103,7 @@ public abstract class OI {
         .whileTrue(
             Commands.startEnd(
                 () -> GameStateManager.getInstance().setRobotState(RobotState.TARGET_ACQUISITION),
-                () -> {
-                  GameStateManager.getInstance().setRobotState(RobotState.TELEOP_CONTROL);
-                  SwerveDrivetrain.getInstance().restoreDefaultDriveMode();
-                }));
+                () -> GameStateManager.getInstance().setRobotState(RobotState.END)));
 
     driver_pov_active_.whileTrue(
         Commands.startEnd(
