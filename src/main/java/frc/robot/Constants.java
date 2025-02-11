@@ -110,7 +110,7 @@ public final class Constants {
     public static final double MAX_DRIVE_ANGULAR_RATE =
         LOADER.getDoubleValue("drive", "com", "MAX_DRIVE_ANGULAR_RATE");
 
-    public static final double CRAWL_DRIVE_SPEED = MAX_DRIVE_SPEED * 0.2;
+    public static final double CRAWL_DRIVE_SPEED = MAX_DRIVE_SPEED * 0.1;
     public static final double MAX_TARGET_SPEED = 1;
 
     private static final SwerveModuleConstantsFactory ConstantCreator =
