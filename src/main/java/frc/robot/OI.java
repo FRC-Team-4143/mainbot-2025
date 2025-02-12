@@ -23,12 +23,7 @@ public abstract class OI {
   private static CommandXboxController driver_controller_ = new CommandXboxController(0);
   private static CommandXboxController operator_controller_ = new CommandXboxController(1);
 
-  private static Trigger driver_pov_active_ =
-      new Trigger(
-          () -> {
-            boolean value = getDriverJoystickPOV().isPresent();
-            return value;
-          });
+  private static Trigger driver_pov_active_ = new Trigger(getDriverJoystickPOV()::isPresent);
 
   public static void configureBindings() {
 
