@@ -54,11 +54,7 @@ public abstract class OI {
     // Swap Between Robot Centric and Field Centric
     driver_controller_
         .rightStick()
-        .onTrue(
-            Commands.runOnce(
-                    () -> SwerveDrivetrain.getInstance().toggleFieldCentric(),
-                    SwerveDrivetrain.getInstance())
-                .ignoringDisable(true));
+        .onTrue(SwerveDrivetrain.getInstance().toggleFieldCentric().ignoringDisable(true));
 
     /*
      *
@@ -109,9 +105,12 @@ public abstract class OI {
         .whileTrue(
             Commands.startEnd(
                 () -> GameStateManager.getInstance().setRobotState(RobotState.TARGET_ACQUISITION),
-                () -> GameStateManager.getInstance().setRobotState(RobotState.TELEOP_CONTROL)));
+                () -> {
+                  GameStateManager.getInstance().setRobotState(RobotState.TELEOP_CONTROL);
+                  SwerveDrivetrain.getInstance().restoreDefaultDriveMode();
+                }));
 
-    driver_pov_active_.onTrue(
+    driver_pov_active_.whileTrue(
         Commands.startEnd(
             () -> SwerveDrivetrain.getInstance().setDriveMode(DriveMode.CRAWL),
             () -> SwerveDrivetrain.getInstance().restoreDefaultDriveMode()));
@@ -158,7 +157,7 @@ public abstract class OI {
   /*
    *
    * The OI methods below are used for the TalonFX Tuner Bindings.
-   * These should not be used in telop robot control.
+   * These should not be used in teleop robot control.
    *
    */
 
