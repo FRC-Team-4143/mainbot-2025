@@ -48,10 +48,11 @@ public class Robot extends TimedRobot {
       if (alliance.get() != allaince_) {
         allaince_ = alliance.get();
         // Update Driver Prespective
-        SwerveDrivetrain.getInstance().setDriverPerspective(
-            allaince_ == Alliance.Red
-                ? SwerveDrivetrain.getInstance().RED_ALLIANCE_HEADING
-                : SwerveDrivetrain.getInstance().BLUE_ALLIANCE_HEADING);
+        SwerveDrivetrain.getInstance()
+            .setDriverPerspective(
+                allaince_ == Alliance.Red
+                    ? SwerveDrivetrain.getInstance().RED_ALLIANCE_HEADING
+                    : SwerveDrivetrain.getInstance().BLUE_ALLIANCE_HEADING);
         // Update Field Regions
         FieldRegions.constructRegions(true);
       }
