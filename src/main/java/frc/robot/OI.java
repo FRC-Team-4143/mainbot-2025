@@ -36,23 +36,28 @@ public abstract class OI {
     // Set Wheel Offsets
     SmartDashboard.putData(
         "Set Wheel Offsets",
-        Commands.runOnce(() -> SwerveDrivetrain.getInstance().tareEverything()).ignoringDisable(true));
+        Commands.runOnce(() -> SwerveDrivetrain.getInstance().tareEverything())
+            .ignoringDisable(true));
     // Seed Field Centric Forward Direction
     SmartDashboard.putData(
-        "Seed Field Centric", SwerveDrivetrain.getInstance().seedFieldRelativeCommand().ignoringDisable(true));
+        "Seed Field Centric",
+        SwerveDrivetrain.getInstance().seedFieldRelativeCommand().ignoringDisable(true));
     SmartDashboard.putData(
         "Disturb Pose",
         Commands.runOnce(() -> PoseEstimator.getInstance().disturbPose()).ignoringDisable(true));
     // Sync Elevator and Arm Sensor to "Home" Position
     SmartDashboard.putData(
         "Zero Elevator & Arm",
-        Commands.runOnce(() -> Elevator.getInstance().elevatorAndArmPoseReset()).ignoringDisable(true));
+        Commands.runOnce(() -> Elevator.getInstance().elevatorAndArmPoseReset())
+            .ignoringDisable(true));
 
     // Swap Between Robot Centric and Field Centric
     driver_controller_
         .rightStick()
         .onTrue(
-            Commands.runOnce(() -> SwerveDrivetrain.getInstance().toggleFieldCentric(), SwerveDrivetrain.getInstance())
+            Commands.runOnce(
+                    () -> SwerveDrivetrain.getInstance().toggleFieldCentric(),
+                    SwerveDrivetrain.getInstance())
                 .ignoringDisable(true));
 
     /*
@@ -65,10 +70,13 @@ public abstract class OI {
     driver_controller_
         .leftTrigger()
         .whileTrue(
-            new ConditionalCommand(new AlgaeLoad(), new CoralStationLoad(), Claw.getInstance()::isAlgaeMode));
+            new ConditionalCommand(
+                new AlgaeLoad(), new CoralStationLoad(), Claw.getInstance()::isAlgaeMode));
     driver_controller_
         .rightTrigger()
-        .whileTrue(new ConditionalCommand(new CoralEject(), new AlgaeEject(), Claw.getInstance()::isCoralMode));
+        .whileTrue(
+            new ConditionalCommand(
+                new CoralEject(), new AlgaeEject(), Claw.getInstance()::isCoralMode));
     driver_controller_.y().toggleOnTrue(new SetReefLevel(ReefLevel.L4));
     driver_controller_.x().toggleOnTrue(new SetReefLevel(ReefLevel.L2));
     driver_controller_.b().toggleOnTrue(new SetReefLevel(ReefLevel.L3));
@@ -140,8 +148,7 @@ public abstract class OI {
   }
 
   /**
-   * @return driver controller joystick pov angle in degs. empty if nothing is
-   *         pressed
+   * @return driver controller joystick pov angle in degs. empty if nothing is pressed
    */
   public static Optional<Rotation2d> getDriverJoystickPOV() {
     int pov = driver_controller_.getHID().getPOV();
