@@ -13,19 +13,12 @@ import edu.wpi.first.math.geometry.Translation2d;
 
 public class AllianceFlipUtil {
 
-  public static Translation2d apply(Translation2d translation, boolean flip) {
-    if (flip) {
-      return translation.rotateAround(FieldConstants.FIELD_CENTER, Rotation2d.fromDegrees(180));
-    }
-    return translation;
+  public static Translation2d apply(Translation2d translation) {
+    return translation.rotateAround(FieldConstants.FIELD_CENTER, Rotation2d.fromDegrees(180));
   }
 
-  public static Pose2d apply(Pose2d pose, boolean flip) {
-    if (flip) {
-      return new Pose2d(
-          apply(pose.getTranslation(), flip),
-          pose.getRotation().rotateBy(Rotation2d.fromDegrees(180)));
-    }
-    return pose;
+  public static Pose2d apply(Pose2d pose) {
+    return new Pose2d(
+        apply(pose.getTranslation()), pose.getRotation().rotateBy(Rotation2d.fromDegrees(180)));
   }
 }
