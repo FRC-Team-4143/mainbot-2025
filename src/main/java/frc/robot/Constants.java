@@ -317,7 +317,8 @@ public final class Constants {
           0.23665818349136578, Rotation2d.fromRadians(2.4942527611020524), ControlType.EFFECTOR),
       ALGAE_HIGH(1.200, Rotation2d.fromDegrees(90 + 33), ControlType.EFFECTOR),
       ALGAE_PROCESSOR(
-          0.097946006 + ELEVATOR_MIN_HEIGHT, Rotation2d.fromDegrees(-55), ControlType.PIVOT);
+          0.097946006 + ELEVATOR_MIN_HEIGHT, Rotation2d.fromDegrees(-55), ControlType.PIVOT),
+      BARGE(FieldConstants.ReefHeight.L4.HEIGHT, Rotation2d.fromDegrees(55), ControlType.PIVOT);
 
       Target(double height, Rotation2d angle, ControlType type) {
         this.angle = angle;

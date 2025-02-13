@@ -12,6 +12,7 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.GameStateManager.RobotState;
 import frc.robot.commands.*;
+import frc.robot.commands.AlagaeScoreLeveler.AlagaeScorer;
 import frc.robot.commands.SetReefLevel.ReefLevel;
 import frc.robot.subsystems.*;
 import frc.robot.subsystems.SwerveDrivetrain.DriveMode;
@@ -83,7 +84,8 @@ public abstract class OI {
 
     driver_controller_.povUp().toggleOnTrue(new SetReefLevel(ReefLevel.ALGAE_HIGH));
     driver_controller_.povDown().toggleOnTrue(new SetReefLevel(ReefLevel.ALGAE_LOW));
-    driver_controller_.a().toggleOnTrue(new ProcessorLeveler());
+    driver_controller_.a().toggleOnTrue(new AlagaeScoreLeveler(AlagaeScorer.PROCESSOR));
+    driver_controller_.povRight().toggleOnTrue(new AlagaeScoreLeveler(AlagaeScorer.BARGE));
 
     /*
      *
