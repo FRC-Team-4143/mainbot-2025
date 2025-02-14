@@ -22,6 +22,7 @@ public class Robot extends TimedRobot {
     robot_container_ = RobotContainer.getInstance();
     AutoManager.getInstance();
     OI.configureBindings();
+    FieldRegions.makeRegions();
   }
 
   @Override

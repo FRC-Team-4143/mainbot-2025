@@ -14,4 +14,8 @@ public interface Region {
   public boolean contains(Pose2d other);
 
   public String getName();
+
+  public void constructRegion();
+
+  public void allianceFlip();
 }

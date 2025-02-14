@@ -5,6 +5,7 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.networktables.StructPublisher;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.lib.FieldRegions;
 import frc.lib.ReefSectionState;
@@ -32,30 +33,30 @@ public class GameStateManager {
     return instance_;
   }
 
-  @Log.File private static ScoringTarget scoring_target = ScoringTarget.TURTLE;
-  @Log.File private static ReefSectionState reef_section_state = new ReefSectionState();
+  @Log.File private ScoringTarget scoring_target = ScoringTarget.TURTLE;
+  @Log.File private Optional<ReefSectionState> reef_section_state = Optional.empty();
 
   @Log.File
-  private static ArrayList<ReefSectionState> reef_section_list = new ArrayList<ReefSectionState>();
+  private ArrayList<ReefSectionState> reef_section_list = new ArrayList<ReefSectionState>();
 
-  @Log.File private static RobotState robot_state_ = RobotState.TELEOP_CONTROL;
-  @Log.File private static Optional<Pose2d> reef_target = Optional.empty();
-  @Log.File private static Optional<Pose2d> station_target = Optional.empty();
-  @Log.File private static Optional<Pose2d> algae_target = Optional.empty();
-  @Log.File private static int selected_reef_level = 2;
-  @Log.File private static Intent intent = Intent.SCORE_CORAL;
-  @Log.File private static int num_frames = 5;
-  @Log.File private static boolean reef_state_found = false;
-  @Log.File private static Optional<Column> target_column = Optional.empty();
+  @Log.File private RobotState robot_state_ = RobotState.TELEOP_CONTROL;
+  @Log.File private Optional<Pose2d> reef_target = Optional.empty();
+  @Log.File private Optional<Pose2d> station_target = Optional.empty();
+  @Log.File private Optional<Pose2d> algae_target = Optional.empty();
+  @Log.File private int selected_reef_level = 2;
+  @Log.File private Intent intent = Intent.SCORE_CORAL;
+  @Log.File private int num_frames = 5;
+  @Log.File private boolean use_cam_for_reef_state = false;
+  @Log.File private Optional<Column> target_column = Optional.empty();
 
   private StructPublisher<Pose2d> reef_target_publisher =
       NetworkTableInstance.getDefault().getStructTopic("ReefTarget", Pose2d.struct).publish();
 
-  static Elevator elevator_;
-  static PoseEstimator poseEstimator_;
-  static SwerveDrivetrain drivetrain_;
+  Elevator elevator_;
+  PoseEstimator poseEstimator_;
+  SwerveDrivetrain drivetrain_;
 
-  public static enum RobotState {
+  public enum RobotState {
     TARGET_ACQUISITION,
     APPROACHING_TARGET,
     SCORING,
@@ -64,14 +65,14 @@ public class GameStateManager {
     END
   }
 
-  public static enum Intent {
+  public enum Intent {
     INTAKE_CORAL,
     INTAKE_ALGAE,
     SCORE_CORAL,
     SCORE_ALGAE
   }
 
-  public static enum ScoringTarget {
+  public enum ScoringTarget {
     TURTLE,
     REEF_L1,
     REEF_L2,
@@ -84,7 +85,7 @@ public class GameStateManager {
     TELEOP_CONTROL
   }
 
-  public static enum Column {
+  public enum Column {
     LEFT,
     RIGHT,
     CENTER
@@ -102,9 +103,13 @@ public class GameStateManager {
       reef_target_publisher.set(reef_target.get());
     }
     robotStateSwitch();
+    SmartDashboard.putString("Robot State", robot_state_.toString());
+    SmartDashboard.putString("Target Colum", target_column.toString());
+    SmartDashboard.putString("Intent", intent.toString());
+    SmartDashboard.putNumber("Target Level", selected_reef_level);
   }
 
-  public static void robotStateSwitch() {
+  public void robotStateSwitch() {
     switch (robot_state_) {
       case TARGET_ACQUISITION:
         reef_target = reefPose(Column.CENTER);
@@ -112,22 +117,23 @@ public class GameStateManager {
             && (intent == Intent.INTAKE_ALGAE || intent == Intent.SCORE_CORAL)) {
           drivetrain_.setTargetPose(reef_target.get());
           if (FieldRegions.REEF_ENTER.contains(poseEstimator_.getFieldPose())) {
-            reef_state_found = false;
-            target_column = Optional.empty();
+            reef_section_state = Optional.empty();
             robot_state_ = RobotState.APPROACHING_TARGET;
           }
         }
         break;
       case APPROACHING_TARGET:
         // move elevator to level
-        if (reef_section_list.size() < num_frames) {
-          reef_section_list.add(getNextReefFrame());
-          reef_section_state = ReefSectionState.averageReefSections(reef_section_list, 0.50);
-          reef_target = reefPose(Column.CENTER);
-          drivetrain_.setTargetPose(reef_target.get());
-        } else {
-          reef_state_found = true;
-          target_column = findReefTargetColumn();
+        if (use_cam_for_reef_state && target_column.isEmpty()) {
+          if (reef_section_list.size() < num_frames) {
+            reef_section_list.add(getNextReefFrame());
+            reef_target = reefPose(Column.CENTER);
+            drivetrain_.setTargetPose(reef_target.get());
+          } else {
+            reef_section_state =
+                Optional.of(ReefSectionState.averageReefSections(reef_section_list, 0.50));
+            target_column = findReefTargetColumn();
+          }
         }
         if (target_column.isPresent()) {
           reef_target = reefPose(target_column.get());
@@ -142,13 +148,14 @@ public class GameStateManager {
       case SCORING:
         if (!FieldRegions.REEF_EXIT.contains(poseEstimator_.getFieldPose())) {
           // set elevator to idle state
-          //CommandScheduler.getInstance().schedule(new Score().withTimeout(1));
+          CommandScheduler.getInstance().schedule(new Score().withTimeout(1));
           robot_state_ = RobotState.END;
         }
         break;
       case END:
         drivetrain_.setDriveMode(DriveMode.FIELD_CENTRIC);
-        scoring_target = ScoringTarget.TELEOP_CONTROL;
+        target_column = Optional.empty();
+        robot_state_ = RobotState.TELEOP_CONTROL;
         break;
       case TELEOP_CONTROL:
       default:
@@ -156,7 +163,7 @@ public class GameStateManager {
     }
   }
 
-  public static void elevatorTargetSwitch() {
+  public void elevatorTargetSwitch() {
     switch (scoring_target) {
       case REEF_L2:
         elevator_.setTarget(ElevatorConstants.Target.L2);
@@ -179,7 +186,7 @@ public class GameStateManager {
     }
   }
 
-  public static void wantedTarget(ScoringTarget target_score) {
+  public void wantedTarget(ScoringTarget target_score) {
     scoring_target = target_score;
   }
 
@@ -189,7 +196,7 @@ public class GameStateManager {
    *
    * @return target pose
    */
-  public static Optional<Pose2d> loadStationPose() {
+  public Optional<Pose2d> loadStationPose() {
     for (PolygonRegion region : FieldRegions.STATION_REGIONS) {
       if (region.contains(poseEstimator_.getFieldPose())) {
         return Optional.of(FieldRegions.REGION_POSE_TABLE.get(region.getName()));
@@ -203,7 +210,7 @@ public class GameStateManager {
    *
    * @return target pose
    */
-  public static Optional<Pose2d> reefPose(Column column) {
+  public Optional<Pose2d> reefPose(Column column) {
     for (PolygonRegion region : FieldRegions.REEF_REGIONS) {
       if (region.contains(poseEstimator_.getFieldPose())) {
         if (column == Column.CENTER) {
@@ -231,7 +238,7 @@ public class GameStateManager {
    *
    * @return target pose
    */
-  public static Optional<Pose2d> algaePose() {
+  public Optional<Pose2d> algaePose() {
     for (PolygonRegion region : FieldRegions.ALGAE_REGIONS) {
       if (region.contains(poseEstimator_.getFieldPose())) {
         return Optional.of(FieldRegions.REGION_POSE_TABLE.get(region.getName()));
@@ -240,24 +247,30 @@ public class GameStateManager {
     return Optional.empty();
   }
 
-  public static void setSelectedReefLevel(int level) {
+  public void setSelectedReefLevel(int level) {
     selected_reef_level = level;
   }
 
-  public static void setRobotState(RobotState state) {
+  public void setRobotState(RobotState state) {
     robot_state_ = state;
   }
 
-  public static Intent updateIntent() {
+  public Intent updateIntent() {
     return Intent.SCORE_CORAL;
   }
 
-  public static ReefSectionState getNextReefFrame() {
+  public ReefSectionState getNextReefFrame() {
     return new ReefSectionState();
   }
 
-  public static Optional<Column> findReefTargetColumn() {
-    // use reef_section_state && selected_reef_level to find open slot
+  public void setTargetColumn(Column column) {
+    target_column = Optional.of(column);
+  }
+
+  public Optional<Column> findReefTargetColumn() {
+    // use reef_section_state && selected_reef_level to find open slot and return
+    // what column it is in
+    // or none if there is no open slot at the specified level
     return Optional.of(Column.LEFT);
   }
 }
