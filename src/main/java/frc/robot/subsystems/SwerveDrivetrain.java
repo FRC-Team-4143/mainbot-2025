@@ -259,7 +259,7 @@ public class SwerveDrivetrain extends Subsystem {
   }
 
   @Override
-  public void updateLogic(double timestamp) {
+  public synchronized void updateLogic(double timestamp) {
     request_parameters_.currentPose = new Pose2d(0, 0, io_.robot_yaw_);
     switch (io_.drive_mode_) {
       case ROBOT_CENTRIC:
@@ -358,16 +358,20 @@ public class SwerveDrivetrain extends Subsystem {
         break;
       case CRAWL:
         {
-          setControl(
-              robot_centric_
-                  // Drive forward with negative Y (forward)
-                  .withVelocityX(
-                      Math.round(io_.joystick_pov.get().getCos())
-                          * DrivetrainConstants.CRAWL_DRIVE_SPEED)
-                  // Drive left with negative X (left)
-                  .withVelocityY(
-                      Math.round(io_.joystick_pov.get().getSin())
-                          * DrivetrainConstants.CRAWL_DRIVE_SPEED));
+          if (io_.joystick_pov.isPresent()) {
+            setControl(
+                robot_centric_
+                    // Drive forward with negative Y (forward)
+                    .withVelocityX(
+                        Math.round(io_.joystick_pov.get().getCos())
+                            * DrivetrainConstants.CRAWL_DRIVE_SPEED)
+                    // Drive left with negative X (left)
+                    .withVelocityY(
+                        Math.round(-io_.joystick_pov.get().getSin())
+                            * DrivetrainConstants.CRAWL_DRIVE_SPEED)
+                    .withRotationalRate(
+                        -io_.joystick_right_x_ * DrivetrainConstants.CRAWL_DRIVE_SPEED));
+          }
         }
         break;
       case IDLE:
@@ -484,19 +488,19 @@ public class SwerveDrivetrain extends Subsystem {
 
   /**
    * updates the mode flag thats changes what request is applied to the drive train. If request
-   * modes are ROBOT_CENTRIC or FIELD_CENTIC the default request is updated.
+   * modes are ROBOT_CENTRIC or FIELD_CENTRIC the default request is updated.
    *
    * @param mode request drive mode
    */
-  public void setDriveMode(DriveMode mode) {
-    if (mode == DriveMode.FIELD_CENTRIC) io_.defaut_drive_mode_ = mode;
-    if (mode == DriveMode.ROBOT_CENTRIC) io_.defaut_drive_mode_ = mode;
+  public synchronized void setDriveMode(DriveMode mode) {
+    if (mode == DriveMode.FIELD_CENTRIC) io_.default_drive_mode_ = mode;
+    if (mode == DriveMode.ROBOT_CENTRIC) io_.default_drive_mode_ = mode;
     io_.drive_mode_ = mode;
   }
 
   /** Updates the internal drive mode to the default teleop drive mode */
   public void restoreDefaultDriveMode() {
-    io_.drive_mode_ = io_.defaut_drive_mode_;
+    io_.drive_mode_ = io_.default_drive_mode_;
   }
 
   /** Toggles between FIELD_CENTRIC and ROBOT_CENTRIC drive modes */
@@ -556,7 +560,7 @@ public class SwerveDrivetrain extends Subsystem {
     @Log.File public SwerveModuleState[] current_module_states_, requested_module_states_;
     @Log.File public SwerveModulePosition[] module_positions_;
     @Log.File public DriveMode drive_mode_ = DriveMode.IDLE;
-    @Log.File public DriveMode defaut_drive_mode_ = DriveMode.FIELD_CENTRIC;
+    @Log.File public DriveMode default_drive_mode_ = DriveMode.FIELD_CENTRIC;
     @Log.File public double joystick_left_x_ = 0.0;
     @Log.File public double joystick_left_y_ = 0.0;
     @Log.File public double joystick_right_x_ = 0.0;

@@ -162,6 +162,7 @@ public class SwerveModule {
     talonConfigs.Voltage.PeakReverseVoltage = -5;
 
     talonConfigs.Slot0 = constants.SteerMotorGains;
+    talonConfigs.MotorOutput.NeutralMode = NeutralModeValue.Coast;
     // Modify configuration to use remote CANcoder fused
     // talonConfigs.Feedback.FeedbackRemoteSensorID = constants.CANcoderId; CRH:
     // Removed for AnalogEncoders
