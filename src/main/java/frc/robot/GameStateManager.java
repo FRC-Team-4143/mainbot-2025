@@ -140,7 +140,7 @@ public class GameStateManager {
           drivetrain_.setTargetPose(reef_target.get());
           if (Util.epislonEquals(
               poseEstimator_.getFieldPose(), reef_target.get(), 0.0873, 0.0508)) {
-            drivetrain_.setDriveMode(DriveMode.FIELD_CENTRIC);
+            // drivetrain_.setDriveMode(DriveMode.FIELD_CENTRIC);
             robot_state_ = RobotState.SCORING;
           }
         }

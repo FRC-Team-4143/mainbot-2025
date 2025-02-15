@@ -99,26 +99,28 @@ public abstract class OI {
     // operator_controller_.povUp().toggleOnTrue(new
     // SetReefLevel(ReefLevel.ALGAE_HIGH));
 
+    /*
+     *
+     * L2 Game State Manager Bindings
+     *
+     */
+    driver_controller_.leftTrigger(0.5).whileTrue(new Feed());
+    driver_controller_.rightTrigger(0.5).whileTrue(new Score());
+
     driver_controller_
         .rightBumper()
         .whileTrue(
             Commands.startEnd(
                 () -> GameStateManager.getInstance().setRobotState(RobotState.TARGET_ACQUISITION),
                 () -> GameStateManager.getInstance().setRobotState(RobotState.END)));
+                Commands.runOnce(() -> GameStateManager.getInstance().setTargetColumn(Column.RIGHT));
     driver_controller_
         .leftBumper()
         .whileTrue(
             Commands.startEnd(
                 () -> GameStateManager.getInstance().setRobotState(RobotState.TARGET_ACQUISITION),
                 () -> GameStateManager.getInstance().setRobotState(RobotState.END)));
-    driver_controller_
-        .leftBumper()
-        .onTrue(
-            Commands.runOnce(() -> GameStateManager.getInstance().setTargetColumn(Column.LEFT)));
-    driver_controller_
-        .rightBumper()
-        .onTrue(
-            Commands.runOnce(() -> GameStateManager.getInstance().setTargetColumn(Column.RIGHT)));
+                Commands.runOnce(() -> GameStateManager.getInstance().setTargetColumn(Column.LEFT));
 
     driver_pov_active_.whileTrue(
         Commands.startEnd(
