@@ -6,12 +6,12 @@ import com.ctre.phoenix6.controls.ControlRequest;
 import com.ctre.phoenix6.controls.StrictFollower;
 import com.ctre.phoenix6.controls.VoltageOut;
 import com.ctre.phoenix6.hardware.TalonFX;
+
 import edu.wpi.first.wpilibj.DataLogManager;
 import edu.wpi.first.wpilibj.RobotState;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
-import edu.wpi.first.wpilibj2.command.button.Trigger;
 import edu.wpi.first.wpilibj2.command.FunctionalCommand;
 import edu.wpi.first.wpilibj2.command.Subsystem;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
@@ -22,7 +22,8 @@ public class SwerveTuner {
   TalonFX[] drive_motors_;
   TalonFX[] steer_motors_;
   String system_name_ = "SwerveTuner - ";
-  Slot0Configs config_;
+  Slot0Configs drive_config_;
+  Slot0Configs steer_config_;
   SysIdRoutine routine_;
 
   /**
@@ -44,17 +45,25 @@ public class SwerveTuner {
             new SysIdRoutine.Mechanism(
                 voltage -> {
                   for (int i = 0; i < drive_motors_.length; i++) {
-                    drive_motors_[i].setControl(new StrictFollower(drive_motors_[i].getDeviceID()));
+                    drive_motors_[i].setControl(new VoltageOut(voltage));
                   }
-                  for (int i = 0; i < drive_motors_.length; i++) {
-                    steer_motors_[i].setControl(new StrictFollower(steer_motors_[i].getDeviceID()));
+                  for (int i = 0; i < steer_motors_.length; i++) {
+                    steer_motors_[i].setControl(new VoltageOut(voltage));
                   }
                 },
                 log -> {
-                  log.motor(system_name_)
-                      .voltage(motor_.getMotorVoltage().getValue())
-                      .angularPosition(motor_.getPosition().getValue())
-                      .angularVelocity(motor_.getVelocity().getValue());
+                  for (int i = 0; i < drive_motors_.length; i++) {
+                    log.motor(system_name_)
+                      .voltage(drive_motors_[i].getMotorVoltage().getValue())
+                      .angularPosition(drive_motors_[i].getPosition().getValue())
+                      .angularVelocity(drive_motors_[i].getVelocity().getValue());
+                  }
+                  for (int i = 0; i < steer_motors_.length; i++) {
+                    log.motor(system_name_)
+                      .voltage(steer_motors_[i].getMotorVoltage().getValue())
+                      .angularPosition(steer_motors_[i].getPosition().getValue())
+                      .angularVelocity(steer_motors_[i].getVelocity().getValue());
+                  }
                 },
                 subsystem));
 
@@ -65,31 +74,72 @@ public class SwerveTuner {
    * @param motor primary motor to control
    * @param system_name string to represent system on SmartDashboard
    */
-  public TalonFXTuner(TalonFX motor, String system_name, Subsystem subsystem) {
-    this(motor, new TalonFX[] {}, system_name, subsystem);
+  public SwerveTuner( String system_name, Subsystem subsystem) {
+    this(new TalonFX[] {}, new TalonFX[] {}, system_name, subsystem);
   }
 
   /** Reads all gains from SmartDashboard tuning group and updates motor config */
   private void updateGains() {
-    config_.kP = SmartDashboard.getNumber(system_name_ + "P", 0);
-    config_.kI = SmartDashboard.getNumber(system_name_ + "I", 0);
-    config_.kD = SmartDashboard.getNumber(system_name_ + "D", 0);
-    config_.kS = SmartDashboard.getNumber(system_name_ + "S", 0);
-    config_.kV = SmartDashboard.getNumber(system_name_ + "V", 0);
-    config_.kA = SmartDashboard.getNumber(system_name_ + "A", 0);
-    config_.kG = SmartDashboard.getNumber(system_name_ + "G", 0);
+    drive_config_.kP = SmartDashboard.getNumber(system_name_ + "P-Drive", 0);
+    drive_config_.kI = SmartDashboard.getNumber(system_name_ + "I-Drive", 0);
+    drive_config_.kD = SmartDashboard.getNumber(system_name_ + "D-Drive", 0);
+    drive_config_.kS = SmartDashboard.getNumber(system_name_ + "S-Drive", 0);
+    drive_config_.kV = SmartDashboard.getNumber(system_name_ + "V-Drive", 0);
+    drive_config_.kA = SmartDashboard.getNumber(system_name_ + "A-Drive", 0);
+    drive_config_.kG = SmartDashboard.getNumber(system_name_ + "G-Drive", 0);
 
-    DataLogManager.log(
-        "Motor ID: " + motor_.getDeviceID() + " - Updating Gains" + config_.toString());
+    steer_config_.kP = SmartDashboard.getNumber(system_name_ + "P-Steer", 0);
+    steer_config_.kI = SmartDashboard.getNumber(system_name_ + "I-Steer", 0);
+    steer_config_.kD = SmartDashboard.getNumber(system_name_ + "D-Steer", 0);
+    steer_config_.kS = SmartDashboard.getNumber(system_name_ + "S-Steer", 0);
+    steer_config_.kV = SmartDashboard.getNumber(system_name_ + "V-Steer", 0);
+    steer_config_.kA = SmartDashboard.getNumber(system_name_ + "A-Steer", 0);
+    steer_config_.kG = SmartDashboard.getNumber(system_name_ + "G-Steer", 0);
 
-    StatusCode status = motor_.getConfigurator().apply(config_);
-    if (!status.isOK()) {
+    for(int i = 0; i < drive_motors_.length; i++){
+
       DataLogManager.log(
-          "Motor ID: "
-              + motor_.getDeviceID()
-              + " - Error Updating Gains: "
-              + status.getDescription());
+        "Motor ID: " + drive_motors_[i].getDeviceID() + " - Updating Gains" + drive_config_.toString());
+
     }
+
+    for(int i = 0; i < steer_motors_.length; i++){
+
+      DataLogManager.log(
+        "Motor ID: " + steer_motors_[i].getDeviceID() + " - Updating Gains" + steer_config_.toString());
+
+    }
+
+    StatusCode status;
+
+    for(int i = 0; i < drive_motors_.length; i++){
+
+      status = drive_motors_[i].getConfigurator().apply(drive_config_);
+
+      if (!status.isOK()) {
+        DataLogManager.log(
+            "Motor ID: "
+                + drive_motors_[i].getDeviceID()
+                + " - Error Updating Gains: "
+                + status.getDescription());
+      }
+
+    }
+
+    for(int i = 0; i < steer_motors_.length; i++){
+
+      status = steer_motors_[i].getConfigurator().apply(steer_config_);
+
+      if (!status.isOK()) {
+        DataLogManager.log(
+            "Motor ID: "
+                + steer_motors_[i].getDeviceID()
+                + " - Error Updating Gains: "
+                + status.getDescription());
+      }
+
+    }
+   
     // Clears control request after gains are updated for safety
     clearSetpoint();
   }
@@ -100,28 +150,59 @@ public class SwerveTuner {
    * @param request supports any ctre control request type, but is intened for ClosedLoop types
    * @return command that set the setpoint when onTrue and clears the setpoint when interrupted
    */
-  private Command updateSetpoint(ControlRequest request) {
+  private Command updateSetpointDrive(ControlRequest request) {
     return new FunctionalCommand(
             // Set motor requests
             () -> {
-              motor_.setControl(request);
-              DataLogManager.log("Motor ID: " + motor_.getDeviceID() + " - " + request.toString());
-              // Set all follower motors to same command as leader motor
-              for (TalonFX follower : follower_motors_) {
+              for (TalonFX drive : drive_motors_) {
                 // follower motors use their own inversion config
-                follower.setControl(new StrictFollower(motor_.getDeviceID()));
+                drive.setControl(request);
+                DataLogManager.log("Motor ID: " + drive.getDeviceID() + " - " + request.toString());
               }
             },
             // Put Closed Loop Data On Dashboard
             () -> {
-              SmartDashboard.putNumber(
-                  system_name_ + "Setpoint", motor_.getClosedLoopReference().getValue());
-              SmartDashboard.putNumber(
-                  system_name_ + "Feedback",
-                  motor_.getClosedLoopReference().getValue()
-                      - motor_.getClosedLoopError().getValue());
-              SmartDashboard.putNumber(
-                  system_name_ + "Error", motor_.getClosedLoopError().getValue());
+              for (TalonFX drive : drive_motors_) {
+                // follower motors use their own inversion config
+                SmartDashboard.putNumber(
+                  system_name_ + "Setpoint-Drive", drive.getClosedLoopReference().getValue());
+                SmartDashboard.putNumber(
+                  system_name_ + "Feedback-Drive",
+                  drive.getClosedLoopReference().getValue()
+                      - drive.getClosedLoopError().getValue());
+                SmartDashboard.putNumber(
+                  system_name_ + "Error-Drive", drive.getClosedLoopError().getValue());
+              }
+            },
+            // Clear the active request and setpoint
+            (interrupted) -> clearSetpoint(),
+            () -> false)
+        .onlyIf(RobotState::isTest);
+  }
+
+  private Command updateSetpointSteer(ControlRequest request) {
+    return new FunctionalCommand(
+            // Set motor requests
+            () -> {
+              for (TalonFX steer : steer_motors_) {
+                // follower motors use their own inversion config
+                steer.setControl(request);
+                DataLogManager.log("Motor ID: " + steer.getDeviceID() + " - " + request.toString());
+              }
+            },
+            // Put Closed Loop Data On Dashboard
+            () -> {
+              for (TalonFX steer : steer_motors_) {
+                // follower motors use their own inversion config
+                SmartDashboard.putNumber(
+                  system_name_ + "Setpoint-Steer", steer.getClosedLoopReference().getValue());
+                SmartDashboard.putNumber(
+                  system_name_ + "Feedback-Steer",
+                  steer.getClosedLoopReference().getValue()
+                      - steer.getClosedLoopError().getValue());
+                SmartDashboard.putNumber(
+                  system_name_ + "Error", steer.getClosedLoopError().getValue());
+              }
             },
             // Clear the active request and setpoint
             (interrupted) -> clearSetpoint(),
@@ -135,36 +216,71 @@ public class SwerveTuner {
    * @param request supports any ctre control request type, but is intened for ClosedLoop types
    * @param trigger wpilib trigger to start/stop the execution of the setpoint command
    */
-  public void bindSetpoint(ControlRequest request, Trigger trigger) {
-    trigger.whileTrue(updateSetpoint(request));
+  public void bindSetpointDrive(ControlRequest request, Trigger trigger) {
+    trigger.whileTrue(updateSetpointDrive(request));
+  }
+
+  public void bindSetpointSteer(ControlRequest request, Trigger trigger) {
+    trigger.whileTrue(updateSetpointSteer(request));
   }
 
   /** Set the active motor request to 0 voltage to act as quick disable */
   private void clearSetpoint() {
-    motor_.setControl(new VoltageOut(0));
-    DataLogManager.log("Motor ID: " + motor_.getDeviceID() + " - Disabled");
+    for(TalonFX drive : drive_motors_){
+      drive.setControl(new VoltageOut(0));
+      DataLogManager.log("Motor ID: " + drive.getDeviceID() + " - Disabled");
+    }
+    for(TalonFX steer : steer_motors_){
+      steer.setControl(new VoltageOut(0));
+      DataLogManager.log("Motor ID: " + steer.getDeviceID() + " - Disabled");
+    }
   }
 
   /** Adds all tunable values to SmartDashboard under the system_name */
   private void setupDashboard() {
-    SmartDashboard.putNumber(system_name_ + "P", config_.kP);
-    SmartDashboard.putNumber(system_name_ + "I", config_.kI);
-    SmartDashboard.putNumber(system_name_ + "D", config_.kD);
-    SmartDashboard.putNumber(system_name_ + "S", config_.kS);
-    SmartDashboard.putNumber(system_name_ + "V", config_.kV);
-    SmartDashboard.putNumber(system_name_ + "A", config_.kA);
-    SmartDashboard.putNumber(system_name_ + "G", config_.kG);
+    SmartDashboard.putNumber(system_name_ + "P-Drive", 0);
+    SmartDashboard.putNumber(system_name_ + "I-Drive", 0);
+    SmartDashboard.putNumber(system_name_ + "D-Drive", 0);
+    SmartDashboard.putNumber(system_name_ + "S-Drive", 0);
+    SmartDashboard.putNumber(system_name_ + "V-Drive", 0);
+    SmartDashboard.putNumber(system_name_ + "A-Drive", 0);
+    SmartDashboard.putNumber(system_name_ + "G-Drive", 0);
+
+    SmartDashboard.putNumber(system_name_ + "P-Steer", 0);
+    SmartDashboard.putNumber(system_name_ + "I-Steer", 0);
+    SmartDashboard.putNumber(system_name_ + "D-Steer", 0);
+    SmartDashboard.putNumber(system_name_ + "S-Steer", 0);
+    SmartDashboard.putNumber(system_name_ + "V-Steer", 0);
+    SmartDashboard.putNumber(system_name_ + "A-Steer", 0);
+    SmartDashboard.putNumber(system_name_ + "G-Steer", 0);
     SmartDashboard.putData(
         system_name_ + "Update",
         Commands.runOnce(() -> updateGains()).onlyIf(RobotState::isTest).ignoringDisable(true));
-    SmartDashboard.putNumber(system_name_ + "Setpoint", 0);
-    SmartDashboard.putNumber(system_name_ + "Feedback", 0);
-    SmartDashboard.putNumber(system_name_ + "Error", 0);
-    SmartDashboard.putData(
+    SmartDashboard.putNumber(system_name_ + "Setpoint-Drive", 0);
+    SmartDashboard.putNumber(system_name_ + "Setpoint-Steer", 0);
+    SmartDashboard.putNumber(system_name_ + "Feedback-Drive", 0);
+    SmartDashboard.putNumber(system_name_ + "Feedback-Steer", 0);
+    SmartDashboard.putNumber(system_name_ + "Error-Drive", 0);
+    SmartDashboard.putNumber(system_name_ + "Error-Steer", 0);
+    for (TalonFX drive : drive_motors_){
+
+      SmartDashboard.putData(
         system_name_ + "Zero",
-        Commands.runOnce(() -> motor_.setPosition(0))
+        Commands.runOnce(() -> drive.setPosition(0))
             .onlyIf(RobotState::isTest)
             .ignoringDisable(true));
+
+    }
+    for (TalonFX steer : steer_motors_){
+
+      SmartDashboard.putData(
+        system_name_ + "Zero",
+        Commands.runOnce(() -> steer.setPosition(0))
+            .onlyIf(RobotState::isTest)
+            .ignoringDisable(true));
+
+    }
+    
   }
 
   private SysIdRoutine getSysIdRoutine() {
