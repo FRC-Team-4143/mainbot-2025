@@ -5,7 +5,6 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Notifier;
 import edu.wpi.first.wpilibj.Timer;
 import frc.mw_lib.logging.GitLogger;
-
 import java.util.ArrayList;
 import monologue.Annotations.Log;
 import monologue.Logged;

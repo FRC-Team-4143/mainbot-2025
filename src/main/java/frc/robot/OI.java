@@ -11,10 +11,15 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.GameStateManager.Column;
 import frc.robot.GameStateManager.RobotState;
-import frc.robot.commands;
+import frc.robot.commands.AlagaeScoreLeveler;
 import frc.robot.commands.AlagaeScoreLeveler.AlagaeScorer;
+import frc.robot.commands.Feed;
+import frc.robot.commands.Score;
+import frc.robot.commands.SetReefLevel;
 import frc.robot.commands.SetReefLevel.ReefLevel;
-import frc.robot.subsystems;
+import frc.robot.subsystems.Elevator;
+import frc.robot.subsystems.PoseEstimator;
+import frc.robot.subsystems.SwerveDrivetrain;
 import frc.robot.subsystems.SwerveDrivetrain.DriveMode;
 import java.util.Optional;
 
@@ -124,14 +129,14 @@ public abstract class OI {
             Commands.startEnd(
                 () -> GameStateManager.getInstance().setRobotState(RobotState.TARGET_ACQUISITION),
                 () -> GameStateManager.getInstance().setRobotState(RobotState.END)));
-                Commands.runOnce(() -> GameStateManager.getInstance().setTargetColumn(Column.RIGHT));
+    Commands.runOnce(() -> GameStateManager.getInstance().setTargetColumn(Column.RIGHT));
     driver_controller_
         .leftBumper()
         .whileTrue(
             Commands.startEnd(
                 () -> GameStateManager.getInstance().setRobotState(RobotState.TARGET_ACQUISITION),
                 () -> GameStateManager.getInstance().setRobotState(RobotState.END)));
-                Commands.runOnce(() -> GameStateManager.getInstance().setTargetColumn(Column.LEFT));
+    Commands.runOnce(() -> GameStateManager.getInstance().setTargetColumn(Column.LEFT));
 
     driver_pov_active_.whileTrue(
         Commands.startEnd(
