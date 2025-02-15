@@ -222,8 +222,7 @@ public final class Constants {
     public static final double ALGAE_IDLE_SPEED = 0.1;
     public static final String CORAL_COLOR = new Color(255, 255, 255).toHexString();
     public static final String ALGAE_COLOR = new Color(0, 255, 255).toHexString();
-    public static final InvertedValue WHEEL_MOTOR_INVERTED =
-        InvertedValue.CounterClockwise_Positive;
+    public static final InvertedValue WHEEL_MOTOR_INVERTED = InvertedValue.Clockwise_Positive;
   }
 
   public class ClimberConstants {
@@ -315,7 +314,13 @@ public final class Constants {
       STOW(0, Rotation2d.fromDegrees(-90), ControlType.PIVOT),
       ALGAE_LOW(
           0.23665818349136578, Rotation2d.fromRadians(2.4942527611020524), ControlType.EFFECTOR),
-      ALGAE_HIGH(1.200, Rotation2d.fromDegrees(90 + 33), ControlType.EFFECTOR);
+      ALGAE_HIGH(1.200, Rotation2d.fromDegrees(90 + 33), ControlType.EFFECTOR),
+      ALGAE_PROCESSOR(
+          0.148746006 + ELEVATOR_MIN_HEIGHT, Rotation2d.fromDegrees(-55), ControlType.PIVOT),
+      BARGE(
+          FieldConstants.ReefHeight.L4.HEIGHT + 0.0762,
+          Rotation2d.fromDegrees(90),
+          ControlType.PIVOT);
 
       Target(double height, Rotation2d angle, ControlType type) {
         this.angle = angle;

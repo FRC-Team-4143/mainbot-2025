@@ -11,8 +11,10 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.GameStateManager.Column;
 import frc.robot.GameStateManager.RobotState;
-import frc.robot.commands.*;
-import frc.robot.subsystems.*;
+import frc.robot.commands;
+import frc.robot.commands.AlagaeScoreLeveler.AlagaeScorer;
+import frc.robot.commands.SetReefLevel.ReefLevel;
+import frc.robot.subsystems;
 import frc.robot.subsystems.SwerveDrivetrain.DriveMode;
 import java.util.Optional;
 
@@ -53,7 +55,11 @@ public abstract class OI {
     // Swap Between Robot Centric and Field Centric
     driver_controller_
         .rightStick()
-        .onTrue(SwerveDrivetrain.getInstance().toggleFieldCentric().ignoringDisable(true));
+        .onTrue(
+            Commands.runOnce(
+                    () -> SwerveDrivetrain.getInstance().toggleFieldCentric(),
+                    SwerveDrivetrain.getInstance())
+                .ignoringDisable(true));
 
     /*
      *
@@ -75,6 +81,11 @@ public abstract class OI {
     // driver_controller_.y().toggleOnTrue(new SetReefLevel(ReefLevel.L4));
     // driver_controller_.x().toggleOnTrue(new SetReefLevel(ReefLevel.L2));
     // driver_controller_.b().toggleOnTrue(new SetReefLevel(ReefLevel.L3));
+
+    driver_controller_.povUp().toggleOnTrue(new SetReefLevel(ReefLevel.ALGAE_HIGH));
+    driver_controller_.povDown().toggleOnTrue(new SetReefLevel(ReefLevel.ALGAE_LOW));
+    driver_controller_.a().toggleOnTrue(new AlagaeScoreLeveler(AlagaeScorer.PROCESSOR));
+    driver_controller_.povRight().toggleOnTrue(new AlagaeScoreLeveler(AlagaeScorer.BARGE));
 
     /*
      *
