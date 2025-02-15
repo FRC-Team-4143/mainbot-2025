@@ -74,15 +74,15 @@ public abstract class OI {
 
     // driver_controller_.rightBumper().onTrue(Claw.getInstance().toggleGamePiece());
     // driver_controller_
-    //     .leftTrigger()
-    //     .whileTrue(
-    //         new ConditionalCommand(
-    //             new AlgaeLoad(), new CoralStationLoad(), Claw.getInstance()::isAlgaeMode));
+    // .leftTrigger()
+    // .whileTrue(
+    // new ConditionalCommand(
+    // new AlgaeLoad(), new CoralStationLoad(), Claw.getInstance()::isAlgaeMode));
     // driver_controller_
-    //     .rightTrigger()
-    //     .whileTrue(
-    //         new ConditionalCommand(
-    //             new CoralEject(), new AlgaeEject(), Claw.getInstance()::isCoralMode));
+    // .rightTrigger()
+    // .whileTrue(
+    // new ConditionalCommand(
+    // new CoralEject(), new AlgaeEject(), Claw.getInstance()::isCoralMode));
     // driver_controller_.y().toggleOnTrue(new SetReefLevel(ReefLevel.L4));
     // driver_controller_.x().toggleOnTrue(new SetReefLevel(ReefLevel.L2));
     // driver_controller_.b().toggleOnTrue(new SetReefLevel(ReefLevel.L3));
@@ -127,16 +127,20 @@ public abstract class OI {
         .rightBumper()
         .whileTrue(
             Commands.startEnd(
-                () -> GameStateManager.getInstance().setRobotState(RobotState.TARGET_ACQUISITION),
+                () -> {
+                  GameStateManager.getInstance().setTargetColumn(Column.RIGHT);
+                  GameStateManager.getInstance().setRobotState(RobotState.TARGET_ACQUISITION);
+                },
                 () -> GameStateManager.getInstance().setRobotState(RobotState.END)));
-    Commands.runOnce(() -> GameStateManager.getInstance().setTargetColumn(Column.RIGHT));
     driver_controller_
         .leftBumper()
         .whileTrue(
             Commands.startEnd(
-                () -> GameStateManager.getInstance().setRobotState(RobotState.TARGET_ACQUISITION),
+                () -> {
+                  GameStateManager.getInstance().setTargetColumn(Column.LEFT);
+                  GameStateManager.getInstance().setRobotState(RobotState.TARGET_ACQUISITION);
+                },
                 () -> GameStateManager.getInstance().setRobotState(RobotState.END)));
-    Commands.runOnce(() -> GameStateManager.getInstance().setTargetColumn(Column.LEFT));
 
     driver_pov_active_.whileTrue(
         Commands.startEnd(

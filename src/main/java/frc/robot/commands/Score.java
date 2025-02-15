@@ -1,6 +1,8 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.GameStateManager;
+import frc.robot.GameStateManager.RobotState;
 import frc.robot.subsystems.CoralFunnel;
 import frc.robot.subsystems.CoralFunnel.FeedingMode;
 
@@ -25,6 +27,7 @@ public class Score extends Command {
   @Override
   public void end(boolean interrupted) {
     CoralFunnel.getInstance().setFeedingMode(FeedingMode.IDLE);
+    GameStateManager.getInstance().setRobotState(RobotState.END);
   }
 
   // Returns true when the command should end.
