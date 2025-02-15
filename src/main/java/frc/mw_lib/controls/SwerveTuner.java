@@ -200,7 +200,7 @@ public class SwerveTuner {
                   steer.getClosedLoopReference().getValue()
                       - steer.getClosedLoopError().getValue());
                 SmartDashboard.putNumber(
-                  system_name_ + "Error", steer.getClosedLoopError().getValue());
+                  system_name_ + "Error-Steer", steer.getClosedLoopError().getValue());
               }
             },
             // Clear the active request and setpoint
