@@ -7,16 +7,21 @@ package frc.robot;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.ConditionalCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.GameStateManager.Column;
 import frc.robot.GameStateManager.RobotState;
 import frc.robot.commands.AlagaeScoreLeveler;
 import frc.robot.commands.AlagaeScoreLeveler.AlagaeScorer;
-import frc.robot.commands.Feed;
-import frc.robot.commands.Score;
+import frc.robot.commands.AlgaeEject;
+import frc.robot.commands.AlgaeLoad;
+import frc.robot.commands.CoralEject;
+import frc.robot.commands.CoralLoad;
+import frc.robot.commands.CoralStation;
 import frc.robot.commands.SetReefLevel;
 import frc.robot.commands.SetReefLevel.ReefLevel;
+import frc.robot.subsystems.Claw;
 import frc.robot.subsystems.Elevator;
 import frc.robot.subsystems.PoseEstimator;
 import frc.robot.subsystems.SwerveDrivetrain;
@@ -72,25 +77,48 @@ public abstract class OI {
      *
      */
 
-    // driver_controller_.rightBumper().onTrue(Claw.getInstance().toggleGamePiece());
-    // driver_controller_
-    //     .leftTrigger()
-    //     .whileTrue(
-    //         new ConditionalCommand(
-    //             new AlgaeLoad(), new CoralStationLoad(), Claw.getInstance()::isAlgaeMode));
-    // driver_controller_
-    //     .rightTrigger()
-    //     .whileTrue(
-    //         new ConditionalCommand(
-    //             new CoralEject(), new AlgaeEject(), Claw.getInstance()::isCoralMode));
-    // driver_controller_.y().toggleOnTrue(new SetReefLevel(ReefLevel.L4));
-    // driver_controller_.x().toggleOnTrue(new SetReefLevel(ReefLevel.L2));
-    // driver_controller_.b().toggleOnTrue(new SetReefLevel(ReefLevel.L3));
+    driver_controller_.rightBumper().onTrue(Claw.getInstance().toggleGamePiece());
+    driver_controller_
+        .leftTrigger()
+        .whileTrue(
+            new ConditionalCommand(
+                new CoralLoad(), new AlgaeLoad(), Claw.getInstance()::isCoralMode));
+    driver_controller_
+        .rightTrigger()
+        .whileTrue(
+            new ConditionalCommand(
+                new CoralEject(), new AlgaeEject(), Claw.getInstance()::isCoralMode));
+    driver_controller_
+        .y()
+        .toggleOnTrue(
+            new ConditionalCommand(
+                new SetReefLevel(ReefLevel.L4),
+                new AlagaeScoreLeveler(AlagaeScorer.BARGE),
+                Claw.getInstance()::isCoralMode));
+    driver_controller_
+        .x()
+        .toggleOnTrue(
+            new ConditionalCommand(
+                new SetReefLevel(ReefLevel.L2),
+                new SetReefLevel(ReefLevel.ALGAE_LOW),
+                Claw.getInstance()::isCoralMode));
+    driver_controller_
+        .b()
+        .toggleOnTrue(
+            new ConditionalCommand(
+                new SetReefLevel(ReefLevel.L3),
+                new SetReefLevel(ReefLevel.ALGAE_HIGH),
+                Claw.getInstance()::isCoralMode));
+    driver_controller_
+        .a()
+        .toggleOnTrue(
+            new ConditionalCommand(
+                new CoralStation(),
+                new AlagaeScoreLeveler(AlagaeScorer.PROCESSOR),
+                Claw.getInstance()::isCoralMode));
 
-    driver_controller_.povUp().toggleOnTrue(new SetReefLevel(ReefLevel.ALGAE_HIGH));
-    driver_controller_.povDown().toggleOnTrue(new SetReefLevel(ReefLevel.ALGAE_LOW));
-    driver_controller_.a().toggleOnTrue(new AlagaeScoreLeveler(AlagaeScorer.PROCESSOR));
-    driver_controller_.povRight().toggleOnTrue(new AlagaeScoreLeveler(AlagaeScorer.BARGE));
+    // new ConditionalCommand(new SetReefLevel(ReefLevel.L3), new
+    // SetReefLevel(ReefLevel.ALGAE_HIGH), Claw.getInstance()::isCoralMode))
 
     /*
      *
@@ -120,8 +148,6 @@ public abstract class OI {
      * L2 Game State Manager Bindings
      *
      */
-    driver_controller_.leftTrigger(0.5).whileTrue(new Feed());
-    driver_controller_.rightTrigger(0.5).whileTrue(new Score());
 
     driver_controller_
         .rightBumper()

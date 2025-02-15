@@ -340,6 +340,12 @@ public class Elevator extends Subsystem {
     setTarget(ElevatorConstants.Target.STOW);
   }
 
+  public void setSpeedLimit(double cruise_velocity, double acceration) {
+    arm_config_.MotionMagic.MotionMagicCruiseVelocity = cruise_velocity;
+    arm_config_.MotionMagic.MotionMagicAcceleration = acceration;
+    arm_motor_.getConfigurator().apply(arm_config_);
+  }
+
   /**
    * @return If the elevator is within the threshold of zero and the limit switch is pressed
    */

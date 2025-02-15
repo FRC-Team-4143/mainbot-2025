@@ -5,22 +5,19 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.Constants;
 import frc.robot.subsystems.Claw;
 import frc.robot.subsystems.Claw.ClawMode;
 import frc.robot.subsystems.Claw.GamePiece;
-import frc.robot.subsystems.Elevator;
 
-public class CoralStationLoad extends Command {
-
+public class CoralLoad extends Command {
   static Claw claw_;
-  static Elevator elevator_;
 
-  /** Creates a new CoralStationLoad. */
-  public CoralStationLoad() {
+  /** Creates a new ExampleLazyCommand. */
+  public CoralLoad() {
+    // Creates a new LazyCommand with the selected amount of seconds(double) to wait before allowing
+    // the lazy command to end
     claw_ = Claw.getInstance();
-    elevator_ = Elevator.getInstance();
-    addRequirements(claw_, elevator_);
+    addRequirements(claw_);
   }
 
   // Called when the command is initially scheduled.
@@ -28,7 +25,6 @@ public class CoralStationLoad extends Command {
   public void initialize() {
     claw_.setGamePiece(GamePiece.CORAL);
     claw_.setClawMode(ClawMode.LOAD);
-    elevator_.setTarget(Constants.ElevatorConstants.Target.STATION);
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -38,11 +34,11 @@ public class CoralStationLoad extends Command {
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    elevator_.stowElevator();
     claw_.setClawMode(ClawMode.IDLE);
   }
 
-  // Returns true when the command should end.
+  // unique to lazy command and serves the same purpose as "isFinished()" {*THE COMMAND WILL END IF
+  // THIS IS TRUE & THE TIME HAS ELAPSED*}
   @Override
   public boolean isFinished() {
     return false;
