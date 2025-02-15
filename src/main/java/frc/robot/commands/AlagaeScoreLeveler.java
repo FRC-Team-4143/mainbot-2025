@@ -29,8 +29,10 @@ public class AlagaeScoreLeveler extends Command {
     switch (requested_level_) {
       case PROCESSOR:
         elevator_.setTarget(Target.ALGAE_PROCESSOR);
+        break;
       case BARGE:
         elevator_.setTarget(Target.BARGE);
+        break;
     }
   }
 
