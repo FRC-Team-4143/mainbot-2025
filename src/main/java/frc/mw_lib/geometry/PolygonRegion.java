@@ -31,13 +31,17 @@ public class PolygonRegion implements Region {
         NetworkTableInstance.getDefault()
             .getStructArrayTopic("Regions/" + name_, Translation2d.struct)
             .publish();
+    constructRegion();
   }
 
   public void allianceFlip() {
     for (Translation2d point : points_) {
       point = AllianceFlipUtil.apply(point);
     }
+    constructRegion();
+  }
 
+  public void constructRegion() {
     shape_ = new Path2D.Double(Path2D.WIND_EVEN_ODD, points_.length);
     shape_.moveTo(points_[0].getX(), points_[0].getY());
 
