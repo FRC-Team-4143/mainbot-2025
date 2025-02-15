@@ -1,17 +1,11 @@
 package frc.robot.subsystems;
-
-import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.playingwithfusion.TimeOfFlight;
 import com.revrobotics.RelativeEncoder;
-import com.revrobotics.spark.SparkMax;
-
-import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj.DigitalInput;
 import frc.mw_lib.subsystem.Subsystem;
 import frc.robot.Constants;
-import frc.robot.commands.PickupLoad;
 import monologue.Annotations.Log;
 import monologue.Logged;
 
@@ -32,9 +26,11 @@ public class Pickup extends Subsystem {
         rotate_motor_ = new TalonFX(Constants.PickupConstants.ROTATE_MOTOR_ID);
         roller_motor_ = new TalonFX(Constants.PickupConstants.ROLLER_MOTOR_ID);
         algae_loaded_sensor_ = new TimeOfFlight(Constants.PickupConstants.PICKUP_LOADED_SENSOR_ID);
+        rotate_motor_PID_controller_ = new PIDController(0, 0, 0);
+        rotate_motor_PID_controller_.setTolerance(5, 10);
     }
 
-    enum PickupStages {
+    public enum PickupStages {
         IDLE,
         ROTATE_IN,
         ROTATE_OUT,
@@ -68,13 +64,15 @@ public class Pickup extends Subsystem {
                 break;
             case ROTATE_IN:
                 setIdlePosition();
+                io_.target_speed_ = Constants.PickupConstants.ROTATE_IN_SPEED;
                 break;
             case ROTATE_OUT:
                 setPickupPosition();
+                io_.target_speed_ = Constants.PickupConstants.ROTATE_OUT_SPEED;
                 break;
             case PICKUP:
                 pickupAlgae();
-                io_.target_degrees_ = Constants.PickupConstants.ROTATE_OUT_POSITION;
+                io_.target_position_ = Constants.PickupConstants.ROTATE_OUT_POSITION;
                 break;
             default:
                 setIdlePosition();
@@ -88,16 +86,12 @@ public class Pickup extends Subsystem {
      * Writes the periodic outputs to actuators (motors and etc...)
      */
     public void writePeriodicOutputs(double timestamp) {
-        roller_motor_.set(io_.roller_speed_);
-        rotate_motor_.setControl(io_.rotate_speed_);
+        // roller_motor_.set(io_.roller_speed_);
+        // rotate_motor_.setControl(io_.rotate_speed_);
 
-        rotate_motor_.set(rotate_motor_PID_controller_.calculate(rotate_encoder.getPosition(),
-                Constants.PickupConstants.ROTATE_IN_POSITION));
-        rotate_motor_.set(rotate_motor_PID_controller_.calculate(rotate_encoder.getPosition(),
-                Constants.PickupConstants.ROTATE_OUT_POSITION));
+        rotate_motor_.set(rotate_motor_PID_controller_.calculate(rotate_encoder.getPosition(), io_.target_position_));
+        roller_motor_.set(io_.target_speed_);
 
-        rotate_motor_PID_controller_ = new PIDController(0, 0, 0);
-        rotate_motor_PID_controller_.setTolerance(5, 10);
         // rotate_motor_PID_controller_.enableContinuousInput(0, 180);
         // Clamps the controller output to between 0 and 0.5
         // MathUtil.clamp(rotate_motor_PID_controller_.calculate(rotate_encoder.getPosition(),
@@ -119,6 +113,10 @@ public class Pickup extends Subsystem {
         stopRollerMotors();
         setIdlePosition();
         stopRotateMotors();
+    }
+
+    public PickupStages getPickupStage() {
+        return io_.pickup_stage_;
     }
 
     public void setPickupStage(PickupStages mode) {
@@ -187,7 +185,7 @@ public class Pickup extends Subsystem {
         }
     }
 
-    private boolean getAlgaeLoaded() {
+    public boolean hasAlgae() {
         if (io_.algae_distance_ < Constants.PickupConstants.ALGAE_PICKUP_TOF_LOADED_DISTANCE) {
             return true;
         } else {
@@ -211,7 +209,9 @@ public class Pickup extends Subsystem {
         @Log.File
         public boolean is_algae_loaded_ = false;
         @Log.File
-        public double target_degrees_ = 0.0;
+        public double target_position_ = 0.0;
+        @Log.File
+        public double target_speed_ = 0.0;
     }
 
     /**

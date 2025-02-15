@@ -5,14 +5,14 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.Constants;
 import frc.robot.subsystems.Pickup;
 
-public class PickupLoad extends Command {
-     
+
+public class PickupIdle extends Command {
+private boolean has_algae_;h
     static Pickup pickup_;
-    
-  public PickupLoad() {
+
+  public PickupIdle() {
     // Add requirements for command schedule interuption handling
     //addRequirements(subsystem);
     pickup_ = Pickup.getInstance();
@@ -23,16 +23,19 @@ public class PickupLoad extends Command {
   @Override
   public void initialize() {
     pickup_.setPickupStage(Pickup.PickupStages.PICKUP);
-    }
+  }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
-  public void execute() {}
+  public void execute() {
+    if (Pickup.hasAlgae()) {
+
+    }
+  }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    pickup_.setIdlePosition();
   }
 
   // Returns true when the command should end.

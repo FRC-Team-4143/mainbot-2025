@@ -34,8 +34,7 @@ public abstract class OI {
     SmartDashboard.putData(
         "Seed Field Centric",
         Commands.runOnce(
-                () ->
-                    swerve_drivetrain_.seedFieldRelative(swerve_drivetrain_.getDriverPrespective()))
+            () -> swerve_drivetrain_.seedFieldRelative(swerve_drivetrain_.getDriverPrespective()))
             .ignoringDisable(true));
     // Sync Elevator and Arm Sensor to "Home" Position
     SmartDashboard.putData(
@@ -52,8 +51,8 @@ public abstract class OI {
     driver_controller_.rightBumper().onTrue(claw_.toggleGamePiece());
     driver_controller_.leftTrigger().whileTrue(new AlgaeLoad());
     // Score
-    driver_controller_
-        .rightTrigger()
+    driver_controller_.leftBumper().whileTrue(new PickupLoad());
+    driver_controller_.rightTrigger()
         .whileTrue(new ConditionalCommand(new CoralEject(), new AlgaeEject(), claw_::isCoralMode));
     driver_controller_.y().toggleOnTrue(new SetReefLevel(ReefLevel.L4));
     driver_controller_.x().toggleOnTrue(new SetReefLevel(ReefLevel.L2));
@@ -61,7 +60,8 @@ public abstract class OI {
     driver_controller_.a().toggleOnTrue(new CoralStationLoad());
     driver_controller_.povDown().toggleOnTrue(new SetReefLevel(ReefLevel.ALGAE_LOW));
     driver_controller_.povUp().toggleOnTrue(new SetReefLevel(ReefLevel.ALGAE_HIGH));
-    // driver_controller_.a().whileTrue(new setReefLevel(ReefLevel.L1)); TODO: Fix Effector
+    // driver_controller_.a().whileTrue(new setReefLevel(ReefLevel.L1)); TODO: Fix
+    // Effector
     // Collision with Frame
   }
 
