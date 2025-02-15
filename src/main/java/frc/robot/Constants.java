@@ -112,6 +112,8 @@ public final class Constants {
 
     public static final double CRAWL_DRIVE_SPEED = MAX_DRIVE_SPEED * 0.1;
     public static final double MAX_TARGET_SPEED = 1;
+    public static final double MAX_TRACTOR_BEAM_VELOCITY_SPEED = MAX_DRIVE_SPEED * 0.35;
+    public static final double MAX_TRACTOR_BEAM_OMEGA_SPEED = MAX_DRIVE_ANGULAR_RATE * 0.6;
 
     private static final SwerveModuleConstantsFactory ConstantCreator =
         new SwerveModuleConstantsFactory()

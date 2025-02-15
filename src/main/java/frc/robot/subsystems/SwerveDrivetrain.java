@@ -335,24 +335,27 @@ public class SwerveDrivetrain extends Subsystem {
                           + Math.pow(io_.joystick_right_x_, 2))
                   * DrivetrainConstants.MAX_DRIVE_SPEED;
           double x_velocity =
-              Util.clamp(
-                  x_pose_controller_.calculate(io_.current_pose_.getX(), io_.target_pose_.getX()),
-                  io_.tractor_beam_scaling_factor_);
+              // Util.clamp(
+              x_pose_controller_.calculate(io_.current_pose_.getX(), io_.target_pose_.getX());
+          // io_.tractor_beam_scaling_factor_);
           double y_velocity =
-              Util.clamp(
-                  y_pose_controller_.calculate(io_.current_pose_.getY(), io_.target_pose_.getY()),
-                  io_.tractor_beam_scaling_factor_);
+              // Util.clamp(
+              y_pose_controller_.calculate(io_.current_pose_.getY(), io_.target_pose_.getY());
+          // io_.tractor_beam_scaling_factor_);
           double omega =
-              Util.clamp(
-                  heading_pose_controller_.calculate(
-                      io_.current_pose_.getRotation().getRadians(),
-                      io_.target_pose_.getRotation().getRadians()),
-                  io_.tractor_beam_scaling_factor_);
+              // Util.clamp(
+              heading_pose_controller_.calculate(
+                  io_.current_pose_.getRotation().getRadians(),
+                  io_.target_pose_.getRotation().getRadians());
+          // io_.tractor_beam_scaling_factor_);
           this.setControl(
               auto_request_
-                  .withVelocityX(x_velocity)
-                  .withVelocityY(y_velocity)
-                  .withRotationalRate(omega));
+                  .withVelocityX(
+                      Util.clamp(x_velocity, DrivetrainConstants.MAX_TRACTOR_BEAM_VELOCITY_SPEED))
+                  .withVelocityY(
+                      Util.clamp(y_velocity, DrivetrainConstants.MAX_TRACTOR_BEAM_VELOCITY_SPEED))
+                  .withRotationalRate(
+                      Util.clamp(omega, DrivetrainConstants.MAX_TRACTOR_BEAM_OMEGA_SPEED)));
           request_parameters_.currentPose = io_.current_pose_;
         }
         break;
