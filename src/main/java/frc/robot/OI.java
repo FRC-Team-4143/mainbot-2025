@@ -120,22 +120,24 @@ public abstract class OI {
      *
      */
 
-    // driver_controller_
-    //     .rightBumper()
-    //     .whileTrue(
-    //         Commands.startEnd(
-    //             () ->
-    // GameStateManager.getInstance().setRobotState(RobotState.TARGET_ACQUISITION),
-    //             () -> GameStateManager.getInstance().setRobotState(RobotState.END)));
-    // Commands.runOnce(() -> GameStateManager.getInstance().setTargetColumn(Column.RIGHT));
-    // driver_controller_
-    //     .leftBumper()
-    //     .whileTrue(
-    //         Commands.startEnd(
-    //             () ->
-    // GameStateManager.getInstance().setRobotState(RobotState.TARGET_ACQUISITION),
-    //             () -> GameStateManager.getInstance().setRobotState(RobotState.END)));
-    // Commands.runOnce(() -> GameStateManager.getInstance().setTargetColumn(Column.LEFT));
+    driver_controller_
+        .rightBumper()
+        .whileTrue(
+            Commands.startEnd(
+                () -> {
+                  GameStateManager.getInstance().setTargetColumn(Column.RIGHT);
+                  GameStateManager.getInstance().setRobotState(RobotState.TARGET_ACQUISITION);
+                },
+                () -> GameStateManager.getInstance().setRobotState(RobotState.END)));
+    driver_controller_
+        .leftBumper()
+        .whileTrue(
+            Commands.startEnd(
+                () -> {
+                  GameStateManager.getInstance().setTargetColumn(Column.LEFT);
+                  GameStateManager.getInstance().setRobotState(RobotState.TARGET_ACQUISITION);
+                },
+                () -> GameStateManager.getInstance().setRobotState(RobotState.END)));
 
     driver_pov_active_.whileTrue(
         Commands.startEnd(
