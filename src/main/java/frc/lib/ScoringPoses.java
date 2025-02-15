@@ -37,7 +37,7 @@ public class ScoringPoses {
   public static final Transform2d LEFT_COLUMN_OFFEST =
       new Transform2d(0, Units.inchesToMeters(6.47), new Rotation2d()).plus(CORAL_ALIGN_OFFSET);
   public static final Transform2d RIGHT_COLUMN_OFFSET =
-      new Transform2d(0, Units.inchesToMeters(6.47), new Rotation2d()).plus(CORAL_ALIGN_OFFSET);
+      new Transform2d(0, Units.inchesToMeters(-6.47), new Rotation2d()).plus(CORAL_ALIGN_OFFSET);
 
   // Poses used for scoring / pickup alignment
   public static Pose2d REEF_FACE_0_POSE =
