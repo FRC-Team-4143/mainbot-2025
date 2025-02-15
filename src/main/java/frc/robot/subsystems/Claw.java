@@ -52,7 +52,8 @@ public class Claw extends Subsystem {
 
     wheel_motor_ = new TalonFX(ClawConstants.WHEEL_MOTOR_ID, "CANivore");
     wheel_config_ = new TalonFXConfiguration();
-
+    wheel_config_.CurrentLimits.StatorCurrentLimit = ClawConstants.STATOR_CURRENT_LIMIT_;
+    wheel_config_.CurrentLimits.StatorCurrentLimitEnable = true;
     wheel_config_.MotorOutput.NeutralMode = NeutralModeValue.Brake;
     wheel_config_.MotorOutput.Inverted = ClawConstants.WHEEL_MOTOR_INVERTED;
 
