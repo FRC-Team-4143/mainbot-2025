@@ -273,6 +273,8 @@ public final class Constants {
     public static final double ROLLER_BACKWARD = 0.0; 
     public static final double ROTATE_IN_SPEED = 0.0;
     public static final double ROTATE_OUT_SPEED = 0.0;
+    public static final double ROTATE_IN_POSITION = 0.0;
+    public static final double ROTATE_OUT_POSITION = 45.0;
   }
 
 }

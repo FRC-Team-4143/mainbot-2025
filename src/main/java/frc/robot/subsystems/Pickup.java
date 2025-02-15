@@ -3,10 +3,15 @@ package frc.robot.subsystems;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.playingwithfusion.TimeOfFlight;
+import com.revrobotics.RelativeEncoder;
+import com.revrobotics.spark.SparkMax;
 
+import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj.DigitalInput;
 import frc.mw_lib.subsystem.Subsystem;
 import frc.robot.Constants;
+import frc.robot.commands.PickupLoad;
 import monologue.Annotations.Log;
 import monologue.Logged;
 
@@ -17,6 +22,8 @@ public class Pickup extends Subsystem {
     private TimeOfFlight algae_loaded_sensor_;
     private DigitalInput rotate_idle_switch_;
     private DigitalInput rotate_pickup_switch_;
+    private PIDController rotate_motor_PID_controller_;
+    private RelativeEncoder rotate_encoder;
 
     private Pickup() {
         io_ = new PickupPeriodicIo();
@@ -33,6 +40,17 @@ public class Pickup extends Subsystem {
         ROTATE_OUT,
         PICKUP,
     }
+
+    // Singleton pattern
+    private static Pickup pickup_instance_ = null;
+
+    public static Pickup getInstance() {
+        if (pickup_instance_ == null) {
+            pickup_instance_ = new Pickup();
+        }
+        return pickup_instance_;
+    }
+
     /**
      * Reads all sensors and stores periodic data
      */
@@ -44,25 +62,26 @@ public class Pickup extends Subsystem {
      * Computes updated outputs for the actuators
      */
     public void updateLogic(double timestamp) {
-       switch (io_.pickup_stages_) {
-        case IDLE:
-            setIdlePosition();
-            break;
-        case ROTATE_IN:
-            setIdlePosition();
-            break;
-        case ROTATE_OUT:
-            setPickupPosition();
-            break;
-        case PICKUP:
-            pickupAlgae();
-            break;
-        default:
-            setIdlePosition();
-            stopRotateMotors();
-            stopRollerMotors();
-            break;
-       }
+        switch (io_.pickup_stage_) {
+            case IDLE:
+                setIdlePosition();
+                break;
+            case ROTATE_IN:
+                setIdlePosition();
+                break;
+            case ROTATE_OUT:
+                setPickupPosition();
+                break;
+            case PICKUP:
+                pickupAlgae();
+                io_.target_degrees_ = Constants.PickupConstants.ROTATE_OUT_POSITION;
+                break;
+            default:
+                setIdlePosition();
+                stopRotateMotors();
+                stopRollerMotors();
+                break;
+        }
     }
 
     /**
@@ -70,13 +89,28 @@ public class Pickup extends Subsystem {
      */
     public void writePeriodicOutputs(double timestamp) {
         roller_motor_.set(io_.roller_speed_);
-        rotate_motor_.set(io_.rotate_speed_);
+        rotate_motor_.setControl(io_.rotate_speed_);
+
+        rotate_motor_.set(rotate_motor_PID_controller_.calculate(rotate_encoder.getPosition(),
+                Constants.PickupConstants.ROTATE_IN_POSITION));
+        rotate_motor_.set(rotate_motor_PID_controller_.calculate(rotate_encoder.getPosition(),
+                Constants.PickupConstants.ROTATE_OUT_POSITION));
+
+        rotate_motor_PID_controller_ = new PIDController(0, 0, 0);
+        rotate_motor_PID_controller_.setTolerance(5, 10);
+        // rotate_motor_PID_controller_.enableContinuousInput(0, 180);
+        // Clamps the controller output to between 0 and 0.5
+        // MathUtil.clamp(rotate_motor_PID_controller_.calculate(rotate_encoder.getPosition(),
+        // /*setpoint*/), 0, 0.5);
+        // https://docs.wpilib.org/en/stable/docs/software/advanced-controls/controllers/pidcontroller.html
+
     }
 
     /**
      * Outputs all logging information to the SmartDashboard
      */
-    public void outputTelemetry(double timestamp) {}
+    public void outputTelemetry(double timestamp) {
+    }
 
     /**
      * Called to reset and configure the subsystem
@@ -88,7 +122,7 @@ public class Pickup extends Subsystem {
     }
 
     public void setPickupStage(PickupStages mode) {
-        io_.pickup_stages_ = mode;
+        io_.pickup_stage_ = mode;
     }
 
     public void setIdlePosition() {
@@ -107,7 +141,8 @@ public class Pickup extends Subsystem {
         stopRollerMotors();
     }
 
-    public void pickupAlgae() {
+    private void pickupAlgae() {
+
         setPickupPosition();
         while (io_.is_algae_loaded_ == false) {
             rotateIn();
@@ -116,35 +151,35 @@ public class Pickup extends Subsystem {
         stopRollerMotors();
     }
 
-    public void rotateIn() {
+    private void rotateIn() {
         io_.rotate_speed_ = Constants.PickupConstants.ROTATE_IN_SPEED;
     }
 
-    public void rotateOut() {
+    private void rotateOut() {
         io_.rotate_speed_ = Constants.PickupConstants.ROTATE_OUT_SPEED;
     }
 
-    public void stopRollerMotors() {
+    private void stopRollerMotors() {
         io_.roller_speed_ = 0.0;
     }
 
-    public void stopRotateMotors() {
+    private void stopRotateMotors() {
         io_.rotate_speed_ = 0.0;
     }
 
-    public void isArmAtIdlePosition () {
+    private void isArmAtIdlePosition() {
         io_.is_arm_at_idle_position_ = rotate_idle_switch_.get();
     }
 
-    public void isArmAtPickupPosition() {
+    private void isArmAtPickupPosition() {
         io_.is_arm_at_pickup_position_ = rotate_pickup_switch_.get();
     }
 
-    public void getAlgaeDistance() {
+    private void getAlgaeDistance() {
         io_.algae_distance_ = algae_loaded_sensor_.getRange();
     }
 
-    public void isAlgaeLoaded() {
+    private void isAlgaeLoaded() {
         if (io_.algae_distance_ < Constants.PickupConstants.ALGAE_PICKUP_TOF_LOADED_DISTANCE) {
             io_.is_algae_loaded_ = true;
         } else {
@@ -152,9 +187,17 @@ public class Pickup extends Subsystem {
         }
     }
 
+    private boolean getAlgaeLoaded() {
+        if (io_.algae_distance_ < Constants.PickupConstants.ALGAE_PICKUP_TOF_LOADED_DISTANCE) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
     public class PickupPeriodicIo implements Logged {
         @Log.File
-        public PickupStages pickup_stages_ = PickupStages.IDLE;
+        public PickupStages pickup_stage_ = PickupStages.IDLE;
         @Log.File
         public double roller_speed_ = 0.0;
         @Log.File
@@ -167,6 +210,8 @@ public class Pickup extends Subsystem {
         public double algae_distance_ = 0.0;
         @Log.File
         public boolean is_algae_loaded_ = false;
+        @Log.File
+        public double target_degrees_ = 0.0;
     }
 
     /**
