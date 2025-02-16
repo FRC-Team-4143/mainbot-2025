@@ -10,8 +10,6 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.ConditionalCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
-import frc.robot.GameStateManager.Column;
-import frc.robot.GameStateManager.RobotState;
 import frc.robot.commands.AlgaeEject;
 import frc.robot.commands.AlgaeLoad;
 import frc.robot.commands.CoralEject;
@@ -122,20 +120,22 @@ public abstract class OI {
      *
      */
 
-    driver_controller_
-        .rightBumper()
-        .whileTrue(
-            Commands.startEnd(
-                () -> GameStateManager.getInstance().setRobotState(RobotState.TARGET_ACQUISITION),
-                () -> GameStateManager.getInstance().setRobotState(RobotState.END)));
-    Commands.runOnce(() -> GameStateManager.getInstance().setTargetColumn(Column.RIGHT));
-    driver_controller_
-        .leftBumper()
-        .whileTrue(
-            Commands.startEnd(
-                () -> GameStateManager.getInstance().setRobotState(RobotState.TARGET_ACQUISITION),
-                () -> GameStateManager.getInstance().setRobotState(RobotState.END)));
-    Commands.runOnce(() -> GameStateManager.getInstance().setTargetColumn(Column.LEFT));
+    // driver_controller_
+    //     .rightBumper()
+    //     .whileTrue(
+    //         Commands.startEnd(
+    //             () ->
+    // GameStateManager.getInstance().setRobotState(RobotState.TARGET_ACQUISITION),
+    //             () -> GameStateManager.getInstance().setRobotState(RobotState.END)));
+    // Commands.runOnce(() -> GameStateManager.getInstance().setTargetColumn(Column.RIGHT));
+    // driver_controller_
+    //     .leftBumper()
+    //     .whileTrue(
+    //         Commands.startEnd(
+    //             () ->
+    // GameStateManager.getInstance().setRobotState(RobotState.TARGET_ACQUISITION),
+    //             () -> GameStateManager.getInstance().setRobotState(RobotState.END)));
+    // Commands.runOnce(() -> GameStateManager.getInstance().setTargetColumn(Column.LEFT));
 
     driver_pov_active_.whileTrue(
         Commands.startEnd(

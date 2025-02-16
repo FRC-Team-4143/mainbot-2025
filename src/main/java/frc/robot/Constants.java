@@ -281,7 +281,7 @@ public final class Constants {
         InvertedValue.CounterClockwise_Positive;
     public static final double ARM_HOME_POSITION = 0;
     public static final double CORAL_ARM_CRUISE_VELOCITY = 4;
-    public static final double CORAL_ARM_ACCELERATION = 2;
+    public static final double CORAL_ARM_ACCELERATION = 1.75;
     public static final double ALGAE_ARM_CRUISE_VELOCITY = 4;
     public static final double ALGAE_ARM_ACCELERATION = 0.65;
     public static final double ARM_LENGTH = Units.inchesToMeters(12.5);
