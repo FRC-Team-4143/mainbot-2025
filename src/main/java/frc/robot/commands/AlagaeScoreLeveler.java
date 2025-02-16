@@ -7,6 +7,7 @@ package frc.robot.commands;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants.ElevatorConstants.Target;
 import frc.robot.subsystems.Elevator;
+import frc.robot.subsystems.Elevator.SpeedLimit;
 
 public class AlagaeScoreLeveler extends Command {
   public enum AlagaeScorer {
@@ -26,6 +27,7 @@ public class AlagaeScoreLeveler extends Command {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
+    elevator_.setSpeedLimit(SpeedLimit.ALGAE);
     switch (requested_level_) {
       case PROCESSOR:
         elevator_.setTarget(Target.ALGAE_PROCESSOR);

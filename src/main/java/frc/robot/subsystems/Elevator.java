@@ -77,6 +77,11 @@ public class Elevator extends Subsystem {
     PIVOT
   }
 
+  public enum SpeedLimit {
+    CORAL,
+    ALGAE
+  }
+
   private ElevatorPeriodicIo io_;
 
   // Constructor
@@ -120,8 +125,8 @@ public class Elevator extends Subsystem {
     arm_config_.Feedback.FeedbackSensorSource = FeedbackSensorSourceValue.RotorSensor;
     arm_config_.Feedback.SensorToMechanismRatio = ElevatorConstants.SENSOR_TO_MECHANISM_RATIO;
     arm_config_.Slot0 = ElevatorConstants.ARM_GAINS;
-    arm_config_.MotionMagic.MotionMagicCruiseVelocity = ElevatorConstants.ARM_CRUISE_VELOCITY;
-    arm_config_.MotionMagic.MotionMagicAcceleration = ElevatorConstants.ARM_ACCELERATION;
+    arm_config_.MotionMagic.MotionMagicCruiseVelocity = ElevatorConstants.CORAL_ARM_CRUISE_VELOCITY;
+    arm_config_.MotionMagic.MotionMagicAcceleration = ElevatorConstants.CORAL_ARM_ACCELERATION;
     arm_config_.MotorOutput.NeutralMode = NeutralModeValue.Brake;
     arm_config_.ClosedLoopGeneral.ContinuousWrap = false;
     arm_config_.SoftwareLimitSwitch.ForwardSoftLimitEnable = true;
@@ -340,9 +345,16 @@ public class Elevator extends Subsystem {
     setTarget(ElevatorConstants.Target.STOW);
   }
 
-  public void setSpeedLimit(double cruise_velocity, double acceration) {
-    arm_config_.MotionMagic.MotionMagicCruiseVelocity = cruise_velocity;
-    arm_config_.MotionMagic.MotionMagicAcceleration = acceration;
+  public void setSpeedLimit(SpeedLimit limit) {
+    if (limit == SpeedLimit.CORAL) {
+      arm_config_.MotionMagic.MotionMagicCruiseVelocity =
+          ElevatorConstants.CORAL_ARM_CRUISE_VELOCITY;
+      arm_config_.MotionMagic.MotionMagicAcceleration = ElevatorConstants.CORAL_ARM_ACCELERATION;
+    } else if (limit == SpeedLimit.ALGAE) {
+      arm_config_.MotionMagic.MotionMagicCruiseVelocity =
+          ElevatorConstants.ALGAE_ARM_CRUISE_VELOCITY;
+      arm_config_.MotionMagic.MotionMagicAcceleration = ElevatorConstants.ALGAE_ARM_ACCELERATION;
+    }
     arm_motor_.getConfigurator().apply(arm_config_);
   }
 

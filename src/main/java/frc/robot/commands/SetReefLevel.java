@@ -7,6 +7,7 @@ package frc.robot.commands;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants.ElevatorConstants.Target;
 import frc.robot.subsystems.Elevator;
+import frc.robot.subsystems.Elevator.SpeedLimit;
 
 public class SetReefLevel extends Command {
 
@@ -36,18 +37,23 @@ public class SetReefLevel extends Command {
         // elevator_.setTarget(Target.);
         break;
       case L2:
+        elevator_.setSpeedLimit(SpeedLimit.CORAL);
         elevator_.setTarget(Target.L2);
         break;
       case L3:
+        elevator_.setSpeedLimit(SpeedLimit.CORAL);
         elevator_.setTarget(Target.L3);
         break;
       case L4:
+        elevator_.setSpeedLimit(SpeedLimit.CORAL);
         elevator_.setTarget(Target.L4);
         break;
       case ALGAE_HIGH:
+        elevator_.setSpeedLimit(SpeedLimit.ALGAE);
         elevator_.setTarget(Target.ALGAE_HIGH);
         break;
       case ALGAE_LOW:
+        elevator_.setSpeedLimit(SpeedLimit.ALGAE);
         elevator_.setTarget(Target.ALGAE_LOW);
         break;
     }

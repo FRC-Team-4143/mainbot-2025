@@ -277,8 +277,10 @@ public final class Constants {
     public static final InvertedValue ARM_FOLLOWER_INVERSION =
         InvertedValue.CounterClockwise_Positive;
     public static final double ARM_HOME_POSITION = 0;
-    public static final double ARM_CRUISE_VELOCITY = 4;
-    public static final double ARM_ACCELERATION = 2;
+    public static final double CORAL_ARM_CRUISE_VELOCITY = 4;
+    public static final double CORAL_ARM_ACCELERATION = 2;
+    public static final double ALGAE_ARM_CRUISE_VELOCITY = 4;
+    public static final double ALGAE_ARM_ACCELERATION = 0.65;
     public static final double ARM_LENGTH = Units.inchesToMeters(12.5);
     // ((shaft sprocket / pivot sprocket) / gearbox) * rotations to radians ratio)
     public static final double SENSOR_TO_MECHANISM_RATIO = (1.0 / ((16.0 / 64.0) / 20.0));
@@ -312,7 +314,7 @@ public final class Constants {
 
       STATION(1.076666, Rotation2d.fromRadians(-1.027767), ControlType.PIVOT),
       CLIMB(ELEVATOR_MIN_HEIGHT, new Rotation2d(), ControlType.PIVOT),
-      STOW(0, Rotation2d.fromDegrees(-90), ControlType.PIVOT),
+      STOW(0.08, Rotation2d.fromDegrees(-90), ControlType.PIVOT),
       ALGAE_LOW(
           0.23665818349136578, Rotation2d.fromRadians(2.4942527611020524), ControlType.EFFECTOR),
       ALGAE_HIGH(1.200, Rotation2d.fromDegrees(90 + 33), ControlType.EFFECTOR),
