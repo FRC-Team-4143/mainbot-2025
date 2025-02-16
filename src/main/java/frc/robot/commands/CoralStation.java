@@ -7,6 +7,7 @@ package frc.robot.commands;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants;
 import frc.robot.subsystems.Elevator;
+import frc.robot.subsystems.Elevator.SpeedLimit;
 
 public class CoralStation extends Command {
 
@@ -21,6 +22,7 @@ public class CoralStation extends Command {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
+    elevator_.setSpeedLimit(SpeedLimit.CORAL);
     elevator_.setTarget(Constants.ElevatorConstants.Target.STATION);
   }
 
