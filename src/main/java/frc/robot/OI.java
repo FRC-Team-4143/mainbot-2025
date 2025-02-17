@@ -10,6 +10,11 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.ConditionalCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
+import frc.robot.GameStateManager.Column;
+import frc.robot.GameStateManager.RobotState;
+import frc.robot.GameStateManager.ScoringTarget;
+import frc.robot.commands.AlagaeScoreLeveler;
+import frc.robot.commands.AlagaeScoreLeveler.AlagaeScorer;
 import frc.robot.commands.AlgaeEject;
 import frc.robot.commands.AlgaeLoad;
 import frc.robot.commands.CoralEject;
@@ -96,23 +101,24 @@ public abstract class OI {
      * Game State Manager Bindings
      *
      */
-    // operator_controller_
-    // .y()
-    // .toggleOnTrue(Commands.runOnce(() ->
-    // GameStateManager.wantedTarget(ScoringTarget.REEF_L4)));
-    // operator_controller_
-    // .x()
-    // .toggleOnTrue(Commands.runOnce(() ->
-    // GameStateManager.wantedTarget(ScoringTarget.REEF_L2)));
-    // operator_controller_
-    // .b()
-    // .toggleOnTrue(Commands.runOnce(() ->
-    // GameStateManager.wantedTarget(ScoringTarget.REEF_L3)));
+    operator_controller_
+        .y()
+        .toggleOnTrue(
+            Commands.runOnce(
+                () -> GameStateManager.getInstance().wantedTarget(ScoringTarget.REEF_L4)));
+    operator_controller_
+        .x()
+        .toggleOnTrue(
+            Commands.runOnce(
+                () -> GameStateManager.getInstance().wantedTarget(ScoringTarget.REEF_L2)));
+    operator_controller_
+        .b()
+        .toggleOnTrue(
+            Commands.runOnce(
+                () -> GameStateManager.getInstance().wantedTarget(ScoringTarget.REEF_L3)));
     // operator_controller_.a().toggleOnTrue(());
-    // operator_controller_.povDown().toggleOnTrue(new
-    // SetReefLevel(ReefLevel.ALGAE_LOW));
-    // operator_controller_.povUp().toggleOnTrue(new
-    // SetReefLevel(ReefLevel.ALGAE_HIGH));
+    operator_controller_.povDown().toggleOnTrue(new SetReefLevel(ReefLevel.ALGAE_LOW));
+    operator_controller_.povUp().toggleOnTrue(new SetReefLevel(ReefLevel.ALGAE_HIGH));
 
     /*
      *
@@ -120,22 +126,22 @@ public abstract class OI {
      *
      */
 
-    driver_controller_
+    operator_controller_
         .rightBumper()
         .whileTrue(
             Commands.startEnd(
                 () -> {
-                  GameStateManager.getInstance().setTargetColumn(Column.RIGHT);
                   GameStateManager.getInstance().setRobotState(RobotState.TARGET_ACQUISITION);
+                  GameStateManager.getInstance().setTargetColumn(Column.RIGHT);
                 },
                 () -> GameStateManager.getInstance().setRobotState(RobotState.END)));
-    driver_controller_
+    operator_controller_
         .leftBumper()
         .whileTrue(
             Commands.startEnd(
                 () -> {
-                  GameStateManager.getInstance().setTargetColumn(Column.LEFT);
                   GameStateManager.getInstance().setRobotState(RobotState.TARGET_ACQUISITION);
+                  GameStateManager.getInstance().setTargetColumn(Column.LEFT);
                 },
                 () -> GameStateManager.getInstance().setRobotState(RobotState.END)));
 

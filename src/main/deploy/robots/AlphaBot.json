@@ -1,7 +1,7 @@
 {
     "drive": {
         "com": {
-            "CENTER_OFFSET_X": 0.4572,
+            "CENTER_OFFSET_X": 18,
             "SLIP_CURRENT": 50,
             "SPEED_AT_12V": 5.0,
             "COUPLE_RATIO": 3.5,
@@ -11,12 +11,12 @@
             "MAX_DRIVE_SPEED": 5.0,
             "MAX_DRIVE_ANGULAR_RATE": 6.28,
             "STEER_MOTOR_REVERSED": true,
-            "DRIVE_GAINS_P": 6.25,
+            "DRIVE_GAINS_P": 0.1,
             "DRIVE_GAINS_I": 0,
-            "DRIVE_GAINS_D": 0.01,
-            "DRIVE_GAINS_S": 0.2,
+            "DRIVE_GAINS_D": 0.0,
+            "DRIVE_GAINS_S": 0.0,
             "DRIVE_GAINS_V": 0.12,
-            "DRIVE_GAINS_A": 0.05,
+            "DRIVE_GAINS_A": 0.00,
             "STEER_GAINS_P": 100,
             "STEER_GAINS_I": 0,
             "STEER_GAINS_D": 0,
@@ -65,10 +65,10 @@
             "HEADING_D" : 0.0
         },
         "pose_controller": {
-            "TRANSLATION_P": 1.5,
+            "TRANSLATION_P": 0.5,
             "TRANSLATION_I" : 0.0,
             "TRANSLATION_D" : 0.0,
-            "HEADING_P" : 2.0,
+            "HEADING_P" : 0.5,
             "HEADING_I" : 0.0,
             "HEADING_D" : 0.0
         }
