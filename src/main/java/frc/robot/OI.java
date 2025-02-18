@@ -65,8 +65,8 @@ public abstract class OI {
         .rightStick()
         .onTrue(
             Commands.runOnce(
-                    () -> SwerveDrivetrain.getInstance().toggleFieldCentric(),
-                    SwerveDrivetrain.getInstance())
+                () -> SwerveDrivetrain.getInstance().toggleFieldCentric(),
+                SwerveDrivetrain.getInstance())
                 .ignoringDisable(true));
 
     /*
@@ -130,15 +130,18 @@ public abstract class OI {
                   GameStateManager.getInstance().setTargetColumn(Column.RIGHT);
                 },
                 () -> GameStateManager.getInstance().setRobotState(RobotState.END)));
+
     operator_controller_
         .leftBumper()
-        .whileTrue(
-            Commands.startEnd(
-                () -> {
-                  GameStateManager.getInstance().setRobotState(RobotState.TARGET_ACQUISITION);
-                  GameStateManager.getInstance().setTargetColumn(Column.LEFT);
-                },
-                () -> GameStateManager.getInstance().setRobotState(RobotState.END)));
+        .onTrue(
+            Commands.runOnce(
+                () -> GameStateManager.getInstance().setTargetColumn(Column.LEFT)));
+
+    operator_controller_
+        .rightBumper()
+        .onTrue(
+            Commands.runOnce(
+                () -> GameStateManager.getInstance().setTargetColumn(Column.RIGHT)));
 
     driver_pov_active_.whileTrue(
         Commands.startEnd(
@@ -177,7 +180,8 @@ public abstract class OI {
   }
 
   /**
-   * @return driver controller joystick pov angle in degs. empty if nothing is pressed
+   * @return driver controller joystick pov angle in degs. empty if nothing is
+   *         pressed
    */
   public static Optional<Rotation2d> getDriverJoystickPOV() {
     int pov = driver_controller_.getHID().getPOV();
