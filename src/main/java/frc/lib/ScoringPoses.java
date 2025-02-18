@@ -30,8 +30,10 @@ public class ScoringPoses {
           new Translation2d(DrivetrainConstants.CENTER_OFFSET_X, 0), Rotation2d.fromDegrees(180));
 
   public static final Transform2d ALGAE_ALIGN_OFFSET =
-      new Transform2d(0, LOADER.getDoubleValue("imp", "algae_offset"), new Rotation2d());
-  public static final double CORAL_ALIGN_OFFSET = LOADER.getDoubleValue("imp", "coral_offset");
+      new Transform2d(
+          0, Units.inchesToMeters(LOADER.getDoubleValue("imp", "algae_offset")), new Rotation2d());
+  public static final double CORAL_ALIGN_OFFSET =
+      Units.inchesToMeters(-LOADER.getDoubleValue("imp", "coral_offset"));
 
   public static final Transform2d LEFT_COLUMN_OFFEST =
       new Transform2d(0, Units.inchesToMeters(6.47) + CORAL_ALIGN_OFFSET, new Rotation2d());
