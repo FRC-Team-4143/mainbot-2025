@@ -40,7 +40,10 @@ public final class Constants {
     public static final String kCameraName = "OV9281-10";
     // Cam mounted facing forward, half a meter forward of center, half a meter up from center.
     public static final Transform3d kRobotToCam =
-        new Transform3d(new Translation3d(0.05, 0.0, 0.5), new Rotation3d(0, 0, 0));
+        new Transform3d(
+            new Translation3d(
+                Units.inchesToMeters(7.5), Units.inchesToMeters(-7), Units.inchesToMeters(8.25)),
+            new Rotation3d(180, 0, 0));
 
     // The layout of the AprilTags on the field
     public static final AprilTagFieldLayout kTagLayout =
@@ -112,6 +115,8 @@ public final class Constants {
 
     public static final double CRAWL_DRIVE_SPEED = MAX_DRIVE_SPEED * 0.1;
     public static final double MAX_TARGET_SPEED = 1;
+    public static final double MAX_TRACTOR_BEAM_VELOCITY_SPEED = MAX_DRIVE_SPEED * 0.35;
+    public static final double MAX_TRACTOR_BEAM_OMEGA_SPEED = MAX_DRIVE_ANGULAR_RATE * 0.6;
 
     private static final SwerveModuleConstantsFactory ConstantCreator =
         new SwerveModuleConstantsFactory()
@@ -278,7 +283,7 @@ public final class Constants {
         InvertedValue.CounterClockwise_Positive;
     public static final double ARM_HOME_POSITION = 0;
     public static final double CORAL_ARM_CRUISE_VELOCITY = 4;
-    public static final double CORAL_ARM_ACCELERATION = 2;
+    public static final double CORAL_ARM_ACCELERATION = 1.75;
     public static final double ALGAE_ARM_CRUISE_VELOCITY = 4;
     public static final double ALGAE_ARM_ACCELERATION = 0.65;
     public static final double ARM_LENGTH = Units.inchesToMeters(12.5);

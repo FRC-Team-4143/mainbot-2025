@@ -30,14 +30,15 @@ public class ScoringPoses {
           new Translation2d(DrivetrainConstants.CENTER_OFFSET_X, 0), Rotation2d.fromDegrees(180));
 
   public static final Transform2d ALGAE_ALIGN_OFFSET =
-      new Transform2d(0, LOADER.getDoubleValue("imp", "algae_offset"), new Rotation2d());
-  public static final Transform2d CORAL_ALIGN_OFFSET =
-      new Transform2d(0, LOADER.getDoubleValue("imp", "coral_offset"), new Rotation2d());
+      new Transform2d(
+          0, Units.inchesToMeters(-LOADER.getDoubleValue("imp", "algae_offset")), new Rotation2d());
+  public static final double CORAL_ALIGN_OFFSET =
+      Units.inchesToMeters(-LOADER.getDoubleValue("imp", "coral_offset"));
 
   public static final Transform2d LEFT_COLUMN_OFFEST =
-      new Transform2d(0, Units.inchesToMeters(6.47), new Rotation2d()).plus(CORAL_ALIGN_OFFSET);
+      new Transform2d(0, Units.inchesToMeters(6.47) + CORAL_ALIGN_OFFSET, new Rotation2d());
   public static final Transform2d RIGHT_COLUMN_OFFSET =
-      new Transform2d(0, Units.inchesToMeters(6.47), new Rotation2d()).plus(CORAL_ALIGN_OFFSET);
+      new Transform2d(0, Units.inchesToMeters(-6.47) + CORAL_ALIGN_OFFSET, new Rotation2d());
 
   // Poses used for scoring / pickup alignment
   public static Pose2d REEF_FACE_0_POSE =

@@ -65,10 +65,10 @@
             "HEADING_D" : 0.0
         },
         "pose_controller": {
-            "TRANSLATION_P": 1.5,
+            "TRANSLATION_P": 5.0,
             "TRANSLATION_I" : 0.0,
             "TRANSLATION_D" : 0.0,
-            "HEADING_P" : 2.0,
+            "HEADING_P" : 3.0,
             "HEADING_I" : 0.0,
             "HEADING_D" : 0.0
         }

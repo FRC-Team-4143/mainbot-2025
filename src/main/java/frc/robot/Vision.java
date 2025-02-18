@@ -30,8 +30,11 @@ import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
+import edu.wpi.first.networktables.NetworkTableInstance;
+import edu.wpi.first.networktables.StructPublisher;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.subsystems.PoseEstimator;
@@ -61,6 +64,7 @@ public class Vision {
   private final PhotonPoseEstimator photonEstimator;
   private Matrix<N3, N1> curStdDevs;
   private int numTags;
+  private StructPublisher<Transform3d> tf_pub_;
 
   // Simulation
   private PhotonCameraSim cameraSim;
@@ -73,6 +77,9 @@ public class Vision {
     photonEstimator =
         new PhotonPoseEstimator(kTagLayout, PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR, kRobotToCam);
     photonEstimator.setMultiTagFallbackStrategy(PoseStrategy.LOWEST_AMBIGUITY);
+    tf_pub_ =
+        NetworkTableInstance.getDefault().getStructTopic("camera_tf", Transform3d.struct).publish();
+    tf_pub_.set(Constants.Vision.kRobotToCam);
 
     // ----- Simulation
     if (Robot.isSimulation()) {

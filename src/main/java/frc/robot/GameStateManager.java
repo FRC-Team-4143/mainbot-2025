@@ -1,13 +1,12 @@
 package frc.robot;
 
 import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.networktables.StructPublisher;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.lib.FieldRegions;
 import frc.lib.ReefSectionState;
+import frc.lib.ScoringPoses;
 import frc.mw_lib.geometry.PolygonRegion;
 import frc.mw_lib.util.Util;
 import frc.robot.Constants.ElevatorConstants;
@@ -86,7 +85,8 @@ public class GameStateManager {
   public enum Column {
     LEFT,
     RIGHT,
-    CENTER
+    CENTER,
+    ALGAE
   }
 
   private GameStateManager() {
@@ -225,13 +225,19 @@ public class GameStateManager {
           return Optional.of(
               FieldRegions.REGION_POSE_TABLE
                   .get(region.getName())
-                  .transformBy(new Transform2d(0, 0.165, new Rotation2d())));
+                  .transformBy(ScoringPoses.LEFT_COLUMN_OFFEST));
         }
         if (column == Column.RIGHT) {
           return Optional.of(
               FieldRegions.REGION_POSE_TABLE
                   .get(region.getName())
-                  .transformBy(new Transform2d(0, -0.165, new Rotation2d())));
+                  .transformBy(ScoringPoses.RIGHT_COLUMN_OFFSET));
+        }
+        if (column == Column.ALGAE) {
+          return Optional.of(
+              FieldRegions.REGION_POSE_TABLE
+                  .get(region.getName())
+                  .transformBy(ScoringPoses.ALGAE_ALIGN_OFFSET));
         }
       }
     }
