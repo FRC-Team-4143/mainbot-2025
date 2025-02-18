@@ -22,6 +22,7 @@ import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj.util.Color8Bit;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
+import frc.lib.FieldRegions;
 import frc.mw_lib.ElevatorKinematics;
 import frc.mw_lib.controls.TalonFXTuner;
 import frc.mw_lib.subsystem.Subsystem;
@@ -374,6 +375,10 @@ public class Elevator extends Subsystem {
     tuner.bindDynamicReverse(OI.getOperatorJoystickBButtonTrigger());
     tuner.bindQuasistaticForward(OI.getOperatorJoystickXButtonTrigger());
     tuner.bindQuasistaticReverse(OI.getOperatorJoystickYButtonTrigger());
+  }
+
+  public boolean canExtendForBarge() {
+    return FieldRegions.ALGAE_REGIONS[0].contains(PoseEstimator.getInstance().getFieldPose());
   }
 
   public class ElevatorPeriodicIo implements Logged {

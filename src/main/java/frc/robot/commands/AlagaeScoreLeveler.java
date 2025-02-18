@@ -33,7 +33,9 @@ public class AlagaeScoreLeveler extends Command {
         elevator_.setTarget(Target.ALGAE_PROCESSOR);
         break;
       case BARGE:
-        elevator_.setTarget(Target.BARGE);
+        if (Elevator.getInstance().canExtendForBarge()) {
+          elevator_.setTarget(Target.BARGE);
+        }
         break;
     }
   }
