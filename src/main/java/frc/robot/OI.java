@@ -13,8 +13,6 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.GameStateManager.Column;
 import frc.robot.GameStateManager.RobotState;
 import frc.robot.GameStateManager.ScoringTarget;
-import frc.robot.commands.AlagaeScoreLeveler;
-import frc.robot.commands.AlagaeScoreLeveler.AlagaeScorer;
 import frc.robot.commands.AlgaeEject;
 import frc.robot.commands.AlgaeLoad;
 import frc.robot.commands.CoralEject;
@@ -116,9 +114,6 @@ public abstract class OI {
         .toggleOnTrue(
             Commands.runOnce(
                 () -> GameStateManager.getInstance().wantedTarget(ScoringTarget.REEF_L3)));
-    // operator_controller_.a().toggleOnTrue(());
-    operator_controller_.povDown().toggleOnTrue(new SetReefLevel(ReefLevel.ALGAE_LOW));
-    operator_controller_.povUp().toggleOnTrue(new SetReefLevel(ReefLevel.ALGAE_HIGH));
 
     /*
      *
