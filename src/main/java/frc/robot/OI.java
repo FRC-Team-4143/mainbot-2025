@@ -121,13 +121,12 @@ public abstract class OI {
      *
      */
 
-    operator_controller_
-        .rightBumper()
+    driver_controller_
+        .leftTrigger()
         .whileTrue(
             Commands.startEnd(
                 () -> {
                   GameStateManager.getInstance().setRobotState(RobotState.TARGET_ACQUISITION);
-                  GameStateManager.getInstance().setTargetColumn(Column.RIGHT);
                 },
                 () -> GameStateManager.getInstance().setRobotState(RobotState.END)));
 
