@@ -27,9 +27,12 @@ import edu.wpi.first.networktables.StructPublisher;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
+import frc.mw_lib.controls.SwerveTuner;
 import frc.mw_lib.proxy_server.ChassisProxyServer;
 import frc.mw_lib.subsystem.Subsystem;
-import frc.mw_lib.swerve.*;
+import frc.mw_lib.swerve.SwerveModule;
+import frc.mw_lib.swerve.SwerveModuleConstants;
+import frc.mw_lib.swerve.SwerveRequest;
 import frc.mw_lib.swerve.SwerveRequest.ForwardReference;
 import frc.mw_lib.swerve.SwerveRequest.SwerveControlRequestParameters;
 import frc.mw_lib.util.Util;
@@ -120,6 +123,9 @@ public class SwerveDrivetrain extends Subsystem {
   private final PIDController y_pose_controller_;
   private final PIDController heading_pose_controller_;
 
+  // Swerve tuners
+  private SwerveTuner drive_train_tuner_;
+
   /**
    * Constructs a SwerveDrivetrain using the specified constants.
    *
@@ -189,6 +195,9 @@ public class SwerveDrivetrain extends Subsystem {
       io_.current_module_states_[i] = swerve_modules_[i].getCurrentState();
       io_.requested_module_states_[i] = swerve_modules_[i].getTargetState();
     }
+
+    drive_train_tuner_ = new SwerveTuner(swerve_modules_, "SwerveDriveTrain", this);
+
     kinematics_ = new SwerveDriveKinematics(module_locations_);
 
     // Drive mode requests
