@@ -22,6 +22,7 @@ public class Robot extends TimedRobot {
     robot_container_ = RobotContainer.getInstance();
     AutoManager.getInstance();
     OI.configureBindings();
+    FieldRegions.makeRegions();
   }
 
   @Override
@@ -36,7 +37,6 @@ public class Robot extends TimedRobot {
   @Override
   public void disabledInit() {
     SwerveDrivetrain.getInstance().setDriveMode(DriveMode.IDLE);
-    FieldRegions.constructRegions(false);
   }
 
   @Override
@@ -53,8 +53,8 @@ public class Robot extends TimedRobot {
                 allaince_ == Alliance.Red
                     ? SwerveDrivetrain.getInstance().RED_ALLIANCE_HEADING
                     : SwerveDrivetrain.getInstance().BLUE_ALLIANCE_HEADING);
-        // Update Field Regions
-        FieldRegions.constructRegions(true);
+        // Flip Field Regions
+        FieldRegions.flipRegions();
       }
     }
   }

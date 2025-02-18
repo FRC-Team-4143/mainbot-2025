@@ -218,8 +218,9 @@ public final class Constants {
   public static final class ClawConstants {
     public static final int WHEEL_MOTOR_ID = 11;
     public static final double WHEEL_SHOOT_SPEED = 0.30;
-    public static final double WHEEL_LOAD_SPEED = -0.2;
+    public static final double WHEEL_LOAD_SPEED = -0.3;
     public static final double ALGAE_IDLE_SPEED = 0.1;
+    public static final double STATOR_CURRENT_LIMIT_ = 60;
     public static final String CORAL_COLOR = new Color(255, 255, 255).toHexString();
     public static final String ALGAE_COLOR = new Color(0, 255, 255).toHexString();
     public static final InvertedValue WHEEL_MOTOR_INVERTED = InvertedValue.Clockwise_Positive;
@@ -276,8 +277,10 @@ public final class Constants {
     public static final InvertedValue ARM_FOLLOWER_INVERSION =
         InvertedValue.CounterClockwise_Positive;
     public static final double ARM_HOME_POSITION = 0;
-    public static final double ARM_CRUISE_VELOCITY = 4;
-    public static final double ARM_ACCELERATION = 2;
+    public static final double CORAL_ARM_CRUISE_VELOCITY = 4;
+    public static final double CORAL_ARM_ACCELERATION = 2;
+    public static final double ALGAE_ARM_CRUISE_VELOCITY = 4;
+    public static final double ALGAE_ARM_ACCELERATION = 0.65;
     public static final double ARM_LENGTH = Units.inchesToMeters(12.5);
     // ((shaft sprocket / pivot sprocket) / gearbox) * rotations to radians ratio)
     public static final double SENSOR_TO_MECHANISM_RATIO = (1.0 / ((16.0 / 64.0) / 20.0));
@@ -311,10 +314,16 @@ public final class Constants {
 
       STATION(1.076666, Rotation2d.fromRadians(-1.027767), ControlType.PIVOT),
       CLIMB(ELEVATOR_MIN_HEIGHT, new Rotation2d(), ControlType.PIVOT),
-      STOW(0, Rotation2d.fromDegrees(-90), ControlType.PIVOT),
+      STOW(0.08, Rotation2d.fromDegrees(-90), ControlType.PIVOT),
       ALGAE_LOW(
           0.23665818349136578, Rotation2d.fromRadians(2.4942527611020524), ControlType.EFFECTOR),
-      ALGAE_HIGH(1.200, Rotation2d.fromDegrees(90 + 33), ControlType.EFFECTOR);
+      ALGAE_HIGH(1.200, Rotation2d.fromDegrees(90 + 33), ControlType.EFFECTOR),
+      ALGAE_PROCESSOR(
+          0.148746006 + ELEVATOR_MIN_HEIGHT, Rotation2d.fromDegrees(-55), ControlType.PIVOT),
+      BARGE(
+          FieldConstants.ReefHeight.L4.HEIGHT + 0.0762,
+          Rotation2d.fromDegrees(90),
+          ControlType.PIVOT);
 
       // BARGE();
 

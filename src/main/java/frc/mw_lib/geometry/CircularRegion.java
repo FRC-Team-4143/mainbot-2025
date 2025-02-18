@@ -32,12 +32,16 @@ public class CircularRegion implements Region {
         NetworkTableInstance.getDefault()
             .getStructArrayTopic("Regions/" + name_, Translation2d.struct)
             .publish();
-    constructAllianceRegion(false);
-    logPoints();
+    constructRegion();
   }
 
-  public void constructAllianceRegion(boolean flip) {
-    center_ = AllianceFlipUtil.apply(center_, flip);
+  public void allianceFlip() {
+    center_ = AllianceFlipUtil.apply(center_);
+    constructRegion();
+  }
+
+  public void constructRegion() {
+    logPoints();
   }
 
   /**

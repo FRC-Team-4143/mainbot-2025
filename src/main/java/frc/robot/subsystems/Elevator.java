@@ -22,6 +22,7 @@ import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj.util.Color8Bit;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
+import frc.lib.FieldRegions;
 import frc.mw_lib.ElevatorKinematics;
 import frc.mw_lib.controls.TalonFXTuner;
 import frc.mw_lib.subsystem.Subsystem;
@@ -77,6 +78,11 @@ public class Elevator extends Subsystem {
     PIVOT
   }
 
+  public enum SpeedLimit {
+    CORAL,
+    ALGAE
+  }
+
   private ElevatorPeriodicIo io_;
 
   // Constructor
@@ -120,8 +126,8 @@ public class Elevator extends Subsystem {
     arm_config_.Feedback.FeedbackSensorSource = FeedbackSensorSourceValue.RotorSensor;
     arm_config_.Feedback.SensorToMechanismRatio = ElevatorConstants.SENSOR_TO_MECHANISM_RATIO;
     arm_config_.Slot0 = ElevatorConstants.ARM_GAINS;
-    arm_config_.MotionMagic.MotionMagicCruiseVelocity = ElevatorConstants.ARM_CRUISE_VELOCITY;
-    arm_config_.MotionMagic.MotionMagicAcceleration = ElevatorConstants.ARM_ACCELERATION;
+    arm_config_.MotionMagic.MotionMagicCruiseVelocity = ElevatorConstants.CORAL_ARM_CRUISE_VELOCITY;
+    arm_config_.MotionMagic.MotionMagicAcceleration = ElevatorConstants.CORAL_ARM_ACCELERATION;
     arm_config_.MotorOutput.NeutralMode = NeutralModeValue.Brake;
     arm_config_.ClosedLoopGeneral.ContinuousWrap = false;
     arm_config_.SoftwareLimitSwitch.ForwardSoftLimitEnable = true;
@@ -182,8 +188,9 @@ public class Elevator extends Subsystem {
     io_.elevator_follower_rotations_ = elevator_follower_.getPosition().getValue().in(Rotations);
     io_.elevator_master_rotations_ = elevator_master_.getPosition().getValue().in(Rotations);
     io_.current_elevator_height =
-        ((io_.elevator_master_rotations_ + io_.elevator_follower_rotations_) / 2)
-            * ElevatorConstants.ELEVATOR_ROTATIONS_TO_METERS;
+        (((io_.elevator_master_rotations_ + io_.elevator_follower_rotations_) / 2)
+                * ElevatorConstants.ELEVATOR_ROTATIONS_TO_METERS)
+            + ElevatorConstants.ELEVATOR_MIN_HEIGHT;
     // io_.current_arm_angle =
     // arm_encoder_.getAbsolutePosition().getValue().in(Radians);
     io_.current_arm_angle_ = arm_motor_.getPosition().getValue().in(Radians);
@@ -339,6 +346,19 @@ public class Elevator extends Subsystem {
     setTarget(ElevatorConstants.Target.STOW);
   }
 
+  public void setSpeedLimit(SpeedLimit limit) {
+    if (limit == SpeedLimit.CORAL) {
+      arm_config_.MotionMagic.MotionMagicCruiseVelocity =
+          ElevatorConstants.CORAL_ARM_CRUISE_VELOCITY;
+      arm_config_.MotionMagic.MotionMagicAcceleration = ElevatorConstants.CORAL_ARM_ACCELERATION;
+    } else if (limit == SpeedLimit.ALGAE) {
+      arm_config_.MotionMagic.MotionMagicCruiseVelocity =
+          ElevatorConstants.ALGAE_ARM_CRUISE_VELOCITY;
+      arm_config_.MotionMagic.MotionMagicAcceleration = ElevatorConstants.ALGAE_ARM_ACCELERATION;
+    }
+    arm_motor_.getConfigurator().apply(arm_config_);
+  }
+
   /**
    * @return If the elevator is within the threshold of zero and the limit switch is pressed
    */
@@ -355,6 +375,10 @@ public class Elevator extends Subsystem {
     tuner.bindDynamicReverse(OI.getOperatorJoystickBButtonTrigger());
     tuner.bindQuasistaticForward(OI.getOperatorJoystickXButtonTrigger());
     tuner.bindQuasistaticReverse(OI.getOperatorJoystickYButtonTrigger());
+  }
+
+  public boolean canExtendForBarge() {
+    return FieldRegions.ALGAE_REGIONS[0].contains(PoseEstimator.getInstance().getFieldPose());
   }
 
   public class ElevatorPeriodicIo implements Logged {

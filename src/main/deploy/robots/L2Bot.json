@@ -72,6 +72,11 @@
             "HEADING_I" : 0.0,
             "HEADING_D" : 0.0
         }
+    },
+    "imp" : {
+        "coral_offset": 0.0,
+        "algae_offset": 0.0
     }
+
 
 }

@@ -9,21 +9,16 @@ import frc.robot.Constants.ElevatorConstants.Target;
 import frc.robot.subsystems.Elevator;
 import frc.robot.subsystems.Elevator.SpeedLimit;
 
-public class SetReefLevel extends Command {
-
-  public enum ReefLevel {
-    L1,
-    L2,
-    L3,
-    L4,
-    ALGAE_HIGH,
-    ALGAE_LOW
+public class AlagaeScoreLeveler extends Command {
+  public enum AlagaeScorer {
+    PROCESSOR,
+    BARGE
   }
 
-  private ReefLevel requested_level_;
+  private AlagaeScorer requested_level_;
   private Elevator elevator_;
 
-  public SetReefLevel(ReefLevel level) {
+  public AlagaeScoreLeveler(AlagaeScorer level) {
     elevator_ = Elevator.getInstance();
     addRequirements(elevator_);
     requested_level_ = level;
@@ -32,29 +27,15 @@ public class SetReefLevel extends Command {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
+    elevator_.setSpeedLimit(SpeedLimit.ALGAE);
     switch (requested_level_) {
-      case L1:
-        // elevator_.setTarget(Target.);
+      case PROCESSOR:
+        elevator_.setTarget(Target.ALGAE_PROCESSOR);
         break;
-      case L2:
-        elevator_.setSpeedLimit(SpeedLimit.CORAL);
-        elevator_.setTarget(Target.L2);
-        break;
-      case L3:
-        elevator_.setSpeedLimit(SpeedLimit.CORAL);
-        elevator_.setTarget(Target.L3);
-        break;
-      case L4:
-        elevator_.setSpeedLimit(SpeedLimit.CORAL);
-        elevator_.setTarget(Target.L4);
-        break;
-      case ALGAE_HIGH:
-        elevator_.setSpeedLimit(SpeedLimit.ALGAE);
-        elevator_.setTarget(Target.ALGAE_HIGH);
-        break;
-      case ALGAE_LOW:
-        elevator_.setSpeedLimit(SpeedLimit.ALGAE);
-        elevator_.setTarget(Target.ALGAE_LOW);
+      case BARGE:
+        if (Elevator.getInstance().canExtendForBarge()) {
+          elevator_.setTarget(Target.BARGE);
+        }
         break;
     }
   }
