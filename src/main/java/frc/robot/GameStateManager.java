@@ -85,7 +85,8 @@ public class GameStateManager {
   public enum Column {
     LEFT,
     RIGHT,
-    CENTER
+    CENTER,
+    ALGAE
   }
 
   private GameStateManager() {
@@ -231,6 +232,12 @@ public class GameStateManager {
               FieldRegions.REGION_POSE_TABLE
                   .get(region.getName())
                   .transformBy(ScoringPoses.RIGHT_COLUMN_OFFSET));
+        }
+        if (column == Column.ALGAE) {
+          return Optional.of(
+              FieldRegions.REGION_POSE_TABLE
+                  .get(region.getName())
+                  .transformBy(ScoringPoses.ALGAE_ALIGN_OFFSET));
         }
       }
     }

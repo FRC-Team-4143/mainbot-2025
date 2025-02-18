@@ -31,7 +31,7 @@ public class ScoringPoses {
 
   public static final Transform2d ALGAE_ALIGN_OFFSET =
       new Transform2d(
-          0, Units.inchesToMeters(LOADER.getDoubleValue("imp", "algae_offset")), new Rotation2d());
+          0, Units.inchesToMeters(-LOADER.getDoubleValue("imp", "algae_offset")), new Rotation2d());
   public static final double CORAL_ALIGN_OFFSET =
       Units.inchesToMeters(-LOADER.getDoubleValue("imp", "coral_offset"));
 
