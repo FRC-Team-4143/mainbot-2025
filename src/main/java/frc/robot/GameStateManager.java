@@ -104,7 +104,7 @@ public class GameStateManager {
     SmartDashboard.putString("Robot State", robot_state_.toString());
     SmartDashboard.putString("Target Colum", target_column.toString());
     SmartDashboard.putString("Intent", intent.toString());
-    SmartDashboard.putNumber("Target Level", selected_reef_level);
+    SmartDashboard.putString("Target Level", scoring_target.toString());
   }
 
   public void robotStateSwitch() {
@@ -120,6 +120,7 @@ public class GameStateManager {
         }
         break;
       case APPROACHING_TARGET:
+        elevatorTargetSwitch();
         if (use_cam_for_reef_state && target_column.isEmpty()) {
           if (reef_section_list.size() < num_frames) {
             // add reef states to list while driveing to the center
@@ -149,14 +150,14 @@ public class GameStateManager {
       case SCORING:
         // wait until you leave the exit Circle
         if (!FieldRegions.REEF_EXIT.contains(poseEstimator_.getFieldPose())) {
-          // lower elvator
+          elevator_.setTarget(ElevatorConstants.Target.STOW);
           robot_state_ = RobotState.END;
         }
         break;
       case END:
         // clear saved vars and reset drive mode
         drivetrain_.setDriveMode(DriveMode.FIELD_CENTRIC);
-        target_column = Optional.empty();
+        // target_column = Optional.empty();
         reef_section_state = Optional.empty();
         robot_state_ = RobotState.TELEOP_CONTROL;
         break;
