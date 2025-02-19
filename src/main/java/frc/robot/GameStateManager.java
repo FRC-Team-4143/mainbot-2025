@@ -148,9 +148,9 @@ public class GameStateManager {
         }
         break;
       case SCORING:
+        drivetrain_.setDriveMode(DriveMode.FIELD_CENTRIC);
         // wait until you leave the exit Circle
         if (!FieldRegions.REEF_EXIT.contains(poseEstimator_.getFieldPose())) {
-          elevator_.setTarget(ElevatorConstants.Target.STOW);
           robot_state_ = RobotState.END;
         }
         break;
@@ -160,6 +160,7 @@ public class GameStateManager {
         // target_column = Optional.empty();
         reef_section_state = Optional.empty();
         robot_state_ = RobotState.TELEOP_CONTROL;
+        elevator_.setTarget(ElevatorConstants.Target.STOW);
         break;
       case TELEOP_CONTROL:
         // normal control
@@ -265,7 +266,8 @@ public class GameStateManager {
   }
 
   public void setRobotState(RobotState state) {
-    // sets the current state of the robot (should really only set to TARGET_ACQUISITION to preserve
+    // sets the current state of the robot (should really only set to
+    // TARGET_ACQUISITION to preserve
     // structure of the switch case)
     robot_state_ = state;
   }
