@@ -80,6 +80,7 @@ public class SwerveDrivetrain extends Subsystem {
     TARGET_FACING,
     TRAJECTORY,
     TRACTOR_BEAM,
+    TIGHT_ROPE,
     CRAWL,
     IDLE,
     PROFILE
@@ -359,6 +360,11 @@ public class SwerveDrivetrain extends Subsystem {
           request_parameters_.currentPose = io_.current_pose_;
         }
         break;
+      case TIGHT_ROPE:
+        {
+          //
+        }
+        break;
       case CRAWL:
         {
           if (io_.joystick_pov.isPresent()) {
@@ -543,6 +549,16 @@ public class SwerveDrivetrain extends Subsystem {
   public void setTargetPose(Pose2d target_pose) {
     io_.drive_mode_ = DriveMode.TRACTOR_BEAM;
     io_.target_pose_ = target_pose;
+  }
+
+  /**
+   * Sets the target rope points and rotation and begins TIGHT_ROPE mode
+   *
+   * @param pointA endA of the rope (this rotation is used to set the robot rotation)
+   * @param pointB endB of the rope 
+   */
+  public void setTargetRope(Pose2d pointA, Pose2d pointB) {
+    io_.drive_mode_ = DriveMode.TIGHT_ROPE;
   }
 
   /**
