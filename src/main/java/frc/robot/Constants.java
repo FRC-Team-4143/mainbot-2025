@@ -286,7 +286,7 @@ public final class Constants {
     public static final double CORAL_ARM_ACCELERATION = 1.75;
     public static final double ALGAE_ARM_CRUISE_VELOCITY = 4;
     public static final double ALGAE_ARM_ACCELERATION = 0.65;
-    public static final double ARM_LENGTH = Units.inchesToMeters(13.5);
+    public static final double ARM_LENGTH = Units.inchesToMeters(13.25);
     // ((shaft sprocket / pivot sprocket) / gearbox) * rotations to radians ratio)
     public static final double SENSOR_TO_MECHANISM_RATIO = (1.0 / ((16.0 / 64.0) / 20.0));
     public static final double ARM_FORWARD_LIMT = Units.radiansToRotations(Math.PI);
@@ -317,7 +317,7 @@ public final class Constants {
           Rotation2d.fromDegrees(125),
           ControlType.EFFECTOR),
 
-      STATION(1.076666, Rotation2d.fromRadians(-1.027767), ControlType.PIVOT),
+      STATION(1.13, Rotation2d.fromRadians(-1.027767), ControlType.PIVOT),
       CLIMB(ELEVATOR_MIN_HEIGHT, new Rotation2d(), ControlType.PIVOT),
       STOW(0.08, Rotation2d.fromDegrees(-90), ControlType.PIVOT),
       ALGAE_LOW(
