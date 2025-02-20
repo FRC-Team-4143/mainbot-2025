@@ -408,6 +408,7 @@ public class SwerveDrivetrain extends Subsystem {
     SmartDashboard.putString("Debug/Swerve/Request Type", request_to_apply_.toString());
     SmartDashboard.putNumber(
         "Debug/Swerve/Driver Prespective", io_.drivers_station_perspective_.getDegrees());
+    SmartDashboard.putNumber("Debug/Swerve/Yaw", io_.robot_yaw_.getDegrees());
     SmartDashboard.putNumber(
         "Debug/Swerve/FL Encoder", Units.rotationsToDegrees(swerve_modules_[0].getEncoderValue()));
     SmartDashboard.putNumber(
