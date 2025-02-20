@@ -1,32 +1,29 @@
 {
   "hubs": [
     {
-      "x": -8,
-      "y": -8,
-      "width": 1552,
-      "height": 928,
+      "x": 0,
+      "y": 64,
+      "width": 1503,
+      "height": 938,
       "state": {
         "sidebar": {
           "width": 344,
           "expanded": [
-            "/SmartDashboard/Field",
             "/NT",
             "/NT/Robot",
             "/NT/Robot/subsystems_ios",
             "/NT/Robot/subsystems_ios/ElevatorPeriodicIo[3]",
             "/NT/SmartDashboard",
             "/SmartDashboard/TalonFXTuner - climber",
-            "/SmartDashboard",
-            "/Regions",
             "/CameraPublisher/photonvision_Port_1181_Input_MJPEG_Server",
             "/module_states",
-            "/SmartDashboard/Debug",
-            "/SmartDashboard/Debug/Swerve",
-            "/SmartDashboard/Debug/Swerve/Rotation Control"
+            "/SmartDashboard/Debug/Swerve/Rotation Control",
+            "/Swerve/Module States",
+            "/SmartDashboard"
           ]
         },
         "tabs": {
-          "selected": 1,
+          "selected": 3,
           "tabs": [
             {
               "type": 0,
@@ -37,10 +34,40 @@
               "controlsHeight": 0
             },
             {
-              "type": 3,
+              "type": 2,
               "title": "Region Display",
               "controller": {
                 "sources": [
+                  {
+                    "type": "trajectory",
+                    "logKey": "NT:Regions/Barge",
+                    "logType": "Translation2d[]",
+                    "visible": true,
+                    "options": {
+                      "color": "#00ffff",
+                      "size": "normal"
+                    }
+                  },
+                  {
+                    "type": "trajectory",
+                    "logKey": "NT:Regions/LeftCoralStation",
+                    "logType": "Translation2d[]",
+                    "visible": true,
+                    "options": {
+                      "color": "#00ffff",
+                      "size": "normal"
+                    }
+                  },
+                  {
+                    "type": "trajectory",
+                    "logKey": "NT:Regions/RightCoralStation",
+                    "logType": "Translation2d[]",
+                    "visible": true,
+                    "options": {
+                      "color": "#00ffff",
+                      "size": "normal"
+                    }
+                  },
                   {
                     "type": "trajectory",
                     "logKey": "NT:Regions/ReefFace0",
@@ -102,113 +129,22 @@
                     }
                   },
                   {
-                    "type": "trajectory",
-                    "logKey": "NT:Regions/Barge",
-                    "logType": "Translation2d[]",
-                    "visible": true,
-                    "options": {
-                      "color": "#00ffff",
-                      "size": "normal"
-                    }
-                  },
-                  {
-                    "type": "trajectory",
-                    "logKey": "NT:Regions/LeftCoralStation",
-                    "logType": "Translation2d[]",
-                    "visible": true,
-                    "options": {
-                      "color": "#00ffff",
-                      "size": "normal"
-                    }
-                  },
-                  {
-                    "type": "trajectory",
-                    "logKey": "NT:Regions/RightCoralStation",
-                    "logType": "Translation2d[]",
-                    "visible": true,
-                    "options": {
-                      "color": "#00ffff",
-                      "size": "normal"
-                    }
-                  },
-                  {
-                    "type": "trajectory",
-                    "logKey": "NT:Regions/Processor",
-                    "logType": "Translation2d[]",
-                    "visible": true,
-                    "options": {
-                      "color": "#00ffff",
-                      "size": "normal"
-                    }
-                  },
-                  {
-                    "type": "robotLegacy",
-                    "logKey": "NT:/SmartDashboard/Field/Robot",
-                    "logType": "NumberArray",
-                    "visible": true,
-                    "options": {
-                      "model": "KitBot",
-                      "format": "Pose2d",
-                      "units": "degrees"
-                    }
-                  },
-                  {
-                    "type": "mechanism",
-                    "logKey": "NT:/SmartDashboard/Elevator System Mech",
-                    "logType": "Mechanism2d",
-                    "visible": true,
-                    "options": {}
-                  },
-                  {
-                    "type": "ghost",
-                    "logKey": "NT:ReefTarget",
+                    "type": "robot",
+                    "logKey": "NT:PoseEstimation/Robot Pose",
                     "logType": "Pose2d",
                     "visible": true,
-                    "options": {
-                      "model": "KitBot",
-                      "color": "#ff8c00"
-                    }
-                  },
-                  {
-                    "type": "trajectory",
-                    "logKey": "NT:Regions/reef_enter",
-                    "logType": "Translation2d[]",
-                    "visible": true,
-                    "options": {
-                      "color": "#00ff00",
-                      "size": "normal"
-                    }
-                  },
-                  {
-                    "type": "trajectory",
-                    "logKey": "NT:Regions/reef_exit",
-                    "logType": "Translation2d[]",
-                    "visible": true,
-                    "options": {
-                      "color": "#00ff00",
-                      "size": "normal"
-                    }
+                    "options": {}
                   }
                 ],
-                "game": "2025 Field",
-                "origin": "auto"
+                "game": "2025 Field (Welded)",
+                "bumpers": "auto",
+                "origin": "blue",
+                "orientation": 0,
+                "size": 30
               },
-              "controllerUUID": "wu7377vozaqxl3e1gw0ml3et4ds1zqdo",
-              "renderer": {
-                "cameraIndex": -1,
-                "orbitFov": 50,
-                "cameraPosition": [
-                  7.016310702469221,
-                  10.847679801506441,
-                  -1.3770501157942774
-                ],
-                "cameraTarget": [
-                  3.7570899350930143,
-                  -5.432321895958732,
-                  -0.6150974370091279
-                ]
-              },
-              "controlsHeight": 337
+              "controllerUUID": "3izc54ec84cqyt2b08nq52c8bcohgwpe",
+              "renderer": null,
+              "controlsHeight": 357
             },
             {
               "type": 3,
@@ -216,50 +152,41 @@
               "controller": {
                 "sources": [
                   {
+                    "type": "robot",
+                    "logKey": "NT:PoseEstimation/Robot Pose",
+                    "logType": "Pose2d",
+                    "visible": true,
+                    "options": {
+                      "model": "2025 KitBot"
+                    }
+                  },
+                  {
                     "type": "ghost",
-                    "logKey": "NT:CamPose",
+                    "logKey": "NT:PoseEstimation/Vision Pose",
                     "logType": "Pose2d",
                     "visible": true,
                     "options": {
                       "model": "2025 KitBot",
                       "color": "#00ff00"
                     }
-                  },
-                  {
-                    "type": "robotLegacy",
-                    "logKey": "NT:/SmartDashboard/Field/Robot",
-                    "logType": "NumberArray",
-                    "visible": true,
-                    "options": {
-                      "model": "KitBot",
-                      "format": "Pose2d",
-                      "units": "degrees"
-                    }
-                  },
-                  {
-                    "type": "mechanism",
-                    "logKey": "NT:/SmartDashboard/Elevator System Mech",
-                    "logType": "Mechanism2d",
-                    "visible": true,
-                    "options": {}
                   }
                 ],
-                "game": "2025 Field",
+                "game": "2025 Field (Welded)",
                 "origin": "blue"
               },
-              "controllerUUID": "6c9ydva4vasbvbuzq0gp0hkrbqlra9fp",
+              "controllerUUID": "9c1meejh9cpjxrrgngznlfsa2fl0dnfc",
               "renderer": {
                 "cameraIndex": -1,
                 "orbitFov": 50,
                 "cameraPosition": [
-                  3.990090792966833,
-                  5.999999999999999,
-                  -11.317207052266973
+                  1.6487779598572607,
+                  6.116576914538749,
+                  -11.94656891416974
                 ],
                 "cameraTarget": [
-                  0,
-                  0.5,
-                  0
+                  1.6487779598572592,
+                  0.6165769145387495,
+                  0.05343108583026039
                 ]
               },
               "controlsHeight": 200
@@ -270,8 +197,17 @@
               "controller": {
                 "sources": [
                   {
+                    "type": "chassisSpeeds",
+                    "logKey": "NT:Swerve/Chassis Speeds",
+                    "logType": "ChassisSpeeds",
+                    "visible": true,
+                    "options": {
+                      "color": "#00ff00"
+                    }
+                  },
+                  {
                     "type": "states",
-                    "logKey": "NT:module_states/current",
+                    "logKey": "NT:Swerve/Module States/Current",
                     "logType": "SwerveModuleState[]",
                     "visible": true,
                     "options": {
@@ -281,7 +217,7 @@
                   },
                   {
                     "type": "states",
-                    "logKey": "NT:module_states/requested",
+                    "logKey": "NT:Swerve/Module States/Request",
                     "logType": "SwerveModuleState[]",
                     "visible": true,
                     "options": {
@@ -291,7 +227,7 @@
                   },
                   {
                     "type": "rotationLegacy",
-                    "logKey": "NT:/SmartDashboard/Debug/Swerve/Rotation Control/Current Yaw",
+                    "logKey": "NT:/SmartDashboard/Debug/Swerve/Yaw",
                     "logType": "Number",
                     "visible": true,
                     "options": {
@@ -314,5 +250,5 @@
     }
   ],
   "satellites": [],
-  "version": "4.1.0"
+  "version": "4.1.2"
 }

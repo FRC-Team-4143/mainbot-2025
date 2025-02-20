@@ -10,7 +10,6 @@ import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.config.SparkFlexConfig;
 import edu.wpi.first.math.filter.Debouncer;
 import edu.wpi.first.math.filter.Debouncer.DebounceType;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.mw_lib.subsystem.Subsystem;
 import frc.robot.Constants.FeederConstants;
 import monologue.Annotations.Log;
@@ -126,9 +125,7 @@ public class CoralFunnel extends Subsystem {
    * smartdashboard here.
    */
   @Override
-  public void outputTelemetry(double timestamp) {
-    SmartDashboard.putNumber("Current", io_.average_motor_current_);
-  }
+  public void outputTelemetry(double timestamp) {}
 
   public void setFeedingMode(FeedingMode mode) {
     io_.feeding_mode_ = mode;

@@ -24,7 +24,7 @@ public class AutoManager {
   private AutoManager() {
     autoFactory =
         new AutoFactory(
-            PoseEstimator.getInstance()::getFieldPose,
+            PoseEstimator.getInstance()::getRobotPose,
             PoseEstimator.getInstance()::setRobotOdometry,
             SwerveDrivetrain.getInstance()::setTargetSample,
             true, // enables auto flipping

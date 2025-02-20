@@ -20,7 +20,7 @@ public class TalonFXTuner {
 
   TalonFX motor_;
   TalonFX[] follower_motors_;
-  String system_name_ = "TalonFXTuner - ";
+  String system_name_ = "Tuning/TalonFXTuner - ";
   Slot0Configs config_;
   SysIdRoutine routine_;
 

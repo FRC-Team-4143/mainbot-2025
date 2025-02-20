@@ -114,7 +114,7 @@ public class GameStateManager {
         if (reef_target.isPresent()
             && (intent == Intent.INTAKE_ALGAE || intent == Intent.SCORE_CORAL)) {
           drivetrain_.setTargetPose(reef_target.get());
-          if (FieldRegions.REEF_ENTER.contains(poseEstimator_.getFieldPose())) {
+          if (FieldRegions.REEF_ENTER.contains(poseEstimator_.getRobotPose())) {
             robot_state_ = RobotState.APPROACHING_TARGET;
           }
         }
@@ -138,7 +138,7 @@ public class GameStateManager {
           reef_target = reefPose(target_column.get());
           drivetrain_.setTargetPose(reef_target.get());
           if (Util.epislonEquals(
-              poseEstimator_.getFieldPose(), reef_target.get(), 0.0873, 0.0508)) {
+              poseEstimator_.getRobotPose(), reef_target.get(), 0.0873, 0.0508)) {
             // Once at final target, hand off contol
             // drivetrain_.setDriveMode(DriveMode.FIELD_CENTRIC);
             robot_state_ = RobotState.SCORING;
@@ -148,7 +148,7 @@ public class GameStateManager {
         break;
       case SCORING:
         // wait until you leave the exit Circle
-        if (!FieldRegions.REEF_EXIT.contains(poseEstimator_.getFieldPose())) {
+        if (!FieldRegions.REEF_EXIT.contains(poseEstimator_.getRobotPose())) {
           // lower elvator
           robot_state_ = RobotState.END;
         }
@@ -202,7 +202,7 @@ public class GameStateManager {
    */
   public Optional<Pose2d> loadStationPose() {
     for (PolygonRegion region : FieldRegions.STATION_REGIONS) {
-      if (region.contains(poseEstimator_.getFieldPose())) {
+      if (region.contains(poseEstimator_.getRobotPose())) {
         return Optional.of(FieldRegions.REGION_POSE_TABLE.get(region.getName()));
       }
     }
@@ -217,7 +217,7 @@ public class GameStateManager {
    */
   public Optional<Pose2d> reefPose(Column column) {
     for (PolygonRegion region : FieldRegions.REEF_REGIONS) {
-      if (region.contains(poseEstimator_.getFieldPose())) {
+      if (region.contains(poseEstimator_.getRobotPose())) {
         if (column == Column.CENTER) {
           return Optional.of(FieldRegions.REGION_POSE_TABLE.get(region.getName()));
         }
@@ -251,7 +251,7 @@ public class GameStateManager {
    */
   public Optional<Pose2d> algaePose() {
     for (PolygonRegion region : FieldRegions.ALGAE_REGIONS) {
-      if (region.contains(poseEstimator_.getFieldPose())) {
+      if (region.contains(poseEstimator_.getRobotPose())) {
         return Optional.of(FieldRegions.REGION_POSE_TABLE.get(region.getName()));
       }
     }

@@ -134,10 +134,10 @@ public class Claw extends Subsystem {
    */
   @Override
   public void outputTelemetry(double timestamp) {
-    SmartDashboard.putString("Debug/Claw/Mode", io_.claw_mode_.toString());
-    SmartDashboard.putNumber("Debug/Claw/Current_Output", io_.current_output_);
+    SmartDashboard.putString("Subsystems/Claw/Mode", io_.claw_mode_.toString());
+    SmartDashboard.putNumber("Subsystems/Claw/Current_Output", io_.current_output_);
     SmartDashboard.putString(
-        "Game Piece Mode",
+        "Subsystems/Claw/Game Piece Mode",
         (io_.game_piece_ == GamePiece.CORAL)
             ? Constants.ClawConstants.CORAL_COLOR
             : Constants.ClawConstants.ALGAE_COLOR);

@@ -152,12 +152,12 @@ public class SwerveDrivetrain extends Subsystem {
     heading_pose_controller_.enableContinuousInput(-Math.PI, Math.PI);
 
     // Allow PID Configuration for Traj / Pose Controll on the Dashboard
-    SmartDashboard.putData("X Traj Controller", x_traj_controller_);
-    SmartDashboard.putData("Y Traj Controller", y_traj_controller_);
-    SmartDashboard.putData("Heading Traj Controller", heading_traj_controller_);
-    SmartDashboard.putData("X Pose Controller", x_pose_controller_);
-    SmartDashboard.putData("Y Pose Controller", y_pose_controller_);
-    SmartDashboard.putData("Heading Pose Controller", heading_pose_controller_);
+    SmartDashboard.putData("Tuning/Swerve/X Traj Controller", x_traj_controller_);
+    SmartDashboard.putData("Tuning/Swerve/Y Traj Controller", y_traj_controller_);
+    SmartDashboard.putData("Tuning/Swerve/Heading Traj Controller", heading_traj_controller_);
+    SmartDashboard.putData("Tuning/Swerve/X Pose Controller", x_pose_controller_);
+    SmartDashboard.putData("Tuning/Swerve/Y Pose Controller", y_pose_controller_);
+    SmartDashboard.putData("Tuning/Swerve/Heading Pose Controller", heading_pose_controller_);
 
     // NT Publishers
     requested_state_pub_ =
@@ -252,7 +252,7 @@ public class SwerveDrivetrain extends Subsystem {
     io_.robot_yaw_ =
         Rotation2d.fromRadians(MathUtil.angleModulus(pigeon_imu_.getYaw().getValue().in(Radians)));
     io_.chassis_speeds_ = kinematics_.toChassisSpeeds(io_.current_module_states_);
-    io_.current_pose_ = PoseEstimator.getInstance().getFieldPose();
+    io_.current_pose_ = PoseEstimator.getInstance().getRobotPose();
 
     // recieve new chassis info
     ChassisProxyServer.updateData();
@@ -404,19 +404,24 @@ public class SwerveDrivetrain extends Subsystem {
     requested_state_pub_.set(io_.requested_module_states_);
     chassis_speeds_pub_.set(io_.chassis_speeds_);
 
-    SmartDashboard.putString("Debug/Swerve/Mode", io_.drive_mode_.toString());
-    SmartDashboard.putString("Debug/Swerve/Request Type", request_to_apply_.toString());
+    SmartDashboard.putString("Subsystems/Swerve/Mode", io_.drive_mode_.toString());
+    SmartDashboard.putString(
+        "Subsystems/Swerve/Request Type", request_to_apply_.getClass().getSimpleName());
     SmartDashboard.putNumber(
-        "Debug/Swerve/Driver Prespective", io_.drivers_station_perspective_.getDegrees());
-    SmartDashboard.putNumber("Debug/Swerve/Yaw", io_.robot_yaw_.getDegrees());
+        "Subsystems/Swerve/Driver Prespective", io_.drivers_station_perspective_.getDegrees());
+    SmartDashboard.putNumber("Subsystems/Swerve/Yaw", io_.robot_yaw_.getDegrees());
     SmartDashboard.putNumber(
-        "Debug/Swerve/FL Encoder", Units.rotationsToDegrees(swerve_modules_[0].getEncoderValue()));
+        "Subsystems/Swerve/FL Encoder",
+        Units.rotationsToDegrees(swerve_modules_[0].getEncoderValue()));
     SmartDashboard.putNumber(
-        "Debug/Swerve/FR Encoder", Units.rotationsToDegrees(swerve_modules_[1].getEncoderValue()));
+        "Subsystems/Swerve/FR Encoder",
+        Units.rotationsToDegrees(swerve_modules_[1].getEncoderValue()));
     SmartDashboard.putNumber(
-        "Debug/Swerve/FL Encoder", Units.rotationsToDegrees(swerve_modules_[2].getEncoderValue()));
+        "Subsystems/Swerve/BL Encoder",
+        Units.rotationsToDegrees(swerve_modules_[2].getEncoderValue()));
     SmartDashboard.putNumber(
-        "Debug/Swerve/BR Encoder", Units.rotationsToDegrees(swerve_modules_[3].getEncoderValue()));
+        "Subsystems/Swerve/BR Encoder",
+        Units.rotationsToDegrees(swerve_modules_[3].getEncoderValue()));
   }
 
   public Command applyRequest(Supplier<SwerveRequest> requestSupplier) {

@@ -44,19 +44,19 @@ public abstract class OI {
 
     // Set Wheel Offsets
     SmartDashboard.putData(
-        "Set Wheel Offsets",
+        "Commands/Set Wheel Offsets",
         Commands.runOnce(() -> SwerveDrivetrain.getInstance().tareEverything())
             .ignoringDisable(true));
     // Seed Field Centric Forward Direction
     SmartDashboard.putData(
-        "Seed Field Centric",
+        "Commands/Seed Field Centric",
         SwerveDrivetrain.getInstance().seedFieldRelativeCommand().ignoringDisable(true));
     SmartDashboard.putData(
-        "Disturb Pose",
+        "Commands/Disturb Pose",
         Commands.runOnce(() -> PoseEstimator.getInstance().disturbPose()).ignoringDisable(true));
     // Sync Elevator and Arm Sensor to "Home" Position
     SmartDashboard.putData(
-        "Zero Elevator & Arm",
+        "Commands/Zero Elevator & Arm",
         Commands.runOnce(() -> Elevator.getInstance().elevatorAndArmPoseReset())
             .ignoringDisable(true));
 
