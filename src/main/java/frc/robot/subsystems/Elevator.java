@@ -161,7 +161,7 @@ public class Elevator extends Subsystem {
     arm_mech_ =
         elevator_mech_.append(
             new MechanismLigament2d(
-                "Arm", ElevatorConstants.ARM_LENGTH, 0, 6, new Color8Bit(Color.kOrange)));
+                "Arm", ElevatorConstants.ARM_LENGTH, -180, 6, new Color8Bit(Color.kOrange)));
     elevator_max_mech_ =
         elevator_mech_.append(
             new MechanismLigament2d(
