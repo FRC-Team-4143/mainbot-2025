@@ -12,19 +12,19 @@ public class ScoringPoses {
 
   private static final ConstantsLoader LOADER = ConstantsLoader.getInstance();
 
-  // Offset to aligin robot bumpers with reef face
+  // Offset to align robot bumpers with reef face
   public static final Transform2d REEF_FACE_OFFSET =
       new Transform2d(
           new Translation2d(DrivetrainConstants.CENTER_OFFSET_X, 0), Rotation2d.fromDegrees(180));
-  // Offset to aligin robot bumpers with coral station
+  // Offset to align robot bumpers with coral station
   public static final Transform2d CORAL_STATION_OFFSET =
       new Transform2d(
           new Translation2d(DrivetrainConstants.CENTER_OFFSET_X, 0), Rotation2d.fromDegrees(180));
-  // Offset to aligin robot bumpers with processor face
+  // Offset to align robot bumpers with processor face
   public static final Transform2d PROCESSOR_OFFSET =
       new Transform2d(
           new Translation2d(DrivetrainConstants.CENTER_OFFSET_X, 0), Rotation2d.fromDegrees(180));
-  // Offset to aligin robot bumpers with middle of barge
+  // Offset to align robot bumpers with middle of barge
   public static final Transform2d BARGE_OFFSET =
       new Transform2d(
           new Translation2d(DrivetrainConstants.CENTER_OFFSET_X, 0), Rotation2d.fromDegrees(180));
@@ -35,7 +35,7 @@ public class ScoringPoses {
   public static final double CORAL_ALIGN_OFFSET =
       Units.inchesToMeters(-LOADER.getDoubleValue("imp", "coral_offset"));
 
-  public static final Transform2d LEFT_COLUMN_OFFEST =
+  public static final Transform2d LEFT_COLUMN_OFFSET =
       new Transform2d(0, Units.inchesToMeters(6.47) + CORAL_ALIGN_OFFSET, new Rotation2d());
   public static final Transform2d RIGHT_COLUMN_OFFSET =
       new Transform2d(0, Units.inchesToMeters(-6.47) + CORAL_ALIGN_OFFSET, new Rotation2d());

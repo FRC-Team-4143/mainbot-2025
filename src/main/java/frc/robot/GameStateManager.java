@@ -10,7 +10,9 @@ import frc.lib.ScoringPoses;
 import frc.mw_lib.geometry.PolygonRegion;
 import frc.mw_lib.util.Util;
 import frc.robot.Constants.ElevatorConstants;
+import frc.robot.subsystems.Claw;
 import frc.robot.subsystems.Elevator;
+import frc.robot.subsystems.Elevator.SpeedLimit;
 import frc.robot.subsystems.PoseEstimator;
 import frc.robot.subsystems.SwerveDrivetrain;
 import frc.robot.subsystems.SwerveDrivetrain.DriveMode;
@@ -45,6 +47,9 @@ public class GameStateManager {
   @Log.File private int num_frames = 5;
   @Log.File private boolean use_cam_for_reef_state = false;
   @Log.File private Optional<Column> target_column = Optional.empty();
+
+  @Log.File
+  private boolean algae_level_high = false; // false is low level and true is the higher level
 
   private StructPublisher<Pose2d> reef_target_publisher =
       NetworkTableInstance.getDefault().getStructTopic("ReefTarget", Pose2d.struct).publish();
@@ -123,7 +128,7 @@ public class GameStateManager {
         elevatorTargetSwitch();
         if (use_cam_for_reef_state && target_column.isEmpty()) {
           if (reef_section_list.size() < num_frames) {
-            // add reef states to list while driveing to the center
+            // add reef states to list while driving to the center
             reef_section_list.add(getNextReefFrame());
             reef_target = reefPose(Column.CENTER);
             drivetrain_.setTargetPose(reef_target.get());
@@ -135,12 +140,12 @@ public class GameStateManager {
           }
         }
         if (target_column.isPresent()) {
-          // drive twards final target
+          // drive towards final target
           reef_target = reefPose(target_column.get());
           drivetrain_.setTargetPose(reef_target.get());
           if (Util.epislonEquals(
               poseEstimator_.getFieldPose(), reef_target.get(), 0.0873, 0.0508)) {
-            // Once at final target, hand off contol
+            // Once at final target, hand off control
             // drivetrain_.setDriveMode(DriveMode.FIELD_CENTRIC);
             robot_state_ = RobotState.SCORING;
             // CommandScheduler.getInstance().schedule(new Score().withTimeout(1));
@@ -160,7 +165,13 @@ public class GameStateManager {
         // target_column = Optional.empty();
         reef_section_state = Optional.empty();
         robot_state_ = RobotState.TELEOP_CONTROL;
-        elevator_.setTarget(ElevatorConstants.Target.STOW);
+        if (Claw.getInstance().isCoralMode()) {
+          elevator_.setSpeedLimit(SpeedLimit.CORAL);
+          elevator_.setTarget(ElevatorConstants.Target.STOW);
+        } else {
+          elevator_.setSpeedLimit(SpeedLimit.ALGAE);
+          elevator_.setTarget(ElevatorConstants.Target.ALGAE_STOW);
+        }
         break;
       case TELEOP_CONTROL:
         // normal control
@@ -181,7 +192,11 @@ public class GameStateManager {
         elevator_.setTarget(ElevatorConstants.Target.L4);
         break;
       case REEF_ALGAE:
-        // ask where algae is then go to that height
+        if (algae_level_high) {
+          elevator_.setTarget(ElevatorConstants.Target.ALGAE_HIGH);
+        } else {
+          elevator_.setTarget(ElevatorConstants.Target.ALGAE_LOW);
+        }
         break;
       case TURTLE:
       default:
@@ -218,27 +233,30 @@ public class GameStateManager {
    * @return target pose
    */
   public Optional<Pose2d> reefPose(Column column) {
-    for (PolygonRegion region : FieldRegions.REEF_REGIONS) {
-      if (region.contains(poseEstimator_.getFieldPose())) {
+    for (int i = 0; i < FieldRegions.REEF_REGIONS.length; i++) {
+      if (FieldRegions.REEF_REGIONS[i].contains(poseEstimator_.getFieldPose())) {
         if (column == Column.CENTER) {
-          return Optional.of(FieldRegions.REGION_POSE_TABLE.get(region.getName()));
+          return Optional.of(
+              FieldRegions.REGION_POSE_TABLE.get(FieldRegions.REEF_REGIONS[i].getName()));
         }
         if (column == Column.LEFT) {
           return Optional.of(
               FieldRegions.REGION_POSE_TABLE
-                  .get(region.getName())
-                  .transformBy(ScoringPoses.LEFT_COLUMN_OFFEST));
+                  .get(FieldRegions.REEF_REGIONS[i].getName())
+                  .transformBy(ScoringPoses.LEFT_COLUMN_OFFSET));
         }
+
         if (column == Column.RIGHT) {
           return Optional.of(
               FieldRegions.REGION_POSE_TABLE
-                  .get(region.getName())
+                  .get(FieldRegions.REEF_REGIONS[i].getName())
                   .transformBy(ScoringPoses.RIGHT_COLUMN_OFFSET));
         }
         if (column == Column.ALGAE) {
+          algae_level_high = ((i % 2) == 0);
           return Optional.of(
               FieldRegions.REGION_POSE_TABLE
-                  .get(region.getName())
+                  .get(FieldRegions.REEF_REGIONS[i].getName())
                   .transformBy(ScoringPoses.ALGAE_ALIGN_OFFSET));
         }
       }
@@ -283,7 +301,7 @@ public class GameStateManager {
   }
 
   public void setTargetColumn(Column column) {
-    // sets the target column, will be overwriten if use_cam_for_reef_state is true
+    // sets the target column, will be overwritten if use_cam_for_reef_state is true
     target_column = Optional.of(column);
   }
 
