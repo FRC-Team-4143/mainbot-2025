@@ -14,7 +14,7 @@ import frc.robot.GameStateManager.Column;
 import frc.robot.GameStateManager.RobotState;
 import frc.robot.GameStateManager.ScoringTarget;
 import frc.robot.commands.AlgaeEject;
-import frc.robot.commands.AlgaeLoad;
+import frc.robot.commands.AlgaeReefPickup;
 import frc.robot.commands.CoralEject;
 import frc.robot.commands.CoralLoad;
 import frc.robot.commands.ElevatorButton;
@@ -75,7 +75,6 @@ public abstract class OI {
      *
      */
 
-    driver_controller_.leftBumper().whileTrue(new AlgaeLoad());
     driver_controller_.rightBumper().whileTrue(new CoralLoad());
     // driver_controller_
     // .leftTrigger()
@@ -121,6 +120,8 @@ public abstract class OI {
      * L2 Game State Manager Bindings
      *
      */
+
+    driver_controller_.leftBumper().whileTrue(new AlgaeReefPickup());
 
     driver_controller_
         .leftTrigger()
