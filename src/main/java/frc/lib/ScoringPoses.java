@@ -5,6 +5,7 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.util.Units;
+import frc.mw_lib.geometry.TightRope;
 import frc.mw_lib.util.ConstantsLoader;
 import frc.robot.Constants.DrivetrainConstants;
 
@@ -59,7 +60,7 @@ public class ScoringPoses {
       FieldConstants.CoralStation.RIGHT_CENTER_FACE.transformBy(CORAL_STATION_OFFSET);
   public static Pose2d PROCESSOR_POSE =
       FieldConstants.Processor.CENTER_FACE.transformBy(PROCESSOR_OFFSET);
-  public static Pose2d BARGE_POSE =
-      new Pose2d(FieldConstants.Barge.MIDDLE_CAGE, Rotation2d.fromDegrees(180))
-          .transformBy(BARGE_OFFSET);
+    public static Pose2d BARGE_TIGHT_ROPE_POSE_A = new Pose2d(FieldConstants.Barge.FAR_CAGE.minus(new Translation2d(0.5, 0)), Rotation2d.fromDegrees(0));
+    public static Pose2d BARGE_TIGHT_ROPE_POSE_B = new Pose2d(FieldConstants.Barge.CLOSE_CAGE.minus(new Translation2d(0.5, 0)), Rotation2d.fromDegrees(0));
+    public static TightRope BARGE_TIGHT_ROPE = new TightRope(BARGE_TIGHT_ROPE_POSE_A, BARGE_TIGHT_ROPE_POSE_B);
 }
