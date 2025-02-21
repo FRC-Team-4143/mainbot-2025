@@ -168,7 +168,6 @@ public class FieldRegions {
       region.constructRegion();
     }
 
-    REGION_POSE_TABLE.put(BARGE_REGION.getName(), ScoringPoses.BARGE_POSE);
     REGION_POSE_TABLE.put(PROCESSOR_REGION.getName(), ScoringPoses.PROCESSOR_POSE);
     REGION_POSE_TABLE.put(
         RIGHT_CORAL_STATION_REGION.getName(), ScoringPoses.RIGHT_CORAL_STATION_POSE);
@@ -188,8 +187,6 @@ public class FieldRegions {
       region.allianceFlip();
     }
 
-    REGION_POSE_TABLE.replace(
-        BARGE_REGION.getName(), AllianceFlipUtil.apply(ScoringPoses.BARGE_POSE));
     REGION_POSE_TABLE.replace(
         PROCESSOR_REGION.getName(), AllianceFlipUtil.apply(ScoringPoses.PROCESSOR_POSE));
     REGION_POSE_TABLE.replace(

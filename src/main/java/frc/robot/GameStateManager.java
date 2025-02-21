@@ -4,6 +4,7 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.networktables.StructPublisher;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import frc.lib.FieldConstants;
 import frc.lib.FieldRegions;
 import frc.lib.ReefSectionState;
 import frc.lib.ScoringPoses;
@@ -110,14 +111,17 @@ public class GameStateManager {
   public void robotStateSwitch() {
     switch (robot_state_) {
       case TARGET_ACQUISITION:
-        reef_target = reefPose(Column.CENTER);
-        if (reef_target.isPresent()
-            && (intent == Intent.INTAKE_ALGAE || intent == Intent.SCORE_CORAL)) {
-          drivetrain_.setTargetPose(reef_target.get());
-          if (FieldRegions.REEF_ENTER.contains(poseEstimator_.getFieldPose())) {
-            robot_state_ = RobotState.APPROACHING_TARGET;
-          }
-        }
+        // reef_target = reefPose(Column.CENTER);
+        // if (reef_target.isPresent()
+        //     && (intent == Intent.INTAKE_ALGAE || intent == Intent.SCORE_CORAL)) {
+        //   drivetrain_.setTargetPose(reef_target.get());
+        //   if (FieldRegions.REEF_ENTER.contains(poseEstimator_.getFieldPose())) {
+        //     robot_state_ = RobotState.APPROACHING_TARGET;
+        //   }
+        // }
+        drivetrain_.setTightRope(
+            FieldConstants.StagingPositions.LEFT_ICE_CREAM,
+            FieldConstants.StagingPositions.RIGHT_ICE_CREAM);
         break;
       case APPROACHING_TARGET:
         if (use_cam_for_reef_state && target_column.isEmpty()) {

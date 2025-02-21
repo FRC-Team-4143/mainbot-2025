@@ -10,6 +10,7 @@ package frc.lib;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
+import frc.mw_lib.geometry.TightRope;
 
 public class AllianceFlipUtil {
 
@@ -20,5 +21,14 @@ public class AllianceFlipUtil {
   public static Pose2d apply(Pose2d pose) {
     return new Pose2d(
         apply(pose.getTranslation()), pose.getRotation().rotateBy(Rotation2d.fromDegrees(180)));
+  }
+
+  public static TightRope apply(TightRope tightRope) {
+    apply(tightRope.poseA);
+    apply(tightRope.poseB);
+    Pose2d temp = tightRope.poseA;
+    tightRope.poseA = tightRope.poseB;
+    tightRope.poseB = temp;
+    return tightRope;
   }
 }

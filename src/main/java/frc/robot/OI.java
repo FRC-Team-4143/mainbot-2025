@@ -7,19 +7,11 @@ package frc.robot;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Commands;
-import edu.wpi.first.wpilibj2.command.ConditionalCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.GameStateManager.Column;
 import frc.robot.GameStateManager.RobotState;
 import frc.robot.GameStateManager.ScoringTarget;
-import frc.robot.commands.AlgaeEject;
-import frc.robot.commands.AlgaeLoad;
-import frc.robot.commands.CoralEject;
-import frc.robot.commands.CoralLoad;
-import frc.robot.commands.ElevatorButton;
-import frc.robot.commands.ElevatorButton.Level;
-import frc.robot.subsystems.Claw;
 import frc.robot.subsystems.Elevator;
 import frc.robot.subsystems.PoseEstimator;
 import frc.robot.subsystems.SwerveDrivetrain;
@@ -41,7 +33,6 @@ public abstract class OI {
      * Smart Dashboard Bindings
      *
      */
-
     // Set Wheel Offsets
     SmartDashboard.putData(
         "Set Wheel Offsets",
@@ -74,22 +65,21 @@ public abstract class OI {
      * Manual Teleop Bindings
      *
      */
-
-    driver_controller_.rightBumper().onTrue(Claw.getInstance().toggleGamePiece());
-    driver_controller_
-        .leftTrigger()
-        .whileTrue(
-            new ConditionalCommand(
-                new CoralLoad(), new AlgaeLoad(), Claw.getInstance()::isCoralMode));
-    driver_controller_
-        .rightTrigger()
-        .whileTrue(
-            new ConditionalCommand(
-                new CoralEject(), new AlgaeEject(), Claw.getInstance()::isCoralMode));
-    driver_controller_.y().toggleOnTrue(new ElevatorButton(Level.L4));
-    driver_controller_.x().toggleOnTrue(new ElevatorButton(Level.L2));
-    driver_controller_.b().toggleOnTrue(new ElevatorButton(Level.L3));
-    driver_controller_.a().toggleOnTrue(new ElevatorButton(Level.L1));
+    // driver_controller_.rightBumper().onTrue(Claw.getInstance().toggleGamePiece());
+    // driver_controller_
+    //     .leftTrigger()
+    //     .whileTrue(
+    //         new ConditionalCommand(
+    //             new CoralLoad(), new AlgaeLoad(), Claw.getInstance()::isCoralMode));
+    // driver_controller_
+    //     .rightTrigger()
+    //     .whileTrue(
+    //         new ConditionalCommand(
+    //             new CoralEject(), new AlgaeEject(), Claw.getInstance()::isCoralMode));
+    // driver_controller_.y().toggleOnTrue(new ElevatorButton(Level.L4));
+    // driver_controller_.x().toggleOnTrue(new ElevatorButton(Level.L2));
+    // driver_controller_.b().toggleOnTrue(new ElevatorButton(Level.L3));
+    // driver_controller_.a().toggleOnTrue(new ElevatorButton(Level.L1));
 
     // new ConditionalCommand(new SetReefLevel(ReefLevel.L3), new
     // SetReefLevel(ReefLevel.ALGAE_HIGH), Claw.getInstance()::isCoralMode))
@@ -121,7 +111,7 @@ public abstract class OI {
      *
      */
 
-    operator_controller_
+    driver_controller_
         .rightBumper()
         .whileTrue(
             Commands.startEnd(
