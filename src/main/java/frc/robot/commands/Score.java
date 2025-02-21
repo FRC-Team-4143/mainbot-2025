@@ -1,10 +1,10 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.GameStateManager;
-import frc.robot.GameStateManager.RobotState;
 import frc.robot.subsystems.CoralFunnel;
 import frc.robot.subsystems.CoralFunnel.FeedingMode;
+import frc.robot.subsystems.GameStateManager;
+import frc.robot.subsystems.GameStateManager.RobotState;
 
 public class Score extends Command {
   public Score() {
