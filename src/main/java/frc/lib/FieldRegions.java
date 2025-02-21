@@ -37,7 +37,8 @@ public class FieldRegions {
             new Translation2d(0, 0),
             new Translation2d(0, FieldConstants.FIELD_WIDTH / 2),
             new Translation2d(4, FieldConstants.FIELD_WIDTH / 2),
-            new Translation2d(4, 0)
+            new Translation2d(4, 0),
+            new Translation2d(0, 0)
           },
           "RightCoralStation");
   private static PolygonRegion LEFT_CORAL_STATION_REGION =
@@ -46,7 +47,8 @@ public class FieldRegions {
             new Translation2d(0, FieldConstants.FIELD_WIDTH),
             new Translation2d(4, FieldConstants.FIELD_WIDTH),
             new Translation2d(4, FieldConstants.FIELD_WIDTH / 2),
-            new Translation2d(0, FieldConstants.FIELD_WIDTH / 2)
+            new Translation2d(0, FieldConstants.FIELD_WIDTH / 2),
+            new Translation2d(0, FieldConstants.FIELD_WIDTH)
           },
           "LeftCoralStation");
   private static PolygonRegion REEF_FACE0_REGION =
