@@ -161,7 +161,7 @@ public class Elevator extends Subsystem {
     arm_mech_ =
         elevator_mech_.append(
             new MechanismLigament2d(
-                "Arm", ElevatorConstants.ARM_LENGTH, 0, 6, new Color8Bit(Color.kOrange)));
+                "Arm", ElevatorConstants.ARM_LENGTH, -180, 6, new Color8Bit(Color.kOrange)));
     elevator_max_mech_ =
         elevator_mech_.append(
             new MechanismLigament2d(
@@ -240,26 +240,27 @@ public class Elevator extends Subsystem {
 
   /** Outputs all logging information to the SmartDashboard */
   public void outputTelemetry(double timestamp) {
-    SmartDashboard.putString("Debug/Elevator/Control Mode", io_.current_control_mode.toString());
-    SmartDashboard.putNumber("Debug/Elevator/Target Height", io_.target_elevator_height);
-    SmartDashboard.putNumber("Debug/Elevator/Current Height", io_.current_elevator_height);
+    SmartDashboard.putString(
+        "Subsystems/Elevator/Control Mode", io_.current_control_mode.toString());
+    SmartDashboard.putNumber("Subsystems/Elevator/Target Height", io_.target_elevator_height);
+    SmartDashboard.putNumber("Subsystems/Elevator/Current Height", io_.current_elevator_height);
 
-    SmartDashboard.putString("Debug/Arm/Control Mode", io_.current_control_mode.toString());
-    SmartDashboard.putNumber("Debug/Arm/Current Angle", io_.current_arm_angle_);
-    SmartDashboard.putNumber("Debug/Arm/Target Angle", io_.target_arm_angle.getRadians());
+    SmartDashboard.putString("Subsystems/Arm/Control Mode", io_.current_control_mode.toString());
+    SmartDashboard.putNumber("Subsystems/Arm/Current Angle", io_.current_arm_angle_);
+    SmartDashboard.putNumber("Subsystems/Arm/Target Angle", io_.target_arm_angle.getRadians());
     SmartDashboard.putNumber(
-        "Debug/Arm/Current Height",
+        "Subsystems/Arm/Current Height",
         kinematics_.effectorZ(io_.current_elevator_height, io_.current_arm_angle_));
-    SmartDashboard.putNumber("Debug/Arm/Target Height", io_.target_arm_height);
+    SmartDashboard.putNumber("Subsystems/Arm/Target Height", io_.target_arm_height);
     SmartDashboard.putNumber(
-        "Debug/Arm/Height Offset", kinematics_.calZOffset(io_.current_arm_angle_));
+        "Subsystems/Arm/Height Offset", kinematics_.calZOffset(io_.current_arm_angle_));
     updateMechanism();
   }
 
   public void updateMechanism() {
     elevator_mech_.setLength(io_.current_elevator_height);
     arm_mech_.setAngle(Math.toDegrees(io_.current_arm_angle_) - 90);
-    SmartDashboard.putData("Elevator System Mech", system_mech_);
+    SmartDashboard.putData("Subsystems/Elevator/System Mech", system_mech_);
   }
 
   /**
@@ -378,7 +379,7 @@ public class Elevator extends Subsystem {
   }
 
   public boolean canExtendForBarge() {
-    return FieldRegions.ALGAE_REGIONS[0].contains(PoseEstimator.getInstance().getFieldPose());
+    return FieldRegions.ALGAE_REGIONS[0].contains(PoseEstimator.getInstance().getRobotPose());
   }
 
   public class ElevatorPeriodicIo implements Logged {
