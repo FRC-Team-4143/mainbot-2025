@@ -4,11 +4,9 @@ import edu.wpi.first.wpilibj.DataLogManager;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Notifier;
 import edu.wpi.first.wpilibj.Timer;
-import frc.mw_lib.logging.GitLogger;
 import java.util.ArrayList;
 import monologue.Annotations.Log;
 import monologue.Logged;
-import monologue.Monologue;
 
 public abstract class SubsystemManager {
 
@@ -85,12 +83,10 @@ public abstract class SubsystemManager {
 
   /** Completes the subsystem registration process and begins calling each subsystem in a loop */
   protected void completeRegistration() {
-    loopThread.startPeriodic(.01);
+    loopThread.startPeriodic(.02);
 
-    Monologue.setupMonologue(ios, "Robot", true, false);
-    DriverStation.startDataLog(DataLogManager.getLog());
-    GitLogger.logGitData();
-    GitLogger.putGitDataToDashboarad();
+    // Monologue.setupMonologue(ios, "Robot", true, false);
+    // DriverStation.startDataLog(DataLogManager.getLog());
     log_init = true;
   }
 
@@ -107,7 +103,7 @@ public abstract class SubsystemManager {
     }
 
     try {
-      Monologue.updateAll();
+      // Monologue.updateAll();
     } catch (Exception e) {
       DataLogManager.log("Monologue failed to log io");
     }

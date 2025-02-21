@@ -8,6 +8,11 @@ import com.revrobotics.spark.SparkBase;
 import com.revrobotics.spark.SparkFlex;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.config.SparkFlexConfig;
+
+// import com.revrobotics.spark.SparkBase;
+// import com.revrobotics.spark.SparkFlex;
+// import com.revrobotics.spark.SparkLowLevel.MotorType;
+// import com.revrobotics.spark.config.SparkFlexConfig;
 import edu.wpi.first.math.filter.Debouncer;
 import edu.wpi.first.math.filter.Debouncer.DebounceType;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -47,7 +52,8 @@ public class CoralFunnel extends Subsystem {
     // Create io object first in subsystem configuration
     io_ = new CoralFunnelPeriodicIo();
     left_feeder_motor_ = new SparkFlex(FeederConstants.LEFT_FEEDER_MOTOR, MotorType.kBrushless);
-    right_feeder_motor_ = new SparkFlex(FeederConstants.RIGHT_FEEDER_MOTOR, MotorType.kBrushless);
+    right_feeder_motor_ = new SparkFlex(FeederConstants.RIGHT_FEEDER_MOTOR,
+    MotorType.kBrushless);
 
     SparkFlexConfig config_ = new SparkFlexConfig();
     config_.inverted(FeederConstants.LEFT_FEEDER_INVERTED);

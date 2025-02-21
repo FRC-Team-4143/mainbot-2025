@@ -8,9 +8,7 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
-import frc.lib.FieldRegions;
 import frc.robot.subsystems.SwerveDrivetrain;
-import frc.robot.subsystems.SwerveDrivetrain.DriveMode;
 import java.util.Optional;
 
 public class Robot extends TimedRobot {
@@ -22,7 +20,6 @@ public class Robot extends TimedRobot {
     robot_container_ = RobotContainer.getInstance();
     AutoManager.getInstance();
     OI.configureBindings();
-    FieldRegions.makeRegions();
   }
 
   @Override
@@ -35,9 +32,7 @@ public class Robot extends TimedRobot {
   }
 
   @Override
-  public void disabledInit() {
-    SwerveDrivetrain.getInstance().setDriveMode(DriveMode.IDLE);
-  }
+  public void disabledInit() {}
 
   @Override
   public void disabledPeriodic() {
@@ -53,16 +48,12 @@ public class Robot extends TimedRobot {
                 allaince_ == Alliance.Red
                     ? SwerveDrivetrain.getInstance().RED_ALLIANCE_HEADING
                     : SwerveDrivetrain.getInstance().BLUE_ALLIANCE_HEADING);
-        // Flip Field Regions
-        FieldRegions.flipRegions();
       }
     }
   }
 
   @Override
-  public void autonomousInit() {
-    SwerveDrivetrain.getInstance().setDriveMode(DriveMode.TRAJECTORY);
-  }
+  public void autonomousInit() {}
 
   @Override
   public void autonomousPeriodic() {}

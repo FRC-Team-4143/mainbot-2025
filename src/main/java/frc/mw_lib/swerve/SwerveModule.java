@@ -33,7 +33,6 @@ import edu.wpi.first.math.util.Units;
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.wpilibj.AnalogEncoder;
-import frc.mw_lib.util.MWPreferences;
 
 /**
  * Swerve Module class that encapsulates a swerve module powered by CTR Electronics devices.
@@ -541,16 +540,17 @@ public class SwerveModule {
   public void setWheelOffsets() {
     m_steerMotor.setPosition(0);
     m_angle_offset = m_analogEncoder.get(); // * 360.0;
-    MWPreferences.getInstance().setPreference("Module" + m_encoder_id + "offset", m_angle_offset);
-    System.out.println("Set wheel offsets of " + m_encoder_id + " to " + m_angle_offset);
+    // MWPreferences.getInstance().setPreference("Module" + m_encoder_id + "offset",
+    // m_angle_offset);
+    // System.out.println("Set wheel offsets of " + m_encoder_id + " to " + m_angle_offset);
 
     resetToAbsolute();
   }
 
   /** */
   public void resetToAbsolute() {
-    m_angle_offset =
-        MWPreferences.getInstance().getPreferenceDouble("Module" + m_encoder_id + "offset", 0);
+    // m_angle_offset =
+    //     MWPreferences.getInstance().getPreferenceDouble("Module" + m_encoder_id + "offset", 0);
     double absolutePosition = m_analogEncoder.get() - m_angle_offset;
     m_steerMotor.setPosition(absolutePosition);
   }

@@ -9,7 +9,8 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
-import frc.robot.subsystems.PoseEstimator;
+import frc.robot.commands.Feed;
+import frc.robot.commands.Score;
 import frc.robot.subsystems.SwerveDrivetrain;
 import frc.robot.subsystems.SwerveDrivetrain.DriveMode;
 import java.util.Optional;
@@ -39,14 +40,6 @@ public abstract class OI {
     SmartDashboard.putData(
         "Seed Field Centric",
         SwerveDrivetrain.getInstance().seedFieldRelativeCommand().ignoringDisable(true));
-    SmartDashboard.putData(
-        "Disturb Pose",
-        Commands.runOnce(() -> PoseEstimator.getInstance().disturbPose()).ignoringDisable(true));
-    // Sync Elevator and Arm Sensor to "Home" Position
-    // SmartDashboard.putData(
-    //     "Zero Elevator & Arm",
-    // Commands.runOnce(() -> Elevator.getInstance().elevatorAndArmPoseReset())
-    //     .ignoringDisable(true));
 
     // Swap Between Robot Centric and Field Centric
     driver_controller_
@@ -57,76 +50,8 @@ public abstract class OI {
                     SwerveDrivetrain.getInstance())
                 .ignoringDisable(true));
 
-    /*
-     *
-     * Manual Teleop Bindings
-     *
-     */
-
-    // driver_controller_.rightBumper().onTrue(Claw.getInstance().toggleGamePiece());
-    // driver_controller_
-    //     .leftTrigger()
-    //     .whileTrue(
-    //         new ConditionalCommand(
-    //             new CoralLoad(), new AlgaeLoad(), Claw.getInstance()::isCoralMode));
-    // driver_controller_
-    //     .rightTrigger()
-    //     .whileTrue(
-    //         new ConditionalCommand(
-    //             new CoralEject(), new AlgaeEject(), Claw.getInstance()::isCoralMode));
-    // driver_controller_.y().toggleOnTrue(new ElevatorButton(Level.L4));
-    // driver_controller_.x().toggleOnTrue(new ElevatorButton(Level.L2));
-    // driver_controller_.b().toggleOnTrue(new ElevatorButton(Level.L3));
-    // driver_controller_.a().toggleOnTrue(new ElevatorButton(Level.L1));
-
-    // new ConditionalCommand(new SetReefLevel(ReefLevel.L3), new
-    // SetReefLevel(ReefLevel.ALGAE_HIGH), Claw.getInstance()::isCoralMode))
-
-    /*
-     *
-     * Game State Manager Bindings
-     *
-     */
-    // operator_controller_
-    // .y()
-    // .toggleOnTrue(Commands.runOnce(() ->
-    // GameStateManager.wantedTarget(ScoringTarget.REEF_L4)));
-    // operator_controller_
-    // .x()
-    // .toggleOnTrue(Commands.runOnce(() ->
-    // GameStateManager.wantedTarget(ScoringTarget.REEF_L2)));
-    // operator_controller_
-    // .b()
-    // .toggleOnTrue(Commands.runOnce(() ->
-    // GameStateManager.wantedTarget(ScoringTarget.REEF_L3)));
-    // operator_controller_.a().toggleOnTrue(());
-    // operator_controller_.povDown().toggleOnTrue(new
-    // SetReefLevel(ReefLevel.ALGAE_LOW));
-    // operator_controller_.povUp().toggleOnTrue(new
-    // SetReefLevel(ReefLevel.ALGAE_HIGH));
-
-    /*
-     *
-     * L2 Game State Manager Bindings
-     *
-     */
-
-    // driver_controller_
-    // .rightBumper()
-    //     .whileTrue(
-    //         Commands.startEnd(
-    //             () ->
-    // GameStateManager.getInstance().setRobotState(RobotState.TARGET_ACQUISITION),
-    //             () -> GameStateManager.getInstance().setRobotState(RobotState.END)));
-    // Commands.runOnce(() -> GameStateManager.getInstance().setTargetColumn(Column.RIGHT));
-    // driver_controller_
-    //     .leftBumper()
-    //     .whileTrue(
-    //         Commands.startEnd(
-    //             () ->
-    // GameStateManager.getInstance().setRobotState(RobotState.TARGET_ACQUISITION),
-    //             () -> GameStateManager.getInstance().setRobotState(RobotState.END)));
-    // Commands.runOnce(() -> GameStateManager.getInstance().setTargetColumn(Column.LEFT));
+    driver_controller_.rightBumper().whileTrue(new Score());
+    driver_controller_.leftBumper().whileTrue(new Feed());
 
     driver_pov_active_.whileTrue(
         Commands.startEnd(

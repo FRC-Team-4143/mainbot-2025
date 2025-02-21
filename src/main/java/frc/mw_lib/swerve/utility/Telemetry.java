@@ -15,7 +15,6 @@ import edu.wpi.first.wpilibj.smartdashboard.MechanismLigament2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj.util.Color8Bit;
-import frc.robot.subsystems.PoseEstimator;
 import frc.robot.subsystems.SwerveDrivetrain;
 
 public class Telemetry {
@@ -52,7 +51,6 @@ public class Telemetry {
   /* Keep a reference of the last pose to calculate the speeds */
   Pose2d m_lastPose = new Pose2d();
   double lastTime = Utils.getCurrentTimeSeconds();
-  PoseEstimator poseEstimator = PoseEstimator.getInstance();
   SwerveDrivetrain swerveDrivetrain = SwerveDrivetrain.getInstance();
 
   /* Mechanisms to represent the swerve module states */
@@ -97,7 +95,7 @@ public class Telemetry {
   /* Accept the swerve drive state and telemeterize it to smartdashboard */
   public void telemeterize() {
     /* Telemeterize the pose */
-    Pose2d pose = poseEstimator.getFieldPose();
+    Pose2d pose = new Pose2d(); // CRH: removed with Pose Estimator
     fieldTypePub.set("Field2d");
     fieldPub.set(new double[] {pose.getX(), pose.getY(), pose.getRotation().getDegrees()});
 

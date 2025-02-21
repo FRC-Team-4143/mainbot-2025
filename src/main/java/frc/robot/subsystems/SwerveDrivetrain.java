@@ -8,7 +8,6 @@ package frc.robot.subsystems;
 
 import static edu.wpi.first.units.Units.Radians;
 
-import choreo.trajectory.SwerveSample;
 import com.ctre.phoenix6.BaseStatusSignal;
 import com.ctre.phoenix6.hardware.Pigeon2;
 import edu.wpi.first.math.MathUtil;
@@ -27,7 +26,6 @@ import edu.wpi.first.networktables.StructPublisher;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
-import frc.mw_lib.proxy_server.ChassisProxyServer;
 import frc.mw_lib.subsystem.Subsystem;
 import frc.mw_lib.swerve.*;
 import frc.mw_lib.swerve.SwerveRequest.ForwardReference;
@@ -132,9 +130,6 @@ public class SwerveDrivetrain extends Subsystem {
 
     // make new io instance
     io_ = new SwerveDrivetrainPeriodicIo();
-
-    // configure chassis server for comms
-    ChassisProxyServer.configureServer();
 
     // Setup the Pigeon IMU
     pigeon_imu_ =
@@ -252,10 +247,7 @@ public class SwerveDrivetrain extends Subsystem {
     io_.robot_yaw_ =
         Rotation2d.fromRadians(MathUtil.angleModulus(pigeon_imu_.getYaw().getValue().in(Radians)));
     io_.chassis_speeds_ = kinematics_.toChassisSpeeds(io_.current_module_states_);
-    io_.current_pose_ = PoseEstimator.getInstance().getFieldPose();
-
-    // recieve new chassis info
-    ChassisProxyServer.updateData();
+    // io_.current_pose_ = PoseEstimator.getInstance().getFieldPose();
   }
 
   @Override
@@ -308,22 +300,22 @@ public class SwerveDrivetrain extends Subsystem {
         break;
       case TRAJECTORY:
         {
-          double x_velocity =
-              io_.target_sample_.vx
-                  + x_traj_controller_.calculate(io_.current_pose_.getX(), io_.target_sample_.x);
-          double y_velocity =
-              io_.target_sample_.vy
-                  + y_traj_controller_.calculate(io_.current_pose_.getY(), io_.target_sample_.y);
-          double omega =
-              (io_.target_sample_.omega)
-                  + heading_traj_controller_.calculate(
-                      io_.current_pose_.getRotation().getRadians(), io_.target_sample_.heading);
-          this.setControl(
-              auto_request_
-                  .withVelocityX(x_velocity)
-                  .withVelocityY(y_velocity)
-                  .withRotationalRate(omega));
-          request_parameters_.currentPose = io_.current_pose_;
+          // double x_velocity =
+          //     io_.target_sample_.vx
+          //         + x_traj_controller_.calculate(io_.current_pose_.getX(), io_.target_sample_.x);
+          // double y_velocity =
+          //     io_.target_sample_.vy
+          //         + y_traj_controller_.calculate(io_.current_pose_.getY(), io_.target_sample_.y);
+          // double omega =
+          //     (io_.target_sample_.omega)
+          //         + heading_traj_controller_.calculate(
+          //             io_.current_pose_.getRotation().getRadians(), io_.target_sample_.heading);
+          // this.setControl(
+          //     auto_request_
+          //         .withVelocityX(x_velocity)
+          //         .withVelocityY(y_velocity)
+          //         .withRotationalRate(omega));
+          // request_parameters_.currentPose = io_.current_pose_;
         }
         break;
       case TRACTOR_BEAM:
@@ -526,11 +518,11 @@ public class SwerveDrivetrain extends Subsystem {
    *
    * @param sample swerve drive sample that includes target twist and pose
    */
-  public void setTargetSample(SwerveSample sample) {
-    io_.drive_mode_ = DriveMode.TRAJECTORY;
-    io_.target_sample_ = sample;
-    io_.target_pose_ = new Pose2d(sample.x, sample.y, new Rotation2d(sample.heading));
-  }
+  // public void setTargetSample(SwerveSample sample) {
+  //   io_.drive_mode_ = DriveMode.TRAJECTORY;
+  //   io_.target_sample_ = sample;
+  //   io_.target_pose_ = new Pose2d(sample.x, sample.y, new Rotation2d(sample.heading));
+  // }
 
   /**
    * Updates the internal target for the robot to reach and begins TRACTOR_BEAM mode
@@ -559,7 +551,7 @@ public class SwerveDrivetrain extends Subsystem {
   public class SwerveDrivetrainPeriodicIo implements Logged {
     @Log.File public SwerveModuleState[] current_module_states_, requested_module_states_;
     @Log.File public SwerveModulePosition[] module_positions_;
-    @Log.File public DriveMode drive_mode_ = DriveMode.IDLE;
+    @Log.File public DriveMode drive_mode_ = DriveMode.FIELD_CENTRIC;
     @Log.File public DriveMode default_drive_mode_ = DriveMode.FIELD_CENTRIC;
     @Log.File public double joystick_left_x_ = 0.0;
     @Log.File public double joystick_left_y_ = 0.0;
@@ -573,8 +565,9 @@ public class SwerveDrivetrain extends Subsystem {
     @Log.File public Pose2d current_pose_ = new Pose2d();
     @Log.File public Pose2d target_pose_ = new Pose2d();
 
-    @Log.File
-    public SwerveSample target_sample_ = new SwerveSample(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, null, null);
+    // @Log.File
+    // public SwerveSample target_sample_ = new SwerveSample(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, null,
+    // null);
   }
 
   @Override
