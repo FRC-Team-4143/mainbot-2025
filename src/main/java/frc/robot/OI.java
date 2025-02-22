@@ -18,10 +18,11 @@ import frc.robot.commands.ElevatorButton;
 import frc.robot.commands.ElevatorButton.Level;
 import frc.robot.subsystems.Claw;
 import frc.robot.subsystems.Elevator;
+import frc.robot.subsystems.Elevator.OffsetType;
 import frc.robot.subsystems.GameStateManager;
 import frc.robot.subsystems.GameStateManager.Column;
 import frc.robot.subsystems.GameStateManager.RobotState;
-import frc.robot.subsystems.GameStateManager.ScoringTarget;
+import frc.robot.subsystems.GameStateManager.ScoringTarget
 import frc.robot.subsystems.PoseEstimator;
 import frc.robot.subsystems.SwerveDrivetrain;
 import frc.robot.subsystems.SwerveDrivetrain.DriveMode;
@@ -146,6 +147,22 @@ public abstract class OI {
         Commands.startEnd(
             () -> SwerveDrivetrain.getInstance().setDriveMode(DriveMode.CRAWL),
             () -> SwerveDrivetrain.getInstance().restoreDefaultDriveMode()));
+
+    operator_controller_
+        .povUp()
+        .onTrue(Commands.runOnce(() -> Elevator.getInstance().setOffset(OffsetType.ELEVATOR_UP)));
+
+    operator_controller_
+        .povDown()
+        .onTrue(Commands.runOnce(() -> Elevator.getInstance().setOffset(OffsetType.ELEVATOR_DOWN)));
+
+    operator_controller_
+        .povLeft()
+        .onTrue(Commands.runOnce(() -> Elevator.getInstance().setOffset(OffsetType.ARM_CCW)));
+
+    operator_controller_
+        .povRight()
+        .onTrue(Commands.runOnce(() -> Elevator.getInstance().setOffset(OffsetType.ARM_CW)));
   }
 
   /**

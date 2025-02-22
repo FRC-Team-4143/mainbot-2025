@@ -83,6 +83,13 @@ public class Elevator extends Subsystem {
     ALGAE
   }
 
+  public enum OffsetType {
+    ELEVATOR_UP,
+    ELEVATOR_DOWN,
+    ARM_CCW,
+    ARM_CW
+  }
+
   private ElevatorPeriodicIo io_;
 
   // Constructor
@@ -178,6 +185,8 @@ public class Elevator extends Subsystem {
 
     arm_tuner_ = new TalonFXTuner(arm_motor_, "Arm", this);
     // bindTuner(arm_tuner_, 0.0, 0.5);
+
+    SmartDashboard.putData("Reset Arm & Elevator Offsets", Commands.runOnce(() -> resetOffsets()));
   }
 
   /** Called to reset and configure the subsystem */
@@ -231,11 +240,13 @@ public class Elevator extends Subsystem {
     elevator_master_.setControl(
         elevator_request_
             .withPosition(
-                (io_.target_elevator_height - ElevatorConstants.ELEVATOR_MIN_HEIGHT)
+                ((io_.target_elevator_height + io_.elevator_offset_)
+                        - ElevatorConstants.ELEVATOR_MIN_HEIGHT)
                     / ElevatorConstants.ELEVATOR_ROTATIONS_TO_METERS)
             .withLimitReverseMotion(isElevatorAtMinimum()));
     elevator_follower_.setControl(new StrictFollower(elevator_master_.getDeviceID()));
-    arm_motor_.setControl(arm_request_.withPosition(io_.target_arm_angle.getRotations()));
+    arm_motor_.setControl(
+        arm_request_.withPosition(io_.target_arm_angle.rotateBy(io_.arm_offset_).getRotations()));
   }
 
   /** Outputs all logging information to the SmartDashboard */
@@ -335,12 +346,35 @@ public class Elevator extends Subsystem {
     io_.target_arm_height = height;
   }
 
+  public void setOffset(OffsetType offset_type) {
+    switch (offset_type) {
+      case ELEVATOR_UP:
+        io_.elevator_offset_ += 0.0254;
+        break;
+      case ELEVATOR_DOWN:
+        io_.elevator_offset_ -= 0.0254;
+        break;
+      case ARM_CCW:
+        io_.arm_offset_ = io_.arm_offset_.rotateBy(Rotation2d.fromDegrees(-1));
+        break;
+      case ARM_CW:
+      default:
+        io_.arm_offset_ = io_.arm_offset_.rotateBy(Rotation2d.fromDegrees(1));
+        break;
+    }
+  }
+
   public void setTarget(Target target) {
     if (target.type == ControlType.PIVOT) {
       setPivotHeight(target.height, target.angle);
     } else if (target.type == ControlType.EFFECTOR) {
       setEndEffectorHeight(target.height, target.angle);
     }
+  }
+
+  public void resetOffsets() {
+    io_.arm_offset_ = new Rotation2d();
+    io_.elevator_offset_ = 0;
   }
 
   public void stowElevator() {
@@ -389,6 +423,8 @@ public class Elevator extends Subsystem {
     @Log.File public double target_elevator_height = ElevatorConstants.ELEVATOR_MIN_HEIGHT;
     @Log.File public double current_arm_angle_ = 0;
     @Log.File public Rotation2d target_arm_angle = Rotation2d.fromDegrees(-90);
+    @Log.File public double elevator_offset_ = 0;
+    @Log.File public Rotation2d arm_offset_ = Rotation2d.fromDegrees(0);
 
     @Log.File public double target_arm_height = 0;
     @Log.File public double elevator_master_rotations_ = 0;
