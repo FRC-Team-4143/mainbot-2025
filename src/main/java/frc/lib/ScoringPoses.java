@@ -64,7 +64,7 @@ public class ScoringPoses {
       new Pose2d(7.68, FieldConstants.FIELD_WIDTH - 0.914,
           Rotation2d.fromDegrees(0));
   public static Pose2d BARGE_TIGHT_ROPE_POSE_B =
-      new Pose2d(7.68, (FieldConstants.FIELD_WIDTH / 2) - ,
+      new Pose2d(7.68, (FieldConstants.FIELD_WIDTH / 2),
           Rotation2d.fromDegrees(0));
   public static TightRope BARGE_TIGHT_ROPE =
       new TightRope(BARGE_TIGHT_ROPE_POSE_A, BARGE_TIGHT_ROPE_POSE_B);
