@@ -28,7 +28,7 @@ public class AlgaeReefPickup extends Command {
   public void initialize() {
     Elevator.getInstance().setSpeedLimit(SpeedLimit.CORAL);
     GameStateManager.getInstance().setRobotState(RobotState.TARGET_ACQUISITION);
-    GameStateManager.getInstance().wantedTarget(ScoringTarget.REEF_ALGAE);
+    GameStateManager.getInstance().wantedAlgaeTarget(ScoringTarget.REEF_ALGAE);
     GameStateManager.getInstance().setTargetColumn(Column.ALGAE);
     Claw.getInstance().setGamePiece(GamePiece.ALGAE);
     Claw.getInstance().setClawMode(ClawMode.LOAD);

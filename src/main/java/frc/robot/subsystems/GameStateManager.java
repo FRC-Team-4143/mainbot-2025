@@ -199,14 +199,10 @@ public class GameStateManager extends Subsystem {
    */
   @Override
   public void outputTelemetry(double timestamp) {
-    SmartDashboard.putString("Robot State", io_.robot_state_.toString());
-    SmartDashboard.putString("Target Colum", io_.target_column.toString());
-    SmartDashboard.putString("Intent", io_.intent.toString());
-    SmartDashboard.putString("Target Level", io_.scoring_target.toString());
-  }
-
-  public void wantedTarget(ScoringTarget target_score) {
-    io_.scoring_target = target_score;
+    SmartDashboard.putString("Subsystem/GameStateManager/Robot State", io_.robot_state_.toString());
+    SmartDashboard.putString("Subsystem/GameStateManager/Target Colum", io_.target_column.toString());
+    SmartDashboard.putString("Subsystem/GameStateManager/Intent", io_.intent.toString());
+    SmartDashboard.putString("Subsystem/GameStateManager/Target Level", io_.scoring_target.toString());
   }
 
   /**
@@ -276,11 +272,6 @@ public class GameStateManager extends Subsystem {
     return Optional.empty();
   }
 
-  public void setSelectedReefLevel(int level) {
-    // sets the scoring level of the reef
-    io_.selected_reef_level = level;
-  }
-
   public void setRobotState(RobotState state) {
     // sets the current state of the robot (should really only set to
     // TARGET_ACQUISITION to preserve
@@ -308,6 +299,21 @@ public class GameStateManager extends Subsystem {
     // what column it is in
     // or none if there is no open slot at the specified level
     return Optional.of(Column.LEFT);
+  }
+
+  // sets the scoring target when in algae mode
+  public void wantedAlgaeTarget(ScoringTarget AlgaeTarget) {
+    io_.scoring_target = AlgaeTarget;
+  }
+
+  // sets the scoring target to the saved coral target
+  public void wantedCoralTarget() {
+    io_.scoring_target = io_.coral_target;
+  }
+
+  // saves set coral target
+  public void coralTarget(ScoringTarget target_score) {
+    io_.coral_target = target_score;
   }
 
   public void elevatorTargetSwitch() {
@@ -344,7 +350,8 @@ public class GameStateManager extends Subsystem {
    */
   public class GameStateManagerPeriodicIo implements Logged {
 
-    @Log.File private ScoringTarget scoring_target = ScoringTarget.TURTLE;
+    @Log.File private ScoringTarget scoring_target = ScoringTarget.REEF_L2;
+    @Log.File private ScoringTarget coral_target = ScoringTarget.REEF_L2;
     @Log.File private Optional<ReefSectionState> reef_section_state = Optional.empty();
 
     @Log.File
@@ -354,11 +361,10 @@ public class GameStateManager extends Subsystem {
     @Log.File private Optional<Pose2d> reef_target = Optional.empty();
     @Log.File private Optional<Pose2d> station_target = Optional.empty();
     @Log.File private Optional<Pose2d> algae_target = Optional.empty();
-    @Log.File private int selected_reef_level = 2;
     @Log.File private Intent intent = Intent.SCORE_CORAL;
     @Log.File private int num_frames = 5;
     @Log.File private boolean use_cam_for_reef_state = false;
-    @Log.File private Optional<Column> target_column = Optional.empty();
+    @Log.File private Optional<Column> target_column = Optional.of(Column.LEFT);
 
     @Log.File
     private boolean algae_level_high = false; // false is low level and true is the higher level

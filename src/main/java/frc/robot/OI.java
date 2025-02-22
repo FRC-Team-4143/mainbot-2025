@@ -77,6 +77,9 @@ public abstract class OI {
      */
 
     driver_controller_.rightBumper().whileTrue(new CoralLoad());
+    driver_controller_
+        .rightBumper()
+        .onTrue(Commands.runOnce(() -> GameStateManager.getInstance().wantedCoralTarget()));
     // driver_controller_
     // .leftTrigger()
     // .whileTrue(
@@ -92,6 +95,8 @@ public abstract class OI {
     driver_controller_.b().toggleOnTrue(new ElevatorButton(Level.L3));
     driver_controller_.a().toggleOnTrue(new ElevatorButton(Level.L1));
 
+    // driver_controller_.y().whileTrue(new SwerveProfile(2.5,0,0));
+
     // new ConditionalCommand(new SetReefLevel(ReefLevel.L3), new
     // SetReefLevel(ReefLevel.ALGAE_HIGH), Claw.getInstance()::isCoralMode))
 
@@ -104,17 +109,26 @@ public abstract class OI {
         .y()
         .toggleOnTrue(
             Commands.runOnce(
-                () -> GameStateManager.getInstance().wantedTarget(ScoringTarget.REEF_L4)));
+                () -> {
+                  GameStateManager.getInstance().coralTarget(ScoringTarget.REEF_L4);
+                  GameStateManager.getInstance().wantedCoralTarget();
+                }));
     operator_controller_
         .x()
         .toggleOnTrue(
             Commands.runOnce(
-                () -> GameStateManager.getInstance().wantedTarget(ScoringTarget.REEF_L2)));
+                () -> {
+                  GameStateManager.getInstance().coralTarget(ScoringTarget.REEF_L2);
+                  GameStateManager.getInstance().wantedCoralTarget();
+                }));
     operator_controller_
         .b()
         .toggleOnTrue(
             Commands.runOnce(
-                () -> GameStateManager.getInstance().wantedTarget(ScoringTarget.REEF_L3)));
+                () -> {
+                  GameStateManager.getInstance().coralTarget(ScoringTarget.REEF_L3);
+                  GameStateManager.getInstance().wantedCoralTarget();
+                }));
 
     /*
      *
