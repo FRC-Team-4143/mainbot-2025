@@ -263,6 +263,7 @@ public final class Constants {
     public static final double ELEVATOR_MIN_HEIGHT = Units.inchesToMeters(28.25);
     public static final double ELEVATOR_MAX_HEIGHT =
         Units.inchesToMeters(96.76) - ELEVATOR_HEIGHT_ABOVE_PIVOT - 0.1; // 0.1m of safety
+    public static final double ELEVATOR_MIN_SAFETY = ELEVATOR_MIN_HEIGHT + Units.inchesToMeters(4);
 
     public static final Slot0Configs ELEVATOR_GAINS =
         new Slot0Configs()
@@ -318,13 +319,11 @@ public final class Constants {
           ControlType.EFFECTOR),
 
       STATION(1.1808, Rotation2d.fromRadians(-1.027767), ControlType.PIVOT),
-      CLIMB(ELEVATOR_MIN_HEIGHT, new Rotation2d(), ControlType.PIVOT),
-      STOW(0.08, Rotation2d.fromDegrees(-90), ControlType.PIVOT),
-      ALGAE_LOW(
-          0.23665818349136578, Rotation2d.fromRadians(2.4942527611020524), ControlType.EFFECTOR),
+      CLIMB(ELEVATOR_MIN_SAFETY, new Rotation2d(), ControlType.PIVOT),
+      STOW(ELEVATOR_MIN_SAFETY, Rotation2d.fromDegrees(-90), ControlType.PIVOT),
+      ALGAE_LOW(ELEVATOR_MIN_HEIGHT, Rotation2d.fromDegrees(90 + 50), ControlType.EFFECTOR),
       ALGAE_HIGH(1.250, Rotation2d.fromDegrees(90 + 35), ControlType.EFFECTOR),
-      ALGAE_PROCESSOR(
-          0.224946006 + ELEVATOR_MIN_HEIGHT, Rotation2d.fromDegrees(-55), ControlType.PIVOT),
+      ALGAE_PROCESSOR(0.9429, Rotation2d.fromDegrees(-55), ControlType.PIVOT),
       BARGE(
           FieldConstants.ReefHeight.L4.HEIGHT + 0.0762,
           Rotation2d.fromDegrees(90),

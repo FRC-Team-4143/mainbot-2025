@@ -26,6 +26,7 @@ import frc.robot.subsystems.PoseEstimator;
 import frc.robot.subsystems.SwerveDrivetrain;
 import frc.robot.subsystems.SwerveDrivetrain.DriveMode;
 import java.util.Optional;
+import java.util.function.BooleanSupplier;
 
 public abstract class OI {
 
@@ -33,7 +34,8 @@ public abstract class OI {
   private static CommandXboxController driver_controller_ = new CommandXboxController(0);
   private static CommandXboxController operator_controller_ = new CommandXboxController(1);
 
-  private static Trigger driver_pov_active_ = new Trigger(getDriverJoystickPOV()::isPresent);
+  private static BooleanSupplier pov_is_present_ = () -> getDriverJoystickPOV().isPresent();
+  private static Trigger driver_pov_active_ = new Trigger(pov_is_present_);
 
   public static void configureBindings() {
 
@@ -64,11 +66,7 @@ public abstract class OI {
     // Swap Between Robot Centric and Field Centric
     driver_controller_
         .rightStick()
-        .onTrue(
-            Commands.runOnce(
-                    () -> SwerveDrivetrain.getInstance().toggleFieldCentric(),
-                    SwerveDrivetrain.getInstance())
-                .ignoringDisable(true));
+        .onTrue(SwerveDrivetrain.getInstance().toggleFieldCentric().ignoringDisable(true));
 
     /*
      *
@@ -80,11 +78,6 @@ public abstract class OI {
     driver_controller_
         .rightBumper()
         .onTrue(Commands.runOnce(() -> GameStateManager.getInstance().wantedCoralTarget()));
-    // driver_controller_
-    // .leftTrigger()
-    // .whileTrue(
-    // new ConditionalCommand(
-    // new CoralLoad(), new AlgaeLoad(), Claw.getInstance()::isCoralMode));
     driver_controller_
         .rightTrigger()
         .whileTrue(
@@ -94,11 +87,6 @@ public abstract class OI {
     driver_controller_.x().toggleOnTrue(new ElevatorButton(Level.L2));
     driver_controller_.b().toggleOnTrue(new ElevatorButton(Level.L3));
     driver_controller_.a().toggleOnTrue(new ElevatorButton(Level.L1));
-
-    // driver_controller_.y().whileTrue(new SwerveProfile(2.5,0,0));
-
-    // new ConditionalCommand(new SetReefLevel(ReefLevel.L3), new
-    // SetReefLevel(ReefLevel.ALGAE_HIGH), Claw.getInstance()::isCoralMode))
 
     /*
      *
@@ -129,12 +117,6 @@ public abstract class OI {
                   GameStateManager.getInstance().coralTarget(ScoringTarget.REEF_L3);
                   GameStateManager.getInstance().wantedCoralTarget();
                 }));
-
-    /*
-     *
-     * L2 Game State Manager Bindings
-     *
-     */
 
     driver_controller_.leftBumper().whileTrue(new AlgaeReefPickup());
 

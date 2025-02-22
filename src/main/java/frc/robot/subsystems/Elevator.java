@@ -386,7 +386,7 @@ public class Elevator extends Subsystem {
     // IO container for all variables
     @Log.File public ControlMode current_control_mode = ControlMode.PIVOT;
     @Log.File public double current_elevator_height = 0;
-    @Log.File public double target_elevator_height = ElevatorConstants.ELEVATOR_MIN_HEIGHT;
+    @Log.File public double target_elevator_height = ElevatorConstants.ELEVATOR_MIN_SAFETY;
     @Log.File public double current_arm_angle_ = 0;
     @Log.File public Rotation2d target_arm_angle = Rotation2d.fromDegrees(-90);
 

@@ -12,7 +12,6 @@ import frc.mw_lib.subsystem.Subsystem;
 import frc.mw_lib.util.Util;
 import frc.robot.Constants.ElevatorConstants;
 import frc.robot.subsystems.Elevator.SpeedLimit;
-import frc.robot.subsystems.SwerveDrivetrain.DriveMode;
 import java.util.ArrayList;
 import java.util.Optional;
 import monologue.Annotations.Log;
@@ -146,14 +145,12 @@ public class GameStateManager extends Subsystem {
           if (Util.epislonEquals(
               poseEstimator_.getRobotPose(), io_.reef_target.get(), 0.0873, 0.0508)) {
             // Once at final target, hand off control
-            // drivetrain_.setDriveMode(DriveMode.FIELD_CENTRIC);
+            drivetrain_.restoreDefaultDriveMode();
             io_.robot_state_ = RobotState.SCORING;
-            // CommandScheduler.getInstance().schedule(new Score().withTimeout(1));
           }
         }
         break;
       case SCORING:
-        drivetrain_.setDriveMode(DriveMode.FIELD_CENTRIC);
         // wait until you leave the exit Circle
         if (!FieldRegions.REEF_EXIT.contains(poseEstimator_.getRobotPose())) {
           io_.robot_state_ = RobotState.END;
@@ -161,8 +158,7 @@ public class GameStateManager extends Subsystem {
         break;
       case END:
         // clear saved vars and reset drive mode
-        drivetrain_.setDriveMode(DriveMode.FIELD_CENTRIC);
-        // target_column = Optional.empty();
+        drivetrain_.restoreDefaultDriveMode();
         io_.reef_section_state = Optional.empty();
         io_.robot_state_ = RobotState.TELEOP_CONTROL;
         if (Claw.getInstance().isCoralMode()) {
@@ -199,10 +195,13 @@ public class GameStateManager extends Subsystem {
    */
   @Override
   public void outputTelemetry(double timestamp) {
-    SmartDashboard.putString("Subsystem/GameStateManager/Robot State", io_.robot_state_.toString());
-    SmartDashboard.putString("Subsystem/GameStateManager/Target Colum", io_.target_column.toString());
-    SmartDashboard.putString("Subsystem/GameStateManager/Intent", io_.intent.toString());
-    SmartDashboard.putString("Subsystem/GameStateManager/Target Level", io_.scoring_target.toString());
+    SmartDashboard.putString(
+        "Subsystems/GameStateManager/Robot State", io_.robot_state_.toString());
+    SmartDashboard.putString(
+        "Subsystems/GameStateManager/Target Colum", io_.target_column.toString());
+    SmartDashboard.putString("Subsystems/GameStateManager/Intent", io_.intent.toString());
+    SmartDashboard.putString(
+        "Subsystems/GameStateManager/Target Level", io_.scoring_target.toString());
   }
 
   /**

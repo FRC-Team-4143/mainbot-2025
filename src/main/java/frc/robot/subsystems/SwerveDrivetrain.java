@@ -405,6 +405,9 @@ public class SwerveDrivetrain extends Subsystem {
     chassis_speeds_pub_.set(io_.chassis_speeds_);
 
     SmartDashboard.putString("Subsystems/Swerve/Mode", io_.drive_mode_.toString());
+
+    SmartDashboard.putNumber(
+        "Subsystems/Swerve/Controller POV", io_.joystick_pov.orElse(new Rotation2d()).getDegrees());
     SmartDashboard.putString(
         "Subsystems/Swerve/Request Type", request_to_apply_.getClass().getSimpleName());
     SmartDashboard.putNumber(
