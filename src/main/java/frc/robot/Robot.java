@@ -75,7 +75,7 @@ public class Robot extends TimedRobot {
 
   @Override
   public void teleopPeriodic() {
-    GameStateManager.getInstance().updateGameState();
+    // GameStateManager.getInstance().updateGameState();
   }
 
   @Override
