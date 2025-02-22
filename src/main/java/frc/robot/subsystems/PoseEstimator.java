@@ -9,8 +9,14 @@ import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.networktables.StructPublisher;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import frc.lib.FieldRegions;
+import frc.lib.ScoringPoses;
+import frc.mw_lib.geometry.PolygonRegion;
+import frc.mw_lib.geometry.Region;
 import frc.mw_lib.subsystem.Subsystem;
 import frc.robot.Vision;
+import frc.robot.subsystems.GameStateManager.Column;
+
 import java.util.Optional;
 import monologue.Annotations.Log;
 import monologue.Logged;
@@ -136,6 +142,48 @@ public class PoseEstimator extends Subsystem {
     var disturbance =
         new Transform2d(new Translation2d(1.0, 1.0), new Rotation2d(0.17 * 2 * Math.PI));
     setRobotOdometry(getRobotPose().plus(disturbance));
+  }
+
+  /**
+   * Returns the robots current load station region or an empty optional if not in any.
+   *
+   * @return current region
+   */
+  public Optional<Region> loadStationRegion() {
+    for (PolygonRegion region : FieldRegions.STATION_REGIONS) {
+      if (region.contains(io_.filtered_vision_pose_)) {
+        return Optional.of(region);
+      }
+    }
+    return Optional.empty();
+  }
+
+  /**
+   * Returns the robots current algae region or an empty optional if not in any.
+   *
+   * @return current region
+   */
+  public Optional<Region> algaeRegion() {
+    for (PolygonRegion region : FieldRegions.ALGAE_REGIONS) {
+      if (region.contains(io_.filtered_vision_pose_)) {
+        return Optional.of(region);
+      }
+    }
+    return Optional.empty();
+  }
+
+  /**
+   * Returns the robots current reef region or an empty optional if not in any.
+   *
+   * @return current region
+   */
+  public Optional<Region> reefPose() {
+    for (PolygonRegion region : FieldRegions.REEF_REGIONS) {
+      if (region.contains(io_.filtered_vision_pose_)) {
+        return Optional.of(region);
+      }
+    }
+    return Optional.empty();
   }
 
   public class PoseEstimatorPeriodicIo implements Logged {
