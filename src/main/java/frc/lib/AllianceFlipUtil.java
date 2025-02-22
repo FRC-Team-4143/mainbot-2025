@@ -24,8 +24,8 @@ public class AllianceFlipUtil {
   }
 
   public static TightRope apply(TightRope tightRope) {
-    apply(tightRope.poseA);
-    apply(tightRope.poseB);
+    tightRope.poseA = apply(tightRope.poseA);
+    tightRope.poseB = apply(tightRope.poseB);
     Pose2d temp = tightRope.poseA;
     tightRope.poseA = tightRope.poseB;
     tightRope.poseB = temp;

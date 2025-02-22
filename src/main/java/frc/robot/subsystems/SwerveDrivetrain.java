@@ -370,8 +370,6 @@ public class SwerveDrivetrain extends Subsystem {
               io_.current_pose_.getY() > io_.tight_rope_pose_A.getY() + ropeEndHandOffThreshold;
           boolean pastB =
               io_.current_pose_.getY() < io_.tight_rope_pose_B.getY() - ropeEndHandOffThreshold;
-          SmartDashboard.putBoolean("past A", pastA);
-          SmartDashboard.putBoolean("past B", pastB);
           if (!pastA && !pastB) {
             y_velocity = -io_.joystick_left_x_ * DrivetrainConstants.MAX_DRIVE_SPEED;
           } else if (pastA) {
