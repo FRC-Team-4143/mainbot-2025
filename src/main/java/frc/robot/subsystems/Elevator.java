@@ -412,6 +412,10 @@ public class Elevator extends Subsystem {
     setTarget(ElevatorConstants.Target.STOW);
   }
 
+  public double getCurrentHeight() {
+    return io_.current_elevator_height;
+  }
+
   public void setSpeedLimit(SpeedLimit limit) {
     if (limit == SpeedLimit.CORAL) {
       arm_config_.MotionMagic.MotionMagicCruiseVelocity =

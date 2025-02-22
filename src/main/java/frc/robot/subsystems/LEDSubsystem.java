@@ -1,0 +1,335 @@
+// Copyright (c) FIRST and other WPILib contributors.
+// Open Source Software; you can modify and/or share it under the terms of
+// the WPILib BSD license file in the root directory of this project.
+
+package frc.robot.subsystems;
+
+import edu.wpi.first.math.filter.Debouncer;
+import edu.wpi.first.math.filter.Debouncer.DebounceType;
+import edu.wpi.first.wpilibj.AddressableLED;
+import edu.wpi.first.wpilibj.AddressableLEDBuffer;
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
+import edu.wpi.first.wpilibj.event.EventLoop;
+import frc.mw_lib.subsystem.Subsystem;
+import frc.robot.Constants;
+import frc.robot.Constants.LEDConstants;
+import monologue.Annotations.Log;
+import monologue.Logged;
+
+public class LEDSubsystem extends Subsystem {
+
+    // Singleton pattern
+    private static LEDSubsystem led_instance_ = null;
+
+    public static LEDSubsystem getInstance() {
+        if (led_instance_ == null) {
+            led_instance_ = new LEDSubsystem();
+        }
+        return led_instance_;
+    }
+
+    public enum LEDMode {
+        SCORE_READY,
+        IDLE,
+        CAGE,
+        PARTY,
+        REEF_REGION
+    }
+
+    private AddressableLED led_1_ = new AddressableLED(LEDConstants.LED_PORT_1);
+    private AddressableLED led_2_ = new AddressableLED(LEDConstants.LED_PORT_2);
+    private AddressableLEDBuffer led_buffer_1_ = new AddressableLEDBuffer(LEDConstants.LED_LENGTH_1);
+    private AddressableLEDBuffer led_buffer_2_ = new AddressableLEDBuffer(LEDConstants.LED_LENGTH_2);
+
+    /** Class Members */
+    private LEDPeriodicIo io_;
+
+    Debouncer pickupNoteDebouncer = new Debouncer(0.5, DebounceType.kFalling);
+
+    private EventLoop led_eventloop_ = new EventLoop();
+
+    private LEDSubsystem() {
+        // Create io object first in subsystem configuration
+        io_ = new LEDPeriodicIo();
+
+        for (int i = 0; i < led_buffer_1_.getLength(); i++) {
+            led_buffer_1_.setRGB(i, 0, 255, 0);
+        }
+        for (int i = 0; i < led_buffer_2_.getLength(); i++) {
+            led_buffer_2_.setRGB(i, 0, 255, 0);
+        }
+        led_2_.setLength(led_buffer_2_.getLength());
+        led_2_.setData(led_buffer_2_);
+        led_2_.start();
+        led_1_.setLength(led_buffer_1_.getLength());
+        led_1_.setData(led_buffer_1_);
+        led_1_.start();
+
+        // Call reset last in subsystem configuration
+        reset();
+    }
+
+    /**
+     * This function should be logic and code to fully reset your subsystem. This is
+     * called during
+     * initialization, and should handle I/O configuration and initializing data
+     * members.
+     */
+    @Override
+    public void reset() {
+        io_ = new LEDPeriodicIo();
+        led_buffer_1_ = new AddressableLEDBuffer(LEDConstants.LED_LENGTH_1);
+        led_buffer_2_ = new AddressableLEDBuffer(LEDConstants.LED_LENGTH_2);
+        led_1_.setLength(led_buffer_1_.getLength());
+        led_1_.setData(led_buffer_1_);
+        led_1_.start();
+        led_2_.setLength(led_buffer_2_.getLength());
+        led_2_.setData(led_buffer_2_);
+        led_2_.start();
+    }
+
+    /**
+     * Inside this function, all of the SENSORS should be read into variables stored
+     * in the PeriodicIO
+     * class defined below. There should be no calls to output to actuators, or any
+     * logic within this
+     * function.
+     */
+    @Override
+    public void readPeriodicInputs(double timestamp) {
+    }
+
+    /**
+     * Inside this function, all of the LOGIC should compute updates to output
+     * variables in the
+     * PeriodicIO class defined below. There should be no calls to read from sensors
+     * or write to
+     * actuators in this function.
+     */
+    @Override
+    public void updateLogic(double timestamp) {
+        if (Claw.getInstance().isCoralMode()) {
+            io_.led_team_str_ = 255;
+        } else {
+            io_.led_team_str_ = 255 / 2;
+        }
+
+        switch (io_.led_mode_) {
+            case SCORE_READY:
+                if (DriverStation.getAlliance().get() == Alliance.Blue) {
+                    scoreModeLED(0, 0, io_.led_team_str_);
+                } else {
+                    scoreModeLED(io_.led_team_str_, 0, 0);
+                }
+                setCyleLength(0);
+                break;
+            case PARTY:
+                partyModeLED();
+                setCyleLength(25);
+            case REEF_REGION:
+                if(!false){
+
+                }
+            case IDLE:
+            default:
+                if (DriverStation.getAlliance().get() == Alliance.Blue) {
+                    idleModeLED(0, 0, io_.led_team_str_);
+                } else {
+                    idleModeLED(io_.led_team_str_, 0, 0);
+                }
+                setCyleLength(0);
+                break;
+        }
+        if(DriverStation.isDisabled()){
+            for (int i = 0; i < led_buffer_1_.getLength(); i++) {
+                led_buffer_1_.setRGB(i, 255, 255, 0);
+            }
+            for (int i = 0; i < led_buffer_2_.getLength(); i++) {
+                led_buffer_2_.setRGB(i, 255, 255, 0);
+            }
+        }
+        ledCycle();
+    }
+
+    /**
+     * Inside this function actuator OUTPUTS should be updated from data contained
+     * in the PeriodicIO
+     * class defined below. There should be little to no logic contained within this
+     * function, and no
+     * sensors should be read.
+     */
+    @Override
+    public void writePeriodicOutputs(double timestamp) {
+        led_1_.setData(led_buffer_1_);
+        led_2_.setData(led_buffer_1_);
+    }
+
+    /**
+     * Inside this function telemetry should be output to smartdashboard. The data
+     * should be collected
+     * out of the PeriodicIO class instance defined below. There should be no sensor
+     * information read
+     * in this function nor any outputs made to actuators within this function. Only
+     * publish to
+     * smartdashboard here.
+     */
+    @Override
+    public void outputTelemetry(double timestamp) {
+    }
+
+    public class LEDPeriodicIo implements Logged {
+        @Log.File
+        public boolean led_cycle_state = true;
+        @Log.File
+        public int led_cycle_counter = 25;
+        @Log.File
+        public LEDMode led_mode_ = LEDMode.SCORE_READY;
+        @Log.File
+        public int led_cycle_length_ = 25;
+        @Log.File
+        public int led_team_str_ = 255;
+    }
+
+    public void scoreModeLED(int r, int g, int b) {
+        for (int i = 0; i < led_buffer_1_.getLength(); i++) {
+            if (io_.led_cycle_state) {
+                if (i % 2 == 0) {
+                    led_buffer_1_.setRGB(i, r, g, b);
+                } else {
+                    led_buffer_1_.setRGB(i, b, g, r);
+                }
+            } else {
+                if (i % 2 == 1) {
+                    led_buffer_1_.setRGB(i, r, g, b);
+                } else {
+                    led_buffer_1_.setRGB(i, b, g, r);
+                }
+            }
+        }
+        for (int i = 0; i < led_buffer_1_.getLength(); i++) {
+            if (io_.led_cycle_state) {
+                if (i % 2 == 0) {
+                    led_buffer_2_.setRGB(i, r, g, b);
+                } else {
+                    led_buffer_2_.setRGB(i, 0, 0, 0);
+                }
+            } else {
+                if (i % 2 == 1) {
+                    led_buffer_2_.setRGB(i, r, g, b);
+                } else {
+                    led_buffer_2_.setRGB(i, 0, 0, 0);
+                }
+            }
+        }
+    }
+
+    public void idleModeLED(int r, int g, int b) {
+        for (int i = 0; i < led_buffer_1_.getLength(); i++) {
+            if (i < Constants.LEDConstants.LED_LENGTH_1
+                    * (Constants.LEDConstants.LED_LENGTH_1 / Elevator.getInstance().getCurrentHeight())) {
+                led_buffer_1_.setRGB(i, r, g, b);
+            } else {
+                led_buffer_1_.setRGB(i, 0, 0, 0);
+            }
+        }
+
+        for (int i = 0; i < led_buffer_2_.getLength(); i++) {
+            if (i < Constants.LEDConstants.LED_LENGTH_2
+                    * (Constants.LEDConstants.LED_LENGTH_2 / Elevator.getInstance().getCurrentHeight())) {
+                led_buffer_2_.setRGB(i, r, g, b);
+            } else {
+                led_buffer_2_.setRGB(i, 0, 0, 0);
+            }
+        }
+    }
+
+    public void partyModeLED() {
+        for (int i = 0; i < led_buffer_1_.getLength(); i++) {
+            led_buffer_1_.setRGB(i, (int) (Math.random() * 255), (int) (Math.random() * 255),
+                    (int) (Math.random() * 255));
+        }
+        for (int i = 0; i < led_buffer_2_.getLength(); i++) {
+            led_buffer_2_.setRGB(i, (int) (Math.random() * 255), (int) (Math.random() * 255),
+                    (int) (Math.random() * 255));
+        }
+    }
+
+    public void setColorTeam() {
+        if (DriverStation.getAlliance().get() == Alliance.Blue) {
+            setColorRGBCycle(0, 0, 255, io_.led_cycle_state);
+        } else {
+            setColorRGBCycle(255, 0, 0, io_.led_cycle_state);
+        }
+    }
+
+    public void setCyleLength(int length) {
+        io_.led_cycle_length_ = length;
+        io_.led_cycle_counter = length;
+    }
+
+    public void setColorRGB(int r, int g, int b) {
+        for (int i = 0; i < led_buffer_1_.getLength(); i++) {
+            led_buffer_1_.setRGB(i, r, g, b);
+        }
+        for (int i = 0; i < led_buffer_2_.getLength(); i++) {
+            led_buffer_2_.setRGB(i, r, g, b);
+        }
+    }
+
+    public void setColorRGBUpperCycle(int r, int g, int b) {
+        for (int i = 0; i < led_buffer_1_.getLength(); i += 2) {
+            led_buffer_1_.setRGB(i, r, g, b);
+        }
+        for (int i = 0; i < led_buffer_2_.getLength(); i += 2) {
+            led_buffer_2_.setRGB(i, r, g, b);
+        }
+    }
+
+    public void setColorRGBLowerCycle(int r, int g, int b) {
+        for (int i = 1; i < led_buffer_1_.getLength(); i += 2) {
+            led_buffer_1_.setRGB(i, r, g, b);
+        }
+        for (int i = 1; i < led_buffer_2_.getLength(); i += 2) {
+            led_buffer_2_.setRGB(i, r, g, b);
+        }
+    }
+
+    public void setColorRGBCycle(int r, int g, int b, boolean cycle) {
+        if (cycle) {
+            setColorRGBUpperCycle(r, g, b);
+        } else {
+            setColorRGBLowerCycle(r, g, b);
+        }
+    }
+
+    public void setColorRGBFlash(int r, int g, int b, boolean cycle) {
+        if (cycle) {
+            setColorRGB(r, g, b);
+        } else {
+            setColorRGB(0, 0, 0);
+        }
+    }
+
+    public void ledCycle() {
+        io_.led_cycle_counter--;
+        if (io_.led_cycle_counter <= 0) {
+            io_.led_cycle_state = !io_.led_cycle_state;
+            io_.led_cycle_counter = io_.led_cycle_length_;
+        }
+    }
+
+    public void setLEDMode(LEDMode led_mode) {
+        io_.led_mode_ = led_mode;
+    }
+
+    public class LEDSubsystemPeriodicIo implements Logged {
+        public boolean led_cycle_state = true;
+        public int led_cycle_counter = 25;
+    }
+
+    @Override
+    public Logged getLoggingObject() {
+        return io_;
+    }
+}

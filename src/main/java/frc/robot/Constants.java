@@ -338,4 +338,11 @@ public final class Constants {
       public final ControlType type;
     }
   }
+
+  public class LEDConstants {
+    public static final int LED_PORT_1 = 0;
+    public static final int LED_PORT_2 = 0;
+    public static final int LED_LENGTH_1 = 0;
+    public static final int LED_LENGTH_2 = 0;
+  }
 }
