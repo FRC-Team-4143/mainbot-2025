@@ -33,7 +33,6 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
-import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.networktables.StructPublisher;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -77,9 +76,6 @@ public class Vision {
     photonEstimator =
         new PhotonPoseEstimator(kTagLayout, PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR, kRobotToCam);
     photonEstimator.setMultiTagFallbackStrategy(PoseStrategy.LOWEST_AMBIGUITY);
-    tf_pub_ =
-        NetworkTableInstance.getDefault().getStructTopic("camera_tf", Transform3d.struct).publish();
-    tf_pub_.set(Constants.Vision.kRobotToCam);
 
     // ----- Simulation
     if (Robot.isSimulation()) {
@@ -117,11 +113,12 @@ public class Vision {
   public Optional<EstimatedRobotPose> getEstimatedGlobalPose() {
     Optional<EstimatedRobotPose> visionEst = Optional.empty();
     for (var change : camera.getAllUnreadResults()) {
-      SmartDashboard.putBoolean("MultiTag", change.getMultiTagResult().isPresent());
+      SmartDashboard.putBoolean("Vision/MultiTag", change.getMultiTagResult().isPresent());
       SmartDashboard.putBoolean(
-          "multitag failure", change.getMultiTagResult().isEmpty() && change.targets.size() > 1);
+          "Vision/Multitag Failure",
+          change.getMultiTagResult().isEmpty() && change.targets.size() > 1);
       SmartDashboard.putBoolean(
-          "SingleTag", change.getMultiTagResult().isEmpty() && change.targets.size() == 1);
+          "Vision/Single Tag", change.getMultiTagResult().isEmpty() && change.targets.size() == 1);
 
       visionEst = photonEstimator.update(change);
       updateEstimationStdDevs(visionEst, change.getTargets());
@@ -132,13 +129,13 @@ public class Vision {
           var x = est.estimatedPose.getX();
           var y = est.estimatedPose.getY();
 
-          var vision_filtered_odometry = PoseEstimator.getInstance().getFieldPose();
+          var vision_filtered_odometry = PoseEstimator.getInstance().getRobotPose();
           SmartDashboard.putBoolean(
-              "rotation error",
+              "Vision/Rotation Error",
               Math.abs(rotation - vision_filtered_odometry.getRotation().getDegrees()) > 5);
         },
         () -> {
-          SmartDashboard.putBoolean("rotation error", false);
+          SmartDashboard.putBoolean("Vision/Rotation Error", false);
         });
     return visionEst;
   }

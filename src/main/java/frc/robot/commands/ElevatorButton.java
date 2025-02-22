@@ -74,7 +74,7 @@ public class ElevatorButton extends Command {
     if (Claw.getInstance().isCoralMode()) {
       Elevator.getInstance().setTarget(Target.STOW);
     } else {
-      Elevator.getInstance().setTarget(Target.ALGAE_PROCESSOR);
+      Elevator.getInstance().setTarget(Target.ALGAE_STOW);
     }
   }
 

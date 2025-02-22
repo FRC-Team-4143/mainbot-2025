@@ -120,9 +120,9 @@ public class Climber extends Subsystem {
    */
   @Override
   public void outputTelemetry(double timestamp) {
-    SmartDashboard.putString("Debug/Climber/Mode", io_.current_mode_.toString());
-    SmartDashboard.putNumber("Debug/Climber/Target Rotations", io_.target_rotations_);
-    SmartDashboard.putNumber("Debug/Climber/Current Rotations", io_.current_rotations_);
+    SmartDashboard.putString("Subsystems/Climber/Mode", io_.current_mode_.toString());
+    SmartDashboard.putNumber("Subsystems/Climber/Target Rotations", io_.target_rotations_);
+    SmartDashboard.putNumber("Subsystems/Climber/Current Rotations", io_.current_rotations_);
   }
 
   /**

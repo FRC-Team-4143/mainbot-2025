@@ -10,11 +10,8 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.ConditionalCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
-import frc.robot.GameStateManager.Column;
-import frc.robot.GameStateManager.RobotState;
-import frc.robot.GameStateManager.ScoringTarget;
 import frc.robot.commands.AlgaeEject;
-import frc.robot.commands.AlgaeLoad;
+import frc.robot.commands.AlgaeReefPickup;
 import frc.robot.commands.CoralEject;
 import frc.robot.commands.CoralLoad;
 import frc.robot.commands.ElevatorButton;
@@ -22,6 +19,10 @@ import frc.robot.commands.ElevatorButton.Level;
 import frc.robot.subsystems.Claw;
 import frc.robot.subsystems.Elevator;
 import frc.robot.subsystems.Elevator.OffsetType;
+import frc.robot.subsystems.GameStateManager;
+import frc.robot.subsystems.GameStateManager.Column;
+import frc.robot.subsystems.GameStateManager.RobotState;
+import frc.robot.subsystems.GameStateManager.ScoringTarget
 import frc.robot.subsystems.PoseEstimator;
 import frc.robot.subsystems.SwerveDrivetrain;
 import frc.robot.subsystems.SwerveDrivetrain.DriveMode;
@@ -45,19 +46,19 @@ public abstract class OI {
 
     // Set Wheel Offsets
     SmartDashboard.putData(
-        "Set Wheel Offsets",
+        "Commands/Set Wheel Offsets",
         Commands.runOnce(() -> SwerveDrivetrain.getInstance().tareEverything())
             .ignoringDisable(true));
     // Seed Field Centric Forward Direction
     SmartDashboard.putData(
-        "Seed Field Centric",
+        "Commands/Seed Field Centric",
         SwerveDrivetrain.getInstance().seedFieldRelativeCommand().ignoringDisable(true));
     SmartDashboard.putData(
-        "Disturb Pose",
+        "Commands/Disturb Pose",
         Commands.runOnce(() -> PoseEstimator.getInstance().disturbPose()).ignoringDisable(true));
     // Sync Elevator and Arm Sensor to "Home" Position
     SmartDashboard.putData(
-        "Zero Elevator & Arm",
+        "Commands/Zero Elevator & Arm",
         Commands.runOnce(() -> Elevator.getInstance().elevatorAndArmPoseReset())
             .ignoringDisable(true));
 
@@ -76,12 +77,12 @@ public abstract class OI {
      *
      */
 
-    driver_controller_.rightBumper().onTrue(Claw.getInstance().toggleGamePiece());
-    driver_controller_
-        .leftTrigger()
-        .whileTrue(
-            new ConditionalCommand(
-                new CoralLoad(), new AlgaeLoad(), Claw.getInstance()::isCoralMode));
+    driver_controller_.rightBumper().whileTrue(new CoralLoad());
+    // driver_controller_
+    // .leftTrigger()
+    // .whileTrue(
+    // new ConditionalCommand(
+    // new CoralLoad(), new AlgaeLoad(), Claw.getInstance()::isCoralMode));
     driver_controller_
         .rightTrigger()
         .whileTrue(
@@ -122,24 +123,25 @@ public abstract class OI {
      *
      */
 
-    operator_controller_
-        .rightBumper()
+    driver_controller_.leftBumper().whileTrue(new AlgaeReefPickup());
+
+    driver_controller_
+        .leftTrigger()
         .whileTrue(
             Commands.startEnd(
-                () -> {
-                  GameStateManager.getInstance().setRobotState(RobotState.TARGET_ACQUISITION);
-                  GameStateManager.getInstance().setTargetColumn(Column.RIGHT);
-                },
-                () -> GameStateManager.getInstance().setRobotState(RobotState.END)));
+                () -> GameStateManager.getInstance().setRobotState(RobotState.TARGET_ACQUISITION),
+                () -> GameStateManager.getInstance().setRobotState(RobotState.END),
+                Elevator.getInstance()));
+
     operator_controller_
         .leftBumper()
-        .whileTrue(
-            Commands.startEnd(
-                () -> {
-                  GameStateManager.getInstance().setRobotState(RobotState.TARGET_ACQUISITION);
-                  GameStateManager.getInstance().setTargetColumn(Column.LEFT);
-                },
-                () -> GameStateManager.getInstance().setRobotState(RobotState.END)));
+        .onTrue(
+            Commands.runOnce(() -> GameStateManager.getInstance().setTargetColumn(Column.LEFT)));
+
+    operator_controller_
+        .rightBumper()
+        .onTrue(
+            Commands.runOnce(() -> GameStateManager.getInstance().setTargetColumn(Column.RIGHT)));
 
     driver_pov_active_.whileTrue(
         Commands.startEnd(
