@@ -22,7 +22,7 @@ import frc.robot.subsystems.Elevator.OffsetType;
 import frc.robot.subsystems.GameStateManager;
 import frc.robot.subsystems.GameStateManager.Column;
 import frc.robot.subsystems.GameStateManager.RobotState;
-import frc.robot.subsystems.GameStateManager.ScoringTarget
+import frc.robot.subsystems.GameStateManager.ScoringTarget;
 import frc.robot.subsystems.PoseEstimator;
 import frc.robot.subsystems.SwerveDrivetrain;
 import frc.robot.subsystems.SwerveDrivetrain.DriveMode;

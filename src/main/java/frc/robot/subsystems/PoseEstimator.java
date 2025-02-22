@@ -10,13 +10,10 @@ import edu.wpi.first.networktables.StructPublisher;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.lib.FieldRegions;
-import frc.lib.ScoringPoses;
 import frc.mw_lib.geometry.PolygonRegion;
 import frc.mw_lib.geometry.Region;
 import frc.mw_lib.subsystem.Subsystem;
 import frc.robot.Vision;
-import frc.robot.subsystems.GameStateManager.Column;
-
 import java.util.Optional;
 import monologue.Annotations.Log;
 import monologue.Logged;

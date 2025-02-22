@@ -7,7 +7,6 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.lib.FieldRegions;
 import frc.lib.ReefSectionState;
 import frc.lib.ScoringPoses;
-import frc.mw_lib.geometry.PolygonRegion;
 import frc.mw_lib.geometry.Region;
 import frc.mw_lib.subsystem.Subsystem;
 import frc.mw_lib.util.Util;
@@ -21,8 +20,8 @@ import monologue.Logged;
 
 public class GameStateManager extends Subsystem {
 
-  private StructPublisher<Pose2d> reef_target_publisher = NetworkTableInstance.getDefault()
-      .getStructTopic("ReefTarget", Pose2d.struct).publish();
+  private StructPublisher<Pose2d> reef_target_publisher =
+      NetworkTableInstance.getDefault().getStructTopic("ReefTarget", Pose2d.struct).publish();
 
   Elevator elevator_;
   PoseEstimator poseEstimator_;
@@ -86,31 +85,23 @@ public class GameStateManager extends Subsystem {
   }
 
   /**
-   * This function should be logic and code to fully reset your subsystem. This is
-   * called during
-   * initialization, and should handle I/O configuration and initializing data
-   * members.
+   * This function should be logic and code to fully reset your subsystem. This is called during
+   * initialization, and should handle I/O configuration and initializing data members.
    */
   @Override
-  public void reset() {
-  }
+  public void reset() {}
 
   /**
-   * Inside this function, all of the SENSORS should be read into variables stored
-   * in the PeriodicIO
-   * class defined below. There should be no calls to output to actuators, or any
-   * logic within this
+   * Inside this function, all of the SENSORS should be read into variables stored in the PeriodicIO
+   * class defined below. There should be no calls to output to actuators, or any logic within this
    * function.
    */
   @Override
-  public void readPeriodicInputs(double timestamp) {
-  }
+  public void readPeriodicInputs(double timestamp) {}
 
   /**
-   * Inside this function, all of the LOGIC should compute updates to output
-   * variables in the
-   * PeriodicIO class defined below. There should be no calls to read from sensors
-   * or write to
+   * Inside this function, all of the LOGIC should compute updates to output variables in the
+   * PeriodicIO class defined below. There should be no calls to read from sensors or write to
    * actuators in this function.
    */
   @Override
@@ -143,7 +134,8 @@ public class GameStateManager extends Subsystem {
             drivetrain_.setTargetPose(io_.reef_target.get());
           } else {
             // avg states and set final target
-            io_.reef_section_state = Optional.of(ReefSectionState.averageReefSections(io_.reef_section_list, 0.50));
+            io_.reef_section_state =
+                Optional.of(ReefSectionState.averageReefSections(io_.reef_section_list, 0.50));
             io_.target_column = findReefTargetColumn();
           }
         }
@@ -192,23 +184,17 @@ public class GameStateManager extends Subsystem {
   }
 
   /**
-   * Inside this function actuator OUTPUTS should be updated from data contained
-   * in the PeriodicIO
-   * class defined below. There should be little to no logic contained within this
-   * function, and no
+   * Inside this function actuator OUTPUTS should be updated from data contained in the PeriodicIO
+   * class defined below. There should be little to no logic contained within this function, and no
    * sensors should be read.
    */
   @Override
-  public void writePeriodicOutputs(double timestamp) {
-  }
+  public void writePeriodicOutputs(double timestamp) {}
 
   /**
-   * Inside this function telemetry should be output to smartdashboard. The data
-   * should be collected
-   * out of the PeriodicIO class instance defined below. There should be no sensor
-   * information read
-   * in this function nor any outputs made to actuators within this function. Only
-   * publish to
+   * Inside this function telemetry should be output to smartdashboard. The data should be collected
+   * out of the PeriodicIO class instance defined below. There should be no sensor information read
+   * in this function nor any outputs made to actuators within this function. Only publish to
    * smartdashboard here.
    */
   @Override
@@ -224,8 +210,7 @@ public class GameStateManager extends Subsystem {
   }
 
   /**
-   * Returns a target pose when robot is in an load station region If not in a
-   * region empty is
+   * Returns a target pose when robot is in an load station region If not in a region empty is
    * returned.
    *
    * @return target pose
@@ -239,8 +224,7 @@ public class GameStateManager extends Subsystem {
   }
 
   /**
-   * Returns a target pose when robot is in an reef region If not in a region
-   * empty is returned.
+   * Returns a target pose when robot is in an reef region If not in a region empty is returned.
    * Also adjust to the provided column
    *
    * @return target pose
@@ -265,7 +249,8 @@ public class GameStateManager extends Subsystem {
                   .transformBy(ScoringPoses.RIGHT_COLUMN_OFFSET));
         }
         if (column == Column.ALGAE) {
-          io_.algae_level_high = ((i % 2) == 0); // this line prevents converting this method to use poseEstimator_.reefPose()
+          io_.algae_level_high = ((i % 2) == 0); // this line prevents converting this method to use
+          // poseEstimator_.reefPose()
           return Optional.of(
               FieldRegions.REGION_POSE_TABLE
                   .get(FieldRegions.REEF_REGIONS[i].getName())
@@ -277,8 +262,7 @@ public class GameStateManager extends Subsystem {
   }
 
   /**
-   * Returns a target pose when robot is in an algae region If not in a region
-   * empty is returned.
+   * Returns a target pose when robot is in an algae region If not in a region empty is returned.
    *
    * @return target pose
    */
@@ -352,40 +336,27 @@ public class GameStateManager extends Subsystem {
   }
 
   /**
-   * Inside this function actuator OUTPUTS should be updated from data contained
-   * in the PeriodicIO
-   * class defined below. There should be little to no logic contained within this
-   * function, and no
+   * Inside this function actuator OUTPUTS should be updated from data contained in the PeriodicIO
+   * class defined below. There should be little to no logic contained within this function, and no
    * sensors should be read.
    */
   public class GameStateManagerPeriodicIo implements Logged {
 
-    @Log.File
-    private ScoringTarget scoring_target = ScoringTarget.TURTLE;
-    @Log.File
-    private Optional<ReefSectionState> reef_section_state = Optional.empty();
+    @Log.File private ScoringTarget scoring_target = ScoringTarget.TURTLE;
+    @Log.File private Optional<ReefSectionState> reef_section_state = Optional.empty();
 
     @Log.File
     private ArrayList<ReefSectionState> reef_section_list = new ArrayList<ReefSectionState>();
 
-    @Log.File
-    private RobotState robot_state_ = RobotState.TELEOP_CONTROL;
-    @Log.File
-    private Optional<Pose2d> reef_target = Optional.empty();
-    @Log.File
-    private Optional<Pose2d> station_target = Optional.empty();
-    @Log.File
-    private Optional<Pose2d> algae_target = Optional.empty();
-    @Log.File
-    private int selected_reef_level = 2;
-    @Log.File
-    private Intent intent = Intent.SCORE_CORAL;
-    @Log.File
-    private int num_frames = 5;
-    @Log.File
-    private boolean use_cam_for_reef_state = false;
-    @Log.File
-    private Optional<Column> target_column = Optional.empty();
+    @Log.File private RobotState robot_state_ = RobotState.TELEOP_CONTROL;
+    @Log.File private Optional<Pose2d> reef_target = Optional.empty();
+    @Log.File private Optional<Pose2d> station_target = Optional.empty();
+    @Log.File private Optional<Pose2d> algae_target = Optional.empty();
+    @Log.File private int selected_reef_level = 2;
+    @Log.File private Intent intent = Intent.SCORE_CORAL;
+    @Log.File private int num_frames = 5;
+    @Log.File private boolean use_cam_for_reef_state = false;
+    @Log.File private Optional<Column> target_column = Optional.empty();
 
     @Log.File
     private boolean algae_level_high = false; // false is low level and true is the higher level
