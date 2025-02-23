@@ -55,7 +55,7 @@ public final class Constants {
     private static final double WHEEL_RADIUS_INCH = 1.8;
     private static final boolean STEER_MOTOR_REVERSED = true;
     public static final double MAX_DRIVE_SPEED = 4.4;
-    public static final double MAX_DRIVE_ANGULAR_RATE = 6.28;
+    public static final double MAX_DRIVE_ANGULAR_RATE = 3.14 * 2;
 
     public static final double CRAWL_DRIVE_SPEED = MAX_DRIVE_SPEED * 0.1;
     public static final double MAX_TARGET_SPEED = 1;
@@ -86,7 +86,7 @@ public final class Constants {
     public static final SwerveModuleConstants BL_MODULE_CONSTANTS =
         ConstantCreator.createModuleConstants(6, 5, 2, 0, -7.5, 7.5, false);
     public static final SwerveModuleConstants BR_MODULE_CONSTANTS =
-        ConstantCreator.createModuleConstants(7, 8, 3, 0, -7.5, -7.5, false);
+        ConstantCreator.createModuleConstants(8, 7, 3, 0, -7.5, -7.5, false);
 
     // Drivetrain PID Controller
     public static final PIDController X_TRAJECTORY_TRANSLATION = new PIDController(0.5, 0.0, 0.0);
