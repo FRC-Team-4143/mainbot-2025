@@ -209,17 +209,6 @@ public final class Constants {
         Units.inchesToMeters(LOADER.getDoubleValue("drive", "com", "CENTER_OFFSET_X"));
   }
 
-  public static final class FeederConstants {
-    public static final int LEFT_FEEDER_MOTOR = 11;
-    public static final int RIGHT_FEEDER_MOTOR = 10;
-    public static final boolean LEFT_FEEDER_INVERTED = true;
-    public static final boolean RIGHT_FEEDER_INVERTED = false;
-    public static final double FEEDER_SPEED = 0.15;
-    public static final double SCORE_SPEED = 0.4;
-    public static final double IDLE_SPEED = 0;
-    public static final double AMP_SPIKE_THRESHHOLD = 25;
-  }
-
   public static final class ClawConstants {
     public static final int WHEEL_MOTOR_ID = 11;
     public static final double WHEEL_SHOOT_SPEED = 0.30;
@@ -229,6 +218,10 @@ public final class Constants {
     public static final String CORAL_COLOR = new Color(255, 255, 255).toHexString();
     public static final String ALGAE_COLOR = new Color(0, 255, 255).toHexString();
     public static final InvertedValue WHEEL_MOTOR_INVERTED = InvertedValue.Clockwise_Positive;
+    public static final double CORAL_IMP_OFFSET_ =
+        Units.inchesToMeters(LOADER.getDoubleValue("imp", "coral_offset"));
+    public static final double ALGAE_IMP_OFFSET_ =
+        Units.inchesToMeters(LOADER.getDoubleValue("imp", "algae_offset"));
   }
 
   public class ClimberConstants {
@@ -287,7 +280,7 @@ public final class Constants {
     public static final double CORAL_ARM_ACCELERATION = 1.75;
     public static final double ALGAE_ARM_CRUISE_VELOCITY = 4;
     public static final double ALGAE_ARM_ACCELERATION = 0.65;
-    public static final double ARM_LENGTH = Units.inchesToMeters(13.25);
+    public static final double ARM_LENGTH = Units.inchesToMeters(11.5);
     // ((shaft sprocket / pivot sprocket) / gearbox) * rotations to radians ratio)
     public static final double SENSOR_TO_MECHANISM_RATIO = (1.0 / ((16.0 / 64.0) / 20.0));
     public static final double ARM_FORWARD_LIMT = Units.radiansToRotations(Math.PI);

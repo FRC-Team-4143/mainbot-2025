@@ -6,6 +6,7 @@ import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.util.Units;
 import frc.mw_lib.util.ConstantsLoader;
+import frc.robot.Constants;
 import frc.robot.Constants.DrivetrainConstants;
 
 public class ScoringPoses {
@@ -31,9 +32,8 @@ public class ScoringPoses {
 
   public static final Transform2d ALGAE_ALIGN_OFFSET =
       new Transform2d(
-          0, Units.inchesToMeters(-LOADER.getDoubleValue("imp", "algae_offset")), new Rotation2d());
-  public static final double CORAL_ALIGN_OFFSET =
-      Units.inchesToMeters(-LOADER.getDoubleValue("imp", "coral_offset"));
+          0, Units.inchesToMeters(-Constants.ClawConstants.ALGAE_IMP_OFFSET_), new Rotation2d());
+  public static final double CORAL_ALIGN_OFFSET = -Constants.ClawConstants.CORAL_IMP_OFFSET_;
 
   public static final Transform2d LEFT_COLUMN_OFFSET =
       new Transform2d(0, Units.inchesToMeters(6.47) + CORAL_ALIGN_OFFSET, new Rotation2d());

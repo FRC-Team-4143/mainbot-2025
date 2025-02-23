@@ -259,7 +259,7 @@ public class Elevator extends Subsystem {
 
   public void updateMechanism() {
     elevator_mech_.setLength(io_.current_elevator_height);
-    arm_mech_.setAngle(Math.toDegrees(io_.current_arm_angle_) - 90);
+    arm_mech_.setAngle(-Math.toDegrees(io_.current_arm_angle_) + 90);
     SmartDashboard.putData("Subsystems/Elevator/System Mech", system_mech_);
   }
 

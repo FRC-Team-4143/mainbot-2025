@@ -14,14 +14,14 @@ import frc.robot.commands.AlgaeEject;
 import frc.robot.commands.AlgaeReefPickup;
 import frc.robot.commands.CoralEject;
 import frc.robot.commands.CoralLoad;
+import frc.robot.commands.CoralReefScore;
 import frc.robot.commands.ElevatorButton;
 import frc.robot.commands.ElevatorButton.Level;
 import frc.robot.subsystems.Claw;
 import frc.robot.subsystems.Elevator;
 import frc.robot.subsystems.GameStateManager;
 import frc.robot.subsystems.GameStateManager.Column;
-import frc.robot.subsystems.GameStateManager.RobotState;
-import frc.robot.subsystems.GameStateManager.ScoringTarget;
+import frc.robot.subsystems.GameStateManager.ReefScoringTarget;
 import frc.robot.subsystems.PoseEstimator;
 import frc.robot.subsystems.SwerveDrivetrain;
 import frc.robot.subsystems.SwerveDrivetrain.DriveMode;
@@ -76,9 +76,6 @@ public abstract class OI {
 
     driver_controller_.rightBumper().whileTrue(new CoralLoad());
     driver_controller_
-        .rightBumper()
-        .onTrue(Commands.runOnce(() -> GameStateManager.getInstance().wantedCoralTarget()));
-    driver_controller_
         .rightTrigger()
         .whileTrue(
             new ConditionalCommand(
@@ -97,46 +94,33 @@ public abstract class OI {
         .y()
         .toggleOnTrue(
             Commands.runOnce(
-                () -> {
-                  GameStateManager.getInstance().coralTarget(ScoringTarget.REEF_L4);
-                  GameStateManager.getInstance().wantedCoralTarget();
-                }));
+                () -> GameStateManager.getInstance().setScoringTarget(ReefScoringTarget.L4, true)));
     operator_controller_
         .x()
         .toggleOnTrue(
             Commands.runOnce(
-                () -> {
-                  GameStateManager.getInstance().coralTarget(ScoringTarget.REEF_L2);
-                  GameStateManager.getInstance().wantedCoralTarget();
-                }));
+                () -> GameStateManager.getInstance().setScoringTarget(ReefScoringTarget.L2, true)));
     operator_controller_
         .b()
         .toggleOnTrue(
             Commands.runOnce(
-                () -> {
-                  GameStateManager.getInstance().coralTarget(ScoringTarget.REEF_L3);
-                  GameStateManager.getInstance().wantedCoralTarget();
-                }));
+                () -> GameStateManager.getInstance().setScoringTarget(ReefScoringTarget.L3, true)));
 
     driver_controller_.leftBumper().whileTrue(new AlgaeReefPickup());
 
-    driver_controller_
-        .leftTrigger()
-        .whileTrue(
-            Commands.startEnd(
-                () -> GameStateManager.getInstance().setRobotState(RobotState.TARGET_ACQUISITION),
-                () -> GameStateManager.getInstance().setRobotState(RobotState.END),
-                Elevator.getInstance()));
+    driver_controller_.leftTrigger().whileTrue(new CoralReefScore());
 
     operator_controller_
         .leftBumper()
         .onTrue(
-            Commands.runOnce(() -> GameStateManager.getInstance().setTargetColumn(Column.LEFT)));
+            Commands.runOnce(
+                () -> GameStateManager.getInstance().setScoringColum(Column.LEFT, true)));
 
     operator_controller_
         .rightBumper()
         .onTrue(
-            Commands.runOnce(() -> GameStateManager.getInstance().setTargetColumn(Column.RIGHT)));
+            Commands.runOnce(
+                () -> GameStateManager.getInstance().setScoringColum(Column.RIGHT, true)));
 
     driver_pov_active_.whileTrue(
         Commands.startEnd(
