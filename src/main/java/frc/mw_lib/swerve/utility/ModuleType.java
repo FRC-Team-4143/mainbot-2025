@@ -2,10 +2,15 @@ package frc.mw_lib.swerve.utility;
 
 import java.util.Hashtable;
 
+import edu.wpi.first.wpilibj.DataLogManager;
+import frc.mw_lib.util.ConstantsLoader;
+
 public class ModuleType {
     public final String name;
     public final double steerRatio;
     public final double driveRatio;
+
+    private static final ConstantsLoader LOADER = ConstantsLoader.getInstance();
 
     ModuleType(String name, double steerRatio, double driveRatio) {
         this.name = name;
@@ -35,6 +40,22 @@ public class ModuleType {
     };
 
     public static Hashtable<String, ModuleType> ALL_MODULE_TYPES = new Hashtable<>();
+
+    /**
+     * 
+     * @param position String represneting the module location [fl, fr, bl, br, etc..]
+     * @return ModuleType to be load the gear ratio constants from
+     */
+    public static ModuleType getModuleType(String position){
+        String type = LOADER.getStringValue("drive", position, "MODULE_TYPE");
+        String gearing = LOADER.getStringValue("drive", position, "MODULE_GEARING");
+        ModuleType module = ALL_MODULE_TYPES.get(type + "-" + gearing);
+        if (module == null){
+            DataLogManager.log("Invalid Module Type: " + type + "-" + gearing +"\nDefaulting to MK4I-L3");
+            module = ALL_MODULE_TYPES.get("MK4I-L3");
+        }
+        return module;
+    }
 
     static {
         for (ModuleType type : ALL_TYPES) {

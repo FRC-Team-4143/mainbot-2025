@@ -140,8 +140,7 @@ public final class Constants {
             Units.inchesToMeters(LOADER.getDoubleValue("drive", "fl", "X_POSITION")),
             Units.inchesToMeters(LOADER.getDoubleValue("drive", "fl", "Y_POSITION")),
             LOADER.getBoolValue("drive", "fl", "INVERT_DRIVE"),
-            ModuleType.ALL_MODULE_TYPES.get(LOADER.getStringValue("drive", "fl", "MODULE_TYPE")
-            + "-" + LOADER.getStringValue("drive", "fl", "MODULE_GEARING")));
+            ModuleType.getModuleType("fl"));
     public static final SwerveModuleConstants FR_MODULE_CONSTANTS =
         ConstantCreator.createModuleConstants(
             LOADER.getIntValue("drive", "fr", "STEER_ID"),
@@ -151,8 +150,7 @@ public final class Constants {
             Units.inchesToMeters(LOADER.getDoubleValue("drive", "fr", "X_POSITION")),
             Units.inchesToMeters(LOADER.getDoubleValue("drive", "fr", "Y_POSITION")),
             LOADER.getBoolValue("drive", "fr", "INVERT_DRIVE"),
-            ModuleType.ALL_MODULE_TYPES.get(LOADER.getStringValue("drive", "fr", "MODULE_TYPE")
-            + "-" + LOADER.getStringValue("drive", "fr", "MODULE_GEARING")));
+            ModuleType.getModuleType("fr"));
     public static final SwerveModuleConstants BL_MODULE_CONSTANTS =
         ConstantCreator.createModuleConstants(
             LOADER.getIntValue("drive", "bl", "STEER_ID"),
@@ -162,8 +160,7 @@ public final class Constants {
             Units.inchesToMeters(LOADER.getDoubleValue("drive", "bl", "X_POSITION")),
             Units.inchesToMeters(LOADER.getDoubleValue("drive", "bl", "Y_POSITION")),
             LOADER.getBoolValue("drive", "bl", "INVERT_DRIVE"),
-            ModuleType.ALL_MODULE_TYPES.get(LOADER.getStringValue("drive", "bl", "MODULE_TYPE")
-            + "-" + LOADER.getStringValue("drive", "bl", "MODULE_GEARING")));
+            ModuleType.getModuleType("bl"));
     public static final SwerveModuleConstants BR_MODULE_CONSTANTS =
         ConstantCreator.createModuleConstants(
             LOADER.getIntValue("drive", "br", "STEER_ID"),
@@ -173,8 +170,7 @@ public final class Constants {
             Units.inchesToMeters(LOADER.getDoubleValue("drive", "br", "X_POSITION")),
             Units.inchesToMeters(LOADER.getDoubleValue("drive", "br", "Y_POSITION")),
             LOADER.getBoolValue("drive", "br", "INVERT_DRIVE"),
-            ModuleType.ALL_MODULE_TYPES.get(LOADER.getStringValue("drive", "br", "MODULE_TYPE")
-            + "-" + LOADER.getStringValue("drive", "br", "MODULE_GEARING")));
+            ModuleType.getModuleType("br"));
 
     // Drivetrain PID Controller
     public static final PIDController X_TRAJECTORY_TRANSLATION =
