@@ -32,6 +32,11 @@ public class ModuleType {
     new ModuleType("MK4N-L2+", 18.75, 5.9),
     new ModuleType("MK4N-L3+", 18.75, 5.36),
 
+    // MKC
+    new ModuleType("MK4C-L1+", 12.8, 7.13),
+    new ModuleType("MK4C-L2+", 12.8, 5.9),
+    new ModuleType("MK4C-L3+", 12.8, 5.36),
+
     // MK4
     new ModuleType("MK4N-L1+", 18.75, 7.13),
     new ModuleType("MK4N-L2+", 18.75, 5.9),
