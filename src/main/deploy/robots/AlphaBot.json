@@ -74,7 +74,7 @@
         }
     },
     "imp" : {
-        "coral_offset": -3,
-        "algae_offset": -3
+        "coral_offset": -5.5,
+        "algae_offset": -5.5
     }
 }

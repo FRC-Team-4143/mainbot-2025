@@ -209,26 +209,19 @@ public final class Constants {
         Units.inchesToMeters(LOADER.getDoubleValue("drive", "com", "CENTER_OFFSET_X"));
   }
 
-  public static final class FeederConstants {
-    public static final int LEFT_FEEDER_MOTOR = 11;
-    public static final int RIGHT_FEEDER_MOTOR = 10;
-    public static final boolean LEFT_FEEDER_INVERTED = true;
-    public static final boolean RIGHT_FEEDER_INVERTED = false;
-    public static final double FEEDER_SPEED = 0.15;
-    public static final double SCORE_SPEED = 0.4;
-    public static final double IDLE_SPEED = 0;
-    public static final double AMP_SPIKE_THRESHHOLD = 25;
-  }
-
   public static final class ClawConstants {
     public static final int WHEEL_MOTOR_ID = 11;
     public static final double WHEEL_SHOOT_SPEED = 0.30;
     public static final double WHEEL_LOAD_SPEED = -0.3;
     public static final double ALGAE_IDLE_SPEED = 0.1;
-    public static final double STATOR_CURRENT_LIMIT_ = 40;
+    public static final double STATOR_CURRENT_LIMIT = 40;
     public static final String CORAL_COLOR = new Color(255, 255, 255).toHexString();
     public static final String ALGAE_COLOR = new Color(0, 255, 255).toHexString();
     public static final InvertedValue WHEEL_MOTOR_INVERTED = InvertedValue.Clockwise_Positive;
+    public static final double CORAL_IMP_OFFSET =
+        Units.inchesToMeters(LOADER.getDoubleValue("imp", "coral_offset"));
+    public static final double ALGAE_IMP_OFFSET =
+        Units.inchesToMeters(LOADER.getDoubleValue("imp", "algae_offset"));
   }
 
   public class ClimberConstants {
@@ -245,7 +238,7 @@ public final class Constants {
     public static final int ELEVATOR_FOLLOWER_ID = 22;
     public static final int ELEVATOR_LIMIT_SWITCH_PORT_NUMBER = 4;
     public static final double ELEVATOR_TARGET_THRESHOLD = 0.25; // In m
-    public static final InvertedValue ELEVATOR_MASTER_INVERSION_ =
+    public static final InvertedValue ELEVATOR_MASTER_INVERSION =
         InvertedValue.CounterClockwise_Positive;
     public static final InvertedValue ELEVATOR_FOLLOWER_INVERSION =
         InvertedValue.Clockwise_Positive;
@@ -263,6 +256,7 @@ public final class Constants {
     public static final double ELEVATOR_MIN_HEIGHT = Units.inchesToMeters(28.25);
     public static final double ELEVATOR_MAX_HEIGHT =
         Units.inchesToMeters(96.76) - ELEVATOR_HEIGHT_ABOVE_PIVOT - 0.1; // 0.1m of safety
+    public static final double ELEVATOR_MIN_SAFETY = ELEVATOR_MIN_HEIGHT + Units.inchesToMeters(4);
 
     public static final Slot0Configs ELEVATOR_GAINS =
         new Slot0Configs()
@@ -286,7 +280,7 @@ public final class Constants {
     public static final double CORAL_ARM_ACCELERATION = 1.75;
     public static final double ALGAE_ARM_CRUISE_VELOCITY = 4;
     public static final double ALGAE_ARM_ACCELERATION = 0.65;
-    public static final double ARM_LENGTH = Units.inchesToMeters(13.25);
+    public static final double ARM_LENGTH = Units.inchesToMeters(11.5);
     // ((shaft sprocket / pivot sprocket) / gearbox) * rotations to radians ratio)
     public static final double SENSOR_TO_MECHANISM_RATIO = (1.0 / ((16.0 / 64.0) / 20.0));
     public static final double ARM_FORWARD_LIMT = Units.radiansToRotations(Math.PI);
@@ -317,14 +311,12 @@ public final class Constants {
           Rotation2d.fromDegrees(125),
           ControlType.EFFECTOR),
 
-      STATION(1.13, Rotation2d.fromRadians(-1.027767), ControlType.PIVOT),
-      CLIMB(ELEVATOR_MIN_HEIGHT, new Rotation2d(), ControlType.PIVOT),
-      STOW(0.08, Rotation2d.fromDegrees(-90), ControlType.PIVOT),
-      ALGAE_LOW(
-          0.23665818349136578, Rotation2d.fromRadians(2.4942527611020524), ControlType.EFFECTOR),
+      STATION(1.1808, Rotation2d.fromRadians(-1.027767), ControlType.PIVOT),
+      CLIMB(ELEVATOR_MIN_SAFETY, new Rotation2d(), ControlType.PIVOT),
+      STOW(ELEVATOR_MIN_SAFETY, Rotation2d.fromDegrees(-90), ControlType.PIVOT),
+      ALGAE_LOW(ELEVATOR_MIN_HEIGHT, Rotation2d.fromDegrees(90 + 50), ControlType.EFFECTOR),
       ALGAE_HIGH(1.250, Rotation2d.fromDegrees(90 + 35), ControlType.EFFECTOR),
-      ALGAE_PROCESSOR(
-          0.148746006 + ELEVATOR_MIN_HEIGHT, Rotation2d.fromDegrees(-55), ControlType.PIVOT),
+      ALGAE_PROCESSOR(0.9429, Rotation2d.fromDegrees(-55), ControlType.PIVOT),
       BARGE(
           FieldConstants.ReefHeight.L4.HEIGHT + 0.0762,
           Rotation2d.fromDegrees(90),

@@ -121,7 +121,7 @@ public class Elevator extends Subsystem {
         ElevatorConstants.ELEVATOR_STATOR_CURRENT_LIMIT;
     elevator_config_.CurrentLimits.StatorCurrentLimitEnable = true;
 
-    elevator_config_.MotorOutput.Inverted = ElevatorConstants.ELEVATOR_MASTER_INVERSION_;
+    elevator_config_.MotorOutput.Inverted = ElevatorConstants.ELEVATOR_MASTER_INVERSION;
     elevator_master_.getConfigurator().apply(elevator_config_);
     elevator_config_.MotorOutput.Inverted = ElevatorConstants.ELEVATOR_FOLLOWER_INVERSION;
     elevator_follower_.getConfigurator().apply(elevator_config_);
@@ -270,7 +270,7 @@ public class Elevator extends Subsystem {
 
   public void updateMechanism() {
     elevator_mech_.setLength(io_.current_elevator_height);
-    arm_mech_.setAngle(Math.toDegrees(io_.current_arm_angle_) - 90);
+    arm_mech_.setAngle(-Math.toDegrees(io_.current_arm_angle_) + 90);
     SmartDashboard.putData("Subsystems/Elevator/System Mech", system_mech_);
   }
 
@@ -420,7 +420,7 @@ public class Elevator extends Subsystem {
     // IO container for all variables
     @Log.File public ControlMode current_control_mode = ControlMode.PIVOT;
     @Log.File public double current_elevator_height = 0;
-    @Log.File public double target_elevator_height = ElevatorConstants.ELEVATOR_MIN_HEIGHT;
+    @Log.File public double target_elevator_height = ElevatorConstants.ELEVATOR_MIN_SAFETY;
     @Log.File public double current_arm_angle_ = 0;
     @Log.File public Rotation2d target_arm_angle = Rotation2d.fromDegrees(-90);
     @Log.File public double elevator_offset_ = 0;

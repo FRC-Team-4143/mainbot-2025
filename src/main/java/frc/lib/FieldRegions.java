@@ -142,7 +142,7 @@ public class FieldRegions {
   };
 
   public static CircularRegion REEF_ENTER =
-      new CircularRegion(FieldConstants.Reef.CENTER, 2, "Reef Enter");
+      new CircularRegion(FieldConstants.Reef.CENTER, 3, "Reef Enter");
   public static CircularRegion REEF_EXIT =
       new CircularRegion(FieldConstants.Reef.CENTER, 2, "Reef Exit");
 

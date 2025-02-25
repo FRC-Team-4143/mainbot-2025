@@ -11,14 +11,12 @@ import frc.robot.subsystems.Claw.GamePiece;
 import frc.robot.subsystems.Elevator;
 import frc.robot.subsystems.Elevator.SpeedLimit;
 import frc.robot.subsystems.GameStateManager;
-import frc.robot.subsystems.GameStateManager.Column;
-import frc.robot.subsystems.GameStateManager.ReefScoringTarget;
 import frc.robot.subsystems.GameStateManager.RobotState;
 
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
-public class AlgaeReefPickup extends Command {
-  /** Creates a new AlgaeReefPickup. */
-  public AlgaeReefPickup() {
+public class CoralReefScore extends Command {
+  /** Creates a new CoralReefScore. */
+  public CoralReefScore() {
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(Elevator.getInstance());
   }
@@ -28,10 +26,12 @@ public class AlgaeReefPickup extends Command {
   public void initialize() {
     Elevator.getInstance().setSpeedLimit(SpeedLimit.CORAL);
     GameStateManager.getInstance().setRobotState(RobotState.TARGET_ACQUISITION);
-    GameStateManager.getInstance().setScoringTarget(ReefScoringTarget.ALGAE, false);
-    GameStateManager.getInstance().setScoringColum(Column.ALGAE, false);
-    Claw.getInstance().setGamePiece(GamePiece.ALGAE);
-    Claw.getInstance().setClawMode(ClawMode.LOAD);
+    GameStateManager.getInstance()
+        .setScoringTarget(GameStateManager.getInstance().getSavedScoringTarget(), true);
+    GameStateManager.getInstance()
+        .setScoringColum(GameStateManager.getInstance().getSavedScoringColum(), true);
+    Claw.getInstance().setGamePiece(GamePiece.CORAL);
+    Claw.getInstance().setClawMode(ClawMode.IDLE);
   }
 
   // Called every time the scheduler runs while the command is scheduled.
