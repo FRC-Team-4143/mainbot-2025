@@ -132,10 +132,11 @@ public class SwerveModuleConstants {
 
   /**
    * Sets the Module Type
+   *
    * @param type type of SDS module being used obtained from Hashtable
    * @return this object
    */
-  public SwerveModuleConstants withModuleType(ModuleType type){
+  public SwerveModuleConstants withModuleType(ModuleType type) {
     this.moduleType = type;
     return this;
   }
