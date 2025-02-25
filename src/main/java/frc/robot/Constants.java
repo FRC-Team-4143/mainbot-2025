@@ -122,10 +122,7 @@ public final class Constants {
             .withSteerMotorGains(STEER_GAINS)
             .withDriveMotorGains(DRIVE_GAINS)
             .withSpeedAt12VoltsMps(SPEED_AT_12V_MPS)
-            .withFeedbackSource(
-                SteerFeedbackType.None) // .withFeedbackSource(SteerFeedbackType.FusedCANcoder)
-            // CRH: Removed
-            // for AnalogEncoders
+            .withFeedbackSource(SteerFeedbackType.None) // Analog Encoders
             .withCouplingGearRatio(COUPLE_RATIO)
             .withSteerMotorInverted(STEER_MOTOR_REVERSED)
             .withSteerMotorClosedLoopOutput(ClosedLoopOutputType.Voltage)
