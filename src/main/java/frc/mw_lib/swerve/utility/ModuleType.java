@@ -51,7 +51,7 @@ public class ModuleType {
         String gearing = LOADER.getStringValue("drive", position, "MODULE_GEARING");
         ModuleType module = ALL_MODULE_TYPES.get(type + "-" + gearing);
         if (module == null){
-            DataLogManager.log("Invalid Module Type: " + type + "-" + gearing +"\nDefaulting to MK4I-L3");
+            DataLogManager.log("ERROR: Invalid Module Type: " + type + "-" + gearing +"\nDefaulting to MK4I-L3");
             module = ALL_MODULE_TYPES.get("MK4I-L3");
         }
         return module;
