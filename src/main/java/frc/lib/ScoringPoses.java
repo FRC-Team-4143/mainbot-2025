@@ -32,8 +32,8 @@ public class ScoringPoses {
 
   public static final Transform2d ALGAE_ALIGN_OFFSET =
       new Transform2d(
-          0, Units.inchesToMeters(-Constants.ClawConstants.ALGAE_IMP_OFFSET_), new Rotation2d());
-  public static final double CORAL_ALIGN_OFFSET = -Constants.ClawConstants.CORAL_IMP_OFFSET_;
+          0, Units.inchesToMeters(-Constants.ClawConstants.ALGAE_IMP_OFFSET), new Rotation2d());
+  public static final double CORAL_ALIGN_OFFSET = -Constants.ClawConstants.CORAL_IMP_OFFSET;
 
   public static final Transform2d LEFT_COLUMN_OFFSET =
       new Transform2d(0, Units.inchesToMeters(6.47) + CORAL_ALIGN_OFFSET, new Rotation2d());

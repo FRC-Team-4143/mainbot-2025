@@ -214,13 +214,13 @@ public final class Constants {
     public static final double WHEEL_SHOOT_SPEED = 0.30;
     public static final double WHEEL_LOAD_SPEED = -0.3;
     public static final double ALGAE_IDLE_SPEED = 0.1;
-    public static final double STATOR_CURRENT_LIMIT_ = 40;
+    public static final double STATOR_CURRENT_LIMIT = 40;
     public static final String CORAL_COLOR = new Color(255, 255, 255).toHexString();
     public static final String ALGAE_COLOR = new Color(0, 255, 255).toHexString();
     public static final InvertedValue WHEEL_MOTOR_INVERTED = InvertedValue.Clockwise_Positive;
-    public static final double CORAL_IMP_OFFSET_ =
+    public static final double CORAL_IMP_OFFSET =
         Units.inchesToMeters(LOADER.getDoubleValue("imp", "coral_offset"));
-    public static final double ALGAE_IMP_OFFSET_ =
+    public static final double ALGAE_IMP_OFFSET =
         Units.inchesToMeters(LOADER.getDoubleValue("imp", "algae_offset"));
   }
 
@@ -238,7 +238,7 @@ public final class Constants {
     public static final int ELEVATOR_FOLLOWER_ID = 22;
     public static final int ELEVATOR_LIMIT_SWITCH_PORT_NUMBER = 4;
     public static final double ELEVATOR_TARGET_THRESHOLD = 0.25; // In m
-    public static final InvertedValue ELEVATOR_MASTER_INVERSION_ =
+    public static final InvertedValue ELEVATOR_MASTER_INVERSION =
         InvertedValue.CounterClockwise_Positive;
     public static final InvertedValue ELEVATOR_FOLLOWER_INVERSION =
         InvertedValue.Clockwise_Positive;
