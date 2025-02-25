@@ -314,6 +314,7 @@ public class SwerveModuleConstantsFactory {
       boolean driveMotorReversed,
       ModuleType moduleType) {
     return new SwerveModuleConstants()
+        .withModuleType(moduleType)
         .withSteerMotorId(steerId)
         .withDriveMotorId(driveId)
         .withCANcoderId(cancoderId)

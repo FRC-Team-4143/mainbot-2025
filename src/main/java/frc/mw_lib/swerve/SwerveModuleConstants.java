@@ -8,6 +8,7 @@ package frc.mw_lib.swerve;
 
 import com.ctre.phoenix6.configs.Slot0Configs;
 import frc.mw_lib.swerve.SwerveModule.ClosedLoopOutputType;
+import frc.mw_lib.swerve.utility.ModuleType;
 
 /** All constants for a swerve module. */
 public class SwerveModuleConstants {
@@ -126,6 +127,18 @@ public class SwerveModuleConstants {
    * risk that the CANcoder can fail in a way to provide "good" data.
    */
   public SteerFeedbackType FeedbackSource = SteerFeedbackType.RemoteCANcoder;
+
+  public ModuleType moduleType;
+
+  /**
+   * Sets the Module Type
+   * @param type type of SDS module being used obtained from Hashtable
+   * @return this object
+   */
+  public SwerveModuleConstants withModuleType(ModuleType type){
+    this.moduleType = type;
+    return this;
+  }
 
   /**
    * Sets the CAN ID of the drive motor.
