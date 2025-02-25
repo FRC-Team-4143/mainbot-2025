@@ -40,6 +40,11 @@ public class ModuleType {
     };
 
     public static Hashtable<String, ModuleType> ALL_MODULE_TYPES = new Hashtable<>();
+    static {
+        for (ModuleType type : ALL_TYPES) {
+            ALL_MODULE_TYPES.put(type.name, type);
+        }
+    }
 
     /**
      * 
@@ -56,11 +61,4 @@ public class ModuleType {
         }
         return module;
     }
-
-    static {
-        for (ModuleType type : ALL_TYPES) {
-            ALL_MODULE_TYPES.put(type.name, type);
-        }
-    }
-    
 }
