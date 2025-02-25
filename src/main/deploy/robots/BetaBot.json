@@ -30,7 +30,9 @@
             "ENCODER_ID": 0,
             "X_POSITION": 7.5,
             "Y_POSITION": 7.5,
-            "INVERT_DRIVE": false
+            "INVERT_DRIVE": false,
+            "MODULE_TYPE": "MK4N",
+            "MODULE_GEARING": "L3+"
         },
         "fr": {
             "DRIVE_ID": 1,
@@ -38,7 +40,9 @@
             "ENCODER_ID": 1,
             "X_POSITION": 7.5,
             "Y_POSITION": -7.5,
-            "INVERT_DRIVE": false
+            "INVERT_DRIVE": false,
+            "MODULE_TYPE": "MK4I",
+            "MODULE_GEARING": "L3"
         },
         "bl": {
             "DRIVE_ID": 7,
@@ -46,7 +50,9 @@
             "ENCODER_ID": 2,
             "X_POSITION": -7.5,
             "Y_POSITION": 7.5,
-            "INVERT_DRIVE": false
+            "INVERT_DRIVE": false,
+            "MODULE_TYPE": "MK4N",
+            "MODULE_GEARING": "L3+"
         },
         "br": {
             "DRIVE_ID": 5,
@@ -54,7 +60,9 @@
             "ENCODER_ID": 3,
             "X_POSITION": -7.5,
             "Y_POSITION": -7.5,
-            "INVERT_DRIVE": false
+            "INVERT_DRIVE": false,
+            "MODULE_TYPE": "MK4I",
+            "MODULE_GEARING": "L3"
         },
         "traj_controller": {
             "TRANSLATION_P": 0.0,

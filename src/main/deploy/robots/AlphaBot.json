@@ -5,8 +5,6 @@
             "SLIP_CURRENT": 50,
             "SPEED_AT_12V": 5.0,
             "COUPLE_RATIO": 3.5,
-            "DRIVE_GEAR_RATIO": 6.12,
-            "STEER_GEAR_RATIO": 21.4285714286,
             "WHEEL_RADIUS_INCH": 1.8,
             "MAX_DRIVE_SPEED": 5.0,
             "MAX_DRIVE_ANGULAR_RATE": 6.28,
@@ -30,7 +28,9 @@
             "ENCODER_ID": 0,
             "X_POSITION": 11.4,
             "Y_POSITION": 11.4,
-            "INVERT_DRIVE": false
+            "INVERT_DRIVE": false,
+            "MODULE_TYPE": "MK4I",
+            "MODULE_GEARING": "L3"
         },
         "fr": {
             "DRIVE_ID": 3,
@@ -38,7 +38,9 @@
             "ENCODER_ID": 1,
             "X_POSITION": 11.4,
             "Y_POSITION": -11.4,
-            "INVERT_DRIVE": false
+            "INVERT_DRIVE": false,
+            "MODULE_TYPE": "MK4I",
+            "MODULE_GEARING": "L3"
         },
         "bl": {
             "DRIVE_ID": 5,
@@ -46,7 +48,9 @@
             "ENCODER_ID": 2,
             "X_POSITION": -11.4,
             "Y_POSITION": 11.4,
-            "INVERT_DRIVE": false
+            "INVERT_DRIVE": false,
+            "MODULE_TYPE": "MK4I",
+            "MODULE_GEARING": "L3"
         },
         "br": {
             "DRIVE_ID": 7,
@@ -54,7 +58,9 @@
             "ENCODER_ID": 3,
             "X_POSITION": -11.4,
             "Y_POSITION": -11.4,
-            "INVERT_DRIVE": false
+            "INVERT_DRIVE": false,
+            "MODULE_TYPE": "MK4I",
+            "MODULE_GEARING": "L3"
         },
         "traj_controller": {
             "TRANSLATION_P": 0.5,
