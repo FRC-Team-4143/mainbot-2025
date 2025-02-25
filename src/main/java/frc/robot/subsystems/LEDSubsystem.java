@@ -4,10 +4,6 @@
 
 package frc.robot.subsystems;
 
-import static edu.wpi.first.units.Units.Seconds;
-
-import java.util.Map;
-
 import edu.wpi.first.math.filter.Debouncer;
 import edu.wpi.first.math.filter.Debouncer.DebounceType;
 import edu.wpi.first.wpilibj.AddressableLED;
@@ -21,6 +17,10 @@ import frc.mw_lib.subsystem.Subsystem;
 import frc.robot.Constants;
 import frc.robot.Constants.ElevatorConstants;
 import frc.robot.Constants.LEDConstants;
+
+import static edu.wpi.first.units.Units.Seconds;
+
+import java.util.Map;
 import monologue.Annotations.Log;
 import monologue.Logged;
 
@@ -47,7 +47,6 @@ public class LEDSubsystem extends Subsystem {
     REEF_FACE_3,
     REEF_FACE_4,
     REEF_FACE_5,
-    CRITICAL_ERROR,
     DEFENSE
   }
 
@@ -128,8 +127,8 @@ public class LEDSubsystem extends Subsystem {
     } else {
       io_.led_team_str_ = 255 / 2;
     }
-    
-    if (io_.led_mode_ == LEDMode.CRITICAL_ERROR) {
+
+    if (io_.isCriticalError) {
       io_.led_cycle_length_ = 5;
       if (io_.led_cycle_state) {
         io_.pattern = LEDPattern.steps(Map.of(0, Color.kOrange, 0.5, Color.kRed));
@@ -154,39 +153,60 @@ public class LEDSubsystem extends Subsystem {
             break;
           case REEF_FACE_0:
             io_.pattern = LEDPattern.progressMaskLayer(
-                () -> Elevator.getInstance().getCurrentHeight() / ElevatorConstants.ELEVATOR_MAX_HEIGHT);
-            io_.color = LEDPattern.gradient(LEDPattern.GradientType.kDiscontinuous, Color.kDarkRed, Color.kRed);
+                () -> Elevator.getInstance().getCurrentHeight()
+                    / ElevatorConstants.ELEVATOR_MAX_HEIGHT);
+            io_.color = LEDPattern.gradient(
+                LEDPattern.GradientType.kDiscontinuous, Color.kDarkRed, Color.kRed);
             io_.pattern = io_.color.mask(io_.pattern);
             break;
           case REEF_FACE_1:
             io_.pattern = LEDPattern.progressMaskLayer(
-                () -> Elevator.getInstance().getCurrentHeight() / ElevatorConstants.ELEVATOR_MAX_HEIGHT);
-            io_.color = LEDPattern.gradient(LEDPattern.GradientType.kDiscontinuous, Color.kDarkOrange, Color.kOrange);
+                () -> Elevator.getInstance().getCurrentHeight()
+                    / ElevatorConstants.ELEVATOR_MAX_HEIGHT);
+            io_.color = LEDPattern.gradient(
+                LEDPattern.GradientType.kDiscontinuous, Color.kDarkOrange, Color.kOrange);
             io_.pattern = io_.color.mask(io_.pattern);
             break;
           case REEF_FACE_2:
             io_.pattern = LEDPattern.progressMaskLayer(
-                () -> Elevator.getInstance().getCurrentHeight() / ElevatorConstants.ELEVATOR_MAX_HEIGHT);
-            io_.color = LEDPattern.gradient(LEDPattern.GradientType.kDiscontinuous, Color.kYellow, Color.kLightYellow);
+                () -> Elevator.getInstance().getCurrentHeight()
+                    / ElevatorConstants.ELEVATOR_MAX_HEIGHT);
+            io_.color = LEDPattern.gradient(
+                LEDPattern.GradientType.kDiscontinuous, Color.kYellow, Color.kLightYellow);
             io_.pattern = io_.color.mask(io_.pattern);
             break;
           case REEF_FACE_3:
             io_.pattern = LEDPattern.progressMaskLayer(
-                () -> Elevator.getInstance().getCurrentHeight() / ElevatorConstants.ELEVATOR_MAX_HEIGHT);
-            io_.color = LEDPattern.gradient(LEDPattern.GradientType.kDiscontinuous, Color.kDarkGreen, Color.kGreen);
+                () -> Elevator.getInstance().getCurrentHeight()
+                    / ElevatorConstants.ELEVATOR_MAX_HEIGHT);
+            io_.color = LEDPattern.gradient(
+                LEDPattern.GradientType.kDiscontinuous, Color.kDarkGreen, Color.kGreen);
             io_.pattern = io_.color.mask(io_.pattern);
             break;
           case REEF_FACE_4:
             io_.pattern = LEDPattern.progressMaskLayer(
-                () -> Elevator.getInstance().getCurrentHeight() / ElevatorConstants.ELEVATOR_MAX_HEIGHT);
-            io_.color = LEDPattern.gradient(LEDPattern.GradientType.kDiscontinuous, Color.kDarkBlue, Color.kBlue);
+                () -> Elevator.getInstance().getCurrentHeight()
+                    / ElevatorConstants.ELEVATOR_MAX_HEIGHT);
+            io_.color = LEDPattern.gradient(
+                LEDPattern.GradientType.kDiscontinuous, Color.kDarkBlue, Color.kBlue);
             io_.pattern = io_.color.mask(io_.pattern);
             break;
           case REEF_FACE_5:
             io_.pattern = LEDPattern.progressMaskLayer(
-                () -> Elevator.getInstance().getCurrentHeight() / ElevatorConstants.ELEVATOR_MAX_HEIGHT);
-            io_.color = LEDPattern.gradient(LEDPattern.GradientType.kDiscontinuous, Color.kPurple, Color.kLavender);
+                () -> Elevator.getInstance().getCurrentHeight()
+                    / ElevatorConstants.ELEVATOR_MAX_HEIGHT);
+            io_.color = LEDPattern.gradient(
+                LEDPattern.GradientType.kDiscontinuous, Color.kPurple, Color.kLavender);
             io_.pattern = io_.color.mask(io_.pattern);
+            break;
+          case CAGE:
+            if (DriverStation.getAlliance().get() == Alliance.Blue) {
+              io_.color = LEDPattern.solid(Color.kBlue);
+              
+            } else {
+              io_.color = LEDPattern.solid(Color.kRed);
+            }
+            io_.pattern = io_.color.blink(Seconds.of(0.5));
             break;
           case DEFENSE:
             defenseModeLED();
@@ -199,8 +219,11 @@ public class LEDSubsystem extends Subsystem {
             break;
         }
       } else {
-        io_.pattern = LEDPattern.solid(Color.kYellow);
-
+        if (DriverStation.getAlliance().get() == Alliance.Blue) {
+          io_.pattern = LEDPattern.solid(Color.kBlue);
+        } else {
+          io_.pattern = LEDPattern.solid(Color.kRed);
+        }
       }
     }
 
@@ -247,10 +270,18 @@ public class LEDSubsystem extends Subsystem {
     @Log.File
     public int led_team_str_ = 255;
     @Log.File
-    LEDPattern pattern = LEDPattern
-        .progressMaskLayer(() -> Elevator.getInstance().getCurrentHeight() / ElevatorConstants.ELEVATOR_MAX_HEIGHT);
+    public boolean isCriticalError = false;
+
+    @Log.File
+    LEDPattern pattern = LEDPattern.progressMaskLayer(
+        () -> Elevator.getInstance().getCurrentHeight() / ElevatorConstants.ELEVATOR_MAX_HEIGHT);
+
     @Log.File
     LEDPattern color = LEDPattern.gradient(LEDPattern.GradientType.kDiscontinuous, Color.kPurple, Color.kLavender);
+  }
+
+  public void setIfCritcalError(boolean isError) {
+    io_.isCriticalError = isError;
   }
 
   public void scoreModeLED(int r, int g, int b) {
