@@ -4,6 +4,8 @@
 
 package frc.robot.subsystems;
 
+import static edu.wpi.first.units.Units.Seconds;
+
 import edu.wpi.first.math.filter.Debouncer;
 import edu.wpi.first.math.filter.Debouncer.DebounceType;
 import edu.wpi.first.wpilibj.AddressableLED;
@@ -17,9 +19,6 @@ import frc.mw_lib.subsystem.Subsystem;
 import frc.robot.Constants;
 import frc.robot.Constants.ElevatorConstants;
 import frc.robot.Constants.LEDConstants;
-
-import static edu.wpi.first.units.Units.Seconds;
-
 import java.util.Map;
 import monologue.Annotations.Log;
 import monologue.Logged;
@@ -84,10 +83,8 @@ public class LEDSubsystem extends Subsystem {
   }
 
   /**
-   * This function should be logic and code to fully reset your subsystem. This is
-   * called during
-   * initialization, and should handle I/O configuration and initializing data
-   * members.
+   * This function should be logic and code to fully reset your subsystem. This is called during
+   * initialization, and should handle I/O configuration and initializing data members.
    */
   @Override
   public void reset() {
@@ -103,21 +100,16 @@ public class LEDSubsystem extends Subsystem {
   }
 
   /**
-   * Inside this function, all of the SENSORS should be read into variables stored
-   * in the PeriodicIO
-   * class defined below. There should be no calls to output to actuators, or any
-   * logic within this
+   * Inside this function, all of the SENSORS should be read into variables stored in the PeriodicIO
+   * class defined below. There should be no calls to output to actuators, or any logic within this
    * function.
    */
   @Override
-  public void readPeriodicInputs(double timestamp) {
-  }
+  public void readPeriodicInputs(double timestamp) {}
 
   /**
-   * Inside this function, all of the LOGIC should compute updates to output
-   * variables in the
-   * PeriodicIO class defined below. There should be no calls to read from sensors
-   * or write to
+   * Inside this function, all of the LOGIC should compute updates to output variables in the
+   * PeriodicIO class defined below. There should be no calls to read from sensors or write to
    * actuators in this function.
    */
   @Override
@@ -152,57 +144,75 @@ public class LEDSubsystem extends Subsystem {
             setCyleLength(25);
             break;
           case REEF_FACE_0:
-            io_.pattern = LEDPattern.progressMaskLayer(
-                () -> Elevator.getInstance().getCurrentHeight()
-                    / ElevatorConstants.ELEVATOR_MAX_HEIGHT);
-            io_.color = LEDPattern.gradient(
-                LEDPattern.GradientType.kDiscontinuous, Color.kDarkRed, Color.kRed);
+            io_.pattern =
+                LEDPattern.progressMaskLayer(
+                    () ->
+                        Elevator.getInstance().getCurrentHeight()
+                            / ElevatorConstants.ELEVATOR_MAX_HEIGHT);
+            io_.color =
+                LEDPattern.gradient(
+                    LEDPattern.GradientType.kDiscontinuous, Color.kDarkRed, Color.kRed);
             io_.pattern = io_.color.mask(io_.pattern);
             break;
           case REEF_FACE_1:
-            io_.pattern = LEDPattern.progressMaskLayer(
-                () -> Elevator.getInstance().getCurrentHeight()
-                    / ElevatorConstants.ELEVATOR_MAX_HEIGHT);
-            io_.color = LEDPattern.gradient(
-                LEDPattern.GradientType.kDiscontinuous, Color.kDarkOrange, Color.kOrange);
+            io_.pattern =
+                LEDPattern.progressMaskLayer(
+                    () ->
+                        Elevator.getInstance().getCurrentHeight()
+                            / ElevatorConstants.ELEVATOR_MAX_HEIGHT);
+            io_.color =
+                LEDPattern.gradient(
+                    LEDPattern.GradientType.kDiscontinuous, Color.kDarkOrange, Color.kOrange);
             io_.pattern = io_.color.mask(io_.pattern);
             break;
           case REEF_FACE_2:
-            io_.pattern = LEDPattern.progressMaskLayer(
-                () -> Elevator.getInstance().getCurrentHeight()
-                    / ElevatorConstants.ELEVATOR_MAX_HEIGHT);
-            io_.color = LEDPattern.gradient(
-                LEDPattern.GradientType.kDiscontinuous, Color.kYellow, Color.kLightYellow);
+            io_.pattern =
+                LEDPattern.progressMaskLayer(
+                    () ->
+                        Elevator.getInstance().getCurrentHeight()
+                            / ElevatorConstants.ELEVATOR_MAX_HEIGHT);
+            io_.color =
+                LEDPattern.gradient(
+                    LEDPattern.GradientType.kDiscontinuous, Color.kYellow, Color.kLightYellow);
             io_.pattern = io_.color.mask(io_.pattern);
             break;
           case REEF_FACE_3:
-            io_.pattern = LEDPattern.progressMaskLayer(
-                () -> Elevator.getInstance().getCurrentHeight()
-                    / ElevatorConstants.ELEVATOR_MAX_HEIGHT);
-            io_.color = LEDPattern.gradient(
-                LEDPattern.GradientType.kDiscontinuous, Color.kDarkGreen, Color.kGreen);
+            io_.pattern =
+                LEDPattern.progressMaskLayer(
+                    () ->
+                        Elevator.getInstance().getCurrentHeight()
+                            / ElevatorConstants.ELEVATOR_MAX_HEIGHT);
+            io_.color =
+                LEDPattern.gradient(
+                    LEDPattern.GradientType.kDiscontinuous, Color.kDarkGreen, Color.kGreen);
             io_.pattern = io_.color.mask(io_.pattern);
             break;
           case REEF_FACE_4:
-            io_.pattern = LEDPattern.progressMaskLayer(
-                () -> Elevator.getInstance().getCurrentHeight()
-                    / ElevatorConstants.ELEVATOR_MAX_HEIGHT);
-            io_.color = LEDPattern.gradient(
-                LEDPattern.GradientType.kDiscontinuous, Color.kDarkBlue, Color.kBlue);
+            io_.pattern =
+                LEDPattern.progressMaskLayer(
+                    () ->
+                        Elevator.getInstance().getCurrentHeight()
+                            / ElevatorConstants.ELEVATOR_MAX_HEIGHT);
+            io_.color =
+                LEDPattern.gradient(
+                    LEDPattern.GradientType.kDiscontinuous, Color.kDarkBlue, Color.kBlue);
             io_.pattern = io_.color.mask(io_.pattern);
             break;
           case REEF_FACE_5:
-            io_.pattern = LEDPattern.progressMaskLayer(
-                () -> Elevator.getInstance().getCurrentHeight()
-                    / ElevatorConstants.ELEVATOR_MAX_HEIGHT);
-            io_.color = LEDPattern.gradient(
-                LEDPattern.GradientType.kDiscontinuous, Color.kPurple, Color.kLavender);
+            io_.pattern =
+                LEDPattern.progressMaskLayer(
+                    () ->
+                        Elevator.getInstance().getCurrentHeight()
+                            / ElevatorConstants.ELEVATOR_MAX_HEIGHT);
+            io_.color =
+                LEDPattern.gradient(
+                    LEDPattern.GradientType.kDiscontinuous, Color.kPurple, Color.kLavender);
             io_.pattern = io_.color.mask(io_.pattern);
             break;
           case CAGE:
             if (DriverStation.getAlliance().get() == Alliance.Blue) {
               io_.color = LEDPattern.solid(Color.kBlue);
-              
+
             } else {
               io_.color = LEDPattern.solid(Color.kRed);
             }
@@ -233,10 +243,8 @@ public class LEDSubsystem extends Subsystem {
   }
 
   /**
-   * Inside this function actuator OUTPUTS should be updated from data contained
-   * in the PeriodicIO
-   * class defined below. There should be little to no logic contained within this
-   * function, and no
+   * Inside this function actuator OUTPUTS should be updated from data contained in the PeriodicIO
+   * class defined below. There should be little to no logic contained within this function, and no
    * sensors should be read.
    */
   @Override
@@ -246,38 +254,31 @@ public class LEDSubsystem extends Subsystem {
   }
 
   /**
-   * Inside this function telemetry should be output to smartdashboard. The data
-   * should be collected
-   * out of the PeriodicIO class instance defined below. There should be no sensor
-   * information read
-   * in this function nor any outputs made to actuators within this function. Only
-   * publish to
+   * Inside this function telemetry should be output to smartdashboard. The data should be collected
+   * out of the PeriodicIO class instance defined below. There should be no sensor information read
+   * in this function nor any outputs made to actuators within this function. Only publish to
    * smartdashboard here.
    */
   @Override
-  public void outputTelemetry(double timestamp) {
-  }
+  public void outputTelemetry(double timestamp) {}
 
   public class LEDPeriodicIo implements Logged {
-    @Log.File
-    public boolean led_cycle_state = true;
-    @Log.File
-    public int led_cycle_counter = 25;
-    @Log.File
-    public LEDMode led_mode_ = LEDMode.SCORE_READY;
-    @Log.File
-    public int led_cycle_length_ = 25;
-    @Log.File
-    public int led_team_str_ = 255;
-    @Log.File
-    public boolean isCriticalError = false;
+    @Log.File public boolean led_cycle_state = true;
+    @Log.File public int led_cycle_counter = 25;
+    @Log.File public LEDMode led_mode_ = LEDMode.SCORE_READY;
+    @Log.File public int led_cycle_length_ = 25;
+    @Log.File public int led_team_str_ = 255;
+    @Log.File public boolean isCriticalError = false;
 
     @Log.File
-    LEDPattern pattern = LEDPattern.progressMaskLayer(
-        () -> Elevator.getInstance().getCurrentHeight() / ElevatorConstants.ELEVATOR_MAX_HEIGHT);
+    LEDPattern pattern =
+        LEDPattern.progressMaskLayer(
+            () ->
+                Elevator.getInstance().getCurrentHeight() / ElevatorConstants.ELEVATOR_MAX_HEIGHT);
 
     @Log.File
-    LEDPattern color = LEDPattern.gradient(LEDPattern.GradientType.kDiscontinuous, Color.kPurple, Color.kLavender);
+    LEDPattern color =
+        LEDPattern.gradient(LEDPattern.GradientType.kDiscontinuous, Color.kPurple, Color.kLavender);
   }
 
   public void setIfCritcalError(boolean isError) {
@@ -319,8 +320,9 @@ public class LEDSubsystem extends Subsystem {
 
   public void idleModeLED(int r, int g, int b) {
     for (int i = 0; i < led_buffer_1_.getLength(); i++) {
-      if (i < Constants.LEDConstants.LED_LENGTH_1
-          * (Constants.LEDConstants.LED_LENGTH_1 / Elevator.getInstance().getCurrentHeight())) {
+      if (i
+          < Constants.LEDConstants.LED_LENGTH_1
+              * (Constants.LEDConstants.LED_LENGTH_1 / Elevator.getInstance().getCurrentHeight())) {
         led_buffer_1_.setRGB(i, r, g, b);
       } else {
         led_buffer_1_.setRGB(i, 0, 0, 0);
@@ -328,8 +330,9 @@ public class LEDSubsystem extends Subsystem {
     }
 
     for (int i = 0; i < led_buffer_2_.getLength(); i++) {
-      if (i < Constants.LEDConstants.LED_LENGTH_2
-          * (Constants.LEDConstants.LED_LENGTH_2 / Elevator.getInstance().getCurrentHeight())) {
+      if (i
+          < Constants.LEDConstants.LED_LENGTH_2
+              * (Constants.LEDConstants.LED_LENGTH_2 / Elevator.getInstance().getCurrentHeight())) {
         led_buffer_2_.setRGB(i, r, g, b);
       } else {
         led_buffer_2_.setRGB(i, 0, 0, 0);
