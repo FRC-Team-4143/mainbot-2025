@@ -73,4 +73,9 @@ public class ConstantsLoader extends JSONReader {
     JsonNode current = walkTree(root_node_, path_steps);
     return current.asBoolean();
   }
+
+  public String getStringValue(String... path_steps) {
+    JsonNode current = walkTree(root_node_, path_steps);
+    return current.asText();
+  }
 }

@@ -9,6 +9,7 @@ package frc.mw_lib.swerve;
 import com.ctre.phoenix6.configs.Slot0Configs;
 import frc.mw_lib.swerve.SwerveModule.ClosedLoopOutputType;
 import frc.mw_lib.swerve.SwerveModuleConstants.SteerFeedbackType;
+import frc.mw_lib.swerve.utility.ModuleType;
 
 /**
  * Constants that are common across the swerve modules, used for creating instances of
@@ -310,16 +311,18 @@ public class SwerveModuleConstantsFactory {
       double cancoderOffset,
       double locationX,
       double locationY,
-      boolean driveMotorReversed) {
+      boolean driveMotorReversed,
+      ModuleType moduleType) {
     return new SwerveModuleConstants()
+        .withModuleType(moduleType)
         .withSteerMotorId(steerId)
         .withDriveMotorId(driveId)
         .withCANcoderId(cancoderId)
         .withCANcoderOffset(cancoderOffset)
         .withLocationX(locationX)
         .withLocationY(locationY)
-        .withDriveMotorGearRatio(DriveMotorGearRatio)
-        .withSteerMotorGearRatio(SteerMotorGearRatio)
+        .withDriveMotorGearRatio(moduleType.driveRatio)
+        .withSteerMotorGearRatio(moduleType.steerRatio)
         .withCouplingGearRatio(CouplingGearRatio)
         .withWheelRadius(WheelRadius)
         .withSlipCurrent(SlipCurrent)

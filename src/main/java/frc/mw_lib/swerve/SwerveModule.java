@@ -33,6 +33,7 @@ import edu.wpi.first.math.util.Units;
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.wpilibj.AnalogEncoder;
+import frc.mw_lib.swerve.utility.ModuleType;
 import frc.mw_lib.util.MWPreferences;
 
 /**
@@ -93,6 +94,7 @@ public class SwerveModule {
   private final double m_couplingRatioDriveRotorToCANcoder;
 
   private final double m_speedAt12VoltsMps;
+  private final ModuleType moduleType;
 
   /* steer motor controls */
   private final MotionMagicVoltage m_angleVoltageSetter = new MotionMagicVoltage(0);
@@ -255,6 +257,9 @@ public class SwerveModule {
 
     /* Get the expected speed when applying 12 volts */
     m_speedAt12VoltsMps = constants.SpeedAt12VoltsMps;
+
+    // Store Module Type
+    moduleType = constants.moduleType;
 
     /* Set Field Centric for Analog Encoder */
     resetToAbsolute();

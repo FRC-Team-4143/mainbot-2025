@@ -25,6 +25,7 @@ import frc.mw_lib.swerve.SwerveModule.ClosedLoopOutputType;
 import frc.mw_lib.swerve.SwerveModuleConstants;
 import frc.mw_lib.swerve.SwerveModuleConstants.SteerFeedbackType;
 import frc.mw_lib.swerve.SwerveModuleConstantsFactory;
+import frc.mw_lib.swerve.utility.ModuleType;
 import frc.mw_lib.util.ConstantsLoader;
 
 /**
@@ -100,10 +101,6 @@ public final class Constants {
         LOADER.getDoubleValue("drive", "com", "SPEED_AT_12V");
     private static final double COUPLE_RATIO =
         LOADER.getDoubleValue("drive", "com", "COUPLE_RATIO");
-    private static final double DRIVE_GEAR_RATIO =
-        LOADER.getDoubleValue("drive", "com", "DRIVE_GEAR_RATIO");
-    private static final double STEER_GEAR_RATIO =
-        LOADER.getDoubleValue("drive", "com", "STEER_GEAR_RATIO");
     private static final double WHEEL_RADIUS_INCH =
         LOADER.getDoubleValue("drive", "com", "WHEEL_RADIUS_INCH");
     private static final boolean STEER_MOTOR_REVERSED =
@@ -120,17 +117,12 @@ public final class Constants {
 
     private static final SwerveModuleConstantsFactory ConstantCreator =
         new SwerveModuleConstantsFactory()
-            .withDriveMotorGearRatio(DRIVE_GEAR_RATIO)
-            .withSteerMotorGearRatio(STEER_GEAR_RATIO)
             .withWheelRadius(WHEEL_RADIUS_INCH)
             .withSlipCurrent(SLIP_CURRENT_AMPS)
             .withSteerMotorGains(STEER_GAINS)
             .withDriveMotorGains(DRIVE_GAINS)
             .withSpeedAt12VoltsMps(SPEED_AT_12V_MPS)
-            .withFeedbackSource(
-                SteerFeedbackType.None) // .withFeedbackSource(SteerFeedbackType.FusedCANcoder)
-            // CRH: Removed
-            // for AnalogEncoders
+            .withFeedbackSource(SteerFeedbackType.None) // Analog Encoders
             .withCouplingGearRatio(COUPLE_RATIO)
             .withSteerMotorInverted(STEER_MOTOR_REVERSED)
             .withSteerMotorClosedLoopOutput(ClosedLoopOutputType.Voltage)
@@ -144,7 +136,8 @@ public final class Constants {
             0,
             Units.inchesToMeters(LOADER.getDoubleValue("drive", "fl", "X_POSITION")),
             Units.inchesToMeters(LOADER.getDoubleValue("drive", "fl", "Y_POSITION")),
-            LOADER.getBoolValue("drive", "fl", "INVERT_DRIVE"));
+            LOADER.getBoolValue("drive", "fl", "INVERT_DRIVE"),
+            ModuleType.getModuleType("fl"));
     public static final SwerveModuleConstants FR_MODULE_CONSTANTS =
         ConstantCreator.createModuleConstants(
             LOADER.getIntValue("drive", "fr", "STEER_ID"),
@@ -153,7 +146,8 @@ public final class Constants {
             0,
             Units.inchesToMeters(LOADER.getDoubleValue("drive", "fr", "X_POSITION")),
             Units.inchesToMeters(LOADER.getDoubleValue("drive", "fr", "Y_POSITION")),
-            LOADER.getBoolValue("drive", "fr", "INVERT_DRIVE"));
+            LOADER.getBoolValue("drive", "fr", "INVERT_DRIVE"),
+            ModuleType.getModuleType("fr"));
     public static final SwerveModuleConstants BL_MODULE_CONSTANTS =
         ConstantCreator.createModuleConstants(
             LOADER.getIntValue("drive", "bl", "STEER_ID"),
@@ -162,7 +156,8 @@ public final class Constants {
             0,
             Units.inchesToMeters(LOADER.getDoubleValue("drive", "bl", "X_POSITION")),
             Units.inchesToMeters(LOADER.getDoubleValue("drive", "bl", "Y_POSITION")),
-            LOADER.getBoolValue("drive", "bl", "INVERT_DRIVE"));
+            LOADER.getBoolValue("drive", "bl", "INVERT_DRIVE"),
+            ModuleType.getModuleType("bl"));
     public static final SwerveModuleConstants BR_MODULE_CONSTANTS =
         ConstantCreator.createModuleConstants(
             LOADER.getIntValue("drive", "br", "STEER_ID"),
@@ -171,7 +166,8 @@ public final class Constants {
             0,
             Units.inchesToMeters(LOADER.getDoubleValue("drive", "br", "X_POSITION")),
             Units.inchesToMeters(LOADER.getDoubleValue("drive", "br", "Y_POSITION")),
-            LOADER.getBoolValue("drive", "br", "INVERT_DRIVE"));
+            LOADER.getBoolValue("drive", "br", "INVERT_DRIVE"),
+            ModuleType.getModuleType("br"));
 
     // Drivetrain PID Controller
     public static final PIDController X_TRAJECTORY_TRANSLATION =
