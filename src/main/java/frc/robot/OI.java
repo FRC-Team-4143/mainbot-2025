@@ -74,16 +74,14 @@ public abstract class OI {
      *
      */
 
-    driver_controller_.rightBumper().whileTrue(new CoralLoad());
-    driver_controller_
-        .rightTrigger()
-        .whileTrue(
-            new ConditionalCommand(
-                new CoralEject(), new AlgaeEject(), Claw.getInstance()::isCoralMode));
-    driver_controller_.y().toggleOnTrue(new ElevatorButton(Level.L4));
-    driver_controller_.x().toggleOnTrue(new ElevatorButton(Level.L2));
-    driver_controller_.b().toggleOnTrue(new ElevatorButton(Level.L3));
-    driver_controller_.a().toggleOnTrue(new ElevatorButton(Level.L1));
+    // driver_controller_.rightBumper().whileTrue(new CoralLoad());
+    // driver_controller_.rightBumper().whileTrue(new CoralStation());
+    // // .leftTrigger()
+    //             new CoralEject(), new AlgaeEject(), Claw.getInstance()::isCoralMode);
+    // driver_controller_.y().toggleOnTrue(new ElevatorButton(Level.L4));
+    // driver_controller_.x().toggleOnTrue(new ElevatorButton(Level.L2));
+    // driver_controller_.b().toggleOnTrue(new ElevatorButton(Level.L3));
+    // driver_controller_.a().toggleOnTrue(new ElevatorButton(Level.L1));
 
     /*
      *
