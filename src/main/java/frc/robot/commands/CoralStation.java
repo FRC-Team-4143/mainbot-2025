@@ -33,20 +33,23 @@ public class CoralStation extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
+
     // if in zone
     if (FieldRegions.STATION_REGIONS[1].contains(PoseEstimator.getInstance().getRobotPose())) {
-      Rotation2d rightTarget =
-          FieldRegions.REGION_POSE_TABLE
-              .get(FieldRegions.STATION_REGIONS[1].getName())
-              .getRotation();
+      Rotation2d rightTarget = Rotation2d.fromDegrees(90 - 55);
+      // FieldRegions.REGION_POSE_TABLE
+      //     .get(FieldRegions.STATION_REGIONS[1].getName())
+      //     .getRotation()
+      //     .rotateBy(Rotation2d.fromDegrees(180));
       SwerveDrivetrain.getInstance().setTargetRotation(rightTarget);
 
     } else if (FieldRegions.STATION_REGIONS[0].contains(
         PoseEstimator.getInstance().getRobotPose())) {
       Rotation2d leftTarget =
-          FieldRegions.REGION_POSE_TABLE
-              .get(FieldRegions.STATION_REGIONS[0].getName())
-              .getRotation();
+          // FieldRegions.REGION_POSE_TABLE
+          //     .get(FieldRegions.STATION_REGIONS[0].getName())
+          //     .getRotation()
+          //     .rotateBy(Rotation2d.fromDegrees(180));
       SwerveDrivetrain.getInstance().setTargetRotation(leftTarget);
 
     } else {
