@@ -33,21 +33,28 @@ public class CoralStation extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    //if in zone
-    if(FieldRegions.STATION_REGIONS[1].contains(PoseEstimator.getInstance().getRobotPose())){
-      Rotation2d rightTarget = FieldRegions.REGION_POSE_TABLE.get(FieldRegions.STATION_REGIONS[1].getName()).getRotation(); 
+    // if in zone
+    if (FieldRegions.STATION_REGIONS[1].contains(PoseEstimator.getInstance().getRobotPose())) {
+      Rotation2d rightTarget =
+          FieldRegions.REGION_POSE_TABLE
+              .get(FieldRegions.STATION_REGIONS[1].getName())
+              .getRotation();
       SwerveDrivetrain.getInstance().setTargetRotation(rightTarget);
-    }
-    else if(FieldRegions.STATION_REGIONS[0].contains(PoseEstimator.getInstance().getRobotPose())){
-      Rotation2d leftTarget = FieldRegions.REGION_POSE_TABLE.get(FieldRegions.STATION_REGIONS[0].getName()).getRotation();
-      SwerveDrivetrain.getInstance().setTargetRotation(leftTarget);
-    }
-    else{
-      SwerveDrivetrain.getInstance().restoreDefaultDriveMode(); 
-    }
-    //then pull tag rotation
 
-    //then set target angle based on rotation
+    } else if (FieldRegions.STATION_REGIONS[0].contains(
+        PoseEstimator.getInstance().getRobotPose())) {
+      Rotation2d leftTarget =
+          FieldRegions.REGION_POSE_TABLE
+              .get(FieldRegions.STATION_REGIONS[0].getName())
+              .getRotation();
+      SwerveDrivetrain.getInstance().setTargetRotation(leftTarget);
+
+    } else {
+      SwerveDrivetrain.getInstance().restoreDefaultDriveMode();
+    }
+    // then pull tag rotation
+
+    // then set target angle based on rotation
 
   }
 
@@ -55,6 +62,7 @@ public class CoralStation extends Command {
   @Override
   public void end(boolean interrupted) {
     elevator_.stowElevator();
+    SwerveDrivetrain.getInstance().restoreDefaultDriveMode();
   }
 
   // Returns true when the command should end.

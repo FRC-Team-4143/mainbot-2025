@@ -13,7 +13,7 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.commands.AlgaeEject;
 import frc.robot.commands.AlgaeReefPickup;
 import frc.robot.commands.CoralEject;
-import frc.robot.commands.CoralLoad;
+import frc.robot.commands.CoralStation;
 import frc.robot.commands.ElevatorButton;
 import frc.robot.commands.ElevatorButton.Level;
 import frc.robot.subsystems.Claw;
@@ -76,7 +76,7 @@ public abstract class OI {
      *
      */
 
-    driver_controller_.rightBumper().whileTrue(new CoralLoad());
+    driver_controller_.rightBumper().whileTrue(new CoralStation());
     // driver_controller_
     // .leftTrigger()
     // .whileTrue(
