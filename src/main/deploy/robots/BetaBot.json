@@ -31,7 +31,7 @@
             "X_POSITION": 7.5,
             "Y_POSITION": 7.5,
             "INVERT_DRIVE": false,
-            "MODULE_TYPE": "MK4N",
+            "MODULE_TYPE": "MK4I",
             "MODULE_GEARING": "L3+"
         },
         "fr": {
@@ -41,8 +41,8 @@
             "X_POSITION": 7.5,
             "Y_POSITION": -7.5,
             "INVERT_DRIVE": false,
-            "MODULE_TYPE": "MK4I",
-            "MODULE_GEARING": "L3"
+            "MODULE_TYPE": "MK4N",
+            "MODULE_GEARING": "L3+"
         },
         "bl": {
             "DRIVE_ID": 7,
@@ -62,7 +62,7 @@
             "Y_POSITION": -7.5,
             "INVERT_DRIVE": false,
             "MODULE_TYPE": "MK4I",
-            "MODULE_GEARING": "L3"
+            "MODULE_GEARING": "L3+"
         },
         "traj_controller": {
             "TRANSLATION_P": 0.0,

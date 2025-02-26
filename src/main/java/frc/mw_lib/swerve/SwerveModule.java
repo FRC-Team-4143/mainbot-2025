@@ -172,29 +172,30 @@ public class SwerveModule {
       case RemoteCANcoder:
         talonConfigs.Feedback.FeedbackSensorSource = FeedbackSensorSourceValue.RemoteCANcoder;
         talonConfigs.Feedback.FeedbackRemoteSensorID = constants.encoderId;
-        talonConfigs.Feedback.RotorToSensorRatio = constants.SteerMotorGearRatio;
+        talonConfigs.Feedback.RotorToSensorRatio = constants.moduleType.steerRatio;
         break;
       case FusedCANcoder:
         talonConfigs.Feedback.FeedbackSensorSource = FeedbackSensorSourceValue.FusedCANcoder;
         talonConfigs.Feedback.FeedbackRemoteSensorID = constants.encoderId;
-        talonConfigs.Feedback.RotorToSensorRatio = constants.SteerMotorGearRatio;
+        talonConfigs.Feedback.RotorToSensorRatio = constants.moduleType.steerRatio;
         break;
       case SyncCANcoder:
         talonConfigs.Feedback.FeedbackSensorSource = FeedbackSensorSourceValue.SyncCANcoder;
         talonConfigs.Feedback.FeedbackRemoteSensorID = constants.encoderId;
-        talonConfigs.Feedback.RotorToSensorRatio = constants.SteerMotorGearRatio;
+        talonConfigs.Feedback.RotorToSensorRatio = constants.moduleType.steerRatio;
         break;
       case AnalogEncoder:
       default:
-        talonConfigs.Feedback.SensorToMechanismRatio = constants.SteerMotorGearRatio;
+        talonConfigs.Feedback.SensorToMechanismRatio = constants.moduleType.steerRatio;
+        System.out.println(constants.moduleType.steerRatio);
         break;
     }
-    // talonConfigs.Feedback.RotorToSensorRatio = constants.SteerMotorGearRatio;
+    // talonConfigs.Feedback.RotorToSensorRatio = constants.moduleType.steerRatio;
 
-    talonConfigs.MotionMagic.MotionMagicCruiseVelocity = 100.0 / constants.SteerMotorGearRatio;
+    talonConfigs.MotionMagic.MotionMagicCruiseVelocity = 100.0 / constants.moduleType.steerRatio;
     talonConfigs.MotionMagic.MotionMagicAcceleration =
         talonConfigs.MotionMagic.MotionMagicCruiseVelocity / 0.100;
-    talonConfigs.MotionMagic.MotionMagicExpo_kV = 0.12 * constants.SteerMotorGearRatio;
+    talonConfigs.MotionMagic.MotionMagicExpo_kV = 0.12 * constants.moduleType.steerRatio;
     talonConfigs.MotionMagic.MotionMagicExpo_kA = 0.1;
 
     talonConfigs.ClosedLoopGeneral.ContinuousWrap =
@@ -236,7 +237,7 @@ public class SwerveModule {
     m_signals[3] = m_steerVelocity;
 
     /* Calculate the ratio of drive motor rotation to meter on ground */
-    double rotationsPerWheelRotation = constants.DriveMotorGearRatio;
+    double rotationsPerWheelRotation = constants.moduleType.driveRatio;
     double metersPerWheelRotation = 2 * Math.PI * Units.inchesToMeters(constants.WheelRadius);
     m_driveRotationsPerMeter = rotationsPerWheelRotation / metersPerWheelRotation;
     m_couplingRatioDriveRotorToCANcoder = constants.CouplingGearRatio;

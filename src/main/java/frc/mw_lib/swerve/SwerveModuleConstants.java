@@ -35,15 +35,6 @@ public class SwerveModuleConstants {
   /** Offset of the CANcoder in rotations. */
   public double CANcoderOffset = 0;
 
-  /** Gear ratio between the drive motor and the wheel. */
-  public double DriveMotorGearRatio = 0;
-
-  /**
-   * Gear ratio between the steer motor and the CANcoder. For example, the SDS Mk4 has a steering
-   * ratio of 12.8.
-   */
-  public double SteerMotorGearRatio = 0;
-
   /**
    * Coupled gear ratio between the CANcoder and the drive motor.
    *
@@ -182,29 +173,6 @@ public class SwerveModuleConstants {
    */
   public SwerveModuleConstants withCANcoderOffset(double offset) {
     this.CANcoderOffset = offset;
-    return this;
-  }
-
-  /**
-   * Sets the gear ratio between the drive motor and the wheel.
-   *
-   * @param ratio Gear ratio between the drive motor and the wheel
-   * @return this object
-   */
-  public SwerveModuleConstants withDriveMotorGearRatio(double ratio) {
-    this.DriveMotorGearRatio = ratio;
-    return this;
-  }
-
-  /**
-   * Sets the gear ratio between the steer motor and the CANcoder. For example, the SDS Mk4 has a
-   * steering ratio of 12.8.
-   *
-   * @param ratio Gear ratio between the steer motor and the CANcoder
-   * @return this object
-   */
-  public SwerveModuleConstants withSteerMotorGearRatio(double ratio) {
-    this.SteerMotorGearRatio = ratio;
     return this;
   }
 
