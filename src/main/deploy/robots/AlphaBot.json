@@ -81,6 +81,25 @@
     },
     "imp" : {
         "coral_offset": -5.5,
-        "algae_offset": -5.5
+        "algae_offset": -5.5,
+        "elevator":{
+            "CONTROLLER_P": 1.0,
+            "CONTROLLER_I": 0.0,
+            "CONTROLLER_D": 0.08,
+            "CONTROLLER_S": 0.06766,
+            "CONTROLLER_V": 0.11733,
+            "CONTROLLER_A": 0.0070285,
+            "CONTROLLER_G": 0.43
+        },
+        "arm":{
+            "CONTROLLER_P": 40.0,
+            "CONTROLLER_I": 0.0,
+            "CONTROLLER_D": 0.0,
+            "CONTROLLER_S": 0.024495,
+            "CONTROLLER_V": 8.778,
+            "CONTROLLER_A": 0.25148,
+            "CONTROLLER_G": 0.28,
+            "ENCODER_OFFSET": 0
+        }
     }
 }
