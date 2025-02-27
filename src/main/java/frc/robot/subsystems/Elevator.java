@@ -138,9 +138,9 @@ public class Elevator extends Subsystem {
     arm_config_.MotionMagic.MotionMagicAcceleration = ElevatorConstants.CORAL_ARM_ACCELERATION;
     arm_config_.MotorOutput.NeutralMode = NeutralModeValue.Brake;
     arm_config_.ClosedLoopGeneral.ContinuousWrap = false;
-    arm_config_.SoftwareLimitSwitch.ForwardSoftLimitEnable = false;
+    arm_config_.SoftwareLimitSwitch.ForwardSoftLimitEnable = true;
     arm_config_.SoftwareLimitSwitch.ForwardSoftLimitThreshold = ElevatorConstants.ARM_FORWARD_LIMT;
-    arm_config_.SoftwareLimitSwitch.ReverseSoftLimitEnable = false;
+    arm_config_.SoftwareLimitSwitch.ReverseSoftLimitEnable = true;
     arm_config_.SoftwareLimitSwitch.ReverseSoftLimitThreshold = ElevatorConstants.ARM_REVERSE_LIMT;
     arm_motor_.getConfigurator().apply(arm_config_);
 
