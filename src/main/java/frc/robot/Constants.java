@@ -268,6 +268,8 @@ public final class Constants {
     // Arm Constants:
     public static final int ARM_MOTOR_ID = 23;
     public static final int ARM_ENCODER_ID = 24;
+    public static final double ARM_ENCODER_OFFSET =
+        LOADER.getDoubleValue("imp", "arm", "ENCODER_OFFSET");
     public static final double ARM_TARGET_THRESHOLD = 0.25; // In rads
     public static final InvertedValue ARM_FOLLOWER_INVERSION =
         InvertedValue.CounterClockwise_Positive;

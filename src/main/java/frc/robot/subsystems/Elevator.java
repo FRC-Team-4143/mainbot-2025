@@ -3,6 +3,7 @@ package frc.robot.subsystems;
 import static edu.wpi.first.units.Units.Radians;
 import static edu.wpi.first.units.Units.Rotations;
 
+import com.ctre.phoenix6.configs.CANcoderConfiguration;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.MotionMagicVoltage;
 import com.ctre.phoenix6.controls.StrictFollower;
@@ -11,6 +12,7 @@ import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.FeedbackSensorSourceValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
+import com.ctre.phoenix6.signals.SensorDirectionValue;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.DataLogManager;
 import edu.wpi.first.wpilibj.DigitalInput;
@@ -58,6 +60,7 @@ public class Elevator extends Subsystem {
   private Trigger reset_elevator_trigger_;
   private DigitalInput elevator_limit_switch_;
   private CANcoder arm_encoder_;
+  private CANcoderConfiguration arm_encoder_config_;
 
   // Control Behavior
   private ElevatorKinematics kinematics_;
@@ -101,7 +104,7 @@ public class Elevator extends Subsystem {
     elevator_master_ = new TalonFX(ElevatorConstants.ELEVATOR_MASTER_ID, "CANivore");
     elevator_follower_ = new TalonFX(ElevatorConstants.ELEVATOR_FOLLOWER_ID, "CANivore");
     arm_motor_ = new TalonFX(ElevatorConstants.ARM_MOTOR_ID, "CANivore");
-    arm_encoder_ = new CANcoder(ElevatorConstants.ARM_ENCODER_ID);
+    arm_encoder_ = new CANcoder(ElevatorConstants.ARM_ENCODER_ID, "CANivore");
 
     // Elevator Config
     elevator_config_ = new TalonFXConfiguration();
@@ -128,8 +131,6 @@ public class Elevator extends Subsystem {
 
     // Arm Configuration
     arm_config_ = new TalonFXConfiguration();
-    // arm_config_.Feedback.FeedbackRemoteSensorID =
-    // ElevatorConstants.ARM_ENCODER_ID;
     arm_config_.Feedback.FeedbackSensorSource = FeedbackSensorSourceValue.RotorSensor;
     arm_config_.Feedback.SensorToMechanismRatio = ElevatorConstants.SENSOR_TO_MECHANISM_RATIO;
     arm_config_.Slot0 = ElevatorConstants.ARM_GAINS;
@@ -137,11 +138,17 @@ public class Elevator extends Subsystem {
     arm_config_.MotionMagic.MotionMagicAcceleration = ElevatorConstants.CORAL_ARM_ACCELERATION;
     arm_config_.MotorOutput.NeutralMode = NeutralModeValue.Brake;
     arm_config_.ClosedLoopGeneral.ContinuousWrap = false;
-    arm_config_.SoftwareLimitSwitch.ForwardSoftLimitEnable = true;
+    arm_config_.SoftwareLimitSwitch.ForwardSoftLimitEnable = false;
     arm_config_.SoftwareLimitSwitch.ForwardSoftLimitThreshold = ElevatorConstants.ARM_FORWARD_LIMT;
-    arm_config_.SoftwareLimitSwitch.ReverseSoftLimitEnable = true;
+    arm_config_.SoftwareLimitSwitch.ReverseSoftLimitEnable = false;
     arm_config_.SoftwareLimitSwitch.ReverseSoftLimitThreshold = ElevatorConstants.ARM_REVERSE_LIMT;
     arm_motor_.getConfigurator().apply(arm_config_);
+
+    // Arm Encoder Config
+    arm_encoder_config_ = new CANcoderConfiguration();
+    arm_encoder_config_.MagnetSensor.SensorDirection =
+        SensorDirectionValue.CounterClockwise_Positive;
+    arm_encoder_.getConfigurator().apply(arm_encoder_config_);
 
     // System Behavior Setup
     elevator_request_ = new MotionMagicVoltage(0);
@@ -187,6 +194,9 @@ public class Elevator extends Subsystem {
     // bindTuner(arm_tuner_, 0.0, 0.5);
 
     SmartDashboard.putData("Reset Arm & Elevator Offsets", Commands.runOnce(() -> resetOffsets()));
+    arm_motor_.setPosition(
+        arm_encoder_.getAbsolutePosition().getValueAsDouble()
+            - ElevatorConstants.ARM_ENCODER_OFFSET);
   }
 
   /** Called to reset and configure the subsystem */
@@ -265,6 +275,9 @@ public class Elevator extends Subsystem {
     SmartDashboard.putNumber("Subsystems/Arm/Target Height", io_.target_arm_height);
     SmartDashboard.putNumber(
         "Subsystems/Arm/Height Offset", kinematics_.calZOffset(io_.current_arm_angle_));
+    SmartDashboard.putNumber(
+        "Subsystems/Arm/Absolute Encoder",
+        arm_encoder_.getAbsolutePosition().getValue().in(Rotations));
     updateMechanism();
   }
 
