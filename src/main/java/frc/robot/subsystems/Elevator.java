@@ -28,6 +28,7 @@ import frc.lib.FieldRegions;
 import frc.mw_lib.ElevatorKinematics;
 import frc.mw_lib.controls.TalonFXTuner;
 import frc.mw_lib.subsystem.Subsystem;
+import frc.mw_lib.util.MWPreferences;
 import frc.mw_lib.util.Util;
 import frc.robot.Constants.ElevatorConstants;
 import frc.robot.Constants.ElevatorConstants.Target;
@@ -159,7 +160,7 @@ public class Elevator extends Subsystem {
 
     kinematics_ = new ElevatorKinematics(ElevatorConstants.ARM_LENGTH);
 
-    reset_elevator_trigger_.onTrue(Commands.runOnce(() -> elevatorPoseReset()));
+    reset_elevator_trigger_.onTrue(Commands.runOnce(() -> elevatorPosReset()));
 
     // Mechanism Setup
     system_mech_ = new Mechanism2d(0, 0);
@@ -193,10 +194,19 @@ public class Elevator extends Subsystem {
     arm_tuner_ = new TalonFXTuner(arm_motor_, "Arm", this);
     // bindTuner(arm_tuner_, 0.0, 0.5);
 
-    SmartDashboard.putData("Reset Arm & Elevator Offsets", Commands.runOnce(() -> resetOffsets()));
+    // SmartDashboard.putData("Set Arm Encoder Offset", Commands.runOnce(() -> ));
+    SmartDashboard.putData(
+        "Commands/Reset Arm & Elevator Manual Offsets",
+        Commands.runOnce(() -> resetManualOffsets()).ignoringDisable(true));
+    // Sync Elevator and Arm Sensor to "Home" Position
+    SmartDashboard.putData(
+        "Commands/Zero Elevator & Arm",
+        Commands.runOnce(() -> Elevator.getInstance().elevatorAndArmPosReset())
+            .ignoringDisable(true));
     arm_motor_.setPosition(
         arm_encoder_.getAbsolutePosition().getValueAsDouble()
-            - ElevatorConstants.ARM_ENCODER_OFFSET);
+            - (MWPreferences.getInstance().getPreferenceDouble("ArmEncoderOffset", 0)));
+    elevatorPosReset();
   }
 
   /** Called to reset and configure the subsystem */
@@ -265,6 +275,10 @@ public class Elevator extends Subsystem {
         "Subsystems/Elevator/Control Mode", io_.current_control_mode.toString());
     SmartDashboard.putNumber("Subsystems/Elevator/Target Height", io_.target_elevator_height);
     SmartDashboard.putNumber("Subsystems/Elevator/Current Height", io_.current_elevator_height);
+    SmartDashboard.putString(
+        "Subsystems/Elevator/Motor Temp Master", elevator_master_.getDeviceTemp().toString());
+    SmartDashboard.putString(
+        "Subsystems/Elevator/Motor Temp Follower", elevator_follower_.getDeviceTemp().toString());
 
     SmartDashboard.putString("Subsystems/Arm/Control Mode", io_.current_control_mode.toString());
     SmartDashboard.putNumber("Subsystems/Arm/Current Angle", io_.current_arm_angle_);
@@ -328,21 +342,25 @@ public class Elevator extends Subsystem {
     return io_.current_elevator_height <= ElevatorConstants.ELEVATOR_ZERO_THRESHOLD;
   }
 
-  /** Reset the elevator pose to zero */
-  public void elevatorPoseReset() {
+  /** Reset the elevator pos to zero */
+  public void elevatorPosReset() {
     elevator_master_.setPosition(0);
     elevator_follower_.setPosition(0);
   }
 
-  /** Reset the arm pose to home */
-  public void armPoseReset() {
-    arm_motor_.setPosition(ElevatorConstants.ARM_HOME_POSITION);
+  /** Sync Arm position to Arm encoder */
+  public void armPosReset() {
+    MWPreferences.getInstance()
+        .setPreference("ArmEncoderOffset", arm_encoder_.getAbsolutePosition().getValueAsDouble());
+    arm_motor_.setPosition(
+        arm_encoder_.getAbsolutePosition().getValueAsDouble()
+            - (MWPreferences.getInstance().getPreferenceDouble("ArmEncoderOffset", 0)));
   }
 
   /** Reset the elevator position to zero and the arm to home */
-  public void elevatorAndArmPoseReset() {
-    elevatorPoseReset();
-    armPoseReset();
+  public void elevatorAndArmPosReset() {
+    elevatorPosReset();
+    armPosReset();
   }
 
   /** */
@@ -385,7 +403,7 @@ public class Elevator extends Subsystem {
     }
   }
 
-  public void resetOffsets() {
+  public void resetManualOffsets() {
     io_.arm_offset_ = new Rotation2d();
     io_.elevator_offset_ = 0;
   }
