@@ -13,6 +13,17 @@ import frc.robot.subsystems.PoseEstimator;
 import frc.robot.subsystems.SwerveDrivetrain;
 import frc.robot.subsystems.SwerveDrivetrain.DriveMode;
 import java.util.Optional;
+import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.subsystems.SwerveDrivetrain;
+import frc.robot.subsystems.SwerveDrivetrain.DriveMode;
+import frc.robot.subsystems.Claw;
+import frc.robot.subsystems.Elevator;
+import frc.robot.subsystems.Elevator.SpeedLimit;
+import frc.robot.subsystems.PoseEstimator;
+import frc.lib.FieldRegions;
+import frc.lib.ScoringPoses;
+import frc.mw_lib.geometry.Region;
+import frc.robot.Constants;
 
 public class ScoreBarge extends Command {
 
@@ -20,10 +31,8 @@ public class ScoreBarge extends Command {
   static SwerveDrivetrain drivetrain_;
   static PoseEstimator poseEstimator_;
   static Claw claw_;
-
-  static Optional<Region> current_region = Optional.empty();
-
-  /** Creates a new CoralStationLoad. */
+  static Optional<Region> current_region;
+  
   public ScoreBarge() {
     elevator_ = Elevator.getInstance();
     drivetrain_ = SwerveDrivetrain.getInstance();
