@@ -238,11 +238,6 @@ public class GameStateManager extends Subsystem {
     }
     return Optional.empty();
   }
-<<<<<<< HEAD
-=======
-
-
->>>>>>> 86ebbba (adds incomplete scoreBarge command)
   public void setRobotState(RobotState state) {
     // sets the current state of the robot (should really only set to
     // TARGET_ACQUISITION to preserve

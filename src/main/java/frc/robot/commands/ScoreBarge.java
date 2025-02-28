@@ -34,16 +34,14 @@ import frc.robot.subsystems.SwerveDrivetrain.DriveMode;
 import java.util.Optional;
 import java.util.Optional;
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.subsystems.SwerveDrivetrain;
-import frc.robot.subsystems.SwerveDrivetrain.DriveMode;
-import frc.robot.subsystems.Claw;
-import frc.robot.subsystems.Elevator;
-import frc.robot.subsystems.Elevator.SpeedLimit;
-import frc.robot.subsystems.PoseEstimator;
-import frc.lib.FieldRegions;
 import frc.lib.ScoringPoses;
 import frc.mw_lib.geometry.Region;
-import frc.robot.Constants;
+import frc.robot.subsystems.Claw;
+import frc.robot.subsystems.Elevator;
+import frc.robot.subsystems.PoseEstimator;
+import frc.robot.subsystems.SwerveDrivetrain;
+import frc.robot.subsystems.SwerveDrivetrain.DriveMode;
+import java.util.Optional;
 
 public class ScoreBarge extends Command {
 
