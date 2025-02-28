@@ -58,11 +58,6 @@ public abstract class OI {
     SmartDashboard.putData(
         "Commands/Disturb Pose",
         Commands.runOnce(() -> PoseEstimator.getInstance().disturbPose()).ignoringDisable(true));
-    // Sync Elevator and Arm Sensor to "Home" Position
-    SmartDashboard.putData(
-        "Commands/Zero Elevator & Arm",
-        Commands.runOnce(() -> Elevator.getInstance().elevatorAndArmPoseReset())
-            .ignoringDisable(true));
 
     // Swap Between Robot Centric and Field Centric
     driver_controller_

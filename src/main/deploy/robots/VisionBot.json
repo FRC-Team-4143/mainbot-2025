@@ -5,8 +5,6 @@
             "SLIP_CURRENT": 50,
             "SPEED_AT_12V": 5.0,
             "COUPLE_RATIO": 3.5,
-            "DRIVE_GEAR_RATIO": 5.36827799,
-            "STEER_GEAR_RATIO": 12.8,
             "WHEEL_RADIUS_INCH": 1.8,
             "MAX_DRIVE_SPEED": 5.0,
             "MAX_DRIVE_ANGULAR_RATE": 6.28,
