@@ -607,6 +607,15 @@ public class SwerveDrivetrain extends Subsystem {
   }
 
   /**
+   * Sets the target rope points and rotation and begins TIGHT_ROPE mode
+   */
+  public void setTightRope(TightRope trightrope) {
+    io_.drive_mode_ = DriveMode.TIGHT_ROPE;
+    io_.tight_rope_pose_A = trightrope.poseA;
+    io_.tight_rope_pose_B = trightrope.poseB;
+  }
+
+  /**
    * Updates the internal target for the robot to point at and begins TARGET_FACING mode
    *
    * @param target_angle
