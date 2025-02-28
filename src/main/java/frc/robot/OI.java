@@ -24,7 +24,6 @@ import frc.robot.commands.AlgaeReefPickup;
 import frc.robot.commands.CoralEject;
 import frc.robot.commands.CoralLoad;
 import frc.robot.commands.CoralReefScore;
-import frc.robot.commands.ScoreBarge;
 import frc.robot.subsystems.Claw;
 import frc.robot.subsystems.Elevator;
 import frc.robot.subsystems.Elevator.OffsetType;
@@ -101,6 +100,22 @@ public abstract class OI {
     Commands.startEnd(
         () -> SwerveDrivetrain.getInstance().setDriveMode(DriveMode.CRAWL),
         () -> SwerveDrivetrain.getInstance().restoreDefaultDriveMode()));
+    /*
+     *
+     * Manual Teleop Bindings
+     *
+     */
+
+    driver_controller_.rightBumper().whileTrue(new GamePieceLoad());
+    driver_controller_.rightTrigger().whileTrue(new GamePieceEject());
+    driver_controller_
+        .a()
+        .toggleOnTrue(new ManualElevatorOverride(Level.L1).onlyIf(Claw.getInstance()::isAlgaeMode));
+    driver_controller_
+        .rightTrigger()
+        .whileTrue(
+            new ConditionalCommand(
+                new CoralEject(), new AlgaeEject(), Claw.getInstance()::isCoralMode));
 
     /*
      *

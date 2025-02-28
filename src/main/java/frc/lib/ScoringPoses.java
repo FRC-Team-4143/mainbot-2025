@@ -61,12 +61,10 @@ public class ScoringPoses {
   public static Pose2d PROCESSOR_POSE =
       FieldConstants.Processor.CENTER_FACE.transformBy(PROCESSOR_OFFSET);
   public static Pose2d BARGE_TIGHT_ROPE_POSE_A =
-      new Pose2d(
-          FieldConstants.Barge.FAR_CAGE.plus(new Translation2d(-1.0922, 0)),
+      new Pose2d(7.68, FieldConstants.FIELD_WIDTH - 0.914,
           Rotation2d.fromDegrees(0));
   public static Pose2d BARGE_TIGHT_ROPE_POSE_B =
-      new Pose2d(
-          FieldConstants.Barge.CLOSE_CAGE.plus(new Translation2d(-1.0922, 0)),
+      new Pose2d(7.68, (FieldConstants.FIELD_WIDTH / 2) - ,
           Rotation2d.fromDegrees(0));
   public static TightRope BARGE_TIGHT_ROPE =
       new TightRope(BARGE_TIGHT_ROPE_POSE_A, BARGE_TIGHT_ROPE_POSE_B);

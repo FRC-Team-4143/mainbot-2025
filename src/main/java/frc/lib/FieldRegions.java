@@ -32,15 +32,15 @@ public class FieldRegions {
           },
           "Barge");
   private static PolygonRegion BARGE_ENTER =
-          new PolygonRegion(
-              new Translation2d[] {
-                new Translation2d(FieldConstants.FIELD_LENGTH / 2, FieldConstants.FIELD_WIDTH),
-                new Translation2d((FieldConstants.FIELD_LENGTH / 2) - 2, FieldConstants.FIELD_WIDTH),
-                new Translation2d(
-                    (FieldConstants.FIELD_LENGTH / 2) - 2, FieldConstants.FIELD_WIDTH / 2),
-                new Translation2d(FieldConstants.FIELD_LENGTH / 2, FieldConstants.FIELD_WIDTH / 2)
-              },
-              "BargeEnter");
+      new PolygonRegion(
+          new Translation2d[] {
+            new Translation2d(FieldConstants.FIELD_LENGTH / 2, FieldConstants.FIELD_WIDTH),
+            new Translation2d((FieldConstants.FIELD_LENGTH / 2) - 2, FieldConstants.FIELD_WIDTH),
+            new Translation2d(
+                (FieldConstants.FIELD_LENGTH / 2) - 2, FieldConstants.FIELD_WIDTH / 2),
+            new Translation2d(FieldConstants.FIELD_LENGTH / 2, FieldConstants.FIELD_WIDTH / 2)
+          },
+          "BargeEnter");
   private static PolygonRegion RIGHT_CORAL_STATION_REGION =
       new PolygonRegion(
           new Translation2d[] {
