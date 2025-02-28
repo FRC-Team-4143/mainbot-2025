@@ -256,18 +256,20 @@ public final class Constants {
 
     public static final Slot0Configs ELEVATOR_GAINS =
         new Slot0Configs()
-            .withKP(1.0)
-            .withKI(0.0) // <-DO NOT TOUCH!!!!!!!!!
-            .withKD(0.08)
-            .withKS(0.06766)
-            .withKV(0.11733)
-            .withKA(0.0070285)
-            .withKG(0.43)
+            .withKP(LOADER.getDoubleValue("imp", "elevator", "CONTROLLER_P"))
+            .withKI(LOADER.getDoubleValue("imp", "elevator", "CONTROLLER_I"))
+            .withKD(LOADER.getDoubleValue("imp", "elevator", "CONTROLLER_D"))
+            .withKS(LOADER.getDoubleValue("imp", "elevator", "CONTROLLER_S"))
+            .withKV(LOADER.getDoubleValue("imp", "elevator", "CONTROLLER_V"))
+            .withKA(LOADER.getDoubleValue("imp", "elevator", "CONTROLLER_A"))
+            .withKG(LOADER.getDoubleValue("imp", "elevator", "CONTROLLER_G"))
             .withGravityType(GravityTypeValue.Elevator_Static);
 
     // Arm Constants:
     public static final int ARM_MOTOR_ID = 23;
     public static final int ARM_ENCODER_ID = 24;
+    public static final double ARM_ENCODER_OFFSET =
+        LOADER.getDoubleValue("imp", "arm", "ENCODER_OFFSET");
     public static final double ARM_TARGET_THRESHOLD = 0.25; // In rads
     public static final InvertedValue ARM_FOLLOWER_INVERSION =
         InvertedValue.CounterClockwise_Positive;
@@ -284,13 +286,13 @@ public final class Constants {
         Units.radiansToRotations(Units.degreesToRadians(-95));
     public static final Slot0Configs ARM_GAINS =
         new Slot0Configs()
-            .withKP(40.0)
-            .withKI(0.0) // DO NOT TOUCH!!!!!!!!!
-            .withKD(0.0)
-            .withKS(0.024495)
-            .withKV(8.778)
-            .withKA(0.25148)
-            .withKG(0.28)
+            .withKP(LOADER.getDoubleValue("imp", "arm", "CONTROLLER_P"))
+            .withKI(LOADER.getDoubleValue("imp", "arm", "CONTROLLER_I"))
+            .withKD(LOADER.getDoubleValue("imp", "arm", "CONTROLLER_D"))
+            .withKS(LOADER.getDoubleValue("imp", "arm", "CONTROLLER_S"))
+            .withKV(LOADER.getDoubleValue("imp", "arm", "CONTROLLER_V"))
+            .withKA(LOADER.getDoubleValue("imp", "arm", "CONTROLLER_A"))
+            .withKG(LOADER.getDoubleValue("imp", "arm", "CONTROLLER_G"))
             .withGravityType(GravityTypeValue.Arm_Cosine);
 
     public enum Target {

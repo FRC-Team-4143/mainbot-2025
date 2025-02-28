@@ -321,8 +321,6 @@ public class SwerveModuleConstantsFactory {
         .withCANcoderOffset(cancoderOffset)
         .withLocationX(locationX)
         .withLocationY(locationY)
-        .withDriveMotorGearRatio(moduleType.driveRatio)
-        .withSteerMotorGearRatio(moduleType.steerRatio)
         .withCouplingGearRatio(CouplingGearRatio)
         .withWheelRadius(WheelRadius)
         .withSlipCurrent(SlipCurrent)

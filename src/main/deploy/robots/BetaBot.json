@@ -5,8 +5,6 @@
             "SLIP_CURRENT": 50,
             "SPEED_AT_12V": 5.0,
             "COUPLE_RATIO": 3.5,
-            "DRIVE_GEAR_RATIO": 6.12,
-            "STEER_GEAR_RATIO": 21.4285714286,
             "WHEEL_RADIUS_INCH": 1.8,
             "MAX_DRIVE_SPEED": 5.0,
             "MAX_DRIVE_ANGULAR_RATE": 6.28,
@@ -25,8 +23,8 @@
             "STEER_GAINS_A": 0
         },
         "fl": {
-            "DRIVE_ID": 3,
-            "STEER_ID": 4,
+            "DRIVE_ID": 1,
+            "STEER_ID": 2,
             "ENCODER_ID": 0,
             "X_POSITION": 7.5,
             "Y_POSITION": 7.5,
@@ -35,18 +33,18 @@
             "MODULE_GEARING": "L3+"
         },
         "fr": {
-            "DRIVE_ID": 1,
-            "STEER_ID": 2,
+            "DRIVE_ID": 3,
+            "STEER_ID": 4,
             "ENCODER_ID": 1,
             "X_POSITION": 7.5,
             "Y_POSITION": -7.5,
             "INVERT_DRIVE": false,
             "MODULE_TYPE": "MK4I",
-            "MODULE_GEARING": "L3"
+            "MODULE_GEARING": "L3+"
         },
         "bl": {
-            "DRIVE_ID": 7,
-            "STEER_ID": 8,
+            "DRIVE_ID": 5,
+            "STEER_ID": 6,
             "ENCODER_ID": 2,
             "X_POSITION": -7.5,
             "Y_POSITION": 7.5,
@@ -55,14 +53,14 @@
             "MODULE_GEARING": "L3+"
         },
         "br": {
-            "DRIVE_ID": 5,
-            "STEER_ID": 6,
+            "DRIVE_ID": 7,
+            "STEER_ID": 8,
             "ENCODER_ID": 3,
             "X_POSITION": -7.5,
             "Y_POSITION": -7.5,
             "INVERT_DRIVE": false,
             "MODULE_TYPE": "MK4I",
-            "MODULE_GEARING": "L3"
+            "MODULE_GEARING": "L3+"
         },
         "traj_controller": {
             "TRANSLATION_P": 0.0,
@@ -83,6 +81,25 @@
     },
     "imp" : {
         "coral_offset": 0.0,
-        "algae_offset": 0.0
+        "algae_offset": 0.0,
+        "elevator":{
+            "CONTROLLER_P": 1.0,
+            "CONTROLLER_I": 0.0,
+            "CONTROLLER_D": 0.08,
+            "CONTROLLER_S": 0.06766,
+            "CONTROLLER_V": 0.11733,
+            "CONTROLLER_A": 0.0070285,
+            "CONTROLLER_G": 0.43
+        },
+        "arm":{
+            "CONTROLLER_P": 33.476,
+            "CONTROLLER_I": 0.0,
+            "CONTROLLER_D": 0.0,
+            "CONTROLLER_S": 0.032714,
+            "CONTROLLER_V": 9.2434,
+            "CONTROLLER_A": 0.36146,
+            "CONTROLLER_G": 0.27387,
+            "ENCODER_OFFSET": 0.6755
+        }
     }
 }

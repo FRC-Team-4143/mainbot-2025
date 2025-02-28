@@ -21,13 +21,13 @@ public class ModuleType {
     // MK4I
     // https://www.swervedrivespecialties.com/collections/kits/products/mk4i-swerve-module
     new ModuleType("MK4I-L1", 150.0 / 7.0, 8.14),
-    new ModuleType("MK4I-L1+", 150.0 / 7.0, 7.13),
     new ModuleType("MK4I-L2", 150.0 / 7.0, 6.75),
-      
-    // MK4I Adapter 16T Pinion Kit 
-    // https://www.swervedrivespecialties.com/products/kit-adapter-16t-drive-pinion-gear-mk4i
-    new ModuleType("MK4I-L2+", 150.0 / 7.0, 5.9),
     new ModuleType("MK4I-L3", 150.0 / 7.0, 6.12),
+
+    // MK4I Adapter 16T Pinion Kit
+    // https://www.swervedrivespecialties.com/products/kit-adapter-16t-drive-pinion-gear-mk4i
+    new ModuleType("MK4I-L1+", 150.0 / 7.0, 7.13),
+    new ModuleType("MK4I-L2+", 150.0 / 7.0, 5.9),
     new ModuleType("MK4I-L3+", 150.0 / 7.0, 5.36),
 
     // MK4N
@@ -48,7 +48,6 @@ public class ModuleType {
     new ModuleType("MK4-L2", 12.8, 6.75),
     new ModuleType("MK4-L3", 12.8, 6.12),
     new ModuleType("MK4-L4", 12.8, 5.14)
-
   };
 
   public static Hashtable<String, ModuleType> ALL_MODULE_TYPES = new Hashtable<>();

@@ -30,7 +30,7 @@
             "Y_POSITION": 11.4,
             "INVERT_DRIVE": false,
             "MODULE_TYPE": "MK4I",
-            "MODULE_GEARING": "L3+"
+            "MODULE_GEARING": "L3"
         },
         "fr": {
             "DRIVE_ID": 3,
@@ -40,7 +40,7 @@
             "Y_POSITION": -11.4,
             "INVERT_DRIVE": false,
             "MODULE_TYPE": "MK4I",
-            "MODULE_GEARING": "L3+"
+            "MODULE_GEARING": "L3"
         },
         "bl": {
             "DRIVE_ID": 5,
@@ -49,8 +49,8 @@
             "X_POSITION": -11.4,
             "Y_POSITION": 11.4,
             "INVERT_DRIVE": false,
-            "MODULE_TYPE": "MK4N",
-            "MODULE_GEARING": "L3+"
+            "MODULE_TYPE": "MK4I",
+            "MODULE_GEARING": "L3"
         },
         "br": {
             "DRIVE_ID": 7,
@@ -59,8 +59,8 @@
             "X_POSITION": -11.4,
             "Y_POSITION": -11.4,
             "INVERT_DRIVE": false,
-            "MODULE_TYPE": "MK4N",
-            "MODULE_GEARING": "L3+"
+            "MODULE_TYPE": "MK4I",
+            "MODULE_GEARING": "L3"
         },
         "traj_controller": {
             "TRANSLATION_P": 0.5,
@@ -81,6 +81,25 @@
     },
     "imp" : {
         "coral_offset": -5.5,
-        "algae_offset": -5.5
+        "algae_offset": -5.5,
+        "elevator":{
+            "CONTROLLER_P": 1.0,
+            "CONTROLLER_I": 0.0,
+            "CONTROLLER_D": 0.08,
+            "CONTROLLER_S": 0.06766,
+            "CONTROLLER_V": 0.11733,
+            "CONTROLLER_A": 0.0070285,
+            "CONTROLLER_G": 0.43
+        },
+        "arm":{
+            "CONTROLLER_P": 40.0,
+            "CONTROLLER_I": 0.0,
+            "CONTROLLER_D": 0.0,
+            "CONTROLLER_S": 0.024495,
+            "CONTROLLER_V": 8.778,
+            "CONTROLLER_A": 0.25148,
+            "CONTROLLER_G": 0.28,
+            "ENCODER_OFFSET": 0
+        }
     }
 }
