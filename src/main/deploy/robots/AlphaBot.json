@@ -49,7 +49,7 @@
             "X_POSITION": -11.4,
             "Y_POSITION": 11.4,
             "INVERT_DRIVE": false,
-            "MODULE_TYPE": "MK4N",
+            "MODULE_TYPE": "MK4I",
             "MODULE_GEARING": "L3+"
         },
         "br": {
@@ -59,7 +59,7 @@
             "X_POSITION": -11.4,
             "Y_POSITION": -11.4,
             "INVERT_DRIVE": false,
-            "MODULE_TYPE": "MK4N",
+            "MODULE_TYPE": "MK4I",
             "MODULE_GEARING": "L3+"
         },
         "traj_controller": {

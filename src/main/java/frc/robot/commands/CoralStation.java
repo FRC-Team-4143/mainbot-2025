@@ -4,9 +4,9 @@
 
 package frc.robot.commands;
 
-import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.lib.FieldRegions;
+import frc.lib.ScoringPoses;
 import frc.robot.Constants;
 import frc.robot.subsystems.Elevator;
 import frc.robot.subsystems.Elevator.SpeedLimit;
@@ -36,21 +36,13 @@ public class CoralStation extends Command {
 
     // if in zone
     if (FieldRegions.STATION_REGIONS[1].contains(PoseEstimator.getInstance().getRobotPose())) {
-      Rotation2d rightTarget = Rotation2d.fromDegrees(90 - 55);
-      // FieldRegions.REGION_POSE_TABLE
-      //     .get(FieldRegions.STATION_REGIONS[1].getName())
-      //     .getRotation()
-      //     .rotateBy(Rotation2d.fromDegrees(180));
-      SwerveDrivetrain.getInstance().setTargetRotation(rightTarget);
+      SwerveDrivetrain.getInstance()
+          .setTargetRotation(ScoringPoses.LEFT_CORAL_STATION_POSE.getRotation());
 
     } else if (FieldRegions.STATION_REGIONS[0].contains(
         PoseEstimator.getInstance().getRobotPose())) {
-      Rotation2d leftTarget =
-          // FieldRegions.REGION_POSE_TABLE
-          //     .get(FieldRegions.STATION_REGIONS[0].getName())
-          //     .getRotation()
-          //     .rotateBy(Rotation2d.fromDegrees(180));
-      SwerveDrivetrain.getInstance().setTargetRotation(leftTarget);
+      SwerveDrivetrain.getInstance()
+          .setTargetRotation(ScoringPoses.RIGHT_CORAL_STATION_POSE.getRotation());
 
     } else {
       SwerveDrivetrain.getInstance().restoreDefaultDriveMode();
