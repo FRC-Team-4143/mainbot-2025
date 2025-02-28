@@ -27,6 +27,7 @@ import edu.wpi.first.networktables.StructPublisher;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
+import frc.mw_lib.geometry.TightRope;
 import frc.mw_lib.proxy_server.ChassisProxyServer;
 import frc.mw_lib.subsystem.Subsystem;
 import frc.mw_lib.swerve.*;
@@ -596,6 +597,15 @@ public class SwerveDrivetrain extends Subsystem {
     io_.drive_mode_ = DriveMode.TIGHT_ROPE;
     io_.tight_rope_pose_A = pointA;
     io_.tight_rope_pose_B = pointB;
+  }
+
+  /**
+   * Sets the target rope points and rotation and begins TIGHT_ROPE mode
+   */
+  public void setTightRope(TightRope trightrope) {
+    io_.drive_mode_ = DriveMode.TIGHT_ROPE;
+    io_.tight_rope_pose_A = trightrope.poseA;
+    io_.tight_rope_pose_B = trightrope.poseB;
   }
 
   /**
