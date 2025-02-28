@@ -25,12 +25,22 @@ public class FieldRegions {
       new PolygonRegion(
           new Translation2d[] {
             new Translation2d(FieldConstants.FIELD_LENGTH / 2, FieldConstants.FIELD_WIDTH),
-            new Translation2d((FieldConstants.FIELD_LENGTH / 2) - 2, FieldConstants.FIELD_WIDTH),
+            new Translation2d((FieldConstants.FIELD_LENGTH / 2) - 3, FieldConstants.FIELD_WIDTH),
             new Translation2d(
-                (FieldConstants.FIELD_LENGTH / 2) - 2, FieldConstants.FIELD_WIDTH / 2),
-            new Translation2d(FieldConstants.FIELD_LENGTH / 2, FieldConstants.FIELD_WIDTH / 2)
+                (FieldConstants.FIELD_LENGTH / 2) - 3, FieldConstants.FIELD_WIDTH / 2),
+            new Translation2d(FieldConstants.FIELD_LENGTH / 3, FieldConstants.FIELD_WIDTH / 2)
           },
           "Barge");
+  private static PolygonRegion BARGE_ENTER =
+          new PolygonRegion(
+              new Translation2d[] {
+                new Translation2d(FieldConstants.FIELD_LENGTH / 2, FieldConstants.FIELD_WIDTH),
+                new Translation2d((FieldConstants.FIELD_LENGTH / 2) - 2, FieldConstants.FIELD_WIDTH),
+                new Translation2d(
+                    (FieldConstants.FIELD_LENGTH / 2) - 2, FieldConstants.FIELD_WIDTH / 2),
+                new Translation2d(FieldConstants.FIELD_LENGTH / 2, FieldConstants.FIELD_WIDTH / 2)
+              },
+              "BargeEnter");
   private static PolygonRegion RIGHT_CORAL_STATION_REGION =
       new PolygonRegion(
           new Translation2d[] {
@@ -158,7 +168,8 @@ public class FieldRegions {
     REEF_FACE4_REGION,
     REEF_FACE5_REGION,
     REEF_ENTER,
-    REEF_EXIT
+    REEF_EXIT,
+    BARGE_ENTER
   };
 
   // Region to Target Pose Table
