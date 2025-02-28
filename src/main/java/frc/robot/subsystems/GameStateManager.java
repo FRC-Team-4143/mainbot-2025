@@ -6,7 +6,6 @@ import edu.wpi.first.networktables.StructPublisher;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.lib.FieldRegions;
 import frc.lib.ScoringPoses;
-import frc.mw_lib.geometry.Region;
 import frc.mw_lib.subsystem.Subsystem;
 import frc.mw_lib.util.Util;
 import frc.robot.Constants.ElevatorConstants;
@@ -239,7 +238,6 @@ public class GameStateManager extends Subsystem {
     }
     return Optional.empty();
   }
-
 
   public void setRobotState(RobotState state) {
     // sets the current state of the robot (should really only set to

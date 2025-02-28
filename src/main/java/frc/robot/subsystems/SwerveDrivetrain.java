@@ -599,9 +599,7 @@ public class SwerveDrivetrain extends Subsystem {
     io_.tight_rope_pose_B = pointB;
   }
 
-  /**
-   * Sets the target rope points and rotation and begins TIGHT_ROPE mode
-   */
+  /** Sets the target rope points and rotation and begins TIGHT_ROPE mode */
   public void setTightRope(TightRope trightrope) {
     io_.drive_mode_ = DriveMode.TIGHT_ROPE;
     io_.tight_rope_pose_A = trightrope.poseA;

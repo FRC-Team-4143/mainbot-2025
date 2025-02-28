@@ -4,19 +4,15 @@
 
 package frc.robot.commands;
 
-import java.util.Optional;
-
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.subsystems.SwerveDrivetrain;
-import frc.robot.subsystems.SwerveDrivetrain.DriveMode;
-import frc.robot.subsystems.Claw;
-import frc.robot.subsystems.Elevator;
-import frc.robot.subsystems.Elevator.SpeedLimit;
-import frc.robot.subsystems.PoseEstimator;
-import frc.lib.FieldRegions;
 import frc.lib.ScoringPoses;
 import frc.mw_lib.geometry.Region;
-import frc.robot.Constants;
+import frc.robot.subsystems.Claw;
+import frc.robot.subsystems.Elevator;
+import frc.robot.subsystems.PoseEstimator;
+import frc.robot.subsystems.SwerveDrivetrain;
+import frc.robot.subsystems.SwerveDrivetrain.DriveMode;
+import java.util.Optional;
 
 public class ScoreBarge extends Command {
 
@@ -24,7 +20,7 @@ public class ScoreBarge extends Command {
   static SwerveDrivetrain drivetrain_;
   static PoseEstimator poseEstimator_;
   static Claw claw_;
-  
+
   static Optional<Region> current_region = Optional.empty();
 
   /** Creates a new CoralStationLoad. */
@@ -45,7 +41,9 @@ public class ScoreBarge extends Command {
   @Override
   public void execute() {
     current_region = poseEstimator_.algaeRegion();
-    if (current_region.isPresent() && current_region.get().getName() == "Barge" && claw_.isAlgaeMode()) {
+    if (current_region.isPresent()
+        && current_region.get().getName() == "Barge"
+        && claw_.isAlgaeMode()) {
       drivetrain_.setTightRope(ScoringPoses.BARGE_TIGHT_ROPE);
     } else {
       drivetrain_.setDriveMode(DriveMode.FIELD_CENTRIC);

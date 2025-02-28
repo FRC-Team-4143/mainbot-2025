@@ -60,7 +60,14 @@ public class ScoringPoses {
       FieldConstants.CoralStation.RIGHT_CENTER_FACE.transformBy(CORAL_STATION_OFFSET);
   public static Pose2d PROCESSOR_POSE =
       FieldConstants.Processor.CENTER_FACE.transformBy(PROCESSOR_OFFSET);
-    public static Pose2d BARGE_TIGHT_ROPE_POSE_A = new Pose2d(FieldConstants.Barge.FAR_CAGE.plus(new Translation2d(-1.0922, 0)), Rotation2d.fromDegrees(0));
-    public static Pose2d BARGE_TIGHT_ROPE_POSE_B = new Pose2d(FieldConstants.Barge.CLOSE_CAGE.plus(new Translation2d(-1.0922, 0)), Rotation2d.fromDegrees(0));
-    public static TightRope BARGE_TIGHT_ROPE = new TightRope(BARGE_TIGHT_ROPE_POSE_A, BARGE_TIGHT_ROPE_POSE_B);
+  public static Pose2d BARGE_TIGHT_ROPE_POSE_A =
+      new Pose2d(
+          FieldConstants.Barge.FAR_CAGE.plus(new Translation2d(-1.0922, 0)),
+          Rotation2d.fromDegrees(0));
+  public static Pose2d BARGE_TIGHT_ROPE_POSE_B =
+      new Pose2d(
+          FieldConstants.Barge.CLOSE_CAGE.plus(new Translation2d(-1.0922, 0)),
+          Rotation2d.fromDegrees(0));
+  public static TightRope BARGE_TIGHT_ROPE =
+      new TightRope(BARGE_TIGHT_ROPE_POSE_A, BARGE_TIGHT_ROPE_POSE_B);
 }
