@@ -209,5 +209,7 @@ public class FieldRegions {
         REEF_FACE4_REGION.getName(), AllianceFlipUtil.apply(ScoringPoses.REEF_FACE_4_POSE));
     REGION_POSE_TABLE.replace(
         REEF_FACE5_REGION.getName(), AllianceFlipUtil.apply(ScoringPoses.REEF_FACE_5_POSE));
+
+    ScoringPoses.BARGE_TIGHT_ROPE = AllianceFlipUtil.apply(ScoringPoses.BARGE_TIGHT_ROPE);
   }
 }
