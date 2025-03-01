@@ -38,13 +38,13 @@ import frc.mw_lib.util.ConstantsLoader;
  */
 public final class Constants {
   public static class Vision {
-    public static final String kCameraName = "OV9281-10";
+    public static final String kCameraName = "vi-output,_ov9281_9-0060"; // OV9281-10
     // Cam mounted facing forward, half a meter forward of center, half a meter up from center.
     public static final Transform3d kRobotToCam =
         new Transform3d(
             new Translation3d(
-                Units.inchesToMeters(7.5), Units.inchesToMeters(-7), Units.inchesToMeters(8.25)),
-            new Rotation3d(180, 0, 0));
+                Units.inchesToMeters(9.5), Units.inchesToMeters(9.5), Units.inchesToMeters(21.5)),
+            new Rotation3d(0, Units.degreesToRadians(10), 0));
 
     // The layout of the AprilTags on the field
     public static final AprilTagFieldLayout kTagLayout =
