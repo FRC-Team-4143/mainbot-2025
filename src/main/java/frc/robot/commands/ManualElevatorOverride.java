@@ -11,7 +11,7 @@ import frc.robot.subsystems.Elevator;
 import frc.robot.subsystems.Elevator.SpeedLimit;
 
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
-public class ElevatorButton extends Command {
+public class ManualElevatorOverride extends Command {
 
   public enum Level {
     L1,
@@ -23,7 +23,7 @@ public class ElevatorButton extends Command {
   private Level level_;
 
   /** Creates a new LowButtonCommand. */
-  public ElevatorButton(Level level) {
+  public ManualElevatorOverride(Level level) {
     level_ = level;
     addRequirements(Elevator.getInstance());
   }
@@ -81,8 +81,6 @@ public class ElevatorButton extends Command {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return level_ == Level.L4
-        && Claw.getInstance().isAlgaeMode()
-        && !Elevator.getInstance().canExtendForBarge();
+    return false;
   }
 }
