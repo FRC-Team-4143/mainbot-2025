@@ -7,19 +7,15 @@ package frc.robot;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Commands;
-import edu.wpi.first.wpilibj2.command.ConditionalCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
-import frc.robot.commands.AlgaeEject;
-import frc.robot.commands.AlgaeLoad;
-import frc.robot.commands.AlgaeReefPickup;
-import frc.robot.commands.CoralEject;
-import frc.robot.commands.CoralLoad;
-import frc.robot.commands.CoralReefScore;
+import frc.robot.commands.AlignWithTarget;
 import frc.robot.commands.ElevatorL1Target;
 import frc.robot.commands.ElevatorL2Target;
 import frc.robot.commands.ElevatorL3Target;
 import frc.robot.commands.ElevatorL4Target;
+import frc.robot.commands.GamePieceEject;
+import frc.robot.commands.GamePieceLoad;
 import frc.robot.subsystems.Claw;
 import frc.robot.subsystems.Elevator;
 import frc.robot.subsystems.Elevator.OffsetType;
@@ -73,27 +69,17 @@ public abstract class OI {
      *
      */
 
-    driver_controller_.rightBumper().whileTrue(new ConditionalCommand(
-      new CoralLoad(), new AlgaeLoad(), Claw.getInstance()::isCoralMode));
-    driver_controller_
-        .rightTrigger()
-        .whileTrue(
-            new ConditionalCommand(
-                new CoralEject(), new AlgaeEject(), Claw.getInstance()::isCoralMode));
+    driver_controller_.rightBumper().whileTrue(new GamePieceLoad());
+    driver_controller_.rightTrigger().whileTrue(new GamePieceEject());
 
-    /*
-     *
-     * Game State Manager Bindings
-     *
-     */
     operator_controller_.y().toggleOnTrue(new ElevatorL4Target());
     operator_controller_.b().toggleOnTrue(new ElevatorL3Target());
     operator_controller_.x().toggleOnTrue(new ElevatorL2Target());
     operator_controller_.a().toggleOnTrue(new ElevatorL1Target());
 
-    driver_controller_.leftBumper().whileTrue(new AlgaeReefPickup());
+    driver_controller_.leftBumper().onTrue(Claw.getInstance().toggleGamePieceCommand());
 
-    driver_controller_.leftTrigger().whileTrue(new CoralReefScore());
+    driver_controller_.leftTrigger().whileTrue(new AlignWithTarget().onlyIf(use_vison));
 
     operator_controller_
         .leftBumper()

@@ -8,6 +8,10 @@ import edu.wpi.first.wpilibj2.command.Command;
 import frc.lib.FieldRegions;
 import frc.lib.ScoringPoses;
 import frc.robot.Constants;
+import frc.robot.Constants.ElevatorConstants.Target;
+import frc.robot.subsystems.Claw;
+import frc.robot.subsystems.Claw.ClawMode;
+import frc.robot.subsystems.Claw.GamePiece;
 import frc.robot.subsystems.Elevator;
 import frc.robot.subsystems.Elevator.SpeedLimit;
 import frc.robot.subsystems.PoseEstimator;
@@ -28,6 +32,8 @@ public class CoralStation extends Command {
   public void initialize() {
     elevator_.setSpeedLimit(SpeedLimit.CORAL);
     elevator_.setTarget(Constants.ElevatorConstants.Target.STATION);
+    Claw.getInstance().setGamePiece(GamePiece.CORAL);
+    Claw.getInstance().setClawMode(ClawMode.LOAD);
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -56,8 +62,9 @@ public class CoralStation extends Command {
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    elevator_.stowElevator();
     SwerveDrivetrain.getInstance().restoreDefaultDriveMode();
+    Claw.getInstance().setClawMode(ClawMode.IDLE);
+    Elevator.getInstance().setTarget(Target.STOW);
   }
 
   // Returns true when the command should end.
