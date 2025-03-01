@@ -156,6 +156,10 @@ public class Claw extends Subsystem {
     io_.game_piece_ = gamePiece;
   }
 
+  public GamePiece getGamePieceMode() {
+    return io_.game_piece_;
+  }
+
   public Command toggleGamePieceCommand() {
     return this.runOnce(
         () -> {

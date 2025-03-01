@@ -73,8 +73,12 @@ public abstract class OI {
 
     driver_controller_.rightBumper().whileTrue(new GamePieceLoad());
     driver_controller_.rightTrigger().whileTrue(new GamePieceEject());
-    driver_controller_.a().toggleOnTrue(new ManualElevatorOverride(Level.L1).onlyIf(Claw.getInstance()::isAlgaeMode));
-    driver_controller_.y().toggleOnTrue(new ManualElevatorOverride(Level.L4).onlyIf(Claw.getInstance()::isAlgaeMode));
+    driver_controller_
+        .a()
+        .toggleOnTrue(new ManualElevatorOverride(Level.L1).onlyIf(Claw.getInstance()::isAlgaeMode));
+    driver_controller_
+        .y()
+        .toggleOnTrue(new ManualElevatorOverride(Level.L4).onlyIf(Claw.getInstance()::isAlgaeMode));
 
     operator_controller_.y().toggleOnTrue(new ElevatorL4Target());
     operator_controller_.b().toggleOnTrue(new ElevatorL3Target());
