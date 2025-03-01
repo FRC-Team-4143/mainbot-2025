@@ -1,7 +1,7 @@
 {
     "drive": {
         "com": {
-            "CENTER_OFFSET_X": 0,
+            "CENTER_OFFSET_X": 18,
             "SLIP_CURRENT": 50,
             "SPEED_AT_12V": 5.0,
             "COUPLE_RATIO": 3.5,

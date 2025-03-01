@@ -247,7 +247,7 @@ public final class Constants {
     public static final double ELEVATOR_EXPO_KV = 0.11733;
     public static final double ELEVATOR_EXPO_KA = 0.0070285;
     public static final double ELEVATOR_ZERO_THRESHOLD = 0; // In m
-    public static final double ELEVATOR_STATOR_CURRENT_LIMIT = 40.0;
+    public static final double ELEVATOR_STATOR_CURRENT_LIMIT = 60.0;
     public static final double ELEVATOR_HEIGHT_ABOVE_PIVOT = Units.inchesToMeters(8.0);
     public static final double ELEVATOR_MIN_HEIGHT = Units.inchesToMeters(28.25);
     public static final double ELEVATOR_MAX_HEIGHT =
@@ -297,19 +297,19 @@ public final class Constants {
 
     public enum Target {
       L4(
-          FieldConstants.ReefHeight.L4.HEIGHT + Units.inchesToMeters(13),
+          FieldConstants.ReefHeight.L4.HEIGHT + Units.inchesToMeters(11),
           Rotation2d.fromDegrees(130),
           ControlType.EFFECTOR),
       L3(
-          FieldConstants.ReefHeight.L3.HEIGHT + Units.inchesToMeters(12),
+          FieldConstants.ReefHeight.L3.HEIGHT + Units.inchesToMeters(8),
           Rotation2d.fromDegrees(125),
           ControlType.EFFECTOR),
       L2(
-          FieldConstants.ReefHeight.L2.HEIGHT + Units.inchesToMeters(12),
+          FieldConstants.ReefHeight.L2.HEIGHT + Units.inchesToMeters(7),
           Rotation2d.fromDegrees(125),
           ControlType.EFFECTOR),
 
-      STATION(1.1808, Rotation2d.fromRadians(-1.027767), ControlType.PIVOT),
+      STATION(1.05, Rotation2d.fromRadians(-1.027767), ControlType.PIVOT),
       CLIMB(ELEVATOR_MIN_SAFETY, new Rotation2d(), ControlType.PIVOT),
       STOW(ELEVATOR_MIN_SAFETY, Rotation2d.fromDegrees(-90), ControlType.PIVOT),
       ALGAE_LOW(ELEVATOR_MIN_HEIGHT, Rotation2d.fromDegrees(90 + 50), ControlType.EFFECTOR),
