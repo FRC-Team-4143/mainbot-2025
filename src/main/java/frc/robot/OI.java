@@ -15,9 +15,10 @@ import frc.robot.commands.AlgaeReefPickup;
 import frc.robot.commands.CoralEject;
 import frc.robot.commands.CoralLoad;
 import frc.robot.commands.CoralReefScore;
-import frc.robot.commands.CoralStation;
-import frc.robot.commands.ManualElevatorOverride;
-import frc.robot.commands.ManualElevatorOverride.Level;
+import frc.robot.commands.ElevatorL1Target;
+import frc.robot.commands.ElevatorL2Target;
+import frc.robot.commands.ElevatorL3Target;
+import frc.robot.commands.ElevatorL4Target;
 import frc.robot.subsystems.Claw;
 import frc.robot.subsystems.Elevator;
 import frc.robot.subsystems.Elevator.OffsetType;
@@ -78,10 +79,6 @@ public abstract class OI {
         .whileTrue(
             new ConditionalCommand(
                 new CoralEject(), new AlgaeEject(), Claw.getInstance()::isCoralMode));
-    driver_controller_.y().toggleOnTrue(new ManualElevatorOverride(Level.L4));
-    driver_controller_.x().toggleOnTrue(new ManualElevatorOverride(Level.L2));
-    driver_controller_.b().toggleOnTrue(new ManualElevatorOverride(Level.L3));
-    driver_controller_.a().toggleOnTrue(new ManualElevatorOverride(Level.L1));
 
     /*
      *
