@@ -156,11 +156,16 @@ public class GameStateManager extends Subsystem {
    */
   @Override
   public void outputTelemetry(double timestamp) {
-    SmartDashboard.putString("Robot State", io_.robot_state_.toString());
-    SmartDashboard.putString("Target Colum", io_.target_column.toString());
-    SmartDashboard.putString("Saved Colum", io_.saved_target_column.toString());
-    SmartDashboard.putString("Target Level", io_.scoring_target.toString());
-    SmartDashboard.putString("Saved Target Level", io_.saved_scoring_target.toString());
+    SmartDashboard.putString(
+        "Subsystems/GameStateManager/Robot State", io_.robot_state_.toString());
+    SmartDashboard.putString(
+        "Subsystems/GameStateManager/Target Colum", io_.target_column.toString());
+    SmartDashboard.putString(
+        "Subsystems/GameStateManager/Saved Colum", io_.saved_target_column.toString());
+    SmartDashboard.putString(
+        "Subsystems/GameStateManager/Target Level", io_.scoring_target.toString());
+    SmartDashboard.putString(
+        "Subsystems/GameStateManager/Saved Target Level", io_.saved_scoring_target.toString());
     if (io_.reef_target.isPresent()) {
       reef_target_publisher.set(io_.reef_target.get());
     } else {

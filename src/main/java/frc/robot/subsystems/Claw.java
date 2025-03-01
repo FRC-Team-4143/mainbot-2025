@@ -156,7 +156,7 @@ public class Claw extends Subsystem {
     io_.game_piece_ = gamePiece;
   }
 
-  public Command toggleGamePiece() {
+  public Command toggleGamePieceCommand() {
     return this.runOnce(
         () -> {
           if (io_.game_piece_ == GamePiece.CORAL) {
