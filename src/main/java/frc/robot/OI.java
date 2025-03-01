@@ -73,7 +73,7 @@ public abstract class OI {
     driver_controller_.rightBumper().whileTrue(new CoralLoad());
     driver_controller_.rightBumper().whileTrue(new CoralStation());
     driver_controller_
-        .leftTrigger()
+        .rightTrigger()
         .whileTrue(
             new ConditionalCommand(
                 new CoralEject(), new AlgaeEject(), Claw.getInstance()::isCoralMode));
