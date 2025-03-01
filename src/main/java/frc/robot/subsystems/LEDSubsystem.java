@@ -13,7 +13,6 @@ import edu.wpi.first.wpilibj.AddressableLEDBuffer;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.LEDPattern;
-import edu.wpi.first.wpilibj.event.EventLoop;
 import edu.wpi.first.wpilibj.util.Color;
 import frc.mw_lib.subsystem.Subsystem;
 import frc.robot.Constants;
@@ -58,8 +57,6 @@ public class LEDSubsystem extends Subsystem {
   private LEDPeriodicIo io_;
 
   Debouncer pickupNoteDebouncer = new Debouncer(0.5, DebounceType.kFalling);
-
-  private EventLoop led_eventloop_ = new EventLoop();
 
   private LEDSubsystem() {
     // Create io object first in subsystem configuration
