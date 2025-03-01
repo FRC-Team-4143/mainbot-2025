@@ -16,6 +16,8 @@ import frc.robot.commands.ElevatorL3Target;
 import frc.robot.commands.ElevatorL4Target;
 import frc.robot.commands.GamePieceEject;
 import frc.robot.commands.GamePieceLoad;
+import frc.robot.commands.ManualElevatorOverride;
+import frc.robot.commands.ManualElevatorOverride.Level;
 import frc.robot.subsystems.Claw;
 import frc.robot.subsystems.Elevator;
 import frc.robot.subsystems.Elevator.OffsetType;
@@ -71,6 +73,8 @@ public abstract class OI {
 
     driver_controller_.rightBumper().whileTrue(new GamePieceLoad());
     driver_controller_.rightTrigger().whileTrue(new GamePieceEject());
+    driver_controller_.a().toggleOnTrue(new ManualElevatorOverride(Level.L1).onlyIf(Claw.getInstance()::isAlgaeMode));
+    driver_controller_.y().toggleOnTrue(new ManualElevatorOverride(Level.L4).onlyIf(Claw.getInstance()::isAlgaeMode));
 
     operator_controller_.y().toggleOnTrue(new ElevatorL4Target());
     operator_controller_.b().toggleOnTrue(new ElevatorL3Target());
