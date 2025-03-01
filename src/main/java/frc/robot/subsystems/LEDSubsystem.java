@@ -83,8 +83,10 @@ public class LEDSubsystem extends Subsystem {
   }
 
   /**
-   * This function should be logic and code to fully reset your subsystem. This is called during
-   * initialization, and should handle I/O configuration and initializing data members.
+   * This function should be logic and code to fully reset your subsystem. This is
+   * called during
+   * initialization, and should handle I/O configuration and initializing data
+   * members.
    */
   @Override
   public void reset() {
@@ -100,16 +102,21 @@ public class LEDSubsystem extends Subsystem {
   }
 
   /**
-   * Inside this function, all of the SENSORS should be read into variables stored in the PeriodicIO
-   * class defined below. There should be no calls to output to actuators, or any logic within this
+   * Inside this function, all of the SENSORS should be read into variables stored
+   * in the PeriodicIO
+   * class defined below. There should be no calls to output to actuators, or any
+   * logic within this
    * function.
    */
   @Override
-  public void readPeriodicInputs(double timestamp) {}
+  public void readPeriodicInputs(double timestamp) {
+  }
 
   /**
-   * Inside this function, all of the LOGIC should compute updates to output variables in the
-   * PeriodicIO class defined below. There should be no calls to read from sensors or write to
+   * Inside this function, all of the LOGIC should compute updates to output
+   * variables in the
+   * PeriodicIO class defined below. There should be no calls to read from sensors
+   * or write to
    * actuators in this function.
    */
   @Override
@@ -121,7 +128,8 @@ public class LEDSubsystem extends Subsystem {
     }
 
     if (io_.isCriticalError) {
-      io_.led_cycle_length_ = 5;
+      io_.isManualLED = false;
+      io_.led_cycle_length_ = 50;
       if (io_.led_cycle_state) {
         io_.pattern = LEDPattern.steps(Map.of(0, Color.kOrange, 0.5, Color.kRed));
 
@@ -132,84 +140,75 @@ public class LEDSubsystem extends Subsystem {
       if (!DriverStation.isDisabled()) {
         switch (io_.led_mode_) {
           case SCORE_READY:
-            if (DriverStation.getAlliance().get() == Alliance.Blue) {
+            io_.isManualLED = true;
+            if (io_.led_cycle_state) {
               scoreModeLED(0, 0, io_.led_team_str_);
             } else {
               scoreModeLED(io_.led_team_str_, 0, 0);
             }
-            setCyleLength(0);
+            setCyleLength(25);
             break;
           case PARTY:
+            io_.isManualLED = true;
             partyModeLED();
             setCyleLength(25);
             break;
           case REEF_FACE_0:
-            io_.pattern =
-                LEDPattern.progressMaskLayer(
-                    () ->
-                        Elevator.getInstance().getCurrentHeight()
-                            / ElevatorConstants.ELEVATOR_MAX_HEIGHT);
-            io_.color =
-                LEDPattern.gradient(
-                    LEDPattern.GradientType.kDiscontinuous, Color.kDarkRed, Color.kRed);
+            io_.isManualLED = false;
+            io_.pattern = LEDPattern.progressMaskLayer(
+                () -> Elevator.getInstance().getCurrentHeight()
+                    / ElevatorConstants.ELEVATOR_MAX_HEIGHT);
+            io_.color = LEDPattern.gradient(
+                LEDPattern.GradientType.kDiscontinuous, Color.kDarkRed, Color.kRed);
             io_.pattern = io_.color.mask(io_.pattern);
             break;
           case REEF_FACE_1:
-            io_.pattern =
-                LEDPattern.progressMaskLayer(
-                    () ->
-                        Elevator.getInstance().getCurrentHeight()
-                            / ElevatorConstants.ELEVATOR_MAX_HEIGHT);
-            io_.color =
-                LEDPattern.gradient(
-                    LEDPattern.GradientType.kDiscontinuous, Color.kDarkOrange, Color.kOrange);
+            io_.isManualLED = false;
+            io_.pattern = LEDPattern.progressMaskLayer(
+                () -> Elevator.getInstance().getCurrentHeight()
+                    / ElevatorConstants.ELEVATOR_MAX_HEIGHT);
+            io_.color = LEDPattern.gradient(
+                LEDPattern.GradientType.kDiscontinuous, Color.kDarkOrange, Color.kOrange);
             io_.pattern = io_.color.mask(io_.pattern);
             break;
           case REEF_FACE_2:
-            io_.pattern =
-                LEDPattern.progressMaskLayer(
-                    () ->
-                        Elevator.getInstance().getCurrentHeight()
-                            / ElevatorConstants.ELEVATOR_MAX_HEIGHT);
-            io_.color =
-                LEDPattern.gradient(
-                    LEDPattern.GradientType.kDiscontinuous, Color.kYellow, Color.kLightYellow);
+            io_.isManualLED = false;
+            io_.pattern = LEDPattern.progressMaskLayer(
+                () -> Elevator.getInstance().getCurrentHeight()
+                    / ElevatorConstants.ELEVATOR_MAX_HEIGHT);
+            io_.color = LEDPattern.gradient(
+                LEDPattern.GradientType.kDiscontinuous, Color.kYellow, Color.kLightYellow);
             io_.pattern = io_.color.mask(io_.pattern);
             break;
           case REEF_FACE_3:
-            io_.pattern =
-                LEDPattern.progressMaskLayer(
-                    () ->
-                        Elevator.getInstance().getCurrentHeight()
-                            / ElevatorConstants.ELEVATOR_MAX_HEIGHT);
-            io_.color =
-                LEDPattern.gradient(
-                    LEDPattern.GradientType.kDiscontinuous, Color.kDarkGreen, Color.kGreen);
+            io_.isManualLED = false;
+            io_.pattern = LEDPattern.progressMaskLayer(
+                () -> Elevator.getInstance().getCurrentHeight()
+                    / ElevatorConstants.ELEVATOR_MAX_HEIGHT);
+            io_.color = LEDPattern.gradient(
+                LEDPattern.GradientType.kDiscontinuous, Color.kDarkGreen, Color.kGreen);
             io_.pattern = io_.color.mask(io_.pattern);
             break;
           case REEF_FACE_4:
-            io_.pattern =
-                LEDPattern.progressMaskLayer(
-                    () ->
-                        Elevator.getInstance().getCurrentHeight()
-                            / ElevatorConstants.ELEVATOR_MAX_HEIGHT);
-            io_.color =
-                LEDPattern.gradient(
-                    LEDPattern.GradientType.kDiscontinuous, Color.kDarkBlue, Color.kBlue);
+            io_.isManualLED = false;
+            io_.pattern = LEDPattern.progressMaskLayer(
+                () -> Elevator.getInstance().getCurrentHeight()
+                    / ElevatorConstants.ELEVATOR_MAX_HEIGHT);
+            io_.color = LEDPattern.gradient(
+                LEDPattern.GradientType.kDiscontinuous, Color.kDarkBlue, Color.kBlue);
             io_.pattern = io_.color.mask(io_.pattern);
             break;
           case REEF_FACE_5:
-            io_.pattern =
-                LEDPattern.progressMaskLayer(
-                    () ->
-                        Elevator.getInstance().getCurrentHeight()
-                            / ElevatorConstants.ELEVATOR_MAX_HEIGHT);
-            io_.color =
-                LEDPattern.gradient(
-                    LEDPattern.GradientType.kDiscontinuous, Color.kPurple, Color.kLavender);
+            io_.isManualLED = false;
+            io_.pattern = LEDPattern.progressMaskLayer(
+                () -> Elevator.getInstance().getCurrentHeight()
+                    / ElevatorConstants.ELEVATOR_MAX_HEIGHT);
+            io_.color = LEDPattern.gradient(
+                LEDPattern.GradientType.kDiscontinuous, Color.kPurple, Color.kLavender);
             io_.pattern = io_.color.mask(io_.pattern);
             break;
           case CAGE:
+            io_.isManualLED = false;
             if (DriverStation.getAlliance().get() == Alliance.Blue) {
               io_.color = LEDPattern.solid(Color.kBlue);
 
@@ -219,17 +218,20 @@ public class LEDSubsystem extends Subsystem {
             io_.pattern = io_.color.blink(Seconds.of(0.5));
             break;
           case DEFENSE:
+            io_.isManualLED = true;
             defenseModeLED();
 
-            setCyleLength(60);
+            setCyleLength(160);
             break;
           case LOST:
           default:
+            io_.isManualLED = false;
             io_.pattern = LEDPattern.solid(Color.kBlack);
             break;
         }
       } else {
         if (DriverStation.getAlliance().get() == Alliance.Blue) {
+          io_.isManualLED = false;
           io_.pattern = LEDPattern.solid(Color.kBlue);
         } else {
           io_.pattern = LEDPattern.solid(Color.kRed);
@@ -237,14 +239,18 @@ public class LEDSubsystem extends Subsystem {
       }
     }
 
-    io_.pattern.applyTo(led_buffer_1_);
-    io_.pattern.applyTo(led_buffer_2_);
+    if (!io_.isManualLED) {
+      io_.pattern.applyTo(led_buffer_1_);
+      io_.pattern.applyTo(led_buffer_2_);
+    }
     ledCycle();
   }
 
   /**
-   * Inside this function actuator OUTPUTS should be updated from data contained in the PeriodicIO
-   * class defined below. There should be little to no logic contained within this function, and no
+   * Inside this function actuator OUTPUTS should be updated from data contained
+   * in the PeriodicIO
+   * class defined below. There should be little to no logic contained within this
+   * function, and no
    * sensors should be read.
    */
   @Override
@@ -254,31 +260,40 @@ public class LEDSubsystem extends Subsystem {
   }
 
   /**
-   * Inside this function telemetry should be output to smartdashboard. The data should be collected
-   * out of the PeriodicIO class instance defined below. There should be no sensor information read
-   * in this function nor any outputs made to actuators within this function. Only publish to
+   * Inside this function telemetry should be output to smartdashboard. The data
+   * should be collected
+   * out of the PeriodicIO class instance defined below. There should be no sensor
+   * information read
+   * in this function nor any outputs made to actuators within this function. Only
+   * publish to
    * smartdashboard here.
    */
   @Override
-  public void outputTelemetry(double timestamp) {}
+  public void outputTelemetry(double timestamp) {
+  }
 
   public class LEDPeriodicIo implements Logged {
-    @Log.File public boolean led_cycle_state = true;
-    @Log.File public int led_cycle_counter = 25;
-    @Log.File public LEDMode led_mode_ = LEDMode.SCORE_READY;
-    @Log.File public int led_cycle_length_ = 25;
-    @Log.File public int led_team_str_ = 255;
-    @Log.File public boolean isCriticalError = false;
+    @Log.File
+    public boolean led_cycle_state = true;
+    @Log.File
+    public int led_cycle_counter = 25;
+    @Log.File
+    public LEDMode led_mode_ = LEDMode.SCORE_READY;
+    @Log.File
+    public int led_cycle_length_ = 25;
+    @Log.File
+    public int led_team_str_ = 255;
+    @Log.File
+    public boolean isCriticalError = false;
+    @Log.File
+    public boolean isManualLED = false;
 
     @Log.File
-    LEDPattern pattern =
-        LEDPattern.progressMaskLayer(
-            () ->
-                Elevator.getInstance().getCurrentHeight() / ElevatorConstants.ELEVATOR_MAX_HEIGHT);
+    LEDPattern pattern = LEDPattern.progressMaskLayer(
+        () -> Elevator.getInstance().getCurrentHeight() / ElevatorConstants.ELEVATOR_MAX_HEIGHT);
 
     @Log.File
-    LEDPattern color =
-        LEDPattern.gradient(LEDPattern.GradientType.kDiscontinuous, Color.kPurple, Color.kLavender);
+    LEDPattern color = LEDPattern.gradient(LEDPattern.GradientType.kDiscontinuous, Color.kPurple, Color.kLavender);
   }
 
   public void setIfCritcalError(boolean isError) {
@@ -306,13 +321,13 @@ public class LEDSubsystem extends Subsystem {
         if (i % 2 == 0) {
           led_buffer_2_.setRGB(i, r, g, b);
         } else {
-          led_buffer_2_.setRGB(i, 0, 0, 0);
+          led_buffer_2_.setRGB(i, b, g, r);
         }
       } else {
         if (i % 2 == 1) {
           led_buffer_2_.setRGB(i, r, g, b);
         } else {
-          led_buffer_2_.setRGB(i, 0, 0, 0);
+          led_buffer_2_.setRGB(i, b, g, r);
         }
       }
     }
@@ -320,9 +335,8 @@ public class LEDSubsystem extends Subsystem {
 
   public void idleModeLED(int r, int g, int b) {
     for (int i = 0; i < led_buffer_1_.getLength(); i++) {
-      if (i
-          < Constants.LEDConstants.LED_LENGTH_1
-              * (Constants.LEDConstants.LED_LENGTH_1 / Elevator.getInstance().getCurrentHeight())) {
+      if (i < Constants.LEDConstants.LED_LENGTH_1
+          * (Constants.LEDConstants.LED_LENGTH_1 / Elevator.getInstance().getCurrentHeight())) {
         led_buffer_1_.setRGB(i, r, g, b);
       } else {
         led_buffer_1_.setRGB(i, 0, 0, 0);
@@ -330,9 +344,8 @@ public class LEDSubsystem extends Subsystem {
     }
 
     for (int i = 0; i < led_buffer_2_.getLength(); i++) {
-      if (i
-          < Constants.LEDConstants.LED_LENGTH_2
-              * (Constants.LEDConstants.LED_LENGTH_2 / Elevator.getInstance().getCurrentHeight())) {
+      if (i < Constants.LEDConstants.LED_LENGTH_2
+          * (Constants.LEDConstants.LED_LENGTH_2 / Elevator.getInstance().getCurrentHeight())) {
         led_buffer_2_.setRGB(i, r, g, b);
       } else {
         led_buffer_2_.setRGB(i, 0, 0, 0);
@@ -341,24 +354,65 @@ public class LEDSubsystem extends Subsystem {
   }
 
   public void partyModeLED() {
-    for (int i = 0; i < led_buffer_1_.getLength(); i++) {
-      led_buffer_1_.setRGB(
-          i, (int) (Math.random() * 255), (int) (Math.random() * 255), (int) (Math.random() * 255));
-    }
-    for (int i = 0; i < led_buffer_2_.getLength(); i++) {
-      led_buffer_2_.setRGB(
-          i, (int) (Math.random() * 255), (int) (Math.random() * 255), (int) (Math.random() * 255));
+    if (io_.led_cycle_state) {
+      for (int i = 0; i < led_buffer_1_.getLength(); i++) {
+        led_buffer_1_.setRGB(
+            i,
+            (int) (Math.random() * 255),
+            (int) (Math.random() * 255),
+            (int) (Math.random() * 255));
+      }
+      for (int i = 0; i < led_buffer_2_.getLength(); i++) {
+        led_buffer_2_.setRGB(
+            i,
+            (int) (Math.random() * 255),
+            (int) (Math.random() * 255),
+            (int) (Math.random() * 255));
+      }
+      io_.led_cycle_state = !io_.led_cycle_state;
     }
   }
 
   public void defenseModeLED() {
-    if (io_.led_cycle_counter > 70) {
+    if (io_.led_cycle_counter > 140) {
       for (int i = 0; i < led_buffer_1_.getLength(); i++) {
         led_buffer_1_.setRGB(i, 0, 0, 255);
       }
       for (int i = 0; i < led_buffer_2_.getLength(); i++) {
         led_buffer_2_.setRGB(i, 0, 0, 0);
       }
+    } else if (io_.led_cycle_counter > 120) {
+      for (int i = 0; i < led_buffer_2_.getLength(); i++) {
+        led_buffer_2_.setRGB(i, 255, 0, 0);
+      }
+      for (int i = 0; i < led_buffer_1_.getLength(); i++) {
+        led_buffer_1_.setRGB(i, 0, 0, 0);
+      }
+
+    } else if (io_.led_cycle_counter > 100) {
+      for (int i = 0; i < led_buffer_1_.getLength(); i++) {
+        led_buffer_1_.setRGB(i, 0, 0, 255);
+      }
+      for (int i = 0; i < led_buffer_2_.getLength(); i++) {
+        led_buffer_2_.setRGB(i, 0, 0, 0);
+      }
+
+    } else if (io_.led_cycle_counter > 80) {
+      for (int i = 0; i < led_buffer_2_.getLength(); i++) {
+        led_buffer_2_.setRGB(i, 255, 0, 0);
+      }
+      for (int i = 0; i < led_buffer_1_.getLength(); i++) {
+        led_buffer_1_.setRGB(i, 0, 0, 0);
+      }
+
+    } else if (io_.led_cycle_counter > 70) {
+      for (int i = 0; i < led_buffer_1_.getLength(); i++) {
+        led_buffer_1_.setRGB(i, 0, 0, 255);
+      }
+      for (int i = 0; i < led_buffer_2_.getLength(); i++) {
+        led_buffer_2_.setRGB(i, 0, 0, 0);
+      }
+
     } else if (io_.led_cycle_counter > 60) {
       for (int i = 0; i < led_buffer_2_.getLength(); i++) {
         led_buffer_2_.setRGB(i, 255, 0, 0);
@@ -382,32 +436,39 @@ public class LEDSubsystem extends Subsystem {
       for (int i = 0; i < led_buffer_1_.getLength(); i++) {
         led_buffer_1_.setRGB(i, 0, 0, 0);
       }
-      io_.led_cycle_state = true;
 
-    } else if (io_.led_cycle_state) {
+    } else if (io_.led_cycle_counter > 30) {
       for (int i = 0; i < led_buffer_1_.getLength(); i++) {
         led_buffer_1_.setRGB(i, 0, 0, 255);
       }
       for (int i = 0; i < led_buffer_2_.getLength(); i++) {
         led_buffer_2_.setRGB(i, 0, 0, 0);
       }
-      io_.led_cycle_state = !io_.led_cycle_state;
-    } else {
+
+    } else if (io_.led_cycle_counter > 20) {
       for (int i = 0; i < led_buffer_2_.getLength(); i++) {
         led_buffer_2_.setRGB(i, 255, 0, 0);
       }
       for (int i = 0; i < led_buffer_1_.getLength(); i++) {
         led_buffer_1_.setRGB(i, 0, 0, 0);
       }
-      io_.led_cycle_state = !io_.led_cycle_state;
-    }
 
-    // for (int i = 0; i < led_buffer_1_.getLength(); i++) {
-    // led_buffer_1_.setRGB(i, , ,);
-    // }
-    // for (int i = 0; i < led_buffer_2_.getLength(); i++) {
-    // led_buffer_2_.setRGB(i, , ,);
-    // }
+    } else if (io_.led_cycle_counter > 10) {
+      for (int i = 0; i < led_buffer_1_.getLength(); i++) {
+        led_buffer_1_.setRGB(i, 0, 0, 255);
+      }
+      for (int i = 0; i < led_buffer_2_.getLength(); i++) {
+        led_buffer_2_.setRGB(i, 0, 0, 0);
+      }
+
+    } else if (io_.led_cycle_counter > 0) {
+      for (int i = 0; i < led_buffer_2_.getLength(); i++) {
+        led_buffer_2_.setRGB(i, 255, 0, 0);
+      }
+      for (int i = 0; i < led_buffer_1_.getLength(); i++) {
+        led_buffer_1_.setRGB(i, 0, 0, 0);
+      }
+    }
   }
 
   public void setColorTeam() {
