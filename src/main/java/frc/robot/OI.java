@@ -23,7 +23,6 @@ import frc.robot.subsystems.Elevator;
 import frc.robot.subsystems.Elevator.OffsetType;
 import frc.robot.subsystems.GameStateManager;
 import frc.robot.subsystems.GameStateManager.Column;
-import frc.robot.subsystems.GameStateManager.ReefScoringTarget;
 import frc.robot.subsystems.PoseEstimator;
 import frc.robot.subsystems.SwerveDrivetrain;
 import frc.robot.subsystems.SwerveDrivetrain.DriveMode;
@@ -38,6 +37,7 @@ public abstract class OI {
 
   private static BooleanSupplier pov_is_present_ = () -> getDriverJoystickPOV().isPresent();
   private static Trigger driver_pov_active_ = new Trigger(pov_is_present_);
+  public static BooleanSupplier use_vison = () -> SmartDashboard.getBoolean("Use Vison", false);
 
   public static void configureBindings() {
 
@@ -58,6 +58,7 @@ public abstract class OI {
     SmartDashboard.putData(
         "Commands/Disturb Pose",
         Commands.runOnce(() -> PoseEstimator.getInstance().disturbPose()).ignoringDisable(true));
+    SmartDashboard.putBoolean("Use Vison", false);
 
     // Swap Between Robot Centric and Field Centric
     driver_controller_
@@ -87,21 +88,10 @@ public abstract class OI {
      * Game State Manager Bindings
      *
      */
-    operator_controller_
-        .y()
-        .toggleOnTrue(
-            Commands.runOnce(
-                () -> GameStateManager.getInstance().setScoringTarget(ReefScoringTarget.L4, true)));
-    operator_controller_
-        .x()
-        .toggleOnTrue(
-            Commands.runOnce(
-                () -> GameStateManager.getInstance().setScoringTarget(ReefScoringTarget.L2, true)));
-    operator_controller_
-        .b()
-        .toggleOnTrue(
-            Commands.runOnce(
-                () -> GameStateManager.getInstance().setScoringTarget(ReefScoringTarget.L3, true)));
+    operator_controller_.y().toggleOnTrue(new ElevatorL4Target());
+    operator_controller_.b().toggleOnTrue(new ElevatorL3Target());
+    operator_controller_.x().toggleOnTrue(new ElevatorL2Target());
+    operator_controller_.a().toggleOnTrue(new ElevatorL1Target());
 
     driver_controller_.leftBumper().whileTrue(new AlgaeReefPickup());
 
