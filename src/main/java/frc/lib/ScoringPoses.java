@@ -21,7 +21,7 @@ public class ScoringPoses {
   // Offset to align robot bumpers with coral station
   public static final Transform2d CORAL_STATION_OFFSET =
       new Transform2d(
-          new Translation2d(DrivetrainConstants.CENTER_OFFSET_X, 0), Rotation2d.fromDegrees(180));
+          new Translation2d(DrivetrainConstants.CENTER_OFFSET_X, 0), Rotation2d.fromDegrees(0));
   // Offset to align robot bumpers with processor face
   public static final Transform2d PROCESSOR_OFFSET =
       new Transform2d(

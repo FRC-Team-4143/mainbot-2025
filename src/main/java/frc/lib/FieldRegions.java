@@ -35,9 +35,9 @@ public class FieldRegions {
       new PolygonRegion(
           new Translation2d[] {
             new Translation2d(0, 0),
-            new Translation2d(0, FieldConstants.FIELD_WIDTH / 2),
-            new Translation2d(4, FieldConstants.FIELD_WIDTH / 2),
-            new Translation2d(4, 0),
+            new Translation2d(0, 2.5),
+            new Translation2d(2.5, 2.5),
+            new Translation2d(2.5, 0),
             new Translation2d(0, 0)
           },
           "RightCoralStation");
@@ -45,9 +45,9 @@ public class FieldRegions {
       new PolygonRegion(
           new Translation2d[] {
             new Translation2d(0, FieldConstants.FIELD_WIDTH),
-            new Translation2d(4, FieldConstants.FIELD_WIDTH),
-            new Translation2d(4, FieldConstants.FIELD_WIDTH / 2),
-            new Translation2d(0, FieldConstants.FIELD_WIDTH / 2),
+            new Translation2d(2.5, FieldConstants.FIELD_WIDTH),
+            new Translation2d(2.5, FieldConstants.FIELD_WIDTH - 2.5),
+            new Translation2d(0, FieldConstants.FIELD_WIDTH - 2.5),
             new Translation2d(0, FieldConstants.FIELD_WIDTH)
           },
           "LeftCoralStation");

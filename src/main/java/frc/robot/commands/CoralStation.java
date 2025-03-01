@@ -5,9 +5,13 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.lib.FieldRegions;
+import frc.lib.ScoringPoses;
 import frc.robot.Constants;
 import frc.robot.subsystems.Elevator;
 import frc.robot.subsystems.Elevator.SpeedLimit;
+import frc.robot.subsystems.PoseEstimator;
+import frc.robot.subsystems.SwerveDrivetrain;
 
 public class CoralStation extends Command {
 
@@ -28,12 +32,32 @@ public class CoralStation extends Command {
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
-  public void execute() {}
+  public void execute() {
+
+    // if in zone
+    if (FieldRegions.STATION_REGIONS[1].contains(PoseEstimator.getInstance().getRobotPose())) {
+      SwerveDrivetrain.getInstance()
+          .setTargetRotation(ScoringPoses.LEFT_CORAL_STATION_POSE.getRotation());
+
+    } else if (FieldRegions.STATION_REGIONS[0].contains(
+        PoseEstimator.getInstance().getRobotPose())) {
+      SwerveDrivetrain.getInstance()
+          .setTargetRotation(ScoringPoses.RIGHT_CORAL_STATION_POSE.getRotation());
+
+    } else {
+      SwerveDrivetrain.getInstance().restoreDefaultDriveMode();
+    }
+    // then pull tag rotation
+
+    // then set target angle based on rotation
+
+  }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
     elevator_.stowElevator();
+    SwerveDrivetrain.getInstance().restoreDefaultDriveMode();
   }
 
   // Returns true when the command should end.

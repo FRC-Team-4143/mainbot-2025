@@ -15,6 +15,7 @@ import frc.robot.commands.AlgaeReefPickup;
 import frc.robot.commands.CoralEject;
 import frc.robot.commands.CoralLoad;
 import frc.robot.commands.CoralReefScore;
+import frc.robot.commands.CoralStation;
 import frc.robot.commands.ManualElevatorOverride;
 import frc.robot.commands.ManualElevatorOverride.Level;
 import frc.robot.subsystems.Claw;
@@ -70,6 +71,7 @@ public abstract class OI {
      */
 
     driver_controller_.rightBumper().whileTrue(new CoralLoad());
+    driver_controller_.rightBumper().whileTrue(new CoralStation());
     driver_controller_
         .rightTrigger()
         .whileTrue(
