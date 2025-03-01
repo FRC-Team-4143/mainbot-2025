@@ -11,6 +11,7 @@ import edu.wpi.first.wpilibj2.command.ConditionalCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.commands.AlgaeEject;
+import frc.robot.commands.AlgaeLoad;
 import frc.robot.commands.AlgaeReefPickup;
 import frc.robot.commands.CoralEject;
 import frc.robot.commands.CoralLoad;
@@ -72,8 +73,8 @@ public abstract class OI {
      *
      */
 
-    driver_controller_.rightBumper().whileTrue(new CoralLoad());
-    driver_controller_.rightBumper().whileTrue(new CoralStation());
+    driver_controller_.rightBumper().whileTrue(new ConditionalCommand(
+      new CoralLoad(), new AlgaeLoad(), Claw.getInstance()::isCoralMode));
     driver_controller_
         .rightTrigger()
         .whileTrue(
