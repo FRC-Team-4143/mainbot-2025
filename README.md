@@ -17,5 +17,5 @@ Each Robot has constants that are specific to its design. During construction an
 
 
 The entire config can be seen in the config files
-- [4143 Alpha Bot Config](/src/main/deploy/robots/BetaBot.json)
+- [4143 Beta Bot Config](/src/main/deploy/robots/BetaBot.json)
 - [4423 Alpha Bot Config](/src/main/deploy/robots/AlphaBot.json)
