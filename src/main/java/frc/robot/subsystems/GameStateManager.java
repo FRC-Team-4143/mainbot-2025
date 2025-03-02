@@ -11,7 +11,6 @@ import frc.mw_lib.subsystem.Subsystem;
 import frc.mw_lib.util.Util;
 import frc.robot.Constants.ElevatorConstants;
 import frc.robot.subsystems.Elevator.SpeedLimit;
-import frc.robot.subsystems.SwerveDrivetrain.DriveMode;
 import java.util.Optional;
 import monologue.Annotations.Log;
 import monologue.Logged;
@@ -111,11 +110,11 @@ public class GameStateManager extends Subsystem {
         if (Util.epislonEquals(
             poseEstimator_.getRobotPose(), io_.reef_target.get(), 0.0873, 0.0508)) {
           // Once at final target, hand off control
+          drivetrain_.restoreDefaultDriveMode();
           io_.robot_state_ = RobotState.SCORING;
         }
         break;
       case SCORING:
-        drivetrain_.setDriveMode(DriveMode.FIELD_CENTRIC);
         // wait until you leave the exit Circle
         if (!FieldRegions.REEF_EXIT.contains(poseEstimator_.getRobotPose())) {
           io_.robot_state_ = RobotState.END;
@@ -123,7 +122,7 @@ public class GameStateManager extends Subsystem {
         break;
       case END:
         // clear saved vars and reset drive mode
-        drivetrain_.setDriveMode(DriveMode.FIELD_CENTRIC);
+        drivetrain_.restoreDefaultDriveMode();
         if (Claw.getInstance().isCoralMode()) {
           elevator_.setSpeedLimit(SpeedLimit.CORAL);
           elevator_.setTarget(ElevatorConstants.Target.STOW);
