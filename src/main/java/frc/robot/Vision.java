@@ -71,10 +71,10 @@ public class Vision {
 
   public Vision() {
 
-    camera = new PhotonCamera(kCameraName);
+    camera = new PhotonCamera(CAMERA_NAME);
 
     photonEstimator =
-        new PhotonPoseEstimator(kTagLayout, PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR, kRobotToCam);
+        new PhotonPoseEstimator(TAG_LAYOUT, PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR, ROBOT_TO_CAM);
     photonEstimator.setMultiTagFallbackStrategy(PoseStrategy.LOWEST_AMBIGUITY);
 
     // ----- Simulation
@@ -82,7 +82,7 @@ public class Vision {
       // Create the vision system simulation which handles cameras and targets on the field.
       visionSim = new VisionSystemSim("main");
       // Add all the AprilTags inside the tag layout as visible targets to this simulated field.
-      visionSim.addAprilTags(kTagLayout);
+      visionSim.addAprilTags(TAG_LAYOUT);
       // Create simulated camera properties. These can be set to mimic your actual camera.
       var cameraProp = new SimCameraProperties();
       cameraProp.setCalibration(960, 720, Rotation2d.fromDegrees(90));
@@ -94,7 +94,7 @@ public class Vision {
       // targets.
       cameraSim = new PhotonCameraSim(camera, cameraProp);
       // Add the simulated camera to view the targets on this simulated field.
-      visionSim.addCamera(cameraSim, kRobotToCam);
+      visionSim.addCamera(cameraSim, ROBOT_TO_CAM);
 
       cameraSim.enableDrawWireframe(true);
     }
@@ -151,11 +151,11 @@ public class Vision {
       Optional<EstimatedRobotPose> estimatedPose, List<PhotonTrackedTarget> targets) {
     if (estimatedPose.isEmpty()) {
       // No pose input. Default to single-tag std devs
-      curStdDevs = kSingleTagStdDevs;
+      curStdDevs = SINGLE_TAG_STD_DEVS;
 
     } else {
       // Pose present. Start running Heuristic
-      var estStdDevs = kSingleTagStdDevs;
+      var estStdDevs = SINGLE_TAG_STD_DEVS;
       // int numTags = 0;
       numTags = 0;
       double avgDist = 0;
@@ -175,12 +175,12 @@ public class Vision {
 
       if (numTags == 0) {
         // No tags visible. Default to single-tag std devs
-        curStdDevs = kSingleTagStdDevs;
+        curStdDevs = SINGLE_TAG_STD_DEVS;
       } else {
         // One or more tags visible, run the full heuristic.
         avgDist /= numTags;
         // Decrease std devs if multiple targets are visible
-        if (numTags > 1) estStdDevs = kMultiTagStdDevs;
+        if (numTags > 1) estStdDevs = MULTI_TAG_STD_DEVS;
         // Increase std devs based on (average) distance
         if (numTags == 1 && avgDist > 4)
           estStdDevs = VecBuilder.fill(Double.MAX_VALUE, Double.MAX_VALUE, Double.MAX_VALUE);
