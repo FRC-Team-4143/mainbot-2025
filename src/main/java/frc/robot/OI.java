@@ -7,12 +7,9 @@ package frc.robot;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Commands;
-import edu.wpi.first.wpilibj2.command.ConditionalCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
-import frc.robot.commands.AlgaeEject;
 import frc.robot.commands.AlignWithTarget;
-import frc.robot.commands.CoralEject;
 import frc.robot.commands.ElevatorL1Target;
 import frc.robot.commands.ElevatorL2Target;
 import frc.robot.commands.ElevatorL3Target;
@@ -21,15 +18,6 @@ import frc.robot.commands.GamePieceEject;
 import frc.robot.commands.GamePieceLoad;
 import frc.robot.commands.ManualElevatorOverride;
 import frc.robot.commands.ManualElevatorOverride.Level;
-import frc.robot.commands.AlgaeEject;
-import frc.robot.commands.AlgaeReefPickup;
-import frc.robot.commands.CoralEject;
-import frc.robot.commands.CoralLoad;
-import frc.robot.commands.CoralReefScore;
-import frc.robot.commands.ScoreBarge;
-import frc.robot.commands.ScoreBarge;
-import frc.robot.commands.ScoreBarge;
-import frc.robot.commands.ScoreProcessor;
 import frc.robot.subsystems.Claw;
 import frc.robot.subsystems.Elevator;
 import frc.robot.subsystems.Elevator.OffsetType;
@@ -80,7 +68,7 @@ public abstract class OI {
 
     // Driver Load
     driver_controller_.rightBumper().whileTrue(new GamePieceLoad());
-    // Driver SCore
+    // Driver Score
     driver_controller_.rightTrigger().whileTrue(new GamePieceEject());
     // Robot Align
     driver_controller_.leftTrigger().whileTrue(new AlignWithTarget().onlyIf(use_vison));
@@ -106,22 +94,6 @@ public abstract class OI {
     Commands.startEnd(
         () -> SwerveDrivetrain.getInstance().setDriveMode(DriveMode.CRAWL),
         () -> SwerveDrivetrain.getInstance().restoreDefaultDriveMode()));
-    /*
-     *
-     * Manual Teleop Bindings
-     *
-     */
-
-    driver_controller_.rightBumper().whileTrue(new GamePieceLoad());
-    driver_controller_.rightTrigger().whileTrue(new GamePieceEject());
-    driver_controller_
-        .a()
-        .toggleOnTrue(new ManualElevatorOverride(Level.L1).onlyIf(Claw.getInstance()::isAlgaeMode));
-    driver_controller_
-        .rightTrigger()
-        .whileTrue(
-            new ConditionalCommand(
-                new CoralEject(), new AlgaeEject(), Claw.getInstance()::isCoralMode));
 
     /*
      *
