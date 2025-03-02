@@ -37,7 +37,7 @@ public abstract class OI {
 
   private static BooleanSupplier pov_is_present_ = () -> getDriverJoystickPOV().isPresent();
   private static Trigger driver_pov_active_ = new Trigger(pov_is_present_);
-  public static BooleanSupplier use_vison = () -> SmartDashboard.getBoolean("Use Vison", false);
+  public static BooleanSupplier use_vision = () -> SmartDashboard.getBoolean("Use Vision", false);
 
   public static void configureBindings() {
 
@@ -58,7 +58,7 @@ public abstract class OI {
     SmartDashboard.putData(
         "Commands/Disturb Pose",
         Commands.runOnce(() -> PoseEstimator.getInstance().disturbPose()).ignoringDisable(true));
-    SmartDashboard.putBoolean("Use Vison", false);
+    SmartDashboard.putBoolean("Use Vision", false);
 
     /*
      *
@@ -68,10 +68,10 @@ public abstract class OI {
 
     // Driver Load
     driver_controller_.rightBumper().whileTrue(new GamePieceLoad());
-    // Driver SCore
+    // Driver Score
     driver_controller_.rightTrigger().whileTrue(new GamePieceEject());
     // Robot Align
-    driver_controller_.leftTrigger().whileTrue(new AlignWithTarget().onlyIf(use_vison));
+    driver_controller_.leftTrigger().whileTrue(new AlignWithTarget().onlyIf(use_vision));
     // Toggle Game Piece
     driver_controller_.leftBumper().onTrue(Claw.getInstance().toggleGamePieceCommand());
 

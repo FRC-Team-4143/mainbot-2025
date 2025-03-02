@@ -74,7 +74,8 @@ public class Vision {
     camera = new PhotonCamera(CAMERA_NAME);
 
     photonEstimator =
-        new PhotonPoseEstimator(TAG_LAYOUT, PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR, ROBOT_TO_CAM);
+        new PhotonPoseEstimator(
+            TAG_LAYOUT, PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR, ROBOT_TO_CAM);
     photonEstimator.setMultiTagFallbackStrategy(PoseStrategy.LOWEST_AMBIGUITY);
 
     // ----- Simulation

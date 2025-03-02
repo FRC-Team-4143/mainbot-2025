@@ -6,7 +6,6 @@ import edu.wpi.first.networktables.StructPublisher;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.lib.FieldRegions;
 import frc.lib.ScoringPoses;
-import frc.mw_lib.geometry.Region;
 import frc.mw_lib.subsystem.Subsystem;
 import frc.mw_lib.util.Util;
 import frc.robot.Constants.ElevatorConstants;
@@ -203,20 +202,6 @@ public class GameStateManager extends Subsystem {
   }
 
   /**
-   * Returns a target pose when robot is in an load station region If not in a region empty is
-   * returned.
-   *
-   * @return target pose
-   */
-  public Optional<Pose2d> loadStationPose() {
-    Optional<Region> region = poseEstimator_.loadStationRegion();
-    if (region.isPresent()) {
-      return Optional.of(FieldRegions.REGION_POSE_TABLE.get(region.get().getName()));
-    }
-    return Optional.empty();
-  }
-
-  /**
    * Returns a target pose when robot is in an reef region If not in a region empty is returned.
    * Also adjust to the provided column
    *
@@ -253,20 +238,6 @@ public class GameStateManager extends Subsystem {
     }
     return Optional.empty();
   }
-
-  /**
-   * Returns a target pose when robot is in an algae region If not in a region empty is returned.
-   *
-   * @return target pose
-   */
-  public Optional<Pose2d> algaePose() {
-    Optional<Region> region = poseEstimator_.algaeRegion();
-    if (region.isPresent()) {
-      return Optional.of(FieldRegions.REGION_POSE_TABLE.get(region.get().getName()));
-    }
-    return Optional.empty();
-  }
-
   public void setRobotState(RobotState state) {
     // sets the current state of the robot (should really only set to
     // TARGET_ACQUISITION to preserve
@@ -312,8 +283,6 @@ public class GameStateManager extends Subsystem {
     @Log.File private ReefScoringTarget saved_scoring_target = ReefScoringTarget.L2;
     @Log.File private RobotState robot_state_ = RobotState.TELEOP_CONTROL;
     @Log.File private Optional<Pose2d> reef_target = Optional.empty();
-    @Log.File private Optional<Pose2d> station_target = Optional.empty();
-    @Log.File private Optional<Pose2d> algae_target = Optional.empty();
     @Log.File private Column target_column = Column.LEFT;
     @Log.File private Column saved_target_column = Column.LEFT;
 

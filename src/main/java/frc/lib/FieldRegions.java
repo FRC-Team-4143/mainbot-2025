@@ -15,8 +15,8 @@ public class FieldRegions {
       new PolygonRegion(
           new Translation2d[] {
             new Translation2d(4, 0),
-            new Translation2d(4, 2),
-            new Translation2d(8, 2),
+            new Translation2d(4, 3),
+            new Translation2d(8, 3),
             new Translation2d(8, 0),
             new Translation2d(4, 0),
           },
@@ -24,13 +24,29 @@ public class FieldRegions {
   private static PolygonRegion BARGE_REGION =
       new PolygonRegion(
           new Translation2d[] {
-            new Translation2d(FieldConstants.FIELD_LENGTH / 2, FieldConstants.FIELD_WIDTH),
+            new Translation2d(
+                (FieldConstants.FIELD_LENGTH / 2) - 0.737, FieldConstants.FIELD_WIDTH),
+            new Translation2d((FieldConstants.FIELD_LENGTH / 2) - 3, FieldConstants.FIELD_WIDTH),
+            new Translation2d(
+                (FieldConstants.FIELD_LENGTH / 2) - 3, FieldConstants.FIELD_WIDTH / 2),
+            new Translation2d(
+                (FieldConstants.FIELD_LENGTH / 2) - 0.737, FieldConstants.FIELD_WIDTH / 2),
+            new Translation2d((FieldConstants.FIELD_LENGTH / 2) - 0.737, FieldConstants.FIELD_WIDTH)
+          },
+          "Barge");
+  public static PolygonRegion BARGE_ENTER =
+      new PolygonRegion(
+          new Translation2d[] {
+            new Translation2d(
+                (FieldConstants.FIELD_LENGTH / 2) - 0.737, FieldConstants.FIELD_WIDTH),
             new Translation2d((FieldConstants.FIELD_LENGTH / 2) - 2, FieldConstants.FIELD_WIDTH),
             new Translation2d(
                 (FieldConstants.FIELD_LENGTH / 2) - 2, FieldConstants.FIELD_WIDTH / 2),
-            new Translation2d(FieldConstants.FIELD_LENGTH / 2, FieldConstants.FIELD_WIDTH / 2)
+            new Translation2d(
+                (FieldConstants.FIELD_LENGTH / 2) - 0.737, FieldConstants.FIELD_WIDTH / 2),
+            new Translation2d((FieldConstants.FIELD_LENGTH / 2) - 0.737, FieldConstants.FIELD_WIDTH)
           },
-          "Barge");
+          "BargeEnter");
   private static PolygonRegion RIGHT_CORAL_STATION_REGION =
       new PolygonRegion(
           new Translation2d[] {
@@ -148,6 +164,7 @@ public class FieldRegions {
 
   private static Region[] ALL_REGIONS = {
     BARGE_REGION,
+    BARGE_ENTER,
     PROCESSOR_REGION,
     RIGHT_CORAL_STATION_REGION,
     LEFT_CORAL_STATION_REGION,
@@ -209,5 +226,7 @@ public class FieldRegions {
         REEF_FACE4_REGION.getName(), AllianceFlipUtil.apply(ScoringPoses.REEF_FACE_4_POSE));
     REGION_POSE_TABLE.replace(
         REEF_FACE5_REGION.getName(), AllianceFlipUtil.apply(ScoringPoses.REEF_FACE_5_POSE));
+
+    ScoringPoses.BARGE_TIGHT_ROPE = AllianceFlipUtil.apply(ScoringPoses.BARGE_TIGHT_ROPE);
   }
 }

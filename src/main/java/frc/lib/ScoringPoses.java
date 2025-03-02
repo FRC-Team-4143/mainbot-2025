@@ -61,13 +61,27 @@ public class ScoringPoses {
   public static Pose2d PROCESSOR_POSE =
       FieldConstants.Processor.CENTER_FACE.transformBy(PROCESSOR_OFFSET);
   public static Pose2d BARGE_TIGHT_ROPE_POSE_A =
-      new Pose2d(
-          FieldConstants.Barge.FAR_CAGE.minus(new Translation2d(0.5, 0)),
-          Rotation2d.fromDegrees(0));
+      new Pose2d(7.68, FieldConstants.FIELD_WIDTH, Rotation2d.fromDegrees(0));
   public static Pose2d BARGE_TIGHT_ROPE_POSE_B =
       new Pose2d(
-          FieldConstants.Barge.CLOSE_CAGE.minus(new Translation2d(0.5, 0)),
+          7.68,
+          (FieldConstants.FIELD_WIDTH / 2)
+              + Units.inchesToMeters(7)
+              - Constants.ClawConstants.ALGAE_IMP_OFFSET
+              + (FieldConstants.ALGAE_DIAMETER / 2),
           Rotation2d.fromDegrees(0));
   public static TightRope BARGE_TIGHT_ROPE =
-      new TightRope(BARGE_TIGHT_ROPE_POSE_A, BARGE_TIGHT_ROPE_POSE_B);
+      new TightRope(BARGE_TIGHT_ROPE_POSE_A, BARGE_TIGHT_ROPE_POSE_B, "Barge");
+
+  public static Pose2d PROCESSOR_TIGHT_ROPE_POSE_A =
+      FieldConstants.Processor.CENTER_FACE.transformBy(
+          new Transform2d(
+              3 - DrivetrainConstants.CENTER_OFFSET_X,
+              -Constants.ClawConstants.ALGAE_IMP_OFFSET,
+              new Rotation2d()));
+  public static Pose2d PROCESSOR_TIGHT_ROPE_POSE_B =
+      FieldConstants.Processor.CENTER_FACE.transformBy(
+          new Transform2d(0, -Constants.ClawConstants.ALGAE_IMP_OFFSET, new Rotation2d()));
+  public static TightRope PROCESSOR_TIGHT_ROPE =
+      new TightRope(PROCESSOR_TIGHT_ROPE_POSE_A, PROCESSOR_TIGHT_ROPE_POSE_B, "Processor");
 }
