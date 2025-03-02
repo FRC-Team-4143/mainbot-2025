@@ -7,6 +7,7 @@ package frc.robot.commands;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants.ElevatorConstants.Target;
 import frc.robot.subsystems.Claw;
+import frc.robot.subsystems.Claw.GamePiece;
 import frc.robot.subsystems.Elevator;
 import frc.robot.subsystems.Elevator.SpeedLimit;
 
@@ -20,6 +21,7 @@ public class ManualElevatorOverride extends Command {
     L4
   }
 
+  private static GamePiece lastMode;
   private Level level_;
 
   /** Creates a new LowButtonCommand. */
@@ -30,17 +32,27 @@ public class ManualElevatorOverride extends Command {
 
   // Called when the command is initially scheduled.
   @Override
-  public void initialize() {}
+  public void initialize() {
+    lastMode = Claw.getInstance().getGamePieceMode();
+
+    if (Claw.getInstance().isCoralMode()) {
+      Elevator.getInstance().setSpeedLimit(SpeedLimit.CORAL);
+    } else {
+      Elevator.getInstance().setSpeedLimit(SpeedLimit.ALGAE);
+      Elevator.getInstance().setTarget(Target.ALGAE_PROCESSOR);
+    }
+  }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    if (Claw.getInstance().isCoralMode()) {
-      Elevator.getInstance().setSpeedLimit(SpeedLimit.CORAL);
-
-    } else {
-      Elevator.getInstance().setSpeedLimit(SpeedLimit.ALGAE);
-      Elevator.getInstance().setTarget(Target.ALGAE_PROCESSOR);
+    if (lastMode != Claw.getInstance().getGamePieceMode()) {
+      if (Claw.getInstance().isCoralMode()) {
+        Elevator.getInstance().setSpeedLimit(SpeedLimit.CORAL);
+      } else {
+        Elevator.getInstance().setSpeedLimit(SpeedLimit.ALGAE);
+        Elevator.getInstance().setTarget(Target.ALGAE_PROCESSOR);
+      }
     }
 
     switch (level_) {

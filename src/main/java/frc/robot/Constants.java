@@ -247,7 +247,7 @@ public final class Constants {
     public static final double ELEVATOR_EXPO_KV = 0.11733;
     public static final double ELEVATOR_EXPO_KA = 0.0070285;
     public static final double ELEVATOR_ZERO_THRESHOLD = 0; // In m
-    public static final double ELEVATOR_STATOR_CURRENT_LIMIT = 60.0;
+    public static final double ELEVATOR_STATOR_CURRENT_LIMIT = 80.0;
     public static final double ELEVATOR_HEIGHT_ABOVE_PIVOT = Units.inchesToMeters(8.0);
     public static final double ELEVATOR_MIN_HEIGHT = Units.inchesToMeters(28.25);
     public static final double ELEVATOR_MAX_HEIGHT =
