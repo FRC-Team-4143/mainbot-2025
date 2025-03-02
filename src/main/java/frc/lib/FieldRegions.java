@@ -187,7 +187,6 @@ public class FieldRegions {
       region.constructRegion();
     }
 
-    REGION_POSE_TABLE.put(PROCESSOR_REGION.getName(), ScoringPoses.PROCESSOR_POSE);
     REGION_POSE_TABLE.put(
         RIGHT_CORAL_STATION_REGION.getName(), ScoringPoses.RIGHT_CORAL_STATION_POSE);
     REGION_POSE_TABLE.put(
@@ -207,8 +206,6 @@ public class FieldRegions {
     }
 
     REGION_POSE_TABLE.replace(
-        PROCESSOR_REGION.getName(), AllianceFlipUtil.apply(ScoringPoses.PROCESSOR_POSE));
-    REGION_POSE_TABLE.replace(
         RIGHT_CORAL_STATION_REGION.getName(),
         AllianceFlipUtil.apply(ScoringPoses.RIGHT_CORAL_STATION_POSE));
     REGION_POSE_TABLE.replace(
@@ -227,6 +224,7 @@ public class FieldRegions {
     REGION_POSE_TABLE.replace(
         REEF_FACE5_REGION.getName(), AllianceFlipUtil.apply(ScoringPoses.REEF_FACE_5_POSE));
 
-    ScoringPoses.BARGE_TIGHT_ROPE = AllianceFlipUtil.apply(ScoringPoses.BARGE_TIGHT_ROPE);
+    ScoringPoses.BARGE_TIGHT_ROPE.allianceFlip();
+    ScoringPoses.PROCESSOR_TIGHT_ROPE.allianceFlip();
   }
 }

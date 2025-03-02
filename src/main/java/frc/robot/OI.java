@@ -91,31 +91,31 @@ public abstract class OI {
 
     // Crawl
     driver_pov_active_.whileTrue(
-    Commands.startEnd(
-        () -> SwerveDrivetrain.getInstance().setDriveMode(DriveMode.CRAWL),
-        () -> SwerveDrivetrain.getInstance().restoreDefaultDriveMode()));
+        Commands.startEnd(
+            () -> SwerveDrivetrain.getInstance().setDriveMode(DriveMode.CRAWL),
+            () -> SwerveDrivetrain.getInstance().restoreDefaultDriveMode()));
 
     /*
      *
      * Operator Controller Bindings
      *
      */
-    // Set L4 Target: 
+    // Set L4 Target:
     // - Algae Mode (Manual) -> Barge
     // - Coral Mode (Manual) -> L4
     // - Any Mode   (Vision) -> Set GSM L4
     operator_controller_.y().toggleOnTrue(new ElevatorL4Target());
-    // Set L3 Target: 
+    // Set L3 Target:
     // - Algae Mode (Manual) -> Algae High
     // - Coral Mode (Manual) -> L3
     // - Any Mode   (Vision) -> Set GSM L3
     operator_controller_.b().toggleOnTrue(new ElevatorL3Target());
-    // Set L2 Target: 
+    // Set L2 Target:
     // - Algae Mode (Manual) -> Algae Low
     // - Coral Mode (Manual) -> L2
     // - Any Mode   (Vision) -> Set GSM L2
     operator_controller_.x().toggleOnTrue(new ElevatorL2Target());
-    // Set L1 Target: 
+    // Set L1 Target:
     // - Algae Mode (Manual) -> Processor
     // - Coral Mode (Manual) -> L1
     // - Any Mode   (Vision) -> Set GSM L1

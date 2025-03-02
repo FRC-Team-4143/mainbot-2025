@@ -58,8 +58,6 @@ public class ScoringPoses {
       FieldConstants.CoralStation.LEFT_CENTER_FACE.transformBy(CORAL_STATION_OFFSET);
   public static Pose2d RIGHT_CORAL_STATION_POSE =
       FieldConstants.CoralStation.RIGHT_CENTER_FACE.transformBy(CORAL_STATION_OFFSET);
-  public static Pose2d PROCESSOR_POSE =
-      FieldConstants.Processor.CENTER_FACE.transformBy(PROCESSOR_OFFSET);
   public static Pose2d BARGE_TIGHT_ROPE_POSE_A =
       new Pose2d(7.68, FieldConstants.FIELD_WIDTH, Rotation2d.fromDegrees(0));
   public static Pose2d BARGE_TIGHT_ROPE_POSE_B =
