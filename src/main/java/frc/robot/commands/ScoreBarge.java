@@ -12,6 +12,7 @@ import frc.robot.Constants.ElevatorConstants.Target;
 import frc.robot.subsystems.Claw;
 import frc.robot.subsystems.Claw.GamePiece;
 import frc.robot.subsystems.Elevator;
+import frc.robot.subsystems.Elevator.SpeedLimit;
 import frc.robot.subsystems.PoseEstimator;
 import frc.robot.subsystems.SwerveDrivetrain;
 import frc.robot.subsystems.SwerveDrivetrain.DriveMode;
@@ -59,14 +60,14 @@ public class ScoreBarge extends Command {
   @Override
   public void initialize() {
     claw_.setGamePiece(GamePiece.ALGAE);
+    elevator_.setSpeedLimit(SpeedLimit.ALGAE);
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
     current_region = poseEstimator_.algaeRegion();
-    if (current_region.isPresent()
-        && current_region.get().getName() == "Barge") {
+    if (current_region.isPresent() && current_region.get().getName() == "Barge") {
       drivetrain_.setTightRope(ScoringPoses.BARGE_TIGHT_ROPE);
     } else {
       drivetrain_.setDriveMode(DriveMode.FIELD_CENTRIC);

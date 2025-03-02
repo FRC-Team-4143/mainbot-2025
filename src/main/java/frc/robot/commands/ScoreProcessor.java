@@ -5,13 +5,13 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.lib.FieldRegions;
 import frc.lib.ScoringPoses;
 import frc.mw_lib.geometry.Region;
 import frc.robot.Constants.ElevatorConstants.Target;
 import frc.robot.subsystems.Claw;
 import frc.robot.subsystems.Claw.GamePiece;
 import frc.robot.subsystems.Elevator;
+import frc.robot.subsystems.Elevator.SpeedLimit;
 import frc.robot.subsystems.PoseEstimator;
 import frc.robot.subsystems.SwerveDrivetrain;
 import frc.robot.subsystems.SwerveDrivetrain.DriveMode;
@@ -39,14 +39,14 @@ public class ScoreProcessor extends Command {
   @Override
   public void initialize() {
     claw_.setGamePiece(GamePiece.ALGAE);
+    elevator_.setSpeedLimit(SpeedLimit.ALGAE);
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
     current_region = poseEstimator_.algaeRegion();
-    if (current_region.isPresent()
-        && current_region.get().getName() == "Processor") {
+    if (current_region.isPresent() && current_region.get().getName() == "Processor") {
       drivetrain_.setTightRope(ScoringPoses.PROCESSOR_TIGHT_ROPE);
       elevator_.setTarget(Target.ALGAE_PROCESSOR);
     } else {

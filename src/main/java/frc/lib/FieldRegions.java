@@ -15,8 +15,8 @@ public class FieldRegions {
       new PolygonRegion(
           new Translation2d[] {
             new Translation2d(4, 0),
-            new Translation2d(4, 2),
-            new Translation2d(8, 2),
+            new Translation2d(4, 3),
+            new Translation2d(8, 3),
             new Translation2d(8, 0),
             new Translation2d(4, 0),
           },
