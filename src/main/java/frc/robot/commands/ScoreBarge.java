@@ -5,17 +5,10 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.lib.FieldRegions;
 import frc.lib.ScoringPoses;
 import frc.mw_lib.geometry.Region;
-import frc.robot.subsystems.Claw;
-import frc.robot.subsystems.Elevator;
-import frc.robot.subsystems.PoseEstimator;
-import frc.robot.subsystems.SwerveDrivetrain;
-import frc.robot.subsystems.SwerveDrivetrain.DriveMode;
-import java.util.Optional;
-import edu.wpi.first.wpilibj2.command.Command;
-import frc.lib.ScoringPoses;
-import frc.mw_lib.geometry.Region;
+import frc.robot.Constants.ElevatorConstants.Target;
 import frc.robot.subsystems.Claw;
 import frc.robot.subsystems.Elevator;
 import frc.robot.subsystems.PoseEstimator;
@@ -76,11 +69,17 @@ public class ScoreBarge extends Command {
     } else {
       drivetrain_.setDriveMode(DriveMode.FIELD_CENTRIC);
     }
+    if (FieldRegions.BARGE_ENTER.contains(poseEstimator_.getRobotPose()) && claw_.isAlgaeMode()) {
+      elevator_.setTarget(Target.BARGE);
+    } else {
+      elevator_.setTarget(Target.ALGAE_STOW);
+    }
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
+    elevator_.setTarget(Target.ALGAE_STOW);
     drivetrain_.setDriveMode(DriveMode.FIELD_CENTRIC);
   }
 
