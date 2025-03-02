@@ -187,7 +187,6 @@ public class FieldRegions {
       region.constructRegion();
     }
 
-    REGION_POSE_TABLE.put(PROCESSOR_REGION.getName(), ScoringPoses.PROCESSOR_POSE);
     REGION_POSE_TABLE.put(
         RIGHT_CORAL_STATION_REGION.getName(), ScoringPoses.RIGHT_CORAL_STATION_POSE);
     REGION_POSE_TABLE.put(
