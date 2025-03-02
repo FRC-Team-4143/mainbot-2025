@@ -115,7 +115,7 @@ public class GameStateManager extends Subsystem {
         }
         break;
       case SCORING:
-        drivetrain_.setDriveMode(DriveMode.FIELD_CENTRIC);
+        drivetrain_.restoreDefaultDriveMode();
         // wait until you leave the exit Circle
         if (!FieldRegions.REEF_EXIT.contains(poseEstimator_.getRobotPose())) {
           io_.robot_state_ = RobotState.END;
@@ -123,7 +123,7 @@ public class GameStateManager extends Subsystem {
         break;
       case END:
         // clear saved vars and reset drive mode
-        drivetrain_.setDriveMode(DriveMode.FIELD_CENTRIC);
+        drivetrain_.restoreDefaultDriveMode();
         if (Claw.getInstance().isCoralMode()) {
           elevator_.setSpeedLimit(SpeedLimit.CORAL);
           elevator_.setTarget(ElevatorConstants.Target.STOW);
