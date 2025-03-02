@@ -35,8 +35,8 @@ public class PolygonRegion implements Region {
   }
 
   public void allianceFlip() {
-    for (Translation2d point : points_) {
-      point = AllianceFlipUtil.apply(point);
+    for (int i = 0; i < points_.length; i++) {
+      points_[i] = AllianceFlipUtil.apply(points_[i]);
     }
     constructRegion();
   }
