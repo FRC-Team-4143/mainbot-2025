@@ -149,6 +149,7 @@ public class Elevator extends Subsystem {
     arm_encoder_config_ = new CANcoderConfiguration();
     arm_encoder_config_.MagnetSensor.SensorDirection =
         SensorDirectionValue.CounterClockwise_Positive;
+    arm_encoder_config_.MagnetSensor.AbsoluteSensorDiscontinuityPoint = 1;
     arm_encoder_.getConfigurator().apply(arm_encoder_config_);
 
     // System Behavior Setup
@@ -464,7 +465,6 @@ public class Elevator extends Subsystem {
     @Log.File public Rotation2d target_arm_angle = Rotation2d.fromDegrees(-90);
     @Log.File public double elevator_offset_ = 0;
     @Log.File public Rotation2d arm_offset_ = Rotation2d.fromDegrees(0);
-
     @Log.File public double target_arm_height = 0;
     @Log.File public double elevator_master_rotations_ = 0;
     @Log.File public double elevator_follower_rotations_ = 0;
