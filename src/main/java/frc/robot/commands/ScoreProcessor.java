@@ -16,28 +16,8 @@ import frc.robot.subsystems.PoseEstimator;
 import frc.robot.subsystems.SwerveDrivetrain;
 import frc.robot.subsystems.SwerveDrivetrain.DriveMode;
 import java.util.Optional;
-import java.util.Optional;
-import edu.wpi.first.wpilibj2.command.Command;
-import frc.lib.ScoringPoses;
-import frc.mw_lib.geometry.Region;
-import frc.robot.subsystems.Claw;
-import frc.robot.subsystems.Elevator;
-import frc.robot.subsystems.PoseEstimator;
-import frc.robot.subsystems.SwerveDrivetrain;
-import frc.robot.subsystems.SwerveDrivetrain.DriveMode;
-import java.util.Optional;
-import java.util.Optional;
-import edu.wpi.first.wpilibj2.command.Command;
-import frc.lib.ScoringPoses;
-import frc.mw_lib.geometry.Region;
-import frc.robot.subsystems.Claw;
-import frc.robot.subsystems.Elevator;
-import frc.robot.subsystems.PoseEstimator;
-import frc.robot.subsystems.SwerveDrivetrain;
-import frc.robot.subsystems.SwerveDrivetrain.DriveMode;
-import java.util.Optional;
 
-public class ScoreBarge extends Command {
+public class ScoreProcessor extends Command {
 
   static Elevator elevator_;
   static SwerveDrivetrain drivetrain_;
@@ -46,7 +26,7 @@ public class ScoreBarge extends Command {
   static Optional<Region> current_region = Optional.empty();
 
   /** Creates a new CoralStationLoad. */
-  public ScoreBarge() {
+  public ScoreProcessor() {
     elevator_ = Elevator.getInstance();
     drivetrain_ = SwerveDrivetrain.getInstance();
     poseEstimator_ = PoseEstimator.getInstance();
@@ -66,14 +46,11 @@ public class ScoreBarge extends Command {
   public void execute() {
     current_region = poseEstimator_.algaeRegion();
     if (current_region.isPresent()
-        && current_region.get().getName() == "Barge") {
-      drivetrain_.setTightRope(ScoringPoses.BARGE_TIGHT_ROPE);
+        && current_region.get().getName() == "Processor") {
+      drivetrain_.setTightRope(ScoringPoses.PROCESSOR_TIGHT_ROPE);
+      elevator_.setTarget(Target.ALGAE_PROCESSOR);
     } else {
       drivetrain_.setDriveMode(DriveMode.FIELD_CENTRIC);
-    }
-    if (FieldRegions.BARGE_ENTER.contains(poseEstimator_.getRobotPose())) {
-      elevator_.setTarget(Target.BARGE);
-    } else {
       elevator_.setTarget(Target.ALGAE_STOW);
     }
   }

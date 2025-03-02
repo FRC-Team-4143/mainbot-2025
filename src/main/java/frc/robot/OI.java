@@ -28,6 +28,8 @@ import frc.robot.commands.CoralLoad;
 import frc.robot.commands.CoralReefScore;
 import frc.robot.commands.ScoreBarge;
 import frc.robot.commands.ScoreBarge;
+import frc.robot.commands.ScoreBarge;
+import frc.robot.commands.ScoreProcessor;
 import frc.robot.subsystems.Claw;
 import frc.robot.subsystems.Elevator;
 import frc.robot.subsystems.Elevator.OffsetType;
