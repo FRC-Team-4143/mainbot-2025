@@ -60,64 +60,94 @@ public abstract class OI {
         Commands.runOnce(() -> PoseEstimator.getInstance().disturbPose()).ignoringDisable(true));
     SmartDashboard.putBoolean("Use Vison", false);
 
+    /*
+     *
+     * Driver Controller Bindings
+     *
+     */
+
+    // Driver Load
+    driver_controller_.rightBumper().whileTrue(new GamePieceLoad());
+    // Driver SCore
+    driver_controller_.rightTrigger().whileTrue(new GamePieceEject());
+    // Robot Align
+    driver_controller_.leftTrigger().whileTrue(new AlignWithTarget().onlyIf(use_vison));
+    // Toggle Game Piece
+    driver_controller_.leftBumper().onTrue(Claw.getInstance().toggleGamePieceCommand());
+
+    // TODO: Remove this once automation commands are added
+    driver_controller_
+        .a()
+        .toggleOnTrue(new ManualElevatorOverride(Level.L1).onlyIf(Claw.getInstance()::isAlgaeMode));
+    // TODO: Remove this once automation commands are added
+    driver_controller_
+        .y()
+        .toggleOnTrue(new ManualElevatorOverride(Level.L4).onlyIf(Claw.getInstance()::isAlgaeMode));
+
     // Swap Between Robot Centric and Field Centric
     driver_controller_
         .rightStick()
         .onTrue(SwerveDrivetrain.getInstance().toggleFieldCentric().ignoringDisable(true));
 
+    // Crawl
+    driver_pov_active_.whileTrue(
+    Commands.startEnd(
+        () -> SwerveDrivetrain.getInstance().setDriveMode(DriveMode.CRAWL),
+        () -> SwerveDrivetrain.getInstance().restoreDefaultDriveMode()));
+
     /*
      *
-     * Manual Teleop Bindings
+     * Operator Controller Bindings
      *
      */
-
-    driver_controller_.rightBumper().whileTrue(new GamePieceLoad());
-    driver_controller_.rightTrigger().whileTrue(new GamePieceEject());
-    driver_controller_
-        .a()
-        .toggleOnTrue(new ManualElevatorOverride(Level.L1).onlyIf(Claw.getInstance()::isAlgaeMode));
-    driver_controller_
-        .y()
-        .toggleOnTrue(new ManualElevatorOverride(Level.L4).onlyIf(Claw.getInstance()::isAlgaeMode));
-
+    // Set L4 Target: 
+    // - Algae Mode (Manual) -> Barge
+    // - Coral Mode (Manual) -> L4
+    // - Any Mode   (Vision) -> Set GSM L4
     operator_controller_.y().toggleOnTrue(new ElevatorL4Target());
+    // Set L3 Target: 
+    // - Algae Mode (Manual) -> Algae High
+    // - Coral Mode (Manual) -> L3
+    // - Any Mode   (Vision) -> Set GSM L3
     operator_controller_.b().toggleOnTrue(new ElevatorL3Target());
+    // Set L2 Target: 
+    // - Algae Mode (Manual) -> Algae Low
+    // - Coral Mode (Manual) -> L2
+    // - Any Mode   (Vision) -> Set GSM L2
     operator_controller_.x().toggleOnTrue(new ElevatorL2Target());
+    // Set L1 Target: 
+    // - Algae Mode (Manual) -> Processor
+    // - Coral Mode (Manual) -> L1
+    // - Any Mode   (Vision) -> Set GSM L1
     operator_controller_.a().toggleOnTrue(new ElevatorL1Target());
 
-    driver_controller_.leftBumper().onTrue(Claw.getInstance().toggleGamePieceCommand());
-
-    driver_controller_.leftTrigger().whileTrue(new AlignWithTarget().onlyIf(use_vison));
-
+    // Set GSM Target Column Left
     operator_controller_
         .leftBumper()
         .onTrue(
             Commands.runOnce(
                 () -> GameStateManager.getInstance().setScoringColum(Column.LEFT, true)));
 
+    // Set GSM Target Column Right
     operator_controller_
         .rightBumper()
         .onTrue(
             Commands.runOnce(
                 () -> GameStateManager.getInstance().setScoringColum(Column.RIGHT, true)));
 
-    driver_pov_active_.whileTrue(
-        Commands.startEnd(
-            () -> SwerveDrivetrain.getInstance().setDriveMode(DriveMode.CRAWL),
-            () -> SwerveDrivetrain.getInstance().restoreDefaultDriveMode()));
-
+    // Manual Adjust Elevator Setpoint Up
     operator_controller_
         .povUp()
         .onTrue(Commands.runOnce(() -> Elevator.getInstance().setOffset(OffsetType.ELEVATOR_UP)));
-
+    // Manual Adjust Elevator Setpoint Down
     operator_controller_
         .povDown()
         .onTrue(Commands.runOnce(() -> Elevator.getInstance().setOffset(OffsetType.ELEVATOR_DOWN)));
-
+    // Manual Adjust Arm Setpoint Counter Clockwise
     operator_controller_
         .povLeft()
         .onTrue(Commands.runOnce(() -> Elevator.getInstance().setOffset(OffsetType.ARM_CCW)));
-
+    // Manual Adjust Arm Setpoint Clockwise
     operator_controller_
         .povRight()
         .onTrue(Commands.runOnce(() -> Elevator.getInstance().setOffset(OffsetType.ARM_CW)));
