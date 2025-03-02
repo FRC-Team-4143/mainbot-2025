@@ -38,28 +38,32 @@ import frc.mw_lib.util.ConstantsLoader;
  */
 public final class Constants {
 
-    private static final ConstantsLoader LOADER = ConstantsLoader.getInstance();
-    public static class Vision {
-        public static final String CAMERA_NAME = LOADER.getStringValue("vision", "NAME");
-        public static final Transform3d ROBOT_TO_CAM =
-            new Transform3d(
-                new Translation3d(
-                    Units.inchesToMeters(LOADER.getDoubleValue("vision", "location", "X")), 
-                    Units.inchesToMeters(LOADER.getDoubleValue("vision", "location", "Y")), 
-                    Units.inchesToMeters(LOADER.getDoubleValue("vision", "location", "Z"))),
-                new Rotation3d(
-                    Units.degreesToRadians(LOADER.getDoubleValue("vision", "location", "ROLL")), 
-                    Units.degreesToRadians(LOADER.getDoubleValue("vision", "location", "PITCH")), 
-                    Units.degreesToRadians(LOADER.getDoubleValue("vision", "location", "YAW"))));
+  private static final ConstantsLoader LOADER = ConstantsLoader.getInstance();
 
-        // The layout of the AprilTags on the field
-        public static final AprilTagFieldLayout TAG_LAYOUT =
-            AprilTagFieldLayout.loadField(AprilTagFields.kDefaultField);
+  public static class Vision {
+    public static final String CAMERA_NAME = LOADER.getStringValue("vision", "camera0", "NAME");
+    public static final Transform3d ROBOT_TO_CAM =
+        new Transform3d(
+            new Translation3d(
+                Units.inchesToMeters(LOADER.getDoubleValue("vision", "camera0", "location", "X")),
+                Units.inchesToMeters(LOADER.getDoubleValue("vision", "camera0", "location", "Y")),
+                Units.inchesToMeters(LOADER.getDoubleValue("vision", "camera0", "location", "Z"))),
+            new Rotation3d(
+                Units.degreesToRadians(
+                    LOADER.getDoubleValue("vision", "camera0", "location", "ROLL")),
+                Units.degreesToRadians(
+                    LOADER.getDoubleValue("vision", "camera0", "location", "PITCH")),
+                Units.degreesToRadians(
+                    LOADER.getDoubleValue("vision", "camera0", "location", "YAW"))));
 
-        // The standard deviations of our vision estimated poses, which affect correction rate
-        // (Fake values. Experiment and determine estimation noise on an actual robot.)
-        public static final Matrix<N3, N1> SINGLE_TAG_STD_DEVS = VecBuilder.fill(4, 4, 8);
-        public static final Matrix<N3, N1> MULTI_TAG_STD_DEVS = VecBuilder.fill(0.5, 0.5, 1);
+    // The layout of the AprilTags on the field
+    public static final AprilTagFieldLayout TAG_LAYOUT =
+        AprilTagFieldLayout.loadField(AprilTagFields.kDefaultField);
+
+    // The standard deviations of our vision estimated poses, which affect correction rate
+    // (Fake values. Experiment and determine estimation noise on an actual robot.)
+    public static final Matrix<N3, N1> SINGLE_TAG_STD_DEVS = VecBuilder.fill(4, 4, 8);
+    public static final Matrix<N3, N1> MULTI_TAG_STD_DEVS = VecBuilder.fill(0.5, 0.5, 1);
   }
 
   public class DrivetrainConstants {
