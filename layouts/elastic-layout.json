@@ -57,7 +57,7 @@
             "title": "Use Vison",
             "x": 256.0,
             "y": 512.0,
-            "width": 256.0,
+            "width": 128.0,
             "height": 128.0,
             "type": "Boolean Box",
             "properties": {
@@ -72,7 +72,7 @@
           },
           {
             "title": "Use Vison",
-            "x": 512.0,
+            "x": 384.0,
             "y": 512.0,
             "width": 128.0,
             "height": 128.0,

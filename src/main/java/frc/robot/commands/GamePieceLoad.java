@@ -14,7 +14,7 @@ public class GamePieceLoad extends ConditionalCommand {
   public GamePieceLoad() {
     // Use addRequirements() here to declare subsystem dependencies.
     super(
-        new ConditionalCommand(new CoralStation(), new CoralLoad(), OI.use_vison),
+        new ConditionalCommand(new CoralStation(), new CoralLoad(), OI.use_vision),
         new AlgaeLoad(),
         Claw.getInstance()::isCoralMode);
   }
