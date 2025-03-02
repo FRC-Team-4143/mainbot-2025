@@ -1,7 +1,7 @@
 {
     "drive": {
         "com": {
-            "CENTER_OFFSET_X": 0,
+            "CENTER_OFFSET_X": 18,
             "SLIP_CURRENT": 50,
             "SPEED_AT_12V": 5.0,
             "COUPLE_RATIO": 3.5,
@@ -80,26 +80,38 @@
         }
     },
     "imp" : {
-        "coral_offset": 0.0,
-        "algae_offset": 0.0,
-        "elevator":{
-            "CONTROLLER_P": 1.0,
-            "CONTROLLER_I": 0.0,
-            "CONTROLLER_D": 0.08,
-            "CONTROLLER_S": 0.06766,
-            "CONTROLLER_V": 0.11733,
-            "CONTROLLER_A": 0.0070285,
-            "CONTROLLER_G": 0.43
-        },
-        "arm":{
-            "CONTROLLER_P": 33.476,
-            "CONTROLLER_I": 0.0,
-            "CONTROLLER_D": 0.0,
-            "CONTROLLER_S": 0.032714,
-            "CONTROLLER_V": 9.2434,
-            "CONTROLLER_A": 0.36146,
-            "CONTROLLER_G": 0.27387,
-            "ENCODER_OFFSET": 0.6755
+        "coral_offset": -5.5,
+        "algae_offset": -5.5
+    },
+    "elevator":{
+        "CONTROLLER_P": 1.0,
+        "CONTROLLER_I": 0.0,
+        "CONTROLLER_D": 0.08,
+        "CONTROLLER_S": 0.06766,
+        "CONTROLLER_V": 0.11733,
+        "CONTROLLER_A": 0.0070285,
+        "CONTROLLER_G": 0.43
+    },
+    "arm":{
+        "CONTROLLER_P": 40.0,
+        "CONTROLLER_I": 0.0,
+        "CONTROLLER_D": 0.0,
+        "CONTROLLER_S": 0.024495,
+        "CONTROLLER_V": 8.778,
+        "CONTROLLER_A": 0.25148,
+        "CONTROLLER_G": 0.28
+    },
+    "vision":{
+        "camera0":{
+            "NAME": "vi-output,_ov9281_9-0060",
+            "location":{
+                "X": 9.5,
+                "Y": 9.5,
+                "Z": 21.5,
+                "ROLL": 0,
+                "PITCH": 10,
+                "YAW": 0
+            }
         }
     }
 }

@@ -37,29 +37,29 @@ import frc.mw_lib.util.ConstantsLoader;
  * constants are needed, to reduce verbosity.
  */
 public final class Constants {
-  public static class Vision {
-    public static final String kCameraName = "OV9281-10";
-    // Cam mounted facing forward, half a meter forward of center, half a meter up from center.
-    public static final Transform3d kRobotToCam =
-        new Transform3d(
-            new Translation3d(
-                Units.inchesToMeters(7.5), Units.inchesToMeters(-7), Units.inchesToMeters(8.25)),
-            new Rotation3d(180, 0, 0));
 
-    // The layout of the AprilTags on the field
-    public static final AprilTagFieldLayout kTagLayout =
-        AprilTagFieldLayout.loadField(AprilTagFields.kDefaultField);
+    private static final ConstantsLoader LOADER = ConstantsLoader.getInstance();
+    public static class Vision {
+        public static final String CAMERA_NAME = LOADER.getStringValue("vision", "NAME");
+        public static final Transform3d ROBOT_TO_CAM =
+            new Transform3d(
+                new Translation3d(
+                    Units.inchesToMeters(LOADER.getDoubleValue("vision", "location", "X")), 
+                    Units.inchesToMeters(LOADER.getDoubleValue("vision", "location", "Y")), 
+                    Units.inchesToMeters(LOADER.getDoubleValue("vision", "location", "Z"))),
+                new Rotation3d(
+                    Units.degreesToRadians(LOADER.getDoubleValue("vision", "location", "ROLL")), 
+                    Units.degreesToRadians(LOADER.getDoubleValue("vision", "location", "PITCH")), 
+                    Units.degreesToRadians(LOADER.getDoubleValue("vision", "location", "YAW"))));
 
-    // The standard deviations of our vision estimated poses, which affect correction rate
-    // (Fake values. Experiment and determine estimation noise on an actual robot.)
-    public static final Matrix<N3, N1> kSingleTagStdDevs = VecBuilder.fill(4, 4, 8);
-    public static final Matrix<N3, N1> kMultiTagStdDevs = VecBuilder.fill(0.5, 0.5, 1);
-  }
+        // The layout of the AprilTags on the field
+        public static final AprilTagFieldLayout TAG_LAYOUT =
+            AprilTagFieldLayout.loadField(AprilTagFields.kDefaultField);
 
-  private static final ConstantsLoader LOADER = ConstantsLoader.getInstance();
-
-  public static class OperatorConstants {
-    public static final int kDriverControllerPort = 0;
+        // The standard deviations of our vision estimated poses, which affect correction rate
+        // (Fake values. Experiment and determine estimation noise on an actual robot.)
+        public static final Matrix<N3, N1> SINGLE_TAG_STD_DEVS = VecBuilder.fill(4, 4, 8);
+        public static final Matrix<N3, N1> MULTI_TAG_STD_DEVS = VecBuilder.fill(0.5, 0.5, 1);
   }
 
   public class DrivetrainConstants {
@@ -256,20 +256,18 @@ public final class Constants {
 
     public static final Slot0Configs ELEVATOR_GAINS =
         new Slot0Configs()
-            .withKP(LOADER.getDoubleValue("imp", "elevator", "CONTROLLER_P"))
-            .withKI(LOADER.getDoubleValue("imp", "elevator", "CONTROLLER_I"))
-            .withKD(LOADER.getDoubleValue("imp", "elevator", "CONTROLLER_D"))
-            .withKS(LOADER.getDoubleValue("imp", "elevator", "CONTROLLER_S"))
-            .withKV(LOADER.getDoubleValue("imp", "elevator", "CONTROLLER_V"))
-            .withKA(LOADER.getDoubleValue("imp", "elevator", "CONTROLLER_A"))
-            .withKG(LOADER.getDoubleValue("imp", "elevator", "CONTROLLER_G"))
+            .withKP(LOADER.getDoubleValue("elevator", "CONTROLLER_P"))
+            .withKI(LOADER.getDoubleValue("elevator", "CONTROLLER_I"))
+            .withKD(LOADER.getDoubleValue("elevator", "CONTROLLER_D"))
+            .withKS(LOADER.getDoubleValue("elevator", "CONTROLLER_S"))
+            .withKV(LOADER.getDoubleValue("elevator", "CONTROLLER_V"))
+            .withKA(LOADER.getDoubleValue("elevator", "CONTROLLER_A"))
+            .withKG(LOADER.getDoubleValue("elevator", "CONTROLLER_G"))
             .withGravityType(GravityTypeValue.Elevator_Static);
 
     // Arm Constants:
     public static final int ARM_MOTOR_ID = 23;
     public static final int ARM_ENCODER_ID = 24;
-    public static final double ARM_ENCODER_OFFSET =
-        LOADER.getDoubleValue("imp", "arm", "ENCODER_OFFSET");
     public static final double ARM_TARGET_THRESHOLD = 0.25; // In rads
     public static final InvertedValue ARM_FOLLOWER_INVERSION =
         InvertedValue.CounterClockwise_Positive;
@@ -286,30 +284,30 @@ public final class Constants {
         Units.radiansToRotations(Units.degreesToRadians(-95));
     public static final Slot0Configs ARM_GAINS =
         new Slot0Configs()
-            .withKP(LOADER.getDoubleValue("imp", "arm", "CONTROLLER_P"))
-            .withKI(LOADER.getDoubleValue("imp", "arm", "CONTROLLER_I"))
-            .withKD(LOADER.getDoubleValue("imp", "arm", "CONTROLLER_D"))
-            .withKS(LOADER.getDoubleValue("imp", "arm", "CONTROLLER_S"))
-            .withKV(LOADER.getDoubleValue("imp", "arm", "CONTROLLER_V"))
-            .withKA(LOADER.getDoubleValue("imp", "arm", "CONTROLLER_A"))
-            .withKG(LOADER.getDoubleValue("imp", "arm", "CONTROLLER_G"))
+            .withKP(LOADER.getDoubleValue("arm", "CONTROLLER_P"))
+            .withKI(LOADER.getDoubleValue("arm", "CONTROLLER_I"))
+            .withKD(LOADER.getDoubleValue("arm", "CONTROLLER_D"))
+            .withKS(LOADER.getDoubleValue("arm", "CONTROLLER_S"))
+            .withKV(LOADER.getDoubleValue("arm", "CONTROLLER_V"))
+            .withKA(LOADER.getDoubleValue("arm", "CONTROLLER_A"))
+            .withKG(LOADER.getDoubleValue("arm", "CONTROLLER_G"))
             .withGravityType(GravityTypeValue.Arm_Cosine);
 
     public enum Target {
       L4(
-          FieldConstants.ReefHeight.L4.HEIGHT + Units.inchesToMeters(13),
+          FieldConstants.ReefHeight.L4.HEIGHT + Units.inchesToMeters(11),
           Rotation2d.fromDegrees(130),
           ControlType.EFFECTOR),
       L3(
-          FieldConstants.ReefHeight.L3.HEIGHT + Units.inchesToMeters(12),
+          FieldConstants.ReefHeight.L3.HEIGHT + Units.inchesToMeters(8),
           Rotation2d.fromDegrees(125),
           ControlType.EFFECTOR),
       L2(
-          FieldConstants.ReefHeight.L2.HEIGHT + Units.inchesToMeters(12),
+          FieldConstants.ReefHeight.L2.HEIGHT + Units.inchesToMeters(7),
           Rotation2d.fromDegrees(125),
           ControlType.EFFECTOR),
 
-      STATION(1.1808, Rotation2d.fromRadians(-1.027767), ControlType.PIVOT),
+      STATION(1.05, Rotation2d.fromRadians(-1.027767), ControlType.PIVOT),
       CLIMB(ELEVATOR_MIN_SAFETY, new Rotation2d(), ControlType.PIVOT),
       STOW(ELEVATOR_MIN_SAFETY, Rotation2d.fromDegrees(-90), ControlType.PIVOT),
       ALGAE_LOW(ELEVATOR_MIN_HEIGHT, Rotation2d.fromDegrees(90 + 50), ControlType.EFFECTOR),

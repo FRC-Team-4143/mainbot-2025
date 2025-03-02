@@ -275,6 +275,7 @@ public class Elevator extends Subsystem {
         "Subsystems/Elevator/Control Mode", io_.current_control_mode.toString());
     SmartDashboard.putNumber("Subsystems/Elevator/Target Height", io_.target_elevator_height);
     SmartDashboard.putNumber("Subsystems/Elevator/Current Height", io_.current_elevator_height);
+    SmartDashboard.putNumber("Subsystems/Elevator/Manual Offset", io_.elevator_offset_);
     SmartDashboard.putString(
         "Subsystems/Elevator/Motor Temp Master", elevator_master_.getDeviceTemp().toString());
     SmartDashboard.putString(
@@ -292,6 +293,7 @@ public class Elevator extends Subsystem {
     SmartDashboard.putNumber(
         "Subsystems/Arm/Absolute Encoder",
         arm_encoder_.getAbsolutePosition().getValue().in(Rotations));
+    SmartDashboard.putNumber("Subsystems/Arm/Manual Offset", io_.arm_offset_.getRadians());
     updateMechanism();
   }
 
@@ -396,11 +398,16 @@ public class Elevator extends Subsystem {
   }
 
   public void setTarget(Target target) {
+    io_.target_ = target;
     if (target.type == ControlType.PIVOT) {
       setPivotHeight(target.height, target.angle);
     } else if (target.type == ControlType.EFFECTOR) {
       setEndEffectorHeight(target.height, target.angle);
     }
+  }
+
+  public Target getTarget() {
+    return io_.target_;
   }
 
   public void resetManualOffsets() {
@@ -453,6 +460,7 @@ public class Elevator extends Subsystem {
     @Log.File public double current_elevator_height = 0;
     @Log.File public double target_elevator_height = ElevatorConstants.ELEVATOR_MIN_SAFETY;
     @Log.File public double current_arm_angle_ = 0;
+    @Log.File public Target target_ = Target.STOW;
     @Log.File public Rotation2d target_arm_angle = Rotation2d.fromDegrees(-90);
     @Log.File public double elevator_offset_ = 0;
     @Log.File public Rotation2d arm_offset_ = Rotation2d.fromDegrees(0);
