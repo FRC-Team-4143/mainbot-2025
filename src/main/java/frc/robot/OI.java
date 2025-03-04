@@ -18,6 +18,7 @@ import frc.robot.commands.GamePieceEject;
 import frc.robot.commands.GamePieceLoad;
 import frc.robot.commands.ManualElevatorOverride;
 import frc.robot.commands.ManualElevatorOverride.Level;
+import frc.robot.commands.SwerveProfile;
 import frc.robot.subsystems.Claw;
 import frc.robot.subsystems.Elevator;
 import frc.robot.subsystems.Elevator.OffsetType;
@@ -89,6 +90,7 @@ public abstract class OI {
         .rightStick()
         .onTrue(SwerveDrivetrain.getInstance().toggleFieldCentric().ignoringDisable(true));
 
+    driver_controller_.x().whileTrue(new SwerveProfile(2.5, 0, 0));
     // Crawl
     driver_pov_active_.whileTrue(
         Commands.startEnd(
