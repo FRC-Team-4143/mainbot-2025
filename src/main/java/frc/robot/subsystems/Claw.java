@@ -9,9 +9,11 @@ import static edu.wpi.first.units.Units.Amps;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.NeutralModeValue;
+import edu.wpi.first.math.filter.Debouncer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.mw_lib.subsystem.Subsystem;
+import frc.mw_lib.util.Util;
 import frc.robot.Constants;
 import frc.robot.Constants.ClawConstants;
 import monologue.Annotations.Log;
@@ -35,6 +37,9 @@ public class Claw extends Subsystem {
 
   // Singleton pattern
   private static Claw claw_instance_ = null;
+
+  private Debouncer coral_debouncer_ = new Debouncer(0.25, Debouncer.DebounceType.kFalling);
+  private Debouncer algae_debouncer_ = new Debouncer(0.25, Debouncer.DebounceType.kFalling);
 
   public static Claw getInstance() {
     if (claw_instance_ == null) {
@@ -177,6 +182,18 @@ public class Claw extends Subsystem {
 
   public boolean isAlgaeMode() {
     return io_.game_piece_ == GamePiece.ALGAE;
+  }
+
+  public boolean hasAlgae() {
+    return algae_debouncer_.calculate(
+        isAlgaeMode()
+            && wheel_motor_.getSupplyCurrent().getValueAsDouble() > 0
+            && Util.epislonEquals(wheel_motor_.getVelocity().getValueAsDouble(), 0, 2.5));
+  }
+
+  public boolean hasCoral() {
+    return coral_debouncer_.calculate(
+        isCoralMode() && wheel_motor_.getSupplyCurrent().getValueAsDouble() > 7);
   }
 
   public class ClawPeriodicIo implements Logged {
