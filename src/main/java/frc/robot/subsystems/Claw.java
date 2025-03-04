@@ -141,6 +141,8 @@ public class Claw extends Subsystem {
   public void outputTelemetry(double timestamp) {
     SmartDashboard.putString("Subsystems/Claw/Mode", io_.claw_mode_.toString());
     SmartDashboard.putNumber("Subsystems/Claw/Current_Output", io_.current_output_);
+    SmartDashboard.putBoolean("Subsystems/Claw/has Algae", hasAlgae());
+    SmartDashboard.putBoolean("Subsystems/Claw/has Coral", hasCoral());
     SmartDashboard.putString(
         "Subsystems/Claw/Game Piece Mode",
         (io_.game_piece_ == GamePiece.CORAL)
