@@ -4,8 +4,11 @@ import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Transform2d;
+import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.networktables.NetworkTableInstance;
+import edu.wpi.first.networktables.StructArrayPublisher;
 import edu.wpi.first.networktables.StructPublisher;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -36,6 +39,7 @@ public class PoseEstimator extends Subsystem {
   private SwerveDrivePoseEstimator vision_filtered_odometry_;
   private StructPublisher<Pose2d> cam_pose_pub_;
   private StructPublisher<Pose2d> robot_pose_pub_;
+  private StructArrayPublisher<Transform3d> used_tags_pub_;
 
   int update_counter_ = 2;
   double[] vision_std_devs_ = {1, 1, 1};
@@ -51,6 +55,10 @@ public class PoseEstimator extends Subsystem {
     robot_pose_pub_ =
         NetworkTableInstance.getDefault()
             .getStructTopic("PoseEstimation/Robot Pose", Pose2d.struct)
+            .publish();
+    used_tags_pub_ =
+        NetworkTableInstance.getDefault()
+            .getStructArrayTopic("PoseEstimation/Tags Detected", Transform3d.struct)
             .publish();
   }
 
@@ -119,6 +127,9 @@ public class PoseEstimator extends Subsystem {
     field_.setRobotPose(io_.filtered_vision_pose_);
     if (io_.raw_vision_pose_.isPresent()) cam_pose_pub_.set(io_.raw_vision_pose_.get());
     robot_pose_pub_.set(io_.filtered_vision_pose_);
+    Transform3d[] tags = new Transform3d[io_.detected_tags_.size()];
+    tags = io_.detected_tags_.toArray(tags);
+    used_tags_pub_.set(tags);
     SmartDashboard.putData("Subsystems/PoseEstimator/Field", field_);
   }
 
@@ -195,7 +206,13 @@ public class PoseEstimator extends Subsystem {
   }
 
   public class PoseEstimatorPeriodicIo implements Logged {
-    @Log.File public Pose2d filtered_vision_pose_ = new Pose2d();
+    @Log.File
+    public Pose2d filtered_vision_pose_ =
+        new Pose2d(
+            Units.inchesToMeters(100.003),
+            Units.inchesToMeters(158.500),
+            Rotation2d.fromDegrees(0)); // new Pose2d();
+
     @Log.File public Optional<Pose2d> raw_vision_pose_ = Optional.empty();
 
     @Log.File
