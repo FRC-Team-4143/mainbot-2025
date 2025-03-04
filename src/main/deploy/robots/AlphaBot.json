@@ -80,8 +80,8 @@
         }
     },
     "imp" : {
-        "coral_offset": -5.5,
-        "algae_offset": -5.5
+        "coral_offset": -4,
+        "algae_offset": -4
     },
     "elevator":{
         "CONTROLLER_P": 1.0,
@@ -90,7 +90,10 @@
         "CONTROLLER_S": 0.06766,
         "CONTROLLER_V": 0.11733,
         "CONTROLLER_A": 0.0070285,
-        "CONTROLLER_G": 0.43
+        "CONTROLLER_G": 0.43,
+        "HEIGHT_PIVOT_MIN":28.375,
+        "HEIGHT_PIVOT_MAX":81,
+        "HEIGHT_PIVOT_TO_TOP":8.5
     },
     "arm":{
         "CONTROLLER_P": 33.476,
@@ -99,7 +102,9 @@
         "CONTROLLER_S": 0.032714,
         "CONTROLLER_V": 9.2434,
         "CONTROLLER_A": 0.36146,
-        "CONTROLLER_G": 0.27387
+        "CONTROLLER_G": 0.27387,
+        "LENGTH_PIVOT_TO_FUNNEL":12,
+        "DEPTH_CORAL_POCKET":8.875
     },
     "vision":{
         "camera0":{

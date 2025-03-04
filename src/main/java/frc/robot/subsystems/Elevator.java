@@ -24,12 +24,13 @@ import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj.util.Color8Bit;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
+import frc.lib.ElevatorKinematics;
 import frc.lib.FieldRegions;
-import frc.mw_lib.ElevatorKinematics;
 import frc.mw_lib.controls.TalonFXTuner;
 import frc.mw_lib.subsystem.Subsystem;
 import frc.mw_lib.util.MWPreferences;
 import frc.mw_lib.util.Util;
+import frc.robot.Constants.ArmConstants;
 import frc.robot.Constants.ElevatorConstants;
 import frc.robot.Constants.ElevatorConstants.Target;
 import frc.robot.Constants.ElevatorConstants.Target.ControlType;
@@ -104,8 +105,8 @@ public class Elevator extends Subsystem {
     elevator_limit_switch_ = new DigitalInput(ElevatorConstants.ELEVATOR_LIMIT_SWITCH_PORT_NUMBER);
     elevator_master_ = new TalonFX(ElevatorConstants.ELEVATOR_MASTER_ID, "CANivore");
     elevator_follower_ = new TalonFX(ElevatorConstants.ELEVATOR_FOLLOWER_ID, "CANivore");
-    arm_motor_ = new TalonFX(ElevatorConstants.ARM_MOTOR_ID, "CANivore");
-    arm_encoder_ = new CANcoder(ElevatorConstants.ARM_ENCODER_ID, "CANivore");
+    arm_motor_ = new TalonFX(ArmConstants.ARM_MOTOR_ID, "CANivore");
+    arm_encoder_ = new CANcoder(ArmConstants.ARM_ENCODER_ID, "CANivore");
 
     // Elevator Config
     elevator_config_ = new TalonFXConfiguration();
@@ -117,10 +118,10 @@ public class Elevator extends Subsystem {
     elevator_config_.MotorOutput.NeutralMode = NeutralModeValue.Brake;
     elevator_config_.SoftwareLimitSwitch.ForwardSoftLimitEnable = false;
     elevator_config_.SoftwareLimitSwitch.ForwardSoftLimitThreshold =
-        ElevatorConstants.ELEVATOR_MAX_HEIGHT;
+        ElevatorConstants.ELEVATOR_HEIGHT_PIVOT_MAX;
     elevator_config_.SoftwareLimitSwitch.ReverseSoftLimitEnable = false;
     elevator_config_.SoftwareLimitSwitch.ReverseSoftLimitThreshold =
-        ElevatorConstants.ELEVATOR_MIN_HEIGHT;
+        ElevatorConstants.ELEVATOR_HEIGHT_PIVOT_MIN;
     elevator_config_.CurrentLimits.StatorCurrentLimit =
         ElevatorConstants.ELEVATOR_STATOR_CURRENT_LIMIT;
     elevator_config_.CurrentLimits.StatorCurrentLimitEnable = true;
@@ -133,16 +134,16 @@ public class Elevator extends Subsystem {
     // Arm Configuration
     arm_config_ = new TalonFXConfiguration();
     arm_config_.Feedback.FeedbackSensorSource = FeedbackSensorSourceValue.RotorSensor;
-    arm_config_.Feedback.SensorToMechanismRatio = ElevatorConstants.SENSOR_TO_MECHANISM_RATIO;
-    arm_config_.Slot0 = ElevatorConstants.ARM_GAINS;
-    arm_config_.MotionMagic.MotionMagicCruiseVelocity = ElevatorConstants.CORAL_ARM_CRUISE_VELOCITY;
-    arm_config_.MotionMagic.MotionMagicAcceleration = ElevatorConstants.CORAL_ARM_ACCELERATION;
+    arm_config_.Feedback.SensorToMechanismRatio = ArmConstants.SENSOR_TO_MECHANISM_RATIO;
+    arm_config_.Slot0 = ArmConstants.ARM_GAINS;
+    arm_config_.MotionMagic.MotionMagicCruiseVelocity = ArmConstants.CORAL_ARM_CRUISE_VELOCITY;
+    arm_config_.MotionMagic.MotionMagicAcceleration = ArmConstants.CORAL_ARM_ACCELERATION;
     arm_config_.MotorOutput.NeutralMode = NeutralModeValue.Brake;
     arm_config_.ClosedLoopGeneral.ContinuousWrap = false;
     arm_config_.SoftwareLimitSwitch.ForwardSoftLimitEnable = true;
-    arm_config_.SoftwareLimitSwitch.ForwardSoftLimitThreshold = ElevatorConstants.ARM_FORWARD_LIMT;
+    arm_config_.SoftwareLimitSwitch.ForwardSoftLimitThreshold = ArmConstants.ARM_FORWARD_LIMT;
     arm_config_.SoftwareLimitSwitch.ReverseSoftLimitEnable = true;
-    arm_config_.SoftwareLimitSwitch.ReverseSoftLimitThreshold = ElevatorConstants.ARM_REVERSE_LIMT;
+    arm_config_.SoftwareLimitSwitch.ReverseSoftLimitThreshold = ArmConstants.ARM_REVERSE_LIMT;
     arm_motor_.getConfigurator().apply(arm_config_);
 
     // Arm Encoder Config
@@ -159,7 +160,7 @@ public class Elevator extends Subsystem {
     elevator_at_minimum_ = () -> isElevatorAtMinimum();
     reset_elevator_trigger_ = new Trigger(elevator_at_minimum_);
 
-    kinematics_ = new ElevatorKinematics(ElevatorConstants.ARM_LENGTH);
+    kinematics_ = new ElevatorKinematics(ArmConstants.ARM_LENGTH, ArmConstants.ARM_WIDTH);
 
     reset_elevator_trigger_.onTrue(Commands.runOnce(() -> elevatorPosReset()));
 
@@ -170,19 +171,19 @@ public class Elevator extends Subsystem {
         mech_root_.append(
             new MechanismLigament2d(
                 "Elevator",
-                ElevatorConstants.ELEVATOR_MIN_HEIGHT,
+                ElevatorConstants.ELEVATOR_HEIGHT_PIVOT_MIN,
                 90,
                 6,
                 new Color8Bit(Color.kPurple)));
     arm_mech_ =
         elevator_mech_.append(
             new MechanismLigament2d(
-                "Arm", ElevatorConstants.ARM_LENGTH, -180, 6, new Color8Bit(Color.kOrange)));
+                "Arm", ArmConstants.ARM_LENGTH, -180, 6, new Color8Bit(Color.kOrange)));
     elevator_max_mech_ =
         elevator_mech_.append(
             new MechanismLigament2d(
                 "Elevator Max",
-                ElevatorConstants.ELEVATOR_HEIGHT_ABOVE_PIVOT,
+                ElevatorConstants.ELEVATOR_HEIGHT_PIVOT_TO_TOP,
                 0,
                 6,
                 new Color8Bit(Color.kPurple)));
@@ -220,7 +221,7 @@ public class Elevator extends Subsystem {
     io_.current_elevator_height =
         (((io_.elevator_master_rotations_ + io_.elevator_follower_rotations_) / 2)
                 * ElevatorConstants.ELEVATOR_ROTATIONS_TO_METERS)
-            + ElevatorConstants.ELEVATOR_MIN_HEIGHT;
+            + ElevatorConstants.ELEVATOR_HEIGHT_PIVOT_MIN;
     // io_.current_arm_angle =
     // arm_encoder_.getAbsolutePosition().getValue().in(Radians);
     io_.current_arm_angle_ = arm_motor_.getPosition().getValue().in(Radians);
@@ -238,21 +239,21 @@ public class Elevator extends Subsystem {
         break;
     }
 
-    if (io_.target_elevator_height < ElevatorConstants.ELEVATOR_MIN_HEIGHT) {
+    if (io_.target_elevator_height < ElevatorConstants.ELEVATOR_HEIGHT_PIVOT_MIN) {
       DataLogManager.log(
           "ERROR: Target Elevator Height: "
               + io_.target_elevator_height
               + " Min Elevator Height: "
-              + ElevatorConstants.ELEVATOR_MIN_HEIGHT);
-      io_.target_elevator_height = ElevatorConstants.ELEVATOR_MIN_HEIGHT;
+              + ElevatorConstants.ELEVATOR_HEIGHT_PIVOT_MIN);
+      io_.target_elevator_height = ElevatorConstants.ELEVATOR_HEIGHT_PIVOT_MIN;
     }
-    if (io_.target_elevator_height > ElevatorConstants.ELEVATOR_MAX_HEIGHT) {
+    if (io_.target_elevator_height > ElevatorConstants.ELEVATOR_HEIGHT_PIVOT_MAX) {
       DataLogManager.log(
           "ERROR: Target Elevator Height: "
               + io_.target_elevator_height
               + " Min Elevator Height: "
-              + ElevatorConstants.ELEVATOR_MAX_HEIGHT);
-      io_.target_elevator_height = ElevatorConstants.ELEVATOR_MAX_HEIGHT;
+              + ElevatorConstants.ELEVATOR_HEIGHT_PIVOT_MAX);
+      io_.target_elevator_height = ElevatorConstants.ELEVATOR_HEIGHT_PIVOT_MAX;
     }
   }
 
@@ -262,7 +263,7 @@ public class Elevator extends Subsystem {
         elevator_request_
             .withPosition(
                 ((io_.target_elevator_height + io_.elevator_offset_)
-                        - ElevatorConstants.ELEVATOR_MIN_HEIGHT)
+                        - ElevatorConstants.ELEVATOR_HEIGHT_PIVOT_MIN)
                     / ElevatorConstants.ELEVATOR_ROTATIONS_TO_METERS)
             .withLimitReverseMotion(isElevatorAtMinimum()));
     elevator_follower_.setControl(new StrictFollower(elevator_master_.getDeviceID()));
@@ -311,7 +312,7 @@ public class Elevator extends Subsystem {
     return Util.epislonEquals(
         io_.current_arm_angle_,
         io_.target_arm_angle.getRadians(),
-        ElevatorConstants.ARM_TARGET_THRESHOLD);
+        ArmConstants.ARM_TARGET_THRESHOLD);
   }
 
   /**
@@ -422,13 +423,11 @@ public class Elevator extends Subsystem {
 
   public void setSpeedLimit(SpeedLimit limit) {
     if (limit == SpeedLimit.CORAL) {
-      arm_config_.MotionMagic.MotionMagicCruiseVelocity =
-          ElevatorConstants.CORAL_ARM_CRUISE_VELOCITY;
-      arm_config_.MotionMagic.MotionMagicAcceleration = ElevatorConstants.CORAL_ARM_ACCELERATION;
+      arm_config_.MotionMagic.MotionMagicCruiseVelocity = ArmConstants.CORAL_ARM_CRUISE_VELOCITY;
+      arm_config_.MotionMagic.MotionMagicAcceleration = ArmConstants.CORAL_ARM_ACCELERATION;
     } else if (limit == SpeedLimit.ALGAE) {
-      arm_config_.MotionMagic.MotionMagicCruiseVelocity =
-          ElevatorConstants.ALGAE_ARM_CRUISE_VELOCITY;
-      arm_config_.MotionMagic.MotionMagicAcceleration = ElevatorConstants.ALGAE_ARM_ACCELERATION;
+      arm_config_.MotionMagic.MotionMagicCruiseVelocity = ArmConstants.ALGAE_ARM_CRUISE_VELOCITY;
+      arm_config_.MotionMagic.MotionMagicAcceleration = ArmConstants.ALGAE_ARM_ACCELERATION;
     }
     arm_motor_.getConfigurator().apply(arm_config_);
   }
@@ -459,7 +458,7 @@ public class Elevator extends Subsystem {
     // IO container for all variables
     @Log.File public ControlMode current_control_mode = ControlMode.PIVOT;
     @Log.File public double current_elevator_height = 0;
-    @Log.File public double target_elevator_height = ElevatorConstants.ELEVATOR_MIN_SAFETY;
+    @Log.File public double target_elevator_height = ElevatorConstants.ELEVATOR_HEIGHT_PIVOT_SAFETY;
     @Log.File public double current_arm_angle_ = 0;
     @Log.File public Target target_ = Target.STOW;
     @Log.File public Rotation2d target_arm_angle = Rotation2d.fromDegrees(-90);
