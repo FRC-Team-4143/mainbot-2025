@@ -13,7 +13,13 @@ import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.FeedbackSensorSourceValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.ctre.phoenix6.signals.SensorDirectionValue;
+import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Rotation3d;
+import edu.wpi.first.math.geometry.Translation3d;
+import edu.wpi.first.networktables.NetworkTableInstance;
+import edu.wpi.first.networktables.StructArrayPublisher;
+import edu.wpi.first.networktables.StructPublisher;
 import edu.wpi.first.wpilibj.DataLogManager;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.smartdashboard.Mechanism2d;
@@ -72,6 +78,8 @@ public class Elevator extends Subsystem {
   private MechanismLigament2d elevator_mech_;
   private MechanismLigament2d elevator_max_mech_;
   private MechanismLigament2d arm_mech_;
+  private StructArrayPublisher<Pose3d> stages_pub_;
+  private StructPublisher<Pose3d> arm_pub_;
 
   TalonFXTuner elevator_tuner_;
   TalonFXTuner arm_tuner_;
@@ -186,6 +194,12 @@ public class Elevator extends Subsystem {
                 0,
                 6,
                 new Color8Bit(Color.kPurple)));
+    stages_pub_ =
+        NetworkTableInstance.getDefault()
+            .getStructArrayTopic("Components/Elevator/Stages", Pose3d.struct)
+            .publish();
+    arm_pub_ =
+        NetworkTableInstance.getDefault().getStructTopic("Components/Arm", Pose3d.struct).publish();
 
     // System Tuning
     elevator_tuner_ =
@@ -302,6 +316,12 @@ public class Elevator extends Subsystem {
     elevator_mech_.setLength(io_.current_elevator_height);
     arm_mech_.setAngle(-Math.toDegrees(io_.current_arm_angle_) + 90);
     SmartDashboard.putData("Subsystems/Elevator/System Mech", system_mech_);
+    Pose3d[] test = {new Pose3d(), new Pose3d(), new Pose3d()};
+    stages_pub_.set(test);
+    arm_pub_.set(
+        new Pose3d(
+            new Translation3d(0, 0, io_.current_elevator_height),
+            new Rotation3d(0, io_.current_arm_angle_, 0)));
   }
 
   /**
