@@ -15,7 +15,7 @@ For the 2025 Season we are using the [2025 MARS/WARS Mainbot](/layouts/adscope-a
     - Note: This will require you to redo this process every time something is updated in the asset package.
 
 ## Adjusting Assets
-Each asset package has a `config.json` that links all of the models together. It allows you to adjust the "zero" rotation and position for each component.
+Each asset package has a `config.json` that links all of the models together. It allows you to adjust the "zero" rotation and position for each component. Mechanical Advantage has a [Youtube video](https://www.youtube.com/watch?v=unX1PsPi0VA&t=173s&ab_channel=LittletonRobotics) that shows the steps to attach components to their associated pose publishers. 
 ```
 // Sequence of rotations along the x, y, and z axes
 zeroedRotations": [
