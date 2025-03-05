@@ -5,21 +5,91 @@
     {
       "name": "Teleoperated",
       "grid_layout": {
-        "layouts": [],
-        "containers": [
+        "layouts": [
           {
-            "title": "Seed Field Centric",
+            "title": "Vision Enable",
+            "x": 256.0,
+            "y": 512.0,
+            "width": 256.0,
+            "height": 256.0,
+            "type": "List Layout",
+            "properties": {
+              "label_position": "TOP"
+            },
+            "children": [
+              {
+                "title": "Use Vision Features",
+                "x": 256.0,
+                "y": 768.0,
+                "width": 256.0,
+                "height": 128.0,
+                "type": "Boolean Box",
+                "properties": {
+                  "topic": "/SmartDashboard/Vision/Use Vision Features",
+                  "period": 0.06,
+                  "data_type": "boolean",
+                  "true_color": 4283215696,
+                  "false_color": 4294198070,
+                  "true_icon": "None",
+                  "false_icon": "None"
+                }
+              },
+              {
+                "title": "Use Vision Features",
+                "x": 384.0,
+                "y": 896.0,
+                "width": 256.0,
+                "height": 128.0,
+                "type": "Toggle Switch",
+                "properties": {
+                  "topic": "/SmartDashboard/Vision/Use Vision Features",
+                  "period": 0.06,
+                  "data_type": "boolean"
+                }
+              }
+            ]
+          },
+          {
+            "title": "Field Centric Offset",
             "x": 0.0,
             "y": 512.0,
             "width": 256.0,
-            "height": 128.0,
-            "type": "Command",
+            "height": 256.0,
+            "type": "List Layout",
             "properties": {
-              "topic": "/SmartDashboard/Commands/Seed Field Centric",
-              "period": 0.06,
-              "show_type": false
-            }
-          },
+              "label_position": "TOP"
+            },
+            "children": [
+              {
+                "title": "Seed Field Centric",
+                "x": 384.0,
+                "y": 640.0,
+                "width": 256.0,
+                "height": 128.0,
+                "type": "Command",
+                "properties": {
+                  "topic": "/SmartDashboard/Commands/Seed Field Centric",
+                  "period": 0.06,
+                  "show_type": false
+                }
+              },
+              {
+                "title": "Yaw",
+                "x": 512.0,
+                "y": 768.0,
+                "width": 256.0,
+                "height": 128.0,
+                "type": "Large Text Display",
+                "properties": {
+                  "topic": "/SmartDashboard/Subsystems/Swerve/Yaw",
+                  "period": 0.06,
+                  "data_type": "double"
+                }
+              }
+            ]
+          }
+        ],
+        "containers": [
           {
             "title": "Game Piece Mode",
             "x": 1152.0,
@@ -51,36 +121,6 @@
               "field_rotation": 0.0,
               "robot_color": 4294198070,
               "trajectory_color": 4294967295
-            }
-          },
-          {
-            "title": "Use Vison",
-            "x": 256.0,
-            "y": 512.0,
-            "width": 128.0,
-            "height": 128.0,
-            "type": "Boolean Box",
-            "properties": {
-              "topic": "/SmartDashboard/Use Vison",
-              "period": 0.06,
-              "data_type": "boolean",
-              "true_color": 4283215696,
-              "false_color": 4294198070,
-              "true_icon": "None",
-              "false_icon": "None"
-            }
-          },
-          {
-            "title": "Use Vison",
-            "x": 384.0,
-            "y": 512.0,
-            "width": 128.0,
-            "height": 128.0,
-            "type": "Toggle Switch",
-            "properties": {
-              "topic": "/SmartDashboard/Use Vison",
-              "period": 0.06,
-              "data_type": "boolean"
             }
           }
         ]
@@ -839,6 +879,20 @@
                   "data_type": "double",
                   "show_submit_button": false
                 }
+              },
+              {
+                "title": "Manual Offset",
+                "x": 0.0,
+                "y": 0.0,
+                "width": 128.0,
+                "height": 128.0,
+                "type": "Text Display",
+                "properties": {
+                  "topic": "/SmartDashboard/Subsystems/Arm/Manual Offset",
+                  "period": 0.06,
+                  "data_type": "double",
+                  "show_submit_button": false
+                }
               }
             ]
           },
@@ -946,6 +1000,20 @@
                   "data_type": "double",
                   "show_submit_button": false
                 }
+              },
+              {
+                "title": "Manual Offset",
+                "x": 0.0,
+                "y": 0.0,
+                "width": 128.0,
+                "height": 128.0,
+                "type": "Text Display",
+                "properties": {
+                  "topic": "/SmartDashboard/Subsystems/Elevator/Manual Offset",
+                  "period": 0.06,
+                  "data_type": "double",
+                  "show_submit_button": false
+                }
               }
             ]
           },
@@ -1026,6 +1094,45 @@
                 }
               }
             ]
+          },
+          {
+            "title": "Reset Commands",
+            "x": 0.0,
+            "y": 512.0,
+            "width": 384.0,
+            "height": 256.0,
+            "type": "List Layout",
+            "properties": {
+              "label_position": "TOP"
+            },
+            "children": [
+              {
+                "title": "Zero Elevator & Arm",
+                "x": 128.0,
+                "y": 640.0,
+                "width": 256.0,
+                "height": 128.0,
+                "type": "Command",
+                "properties": {
+                  "topic": "/SmartDashboard/Commands/Zero Elevator & Arm",
+                  "period": 0.06,
+                  "show_type": false
+                }
+              },
+              {
+                "title": "Reset Arm & Elevator Manual Offsets",
+                "x": 256.0,
+                "y": 768.0,
+                "width": 256.0,
+                "height": 128.0,
+                "type": "Command",
+                "properties": {
+                  "topic": "/SmartDashboard/Commands/Reset Arm & Elevator Manual Offsets",
+                  "period": 0.06,
+                  "show_type": false
+                }
+              }
+            ]
           }
         ],
         "containers": [
@@ -1040,19 +1147,6 @@
               "topic": "/SmartDashboard/Config/RobotName",
               "period": 0.06,
               "data_type": "string"
-            }
-          },
-          {
-            "title": "Zero Elevator & Arm",
-            "x": 0.0,
-            "y": 512.0,
-            "width": 256.0,
-            "height": 128.0,
-            "type": "Command",
-            "properties": {
-              "topic": "/SmartDashboard/Commands/Zero Elevator & Arm",
-              "period": 0.06,
-              "show_type": false
             }
           }
         ]

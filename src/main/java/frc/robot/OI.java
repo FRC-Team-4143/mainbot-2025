@@ -38,7 +38,8 @@ public abstract class OI {
 
   private static BooleanSupplier pov_is_present_ = () -> getDriverJoystickPOV().isPresent();
   private static Trigger driver_pov_active_ = new Trigger(pov_is_present_);
-  public static BooleanSupplier use_vision = () -> SmartDashboard.getBoolean("Use Vision", false);
+  public static BooleanSupplier use_vision =
+      () -> SmartDashboard.getBoolean("Vision/Use Vision Features", false);
 
   public static void configureBindings() {
 
@@ -59,7 +60,7 @@ public abstract class OI {
     SmartDashboard.putData(
         "Commands/Disturb Pose",
         Commands.runOnce(() -> PoseEstimator.getInstance().disturbPose()).ignoringDisable(true));
-    SmartDashboard.putBoolean("Use Vision", false);
+    SmartDashboard.putBoolean("Vision/Use Vision Features", false);
 
     /*
      *
