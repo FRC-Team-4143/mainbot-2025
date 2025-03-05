@@ -280,17 +280,17 @@ public class Elevator extends Subsystem {
   }
 
   public void updateMechanism() {
-    Pose3d[] test = {
-      new Pose3d(),
-      new Pose3d(
-          0,
-          0,
-          (io_.current_elevator_height - ElevatorConstants.ELEVATOR_MIN_HEIGHT) / 2
-              + ElevatorConstants.ELEVATOR_MIN_HEIGHT,
-          new Rotation3d()),
-      new Pose3d(0, 0, io_.current_elevator_height, new Rotation3d())
-    };
-    stages_pub_.set(test);
+    stages_pub_.set(
+        new Pose3d[] {
+          new Pose3d(),
+          new Pose3d(
+              0,
+              0,
+              (io_.current_elevator_height - ElevatorConstants.ELEVATOR_MIN_HEIGHT) / 2
+                  + ElevatorConstants.ELEVATOR_MIN_HEIGHT,
+              new Rotation3d()),
+          new Pose3d(0, 0, io_.current_elevator_height, new Rotation3d())
+        });
     arm_pub_.set(
         new Pose3d(
             0,
