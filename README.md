@@ -36,11 +36,11 @@ The entire config can be seen in the config files
 
 ## Field Zones
 The field is split into multiple zones that help determine where the Auto Align command brings the robot to.
-The Reef Zones shown below are used for determining what face will be aligned with when Auto Align command. 
-- When in algae mode the robot will align with the algae in the corresponding face. 
+The Reef Zones shown below are used for determining what face will be aligned with when Auto Align command.
+- When in algae mode the robot will align with the algae in the corresponding face.
 - When in coral mode the robot will align with the branch determined by the GSM in the corresponding face.
 ![Reef Zones](docs/images/reef_zones.png)
-The Aux Zones are used for scoring algae or picking up coral from the coral station. 
+The Aux Zones are used for scoring algae or picking up coral from the coral station.
 - When in algae mode with an algae in the robot the Auto Align command will use the two zones near the center of the field. If inside either of those zones the robot will tractor beam to the purple line and move the elevator to the corresponding target when in the zone outlined in green.
 - When in the blue zones near the coral station the robot will rotate to the face of the corresponding station when the load game piece command in run.
 ![Aux Zones](docs/images/aux_zones.png)
