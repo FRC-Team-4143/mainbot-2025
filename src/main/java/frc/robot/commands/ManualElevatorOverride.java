@@ -83,10 +83,12 @@ public class ManualElevatorOverride extends Command {
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    if (Claw.getInstance().isCoralMode()) {
-      Elevator.getInstance().setTarget(Target.STOW);
-    } else {
-      Elevator.getInstance().setTarget(Target.ALGAE_STOW);
+    if (interrupted == false) {
+      if (Claw.getInstance().isCoralMode()) {
+        Elevator.getInstance().setTarget(Target.STOW);
+      } else {
+        Elevator.getInstance().setTarget(Target.ALGAE_STOW);
+      }
     }
   }
 
