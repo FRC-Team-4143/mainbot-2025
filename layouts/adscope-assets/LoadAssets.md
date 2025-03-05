@@ -1,7 +1,7 @@
 # Advantage Scope Custom Assets
 Advantage Scope allows you to use custom robot assets to display whats happening to your robot in a more meaningful manner. It takes a lot of work to setup, but full instructions can be found in the Advantage Scope Custom Assets [Documentation Page](https://docs.advantagescope.org/more-features/custom-assets#overview).
 
-For the 2025 Season we are using the [2025 MARS/WARS Mainbot](/layouts/adscope-assets/Robot_2025_Mainbot/config.json) asset. This asset includes all of setup for articulated components. If you just a static representation you can use the [2025 MARS/WARS Static]() asset.
+For the 2025 Season we are using the [2025 MARS/WARS Mainbot](/layouts/adscope-assets/Robot_2025_Mainbot/config.json) asset. This asset includes all of setup for articulated components. If you just a static of the frame use [2025 MARS/WARS Base](/layouts/adscope-assets/Robot_2025_Base/config.json) asset.
 
 ## Loading Assets
 #### Project Link
