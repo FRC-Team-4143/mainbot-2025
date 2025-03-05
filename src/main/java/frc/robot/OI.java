@@ -91,7 +91,6 @@ public abstract class OI {
         .rightStick()
         .onTrue(SwerveDrivetrain.getInstance().toggleFieldCentric().ignoringDisable(true));
 
-    driver_controller_.x().whileTrue(new SwerveProfile(2.5, 0, 0));
     // Crawl
     driver_pov_active_.whileTrue(
         Commands.startEnd(
