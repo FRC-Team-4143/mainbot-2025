@@ -14,6 +14,7 @@ import frc.mw_lib.geometry.PolygonRegion;
 import frc.mw_lib.geometry.Region;
 import frc.mw_lib.subsystem.Subsystem;
 import frc.robot.Vision;
+import java.util.ArrayList;
 import java.util.Optional;
 import monologue.Annotations.Log;
 import monologue.Logged;
@@ -65,39 +66,49 @@ public class PoseEstimator extends Subsystem {
 
   @Override
   public void readPeriodicInputs(double timestamp) {
-    // Correct pose estimate with vision measurements from Photonvision
-    io_.vision_data_packet_ = Vision.getInstance().getEstimatedGlobalPose();
+    if (io_.vision_data_packet_.size() < Vision.getInstance().getNumCameras()) {
+      io_.vision_data_packet_.ensureCapacity(Vision.getInstance().getNumCameras());
+      for (int i = 0; i < Vision.getInstance().getNumCameras(); i++) {
+        io_.vision_data_packet_.add(null);
+      }
+    }
+
+    for (int i = 0; i < Vision.getInstance().getNumCameras(); i++) {
+      io_.vision_data_packet_.set(i, Vision.getInstance().getEstimatedGlobalPose(i));
+    }
   }
 
   // Make a subscriber, integate vision measurements wpilib method on the new
   // odometry, getLastChange?
   @Override
   public void updateLogic(double timestamp) {
-    io_.vision_data_packet_.ifPresentOrElse(
-        est -> {
-          // Change our trust in the measurement based on the tags we can see
-          var estStdDevs = Vision.getInstance().getEstimationStdDevs();
+    for (Optional<EstimatedRobotPose> elem : io_.vision_data_packet_) {
+      elem.ifPresentOrElse(
+          est -> {
+            // Change our trust in the measurement based on the tags we can see
+            var estStdDevs = Vision.getInstance().getEstimationStdDevs();
 
-          var est_timestamp = est.timestampSeconds;
-          var latency = timestamp - est_timestamp;
-          SmartDashboard.putNumber("Subsystems/PoseEstimator/Vision Latency", latency);
-          if (latency < 0 || latency > .05) {
-            // keep latency sane
-            latency = .05;
-            est_timestamp = timestamp - latency;
-          }
-          io_.raw_vision_pose_ = Optional.of(est.estimatedPose.toPose2d());
+            var est_timestamp = est.timestampSeconds;
+            var latency = timestamp - est_timestamp;
+            SmartDashboard.putNumber("Subsystems/PoseEstimator/Vision Latency", latency);
+            if (latency < 0 || latency > .05) {
+              // keep latency sane
+              latency = .05;
+              est_timestamp = timestamp - latency;
+            }
+            io_.raw_vision_pose_ = Optional.of(est.estimatedPose.toPose2d());
 
-          vision_filtered_odometry_.addVisionMeasurement(
-              io_.raw_vision_pose_.get(), est_timestamp, estStdDevs);
-        },
-        () -> io_.raw_vision_pose_ = Optional.empty());
+            vision_filtered_odometry_.addVisionMeasurement(
+                io_.raw_vision_pose_.get(), est_timestamp, estStdDevs);
+          },
+          () -> io_.raw_vision_pose_ = Optional.empty());
 
-    io_.filtered_vision_pose_ =
-        vision_filtered_odometry_.updateWithTime(
-            timestamp,
-            SwerveDrivetrain.getInstance().getImuYaw(),
-            SwerveDrivetrain.getInstance().getModulePositions());
+      io_.filtered_vision_pose_ =
+          vision_filtered_odometry_.updateWithTime(
+              timestamp,
+              SwerveDrivetrain.getInstance().getImuYaw(),
+              SwerveDrivetrain.getInstance().getModulePositions());
+    }
   }
 
   @Override
@@ -186,7 +197,10 @@ public class PoseEstimator extends Subsystem {
   public class PoseEstimatorPeriodicIo implements Logged {
     @Log.File public Pose2d filtered_vision_pose_ = new Pose2d();
     @Log.File public Optional<Pose2d> raw_vision_pose_ = Optional.empty();
-    @Log.File public Optional<EstimatedRobotPose> vision_data_packet_ = Optional.empty();
+
+    @Log.File
+    public ArrayList<Optional<EstimatedRobotPose>> vision_data_packet_ =
+        new ArrayList<Optional<EstimatedRobotPose>>();
   }
 
   @Override

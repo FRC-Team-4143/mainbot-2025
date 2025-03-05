@@ -64,26 +64,26 @@
         },
         "traj_controller": {
             "TRANSLATION_P": 0.0,
-            "TRANSLATION_I" : 0.0,
-            "TRANSLATION_D" : 0.0,
-            "HEADING_P" : 0.0,
-            "HEADING_I" : 0.0,
-            "HEADING_D" : 0.0
+            "TRANSLATION_I": 0.0,
+            "TRANSLATION_D": 0.0,
+            "HEADING_P": 0.0,
+            "HEADING_I": 0.0,
+            "HEADING_D": 0.0
         },
         "pose_controller": {
             "TRANSLATION_P": 0.0,
-            "TRANSLATION_I" : 0.0,
-            "TRANSLATION_D" : 0.0,
-            "HEADING_P" : 0.0,
-            "HEADING_I" : 0.0,
-            "HEADING_D" : 0.0
+            "TRANSLATION_I": 0.0,
+            "TRANSLATION_D": 0.0,
+            "HEADING_P": 0.0,
+            "HEADING_I": 0.0,
+            "HEADING_D": 0.0
         }
     },
-    "imp" : {
+    "imp": {
         "coral_offset": -5.5,
         "algae_offset": -5.5
     },
-    "elevator":{
+    "elevator": {
         "CONTROLLER_P": 1.0,
         "CONTROLLER_I": 0.0,
         "CONTROLLER_D": 0.08,
@@ -92,7 +92,7 @@
         "CONTROLLER_A": 0.0070285,
         "CONTROLLER_G": 0.43
     },
-    "arm":{
+    "arm": {
         "CONTROLLER_P": 40.0,
         "CONTROLLER_I": 0.0,
         "CONTROLLER_D": 0.0,
@@ -101,15 +101,26 @@
         "CONTROLLER_A": 0.25148,
         "CONTROLLER_G": 0.28
     },
-    "vision":{
-        "camera0":{
+    "vision": {
+        "camera0": {
             "NAME": "vi-output,_ov9281_9-0060",
-            "location":{
+            "location": {
                 "X": 9.5,
                 "Y": 9.5,
                 "Z": 21.5,
                 "ROLL": 0,
                 "PITCH": 10,
+                "YAW": 0
+            }
+        },
+        "camera1": {
+            "NAME": "OV9281-10",
+            "location": {
+                "X": 7.5,
+                "Y": -7,
+                "Z": 8.25,
+                "ROLL": 0,
+                "PITCH": 0,
                 "YAW": 0
             }
         }

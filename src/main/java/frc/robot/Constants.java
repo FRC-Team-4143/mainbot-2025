@@ -41,8 +41,9 @@ public final class Constants {
   private static final ConstantsLoader LOADER = ConstantsLoader.getInstance();
 
   public static class Vision {
-    public static final String CAMERA_NAME = LOADER.getStringValue("vision", "camera0", "NAME");
-    public static final Transform3d ROBOT_TO_CAM =
+    public static final String CAMERA1_NAME = LOADER.getStringValue("vision", "camera0", "NAME");
+    public static final String CAMERA2_NAME = LOADER.getStringValue("vision", "camera1", "NAME");
+    public static final Transform3d ROBOT_TO_CAM1 =
         new Transform3d(
             new Translation3d(
                 Units.inchesToMeters(LOADER.getDoubleValue("vision", "camera0", "location", "X")),
@@ -56,11 +57,26 @@ public final class Constants {
                 Units.degreesToRadians(
                     LOADER.getDoubleValue("vision", "camera0", "location", "YAW"))));
 
+    public static final Transform3d ROBOT_TO_CAM2 =
+        new Transform3d(
+            new Translation3d(
+                Units.inchesToMeters(LOADER.getDoubleValue("vision", "camera1", "location", "X")),
+                Units.inchesToMeters(LOADER.getDoubleValue("vision", "camera1", "location", "Y")),
+                Units.inchesToMeters(LOADER.getDoubleValue("vision", "camera1", "location", "Z"))),
+            new Rotation3d(
+                Units.degreesToRadians(
+                    LOADER.getDoubleValue("vision", "camera1", "location", "ROLL")),
+                Units.degreesToRadians(
+                    LOADER.getDoubleValue("vision", "camera1", "location", "PITCH")),
+                Units.degreesToRadians(
+                    LOADER.getDoubleValue("vision", "camera1", "location", "YAW"))));
+
     // The layout of the AprilTags on the field
     public static final AprilTagFieldLayout TAG_LAYOUT =
         AprilTagFieldLayout.loadField(AprilTagFields.kDefaultField);
 
-    // The standard deviations of our vision estimated poses, which affect correction rate
+    // The standard deviations of our vision estimated poses, which affect
+    // correction rate
     // (Fake values. Experiment and determine estimation noise on an actual robot.)
     public static final Matrix<N3, N1> SINGLE_TAG_STD_DEVS = VecBuilder.fill(4, 4, 8);
     public static final Matrix<N3, N1> MULTI_TAG_STD_DEVS = VecBuilder.fill(0.5, 0.5, 1);
