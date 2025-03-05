@@ -16,18 +16,12 @@ import com.ctre.phoenix6.signals.SensorDirectionValue;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Rotation3d;
-import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.networktables.StructArrayPublisher;
 import edu.wpi.first.networktables.StructPublisher;
 import edu.wpi.first.wpilibj.DataLogManager;
 import edu.wpi.first.wpilibj.DigitalInput;
-import edu.wpi.first.wpilibj.smartdashboard.Mechanism2d;
-import edu.wpi.first.wpilibj.smartdashboard.MechanismLigament2d;
-import edu.wpi.first.wpilibj.smartdashboard.MechanismRoot2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import edu.wpi.first.wpilibj.util.Color;
-import edu.wpi.first.wpilibj.util.Color8Bit;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.lib.FieldRegions;
@@ -73,11 +67,6 @@ public class Elevator extends Subsystem {
   private ElevatorKinematics kinematics_;
 
   // Mechanisms
-  private Mechanism2d system_mech_;
-  private MechanismRoot2d mech_root_;
-  private MechanismLigament2d elevator_mech_;
-  private MechanismLigament2d elevator_max_mech_;
-  private MechanismLigament2d arm_mech_;
   private StructArrayPublisher<Pose3d> stages_pub_;
   private StructPublisher<Pose3d> arm_pub_;
 
@@ -172,28 +161,6 @@ public class Elevator extends Subsystem {
     reset_elevator_trigger_.onTrue(Commands.runOnce(() -> elevatorPosReset()));
 
     // Mechanism Setup
-    system_mech_ = new Mechanism2d(0, 0);
-    mech_root_ = system_mech_.getRoot("Base", 0, 0);
-    elevator_mech_ =
-        mech_root_.append(
-            new MechanismLigament2d(
-                "Elevator",
-                ElevatorConstants.ELEVATOR_MIN_HEIGHT,
-                90,
-                6,
-                new Color8Bit(Color.kPurple)));
-    arm_mech_ =
-        elevator_mech_.append(
-            new MechanismLigament2d(
-                "Arm", ElevatorConstants.ARM_LENGTH, -180, 6, new Color8Bit(Color.kOrange)));
-    elevator_max_mech_ =
-        elevator_mech_.append(
-            new MechanismLigament2d(
-                "Elevator Max",
-                ElevatorConstants.ELEVATOR_HEIGHT_ABOVE_PIVOT,
-                0,
-                6,
-                new Color8Bit(Color.kPurple)));
     stages_pub_ =
         NetworkTableInstance.getDefault()
             .getStructArrayTopic("Components/Elevator/Stages", Pose3d.struct)
@@ -313,14 +280,22 @@ public class Elevator extends Subsystem {
   }
 
   public void updateMechanism() {
-    elevator_mech_.setLength(io_.current_elevator_height);
-    arm_mech_.setAngle(-Math.toDegrees(io_.current_arm_angle_) + 90);
-    SmartDashboard.putData("Subsystems/Elevator/System Mech", system_mech_);
-    Pose3d[] test = {new Pose3d(), new Pose3d(), new Pose3d()};
+    Pose3d[] test = {
+      new Pose3d(),
+      new Pose3d(
+          0,
+          0,
+          (io_.current_elevator_height - ElevatorConstants.ELEVATOR_MIN_HEIGHT) / 2
+              + ElevatorConstants.ELEVATOR_MIN_HEIGHT,
+          new Rotation3d()),
+      new Pose3d(0, 0, io_.current_elevator_height, new Rotation3d())
+    };
     stages_pub_.set(test);
     arm_pub_.set(
         new Pose3d(
-            new Translation3d(0, 0, io_.current_elevator_height),
+            0,
+            0,
+            io_.current_elevator_height + 0.012,
             new Rotation3d(0, io_.current_arm_angle_, 0)));
   }
 
