@@ -107,21 +107,21 @@
             "location": {
                 "X": 9.5,
                 "Y": 9.5,
-                "Z": 21.5,
+                "Z": 21.25,
                 "ROLL": 0,
                 "PITCH": 10,
-                "YAW": 0
+                "YAW": -5
             }
         },
         "camera1": {
-            "NAME": "OV9281-10",
+            "NAME": "vi-output,_ov9281_10-0060",
             "location": {
                 "X": 7.5,
-                "Y": -7,
-                "Z": 8.25,
+                "Y": 9.5,
+                "Z": 21.25,
                 "ROLL": 0,
-                "PITCH": 0,
-                "YAW": 0
+                "PITCH": 30,
+                "YAW": -5
             }
         }
     }

@@ -1,10 +1,12 @@
 package frc.robot.subsystems;
 
+import static frc.robot.Constants.Vision.TAG_LAYOUT;
+
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Transform2d;
-import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.networktables.NetworkTableInstance;
@@ -18,6 +20,7 @@ import frc.mw_lib.geometry.Region;
 import frc.mw_lib.subsystem.Subsystem;
 import frc.robot.Vision;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 import monologue.Annotations.Log;
 import monologue.Logged;
@@ -39,7 +42,7 @@ public class PoseEstimator extends Subsystem {
   private SwerveDrivePoseEstimator vision_filtered_odometry_;
   private StructPublisher<Pose2d> cam_pose_pub_;
   private StructPublisher<Pose2d> robot_pose_pub_;
-  private StructArrayPublisher<Transform3d> used_tags_pub_;
+  private StructArrayPublisher<Pose3d> used_tags_pub_;
 
   int update_counter_ = 2;
   double[] vision_std_devs_ = {1, 1, 1};
@@ -58,7 +61,7 @@ public class PoseEstimator extends Subsystem {
             .publish();
     used_tags_pub_ =
         NetworkTableInstance.getDefault()
-            .getStructArrayTopic("PoseEstimation/Tags Detected", Transform3d.struct)
+            .getStructArrayTopic("PoseEstimation/Tags Detected", Pose3d.struct)
             .publish();
   }
 
@@ -90,6 +93,7 @@ public class PoseEstimator extends Subsystem {
   // odometry, getLastChange?
   @Override
   public void updateLogic(double timestamp) {
+    io_.detected_tags_.clear();
     for (Optional<EstimatedRobotPose> elem : io_.vision_data_packet_) {
       elem.ifPresentOrElse(
           est -> {
@@ -108,8 +112,12 @@ public class PoseEstimator extends Subsystem {
 
             vision_filtered_odometry_.addVisionMeasurement(
                 io_.raw_vision_pose_.get(), est_timestamp, estStdDevs);
+            est.targetsUsed.forEach(
+                (target) -> io_.detected_tags_.add(TAG_LAYOUT.getTagPose(target.fiducialId).get()));
           },
-          () -> io_.raw_vision_pose_ = Optional.empty());
+          () -> {
+            io_.raw_vision_pose_ = Optional.empty();
+          });
 
       io_.filtered_vision_pose_ =
           vision_filtered_odometry_.updateWithTime(
@@ -127,7 +135,7 @@ public class PoseEstimator extends Subsystem {
     field_.setRobotPose(io_.filtered_vision_pose_);
     if (io_.raw_vision_pose_.isPresent()) cam_pose_pub_.set(io_.raw_vision_pose_.get());
     robot_pose_pub_.set(io_.filtered_vision_pose_);
-    Transform3d[] tags = new Transform3d[io_.detected_tags_.size()];
+    Pose3d[] tags = new Pose3d[io_.detected_tags_.size()];
     tags = io_.detected_tags_.toArray(tags);
     used_tags_pub_.set(tags);
     SmartDashboard.putData("Subsystems/PoseEstimator/Field", field_);
@@ -218,6 +226,8 @@ public class PoseEstimator extends Subsystem {
     @Log.File
     public ArrayList<Optional<EstimatedRobotPose>> vision_data_packet_ =
         new ArrayList<Optional<EstimatedRobotPose>>();
+
+    @Log.File public List<Pose3d> detected_tags_ = new ArrayList<Pose3d>();
   }
 
   @Override
