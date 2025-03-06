@@ -8,7 +8,6 @@ import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.math.geometry.Translation2d;
-import edu.wpi.first.math.util.Units;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.networktables.StructArrayPublisher;
 import edu.wpi.first.networktables.StructPublisher;
@@ -93,7 +92,6 @@ public class PoseEstimator extends Subsystem {
   // odometry, getLastChange?
   @Override
   public void updateLogic(double timestamp) {
-    io_.detected_tags_.clear();
     for (Optional<EstimatedRobotPose> elem : io_.vision_data_packet_) {
       elem.ifPresentOrElse(
           est -> {
@@ -135,10 +133,12 @@ public class PoseEstimator extends Subsystem {
     field_.setRobotPose(io_.filtered_vision_pose_);
     if (io_.raw_vision_pose_.isPresent()) cam_pose_pub_.set(io_.raw_vision_pose_.get());
     robot_pose_pub_.set(io_.filtered_vision_pose_);
+    SmartDashboard.putData("Subsystems/PoseEstimator/Field", field_);
+    // Publish Detected Tags as Vision Targets
     Pose3d[] tags = new Pose3d[io_.detected_tags_.size()];
     tags = io_.detected_tags_.toArray(tags);
     used_tags_pub_.set(tags);
-    SmartDashboard.putData("Subsystems/PoseEstimator/Field", field_);
+    io_.detected_tags_.clear();
   }
 
   public Field2d getFieldWidget() {
@@ -214,13 +214,7 @@ public class PoseEstimator extends Subsystem {
   }
 
   public class PoseEstimatorPeriodicIo implements Logged {
-    @Log.File
-    public Pose2d filtered_vision_pose_ =
-        new Pose2d(
-            Units.inchesToMeters(100.003),
-            Units.inchesToMeters(158.500),
-            Rotation2d.fromDegrees(0)); // new Pose2d();
-
+    @Log.File public Pose2d filtered_vision_pose_ = new Pose2d();
     @Log.File public Optional<Pose2d> raw_vision_pose_ = Optional.empty();
 
     @Log.File
