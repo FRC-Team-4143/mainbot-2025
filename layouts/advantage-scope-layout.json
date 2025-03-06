@@ -1,10 +1,10 @@
 {
   "hubs": [
     {
-      "x": 0,
-      "y": 64,
-      "width": 1503,
-      "height": 938,
+      "x": -8,
+      "y": -8,
+      "width": 1552,
+      "height": 928,
       "state": {
         "sidebar": {
           "width": 344,
@@ -293,9 +293,29 @@
                       "color": "#ff0000",
                       "arrangement": "0,1,2,3"
                     }
+                  },
+                  {
+                    "type": "vision",
+                    "logKey": "NT:PoseEstimation/Tags Detected",
+                    "logType": "Pose3d[]",
+                    "visible": true,
+                    "options": {
+                      "color": "#00ff00",
+                      "size": "normal"
+                    }
+                  },
+                  {
+                    "type": "ghost",
+                    "logKey": "NT:PoseEstimation/Vision Pose",
+                    "logType": "Pose2d",
+                    "visible": true,
+                    "options": {
+                      "model": "2025 MARS/WARS Base",
+                      "color": "#00ff00"
+                    }
                   }
                 ],
-                "game": "Axes",
+                "game": "2025 Field (Welded)",
                 "origin": "blue"
               },
               "controllerUUID": "9c1meejh9cpjxrrgngznlfsa2fl0dnfc",
@@ -303,17 +323,17 @@
                 "cameraIndex": -2,
                 "orbitFov": 50,
                 "cameraPosition": [
-                  -0.2143023419463964,
-                  1.5305180473560926,
-                  -1.5375732555876727
+                  1.3130294895482924,
+                  2.4049946442865,
+                  0.2941170448215201
                 ],
                 "cameraTarget": [
-                  -0.03308733763594364,
-                  -0.08739284483000634,
-                  0.7275736467517235
+                  0.04070225396640785,
+                  0.5118168733503572,
+                  0.0771808025063697
                 ]
               },
-              "controlsHeight": 360
+              "controlsHeight": 160
             },
             {
               "type": 9,
