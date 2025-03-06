@@ -245,7 +245,9 @@ public final class Constants {
     // Units.inchesToMeters(Sprocket Circumference * Math.PI) / gearbox ratio *
     // rigging
     public static final double ELEVATOR_ROTATIONS_TO_METERS =
-        Units.inchesToMeters(1.751 * Math.PI) / 4 * 2;
+        Units.inchesToMeters(1.751 * Math.PI)
+            / LOADER.getDoubleValue("elevator", "ELEVATOR_GEAR_RATIO")
+            * 2;
     public static final double ELEVATOR_CRUISE_VELOCITY = 5.0 / ELEVATOR_ROTATIONS_TO_METERS;
     public static final double ELEVATOR_ACCEL = 3.0 / ELEVATOR_ROTATIONS_TO_METERS;
     public static final double ELEVATOR_EXPO_KV = 0.11733;
