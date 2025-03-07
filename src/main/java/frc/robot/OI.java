@@ -7,22 +7,22 @@ package frc.robot;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Commands;
-import edu.wpi.first.wpilibj2.command.ConditionalCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
-import frc.robot.commands.AlgaeEject;
-import frc.robot.commands.AlgaeReefPickup;
-import frc.robot.commands.CoralEject;
-import frc.robot.commands.CoralLoad;
-import frc.robot.commands.CoralReefScore;
-import frc.robot.commands.ElevatorButton;
-import frc.robot.commands.ElevatorButton.Level;
+import frc.robot.commands.AlignWithTarget;
+import frc.robot.commands.ElevatorL1Target;
+import frc.robot.commands.ElevatorL2Target;
+import frc.robot.commands.ElevatorL3Target;
+import frc.robot.commands.ElevatorL4Target;
+import frc.robot.commands.GamePieceEject;
+import frc.robot.commands.GamePieceLoad;
+import frc.robot.commands.ManualElevatorOverride;
+import frc.robot.commands.ManualElevatorOverride.Level;
 import frc.robot.subsystems.Claw;
 import frc.robot.subsystems.Elevator;
 import frc.robot.subsystems.Elevator.OffsetType;
 import frc.robot.subsystems.GameStateManager;
 import frc.robot.subsystems.GameStateManager.Column;
-import frc.robot.subsystems.GameStateManager.ReefScoringTarget;
 import frc.robot.subsystems.PoseEstimator;
 import frc.robot.subsystems.SwerveDrivetrain;
 import frc.robot.subsystems.SwerveDrivetrain.DriveMode;
@@ -37,6 +37,8 @@ public abstract class OI {
 
   private static BooleanSupplier pov_is_present_ = () -> getDriverJoystickPOV().isPresent();
   private static Trigger driver_pov_active_ = new Trigger(pov_is_present_);
+  public static BooleanSupplier use_vision =
+      () -> SmartDashboard.getBoolean("Vision/Use Vision Features", false);
 
   public static void configureBindings() {
 
@@ -57,83 +59,96 @@ public abstract class OI {
     SmartDashboard.putData(
         "Commands/Disturb Pose",
         Commands.runOnce(() -> PoseEstimator.getInstance().disturbPose()).ignoringDisable(true));
+    SmartDashboard.putBoolean("Vision/Use Vision Features", false);
+
+    /*
+     *
+     * Driver Controller Bindings
+     *
+     */
+
+    // Driver Load
+    driver_controller_.rightBumper().whileTrue(new GamePieceLoad());
+    // Driver Score
+    driver_controller_.rightTrigger().whileTrue(new GamePieceEject());
+    // Robot Align
+    driver_controller_.leftTrigger().whileTrue(new AlignWithTarget().onlyIf(use_vision));
+    // Toggle Game Piece
+    driver_controller_.leftBumper().onTrue(Claw.getInstance().toggleGamePieceCommand());
+
+    // TODO: Remove this once automation commands are added
+    driver_controller_
+        .a()
+        .toggleOnTrue(new ManualElevatorOverride(Level.L1).onlyIf(Claw.getInstance()::isAlgaeMode));
+    // TODO: Remove this once automation commands are added
+    driver_controller_
+        .y()
+        .toggleOnTrue(new ManualElevatorOverride(Level.L4).onlyIf(Claw.getInstance()::isAlgaeMode));
 
     // Swap Between Robot Centric and Field Centric
     driver_controller_
         .rightStick()
         .onTrue(SwerveDrivetrain.getInstance().toggleFieldCentric().ignoringDisable(true));
 
-    /*
-     *
-     * Manual Teleop Bindings
-     *
-     */
-
-    driver_controller_.rightBumper().whileTrue(new CoralLoad());
-    driver_controller_
-        .rightTrigger()
-        .whileTrue(
-            new ConditionalCommand(
-                new CoralEject(), new AlgaeEject(), Claw.getInstance()::isCoralMode));
-    driver_controller_.y().toggleOnTrue(new ElevatorButton(Level.L4));
-    driver_controller_.x().toggleOnTrue(new ElevatorButton(Level.L2));
-    driver_controller_.b().toggleOnTrue(new ElevatorButton(Level.L3));
-    driver_controller_.a().toggleOnTrue(new ElevatorButton(Level.L1));
+    // Crawl
+    driver_pov_active_.whileTrue(
+        Commands.startEnd(
+            () -> SwerveDrivetrain.getInstance().setDriveMode(DriveMode.CRAWL),
+            () -> SwerveDrivetrain.getInstance().restoreDefaultDriveMode()));
 
     /*
      *
-     * Game State Manager Bindings
+     * Operator Controller Bindings
      *
      */
-    operator_controller_
-        .y()
-        .toggleOnTrue(
-            Commands.runOnce(
-                () -> GameStateManager.getInstance().setScoringTarget(ReefScoringTarget.L4, true)));
-    operator_controller_
-        .x()
-        .toggleOnTrue(
-            Commands.runOnce(
-                () -> GameStateManager.getInstance().setScoringTarget(ReefScoringTarget.L2, true)));
-    operator_controller_
-        .b()
-        .toggleOnTrue(
-            Commands.runOnce(
-                () -> GameStateManager.getInstance().setScoringTarget(ReefScoringTarget.L3, true)));
+    // Set L4 Target:
+    // - Algae Mode (Manual) -> Barge
+    // - Coral Mode (Manual) -> L4
+    // - Any Mode   (Vision) -> Set GSM L4
+    operator_controller_.y().toggleOnTrue(new ElevatorL4Target());
+    // Set L3 Target:
+    // - Algae Mode (Manual) -> Algae High
+    // - Coral Mode (Manual) -> L3
+    // - Any Mode   (Vision) -> Set GSM L3
+    operator_controller_.b().toggleOnTrue(new ElevatorL3Target());
+    // Set L2 Target:
+    // - Algae Mode (Manual) -> Algae Low
+    // - Coral Mode (Manual) -> L2
+    // - Any Mode   (Vision) -> Set GSM L2
+    operator_controller_.x().toggleOnTrue(new ElevatorL2Target());
+    // Set L1 Target:
+    // - Algae Mode (Manual) -> Processor
+    // - Coral Mode (Manual) -> L1
+    // - Any Mode   (Vision) -> Set GSM L1
+    operator_controller_.a().toggleOnTrue(new ElevatorL1Target());
 
-    driver_controller_.leftBumper().whileTrue(new AlgaeReefPickup());
-
-    driver_controller_.leftTrigger().whileTrue(new CoralReefScore());
-
+    // Set GSM Target Column Left
     operator_controller_
         .leftBumper()
         .onTrue(
             Commands.runOnce(
                 () -> GameStateManager.getInstance().setScoringColum(Column.LEFT, true)));
 
+    // Set GSM Target Column Right
     operator_controller_
         .rightBumper()
         .onTrue(
             Commands.runOnce(
                 () -> GameStateManager.getInstance().setScoringColum(Column.RIGHT, true)));
 
-    driver_pov_active_.whileTrue(
-        Commands.startEnd(
-            () -> SwerveDrivetrain.getInstance().setDriveMode(DriveMode.CRAWL),
-            () -> SwerveDrivetrain.getInstance().restoreDefaultDriveMode()));
-
+    // Manual Adjust Elevator Setpoint Up
     operator_controller_
         .povUp()
         .onTrue(Commands.runOnce(() -> Elevator.getInstance().setOffset(OffsetType.ELEVATOR_UP)));
-
+    // Manual Adjust Elevator Setpoint Down
     operator_controller_
         .povDown()
         .onTrue(Commands.runOnce(() -> Elevator.getInstance().setOffset(OffsetType.ELEVATOR_DOWN)));
-
+    // Manual Adjust Arm Setpoint Counter Clockwise
     operator_controller_
         .povLeft()
         .onTrue(Commands.runOnce(() -> Elevator.getInstance().setOffset(OffsetType.ARM_CCW)));
-
+    // Manual Adjust Arm Setpoint Clockwise
     operator_controller_
         .povRight()
         .onTrue(Commands.runOnce(() -> Elevator.getInstance().setOffset(OffsetType.ARM_CW)));

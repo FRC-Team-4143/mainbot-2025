@@ -6,12 +6,10 @@ import edu.wpi.first.networktables.StructPublisher;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.lib.FieldRegions;
 import frc.lib.ScoringPoses;
-import frc.mw_lib.geometry.Region;
 import frc.mw_lib.subsystem.Subsystem;
 import frc.mw_lib.util.Util;
 import frc.robot.Constants.ElevatorConstants;
 import frc.robot.subsystems.Elevator.SpeedLimit;
-import frc.robot.subsystems.SwerveDrivetrain.DriveMode;
 import java.util.Optional;
 import monologue.Annotations.Log;
 import monologue.Logged;
@@ -120,11 +118,11 @@ public class GameStateManager extends Subsystem {
             poseEstimator_.getRobotPose(), io_.reef_target.get(), 0.0873, 0.0508)
             && elevator_.isElevatorAndArmAtTarget()) {
           // Once at final target (both bot and elevator and arm), hand off control
+          drivetrain_.restoreDefaultDriveMode();
           io_.robot_state_ = RobotState.SCORING;
         }
         break;
       case SCORING:
-        drivetrain_.setDriveMode(DriveMode.FIELD_CENTRIC);
         // wait until you leave the exit Circle
         if (!FieldRegions.REEF_EXIT.contains(poseEstimator_.getRobotPose())) {
           io_.robot_state_ = RobotState.END;
@@ -132,7 +130,7 @@ public class GameStateManager extends Subsystem {
         break;
       case END:
         // clear saved vars and reset drive mode
-        drivetrain_.setDriveMode(DriveMode.FIELD_CENTRIC);
+        drivetrain_.restoreDefaultDriveMode();
         if (Claw.getInstance().isCoralMode()) {
           elevator_.setSpeedLimit(SpeedLimit.CORAL);
           elevator_.setTarget(ElevatorConstants.Target.STOW);
@@ -171,11 +169,16 @@ public class GameStateManager extends Subsystem {
    */
   @Override
   public void outputTelemetry(double timestamp) {
-    SmartDashboard.putString("Robot State", io_.robot_state_.toString());
-    SmartDashboard.putString("Target Colum", io_.target_column.toString());
-    SmartDashboard.putString("Saved Colum", io_.saved_target_column.toString());
-    SmartDashboard.putString("Target Level", io_.scoring_target.toString());
-    SmartDashboard.putString("Saved Target Level", io_.saved_scoring_target.toString());
+    SmartDashboard.putString(
+        "Subsystems/GameStateManager/Robot State", io_.robot_state_.toString());
+    SmartDashboard.putString(
+        "Subsystems/GameStateManager/Target Colum", io_.target_column.toString());
+    SmartDashboard.putString(
+        "Subsystems/GameStateManager/Saved Colum", io_.saved_target_column.toString());
+    SmartDashboard.putString(
+        "Subsystems/GameStateManager/Target Level", io_.scoring_target.toString());
+    SmartDashboard.putString(
+        "Subsystems/GameStateManager/Saved Target Level", io_.saved_scoring_target.toString());
     if (io_.reef_target.isPresent()) {
       reef_target_publisher.set(io_.reef_target.get());
     } else {
@@ -214,23 +217,7 @@ public class GameStateManager extends Subsystem {
   }
 
   /**
-   * Returns a target pose when robot is in an load station region If not in a
-   * region empty is
-   * returned.
-   *
-   * @return target pose
-   */
-  public Optional<Pose2d> loadStationPose() {
-    Optional<Region> region = poseEstimator_.loadStationRegion();
-    if (region.isPresent()) {
-      return Optional.of(FieldRegions.REGION_POSE_TABLE.get(region.get().getName()));
-    }
-    return Optional.empty();
-  }
-
-  /**
-   * Returns a target pose when robot is in an reef region If not in a region
-   * empty is returned.
+   * Returns a target pose when robot is in an reef region If not in a region empty is returned.
    * Also adjust to the provided column
    *
    * @return target pose
@@ -263,20 +250,6 @@ public class GameStateManager extends Subsystem {
                   .transformBy(ScoringPoses.ALGAE_ALIGN_OFFSET));
         }
       }
-    }
-    return Optional.empty();
-  }
-
-  /**
-   * Returns a target pose when robot is in an algae region If not in a region
-   * empty is returned.
-   *
-   * @return target pose
-   */
-  public Optional<Pose2d> algaePose() {
-    Optional<Region> region = poseEstimator_.algaeRegion();
-    if (region.isPresent()) {
-      return Optional.of(FieldRegions.REGION_POSE_TABLE.get(region.get().getName()));
     }
     return Optional.empty();
   }
@@ -327,26 +300,13 @@ public class GameStateManager extends Subsystem {
    * sensors should be read.
    */
   public class GameStateManagerPeriodicIo implements Logged {
-
-    @Log.File
-    private ReefScoringTarget scoring_target = ReefScoringTarget.TURTLE;
-    @Log.File
-    private ReefScoringTarget saved_scoring_target = ReefScoringTarget.L2;
-    @Log.File
-    private RobotState robot_state_ = RobotState.TELEOP_CONTROL;
-    @Log.File
-    private Optional<Pose2d> reef_target = Optional.empty();
-    @Log.File
-    private Optional<Pose2d> station_target = Optional.empty();
-    @Log.File
-    private Optional<Pose2d> algae_target = Optional.empty();
-    @Log.File
-    private Column target_column = Column.LEFT;
-    @Log.File
-    private Column saved_target_column = Column.LEFT;
-
-    @Log.File
-    private boolean algae_level_high = false; // false is low level and true is the higher level
+    @Log.File public ReefScoringTarget scoring_target = ReefScoringTarget.TURTLE;
+    @Log.File public ReefScoringTarget saved_scoring_target = ReefScoringTarget.L2;
+    @Log.File public RobotState robot_state_ = RobotState.TELEOP_CONTROL;
+    @Log.File public Optional<Pose2d> reef_target = Optional.empty();
+    @Log.File public Column target_column = Column.LEFT;
+    @Log.File public Column saved_target_column = Column.LEFT;
+    @Log.File public boolean algae_level_high = false; // false is low level and true is the higher level
   }
 
   @Override

@@ -1,7 +1,7 @@
 {
     "drive": {
         "com": {
-            "CENTER_OFFSET_X": 0,
+            "CENTER_OFFSET_X": 18,
             "SLIP_CURRENT": 50,
             "SPEED_AT_12V": 5.0,
             "COUPLE_RATIO": 3.5,
@@ -9,12 +9,12 @@
             "MAX_DRIVE_SPEED": 5.0,
             "MAX_DRIVE_ANGULAR_RATE": 6.28,
             "STEER_MOTOR_REVERSED": true,
-            "DRIVE_GAINS_P": 12.5,
+            "DRIVE_GAINS_P": 0.6,
             "DRIVE_GAINS_I": 0,
-            "DRIVE_GAINS_D": 0.01,
+            "DRIVE_GAINS_D": 0,
             "DRIVE_GAINS_S": 0.2,
-            "DRIVE_GAINS_V": 0.12,
-            "DRIVE_GAINS_A": 0.05,
+            "DRIVE_GAINS_V": 0.115,
+            "DRIVE_GAINS_A": 0,
             "STEER_GAINS_P": 100,
             "STEER_GAINS_I": 0,
             "STEER_GAINS_D": 0,
@@ -30,7 +30,7 @@
             "Y_POSITION": 7.5,
             "INVERT_DRIVE": false,
             "MODULE_TYPE": "MK4N",
-            "MODULE_GEARING": "L3+"
+            "MODULE_GEARING": "L2+"
         },
         "fr": {
             "DRIVE_ID": 3,
@@ -40,7 +40,7 @@
             "Y_POSITION": -7.5,
             "INVERT_DRIVE": false,
             "MODULE_TYPE": "MK4I",
-            "MODULE_GEARING": "L3+"
+            "MODULE_GEARING": "L2+"
         },
         "bl": {
             "DRIVE_ID": 5,
@@ -50,7 +50,7 @@
             "Y_POSITION": 7.5,
             "INVERT_DRIVE": false,
             "MODULE_TYPE": "MK4N",
-            "MODULE_GEARING": "L3+"
+            "MODULE_GEARING": "L2+"
         },
         "br": {
             "DRIVE_ID": 7,
@@ -60,46 +60,75 @@
             "Y_POSITION": -7.5,
             "INVERT_DRIVE": false,
             "MODULE_TYPE": "MK4I",
-            "MODULE_GEARING": "L3+"
+            "MODULE_GEARING": "L2+"
         },
         "traj_controller": {
-            "TRANSLATION_P": 0.0,
-            "TRANSLATION_I" : 0.0,
-            "TRANSLATION_D" : 0.0,
-            "HEADING_P" : 0.0,
-            "HEADING_I" : 0.0,
-            "HEADING_D" : 0.0
+            "TRANSLATION_P": 0.5,
+            "TRANSLATION_I": 0.0,
+            "TRANSLATION_D": 0.0,
+            "HEADING_P": 2.0,
+            "HEADING_I": 0.0,
+            "HEADING_D": 0.0
         },
         "pose_controller": {
-            "TRANSLATION_P": 0.0,
-            "TRANSLATION_I" : 0.0,
-            "TRANSLATION_D" : 0.0,
-            "HEADING_P" : 0.0,
-            "HEADING_I" : 0.0,
-            "HEADING_D" : 0.0
+            "TRANSLATION_P": 3.0,
+            "TRANSLATION_I": 0.0,
+            "TRANSLATION_D": 0.0,
+            "HEADING_P": 3.0,
+            "HEADING_I": 0.0,
+            "HEADING_D": 0.0
         }
     },
-    "imp" : {
-        "coral_offset": 0.0,
-        "algae_offset": 0.0,
-        "elevator":{
-            "CONTROLLER_P": 1.0,
-            "CONTROLLER_I": 0.0,
-            "CONTROLLER_D": 0.08,
-            "CONTROLLER_S": 0.06766,
-            "CONTROLLER_V": 0.11733,
-            "CONTROLLER_A": 0.0070285,
-            "CONTROLLER_G": 0.43
+    "imp": {
+        "coral_offset": -5.5,
+        "algae_offset": -5.5
+    },
+    "elevator": {
+        "CONTROLLER_P": 1.0,
+        "CONTROLLER_I": 0.0,
+        "CONTROLLER_D": 0.08,
+        "CONTROLLER_S": 0.06766,
+        "CONTROLLER_V": 0.11733,
+        "CONTROLLER_A": 0.0070285,
+        "CONTROLLER_G": 0.43,
+        "HEIGHT_PIVOT_MIN": 30.5,
+        "HEIGHT_PIVOT_MAX": 82.75,
+        "HEIGHT_PIVOT_TO_TOP": 10,
+        "ELEVATOR_GEAR_RATIO":4
+    },
+    "arm": {
+        "CONTROLLER_P": 40.0,
+        "CONTROLLER_I": 0.0,
+        "CONTROLLER_D": 0.0,
+        "CONTROLLER_S": 0.024495,
+        "CONTROLLER_V": 8.778,
+        "CONTROLLER_A": 0.25148,
+        "CONTROLLER_G": 0.28,
+        "LENGTH_PIVOT_TO_FUNNEL": 11.5,
+        "DEPTH_CORAL_POCKET":8.875
+    },
+    "vision": {
+        "camera0": {
+            "NAME": "vi-output,_ov9281_9-0060",
+            "location": {
+                "X": 9.5,
+                "Y": 9.5,
+                "Z": 21.25,
+                "ROLL": 0,
+                "PITCH": 10,
+                "YAW": -5
+            }
         },
-        "arm":{
-            "CONTROLLER_P": 33.476,
-            "CONTROLLER_I": 0.0,
-            "CONTROLLER_D": 0.0,
-            "CONTROLLER_S": 0.032714,
-            "CONTROLLER_V": 9.2434,
-            "CONTROLLER_A": 0.36146,
-            "CONTROLLER_G": 0.27387,
-            "ENCODER_OFFSET": 0.6755
+        "camera1": {
+            "NAME": "vi-output,_ov9281_10-0060",
+            "location": {
+                "X": 7.5,
+                "Y": 9.5,
+                "Z": 21.25,
+                "ROLL": 0,
+                "PITCH": 30,
+                "YAW": -5
+            }
         }
     }
 }

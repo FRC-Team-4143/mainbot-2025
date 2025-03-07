@@ -9,9 +9,11 @@ import static edu.wpi.first.units.Units.Amps;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.NeutralModeValue;
+import edu.wpi.first.math.filter.Debouncer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.mw_lib.subsystem.Subsystem;
+import frc.mw_lib.util.Util;
 import frc.robot.Constants;
 import frc.robot.Constants.ClawConstants;
 import monologue.Annotations.Log;
@@ -35,6 +37,9 @@ public class Claw extends Subsystem {
 
   // Singleton pattern
   private static Claw claw_instance_ = null;
+
+  private Debouncer coral_debouncer_ = new Debouncer(0.25, Debouncer.DebounceType.kFalling);
+  private Debouncer algae_debouncer_ = new Debouncer(0.25, Debouncer.DebounceType.kFalling);
 
   public static Claw getInstance() {
     if (claw_instance_ == null) {
@@ -90,7 +95,7 @@ public class Claw extends Subsystem {
     if (io_.game_piece_ == GamePiece.CORAL) {
       switch (io_.claw_mode_) {
         case SHOOT:
-          io_.wheel_output_ = ClawConstants.WHEEL_SHOOT_SPEED;
+          io_.wheel_output_ = ClawConstants.WHEEL_CORAL_SHOOT_SPEED;
           break;
         case LOAD:
           io_.wheel_output_ = ClawConstants.WHEEL_LOAD_SPEED;
@@ -103,7 +108,7 @@ public class Claw extends Subsystem {
     } else {
       switch (io_.claw_mode_) {
         case SHOOT:
-          io_.wheel_output_ = -ClawConstants.WHEEL_SHOOT_SPEED;
+          io_.wheel_output_ = -ClawConstants.WHEEL_ALGAE_SHOOT_SPEED;
           break;
         case LOAD:
           io_.wheel_output_ = -ClawConstants.WHEEL_LOAD_SPEED;
@@ -136,6 +141,8 @@ public class Claw extends Subsystem {
   public void outputTelemetry(double timestamp) {
     SmartDashboard.putString("Subsystems/Claw/Mode", io_.claw_mode_.toString());
     SmartDashboard.putNumber("Subsystems/Claw/Current_Output", io_.current_output_);
+    SmartDashboard.putBoolean("Subsystems/Claw/Has Algae", hasAlgae());
+    SmartDashboard.putBoolean("Subsystems/Claw/Has Coral (On True)", hasCoral());
     SmartDashboard.putString(
         "Subsystems/Claw/Game Piece Mode",
         (io_.game_piece_ == GamePiece.CORAL)
@@ -156,7 +163,11 @@ public class Claw extends Subsystem {
     io_.game_piece_ = gamePiece;
   }
 
-  public Command toggleGamePiece() {
+  public GamePiece getGamePieceMode() {
+    return io_.game_piece_;
+  }
+
+  public Command toggleGamePieceCommand() {
     return this.runOnce(
         () -> {
           if (io_.game_piece_ == GamePiece.CORAL) {
@@ -173,6 +184,18 @@ public class Claw extends Subsystem {
 
   public boolean isAlgaeMode() {
     return io_.game_piece_ == GamePiece.ALGAE;
+  }
+
+  public boolean hasAlgae() {
+    return algae_debouncer_.calculate(
+        isAlgaeMode()
+            && wheel_motor_.getSupplyCurrent().getValueAsDouble() > 0
+            && Util.epislonEquals(wheel_motor_.getVelocity().getValueAsDouble(), 0, 2.5));
+  }
+
+  public boolean hasCoral() {
+    return coral_debouncer_.calculate(
+        isCoralMode() && wheel_motor_.getSupplyCurrent().getValueAsDouble() > 7);
   }
 
   public class ClawPeriodicIo implements Logged {
