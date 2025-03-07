@@ -7,7 +7,7 @@
       "height": 928,
       "state": {
         "sidebar": {
-          "width": 344,
+          "width": 291,
           "expanded": [
             "/NT",
             "/NT/Robot",
@@ -23,7 +23,10 @@
             "/Subsystems/Elevator/Stages",
             "/Components/Elevator",
             "/Components/Elevator/Stages",
-            "/Components/Arm"
+            "/Components/Arm",
+            "/SmartDashboard/Subsystems",
+            "/SmartDashboard/Subsystems/PoseEstimator",
+            "/PoseEstimation"
           ]
         },
         "tabs": {
@@ -128,7 +131,7 @@
               },
               "controllerUUID": "3izc54ec84cqyt2b08nq52c8bcohgwpe",
               "renderer": null,
-              "controlsHeight": 233
+              "controlsHeight": 0
             },
             {
               "type": 2,
@@ -240,7 +243,7 @@
               },
               "controllerUUID": "rco8h9ytf5q9nx4sw7uc5xvn6hyhtbd7",
               "renderer": null,
-              "controlsHeight": 259
+              "controlsHeight": 0
             },
             {
               "type": 3,
@@ -295,16 +298,6 @@
                     }
                   },
                   {
-                    "type": "vision",
-                    "logKey": "NT:PoseEstimation/Tags Detected",
-                    "logType": "Pose3d[]",
-                    "visible": true,
-                    "options": {
-                      "color": "#00ff00",
-                      "size": "normal"
-                    }
-                  },
-                  {
                     "type": "ghost",
                     "logKey": "NT:PoseEstimation/Vision Pose",
                     "logType": "Pose2d",
@@ -312,6 +305,16 @@
                     "options": {
                       "model": "2025 MARS/WARS Base",
                       "color": "#00ff00"
+                    }
+                  },
+                  {
+                    "type": "vision",
+                    "logKey": "NT:PoseEstimation/Tags Detected",
+                    "logType": "Pose3d[]",
+                    "visible": true,
+                    "options": {
+                      "color": "#00ff00",
+                      "size": "normal"
                     }
                   }
                 ],
@@ -323,17 +326,17 @@
                 "cameraIndex": -2,
                 "orbitFov": 50,
                 "cameraPosition": [
-                  1.3130294895482924,
-                  2.4049946442865,
-                  0.2941170448215201
+                  -1.3596278711427794,
+                  1.5201783351510747,
+                  1.96402522543482
                 ],
                 "cameraTarget": [
-                  0.04070225396640785,
-                  0.5118168733503572,
-                  0.0771808025063697
+                  -0.05431328316004069,
+                  0.5681366086111578,
+                  0.0745582620145028
                 ]
               },
-              "controlsHeight": 160
+              "controlsHeight": 444
             },
             {
               "type": 9,
@@ -386,7 +389,7 @@
               },
               "controllerUUID": "a3wcwir2whtqie2y28ks4tpl9vp7rny0",
               "renderer": null,
-              "controlsHeight": 200
+              "controlsHeight": 269
             }
           ]
         }
