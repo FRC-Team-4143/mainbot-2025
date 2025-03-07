@@ -9,12 +9,12 @@
             "MAX_DRIVE_SPEED": 5.0,
             "MAX_DRIVE_ANGULAR_RATE": 6.28,
             "STEER_MOTOR_REVERSED": true,
-            "DRIVE_GAINS_P": 12.5,
+            "DRIVE_GAINS_P": 0.6,
             "DRIVE_GAINS_I": 0,
-            "DRIVE_GAINS_D": 0.01,
+            "DRIVE_GAINS_D": 0,
             "DRIVE_GAINS_S": 0.2,
-            "DRIVE_GAINS_V": 0.12,
-            "DRIVE_GAINS_A": 0.05,
+            "DRIVE_GAINS_V": 0.115,
+            "DRIVE_GAINS_A": 0,
             "STEER_GAINS_P": 100,
             "STEER_GAINS_I": 0,
             "STEER_GAINS_D": 0,
@@ -64,26 +64,26 @@
         },
         "traj_controller": {
             "TRANSLATION_P": 0.0,
-            "TRANSLATION_I" : 0.0,
-            "TRANSLATION_D" : 0.0,
-            "HEADING_P" : 0.0,
-            "HEADING_I" : 0.0,
-            "HEADING_D" : 0.0
+            "TRANSLATION_I": 0.0,
+            "TRANSLATION_D": 0.0,
+            "HEADING_P": 0.0,
+            "HEADING_I": 0.0,
+            "HEADING_D": 0.0
         },
         "pose_controller": {
             "TRANSLATION_P": 0.0,
-            "TRANSLATION_I" : 0.0,
-            "TRANSLATION_D" : 0.0,
-            "HEADING_P" : 0.0,
-            "HEADING_I" : 0.0,
-            "HEADING_D" : 0.0
+            "TRANSLATION_I": 0.0,
+            "TRANSLATION_D": 0.0,
+            "HEADING_P": 0.0,
+            "HEADING_I": 0.0,
+            "HEADING_D": 0.0
         }
     },
-    "imp" : {
+    "imp": {
         "coral_offset": -5.5,
         "algae_offset": -5.5
     },
-    "elevator":{
+    "elevator": {
         "CONTROLLER_P": 1.0,
         "CONTROLLER_I": 0.0,
         "CONTROLLER_D": 0.08,
@@ -96,7 +96,7 @@
         "HEIGHT_PIVOT_TO_TOP": 10,
         "ELEVATOR_GEAR_RATIO":4
     },
-    "arm":{
+    "arm": {
         "CONTROLLER_P": 40.0,
         "CONTROLLER_I": 0.0,
         "CONTROLLER_D": 0.0,
@@ -107,16 +107,27 @@
         "LENGTH_PIVOT_TO_FUNNEL": 11.5,
         "DEPTH_CORAL_POCKET":8.875
     },
-    "vision":{
-        "camera0":{
+    "vision": {
+        "camera0": {
             "NAME": "vi-output,_ov9281_9-0060",
-            "location":{
+            "location": {
                 "X": 9.5,
                 "Y": 9.5,
-                "Z": 21.5,
+                "Z": 21.25,
                 "ROLL": 0,
                 "PITCH": 10,
-                "YAW": 0
+                "YAW": -5
+            }
+        },
+        "camera1": {
+            "NAME": "vi-output,_ov9281_10-0060",
+            "location": {
+                "X": 7.5,
+                "Y": 9.5,
+                "Z": 21.25,
+                "ROLL": 0,
+                "PITCH": 30,
+                "YAW": -5
             }
         }
     }

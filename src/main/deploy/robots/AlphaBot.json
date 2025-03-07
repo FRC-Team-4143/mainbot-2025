@@ -9,11 +9,11 @@
             "MAX_DRIVE_SPEED": 5.0,
             "MAX_DRIVE_ANGULAR_RATE": 6.28,
             "STEER_MOTOR_REVERSED": true,
-            "DRIVE_GAINS_P": 0.1,
+            "DRIVE_GAINS_P": 0.75,
             "DRIVE_GAINS_I": 0,
             "DRIVE_GAINS_D": 0.0,
-            "DRIVE_GAINS_S": 0.0,
-            "DRIVE_GAINS_V": 0.12,
+            "DRIVE_GAINS_S": 0.15,
+            "DRIVE_GAINS_V": 0.115,
             "DRIVE_GAINS_A": 0.00,
             "STEER_GAINS_P": 100,
             "STEER_GAINS_I": 0,
@@ -64,26 +64,26 @@
         },
         "traj_controller": {
             "TRANSLATION_P": 0.5,
-            "TRANSLATION_I" : 0.0,
-            "TRANSLATION_D" : 0.0,
-            "HEADING_P" : 2.0,
-            "HEADING_I" : 0.0,
-            "HEADING_D" : 0.0
+            "TRANSLATION_I": 0.0,
+            "TRANSLATION_D": 0.0,
+            "HEADING_P": 2.0,
+            "HEADING_I": 0.0,
+            "HEADING_D": 0.0
         },
         "pose_controller": {
             "TRANSLATION_P": 3.0,
-            "TRANSLATION_I" : 0.0,
-            "TRANSLATION_D" : 0.0,
-            "HEADING_P" : 3.0,
-            "HEADING_I" : 0.0,
-            "HEADING_D" : 0.0
+            "TRANSLATION_I": 0.0,
+            "TRANSLATION_D": 0.0,
+            "HEADING_P": 3.0,
+            "HEADING_I": 0.0,
+            "HEADING_D": 0.0
         }
     },
     "imp" : {
         "coral_offset": -4,
         "algae_offset": -4
     },
-    "elevator":{
+    "elevator": {
         "CONTROLLER_P": 1.0,
         "CONTROLLER_I": 0.0,
         "CONTROLLER_D": 0.08,
@@ -96,7 +96,7 @@
         "HEIGHT_PIVOT_TO_TOP":8.5,
         "ELEVATOR_GEAR_RATIO":9
     },
-    "arm":{
+    "arm": {
         "CONTROLLER_P": 33.476,
         "CONTROLLER_I": 0.0,
         "CONTROLLER_D": 0.0,
@@ -107,14 +107,25 @@
         "LENGTH_PIVOT_TO_FUNNEL":12,
         "DEPTH_CORAL_POCKET":8.875
     },
-    "vision":{
-        "camera0":{
-            "NAME": "OV9281-10",
-            "location":{
+    "vision": {
+        "camera0": {
+            "NAME": "OV9281-9",
+            "location": {
                 "X": 7.5,
                 "Y": -7,
                 "Z": 8.25,
-                "ROLL": 180,
+                "ROLL": 0,
+                "PITCH": 0,
+                "YAW": 0
+            }
+        },
+        "camera1": {
+            "NAME": "OV9281-10",
+            "location": {
+                "X": 7.5,
+                "Y": -7,
+                "Z": 8.25,
+                "ROLL": 0,
                 "PITCH": 0,
                 "YAW": 0
             }
