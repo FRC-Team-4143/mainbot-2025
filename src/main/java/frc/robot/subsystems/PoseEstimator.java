@@ -92,30 +92,36 @@ public class PoseEstimator extends Subsystem {
   // odometry, getLastChange?
   @Override
   public void updateLogic(double timestamp) {
-    for (Optional<EstimatedRobotPose> elem : io_.vision_data_packet_) {
-      elem.ifPresentOrElse(
-          est -> {
-            // Change our trust in the measurement based on the tags we can see
-            var estStdDevs = Vision.getInstance().getEstimationStdDevs();
+    for (int i = 0; i < io_.vision_data_packet_.size(); i++) {
+      if (io_.vision_data_packet_.get(i).isPresent()) {
+        var est = io_.vision_data_packet_.get(i).get();
 
-            var est_timestamp = est.timestampSeconds;
-            var latency = timestamp - est_timestamp;
-            SmartDashboard.putNumber("Subsystems/PoseEstimator/Vision Latency", latency);
-            if (latency < 0 || latency > .05) {
-              // keep latency sane
-              latency = .05;
-              est_timestamp = timestamp - latency;
-            }
-            io_.raw_vision_pose_ = Optional.of(est.estimatedPose.toPose2d());
+        // Change our trust in the measurement based on the tags we can see
+        var estStdDevs = Vision.getInstance().getEstimationStdDevs();
 
-            vision_filtered_odometry_.addVisionMeasurement(
-                io_.raw_vision_pose_.get(), est_timestamp, estStdDevs);
-            est.targetsUsed.forEach(
-                (target) -> io_.detected_tags_.add(TAG_LAYOUT.getTagPose(target.fiducialId).get()));
-          },
-          () -> {
-            io_.raw_vision_pose_ = Optional.empty();
-          });
+        var est_timestamp = est.timestampSeconds;
+        var latency = timestamp - est_timestamp;
+        SmartDashboard.putNumber("Subsystems/PoseEstimator/Vision Latency", latency);
+        if (latency < 0 || latency > .05) {
+          // keep latency sane
+          latency = .05;
+          est_timestamp = timestamp - latency;
+        }
+        io_.raw_vision_pose_ = Optional.of(est.estimatedPose.toPose2d());
+
+        vision_filtered_odometry_.addVisionMeasurement(
+            io_.raw_vision_pose_.get(), est_timestamp, estStdDevs);
+
+        if (io_.detected_tags_.size() <= i) {
+          io_.detected_tags_.add(new ArrayList<>());
+        }
+        io_.detected_tags_.get(i).clear();
+        for (var target : est.targetsUsed) {
+          io_.detected_tags_.get(i).add(TAG_LAYOUT.getTagPose(target.fiducialId).get());
+        }
+      } else {
+        io_.raw_vision_pose_ = Optional.empty();
+      }
 
       io_.filtered_vision_pose_ =
           vision_filtered_odometry_.updateWithTime(
@@ -135,10 +141,12 @@ public class PoseEstimator extends Subsystem {
     robot_pose_pub_.set(io_.filtered_vision_pose_);
     SmartDashboard.putData("Subsystems/PoseEstimator/Field", field_);
     // Publish Detected Tags as Vision Targets
-    Pose3d[] tags = new Pose3d[io_.detected_tags_.size()];
-    tags = io_.detected_tags_.toArray(tags);
+    ArrayList<Pose3d> allTags = new ArrayList<>();
+    for (List<Pose3d> array : io_.detected_tags_) allTags.addAll(array);
+
+    Pose3d[] tags = new Pose3d[allTags.size()];
+    tags = allTags.toArray(tags);
     used_tags_pub_.set(tags);
-    io_.detected_tags_.clear();
   }
 
   public Field2d getFieldWidget() {
@@ -221,7 +229,7 @@ public class PoseEstimator extends Subsystem {
     public ArrayList<Optional<EstimatedRobotPose>> vision_data_packet_ =
         new ArrayList<Optional<EstimatedRobotPose>>();
 
-    @Log.File public List<Pose3d> detected_tags_ = new ArrayList<Pose3d>();
+    @Log.File public List<List<Pose3d>> detected_tags_ = new ArrayList<>();
   }
 
   @Override
