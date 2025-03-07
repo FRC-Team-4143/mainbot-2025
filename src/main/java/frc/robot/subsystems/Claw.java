@@ -95,7 +95,7 @@ public class Claw extends Subsystem {
     if (io_.game_piece_ == GamePiece.CORAL) {
       switch (io_.claw_mode_) {
         case SHOOT:
-          io_.wheel_output_ = ClawConstants.WHEEL_SHOOT_SPEED;
+          io_.wheel_output_ = ClawConstants.WHEEL_CORAL_SHOOT_SPEED;
           break;
         case LOAD:
           io_.wheel_output_ = ClawConstants.WHEEL_LOAD_SPEED;
@@ -108,7 +108,7 @@ public class Claw extends Subsystem {
     } else {
       switch (io_.claw_mode_) {
         case SHOOT:
-          io_.wheel_output_ = -ClawConstants.WHEEL_SHOOT_SPEED;
+          io_.wheel_output_ = -ClawConstants.WHEEL_ALGAE_SHOOT_SPEED;
           break;
         case LOAD:
           io_.wheel_output_ = -ClawConstants.WHEEL_LOAD_SPEED;

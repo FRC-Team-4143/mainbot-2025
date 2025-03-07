@@ -211,7 +211,8 @@ public final class Constants {
 
   public static final class ClawConstants {
     public static final int WHEEL_MOTOR_ID = 11;
-    public static final double WHEEL_SHOOT_SPEED = 0.30;
+    public static final double WHEEL_CORAL_SHOOT_SPEED = 0.3;
+    public static final double WHEEL_ALGAE_SHOOT_SPEED = 0.15;
     public static final double WHEEL_LOAD_SPEED = -0.3;
     public static final double ALGAE_IDLE_SPEED = 0.1;
     public static final double STATOR_CURRENT_LIMIT = 40;
@@ -281,24 +282,24 @@ public final class Constants {
           Rotation2d.fromDegrees(130),
           ControlType.EFFECTOR),
       L3(
-          FieldConstants.ReefHeight.L3.HEIGHT + Units.inchesToMeters(8),
+          FieldConstants.ReefHeight.L3.HEIGHT + Units.inchesToMeters(9),
           Rotation2d.fromDegrees(125),
           ControlType.EFFECTOR),
       L2(
-          FieldConstants.ReefHeight.L2.HEIGHT + Units.inchesToMeters(7),
+          FieldConstants.ReefHeight.L2.HEIGHT + Units.inchesToMeters(8),
           Rotation2d.fromDegrees(125),
           ControlType.EFFECTOR),
 
-      STATION(1.05, Rotation2d.fromRadians(-1.027767), ControlType.PIVOT),
+      STATION(0.8722, Rotation2d.fromRadians(-1.027767), ControlType.EFFECTOR),
       CLIMB(ELEVATOR_HEIGHT_PIVOT_SAFETY, new Rotation2d(), ControlType.PIVOT),
       STOW(ELEVATOR_HEIGHT_PIVOT_SAFETY, Rotation2d.fromDegrees(-90), ControlType.PIVOT),
-      ALGAE_LOW(ELEVATOR_HEIGHT_PIVOT_MIN, Rotation2d.fromDegrees(90 + 50), ControlType.EFFECTOR),
-      ALGAE_HIGH(1.250, Rotation2d.fromDegrees(90 + 35), ControlType.EFFECTOR),
-      ALGAE_PROCESSOR(0.9429, Rotation2d.fromDegrees(-55), ControlType.PIVOT),
+      ALGAE_LOW(0.9702231159054557, Rotation2d.fromDegrees(90 + 35), ControlType.EFFECTOR),
+      ALGAE_HIGH(1.2535345791562702, Rotation2d.fromDegrees(127.79), ControlType.EFFECTOR),
+      ALGAE_PROCESSOR(0.6381, Rotation2d.fromDegrees(-55), ControlType.EFFECTOR),
       BARGE(
-          FieldConstants.ReefHeight.L4.HEIGHT + 0.0762,
+          FieldConstants.ReefHeight.L4.HEIGHT + 0.3302,
           Rotation2d.fromDegrees(90),
-          ControlType.PIVOT),
+          ControlType.EFFECTOR),
       ALGAE_STOW(ELEVATOR_HEIGHT_PIVOT_MIN, Rotation2d.fromDegrees(90), ControlType.PIVOT);
 
       Target(double height, Rotation2d angle, ControlType type) {
