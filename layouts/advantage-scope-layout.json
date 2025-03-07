@@ -1,13 +1,13 @@
 {
   "hubs": [
     {
-      "x": 0,
-      "y": 64,
-      "width": 1503,
-      "height": 938,
+      "x": -8,
+      "y": -8,
+      "width": 1552,
+      "height": 928,
       "state": {
         "sidebar": {
-          "width": 344,
+          "width": 291,
           "expanded": [
             "/NT",
             "/NT/Robot",
@@ -23,7 +23,10 @@
             "/Subsystems/Elevator/Stages",
             "/Components/Elevator",
             "/Components/Elevator/Stages",
-            "/Components/Arm"
+            "/Components/Arm",
+            "/SmartDashboard/Subsystems",
+            "/SmartDashboard/Subsystems/PoseEstimator",
+            "/PoseEstimation"
           ]
         },
         "tabs": {
@@ -128,7 +131,7 @@
               },
               "controllerUUID": "3izc54ec84cqyt2b08nq52c8bcohgwpe",
               "renderer": null,
-              "controlsHeight": 233
+              "controlsHeight": 0
             },
             {
               "type": 2,
@@ -240,7 +243,7 @@
               },
               "controllerUUID": "rco8h9ytf5q9nx4sw7uc5xvn6hyhtbd7",
               "renderer": null,
-              "controlsHeight": 259
+              "controlsHeight": 0
             },
             {
               "type": 3,
@@ -293,9 +296,29 @@
                       "color": "#ff0000",
                       "arrangement": "0,1,2,3"
                     }
+                  },
+                  {
+                    "type": "ghost",
+                    "logKey": "NT:PoseEstimation/Vision Pose",
+                    "logType": "Pose2d",
+                    "visible": true,
+                    "options": {
+                      "model": "2025 MARS/WARS Base",
+                      "color": "#00ff00"
+                    }
+                  },
+                  {
+                    "type": "vision",
+                    "logKey": "NT:PoseEstimation/Tags Detected",
+                    "logType": "Pose3d[]",
+                    "visible": true,
+                    "options": {
+                      "color": "#00ff00",
+                      "size": "normal"
+                    }
                   }
                 ],
-                "game": "Axes",
+                "game": "2025 Field (Welded)",
                 "origin": "blue"
               },
               "controllerUUID": "9c1meejh9cpjxrrgngznlfsa2fl0dnfc",
@@ -303,17 +326,17 @@
                 "cameraIndex": -2,
                 "orbitFov": 50,
                 "cameraPosition": [
-                  -0.2143023419463964,
-                  1.5305180473560926,
-                  -1.5375732555876727
+                  -1.3596278711427794,
+                  1.5201783351510747,
+                  1.96402522543482
                 ],
                 "cameraTarget": [
-                  -0.03308733763594364,
-                  -0.08739284483000634,
-                  0.7275736467517235
+                  -0.05431328316004069,
+                  0.5681366086111578,
+                  0.0745582620145028
                 ]
               },
-              "controlsHeight": 360
+              "controlsHeight": 444
             },
             {
               "type": 9,
@@ -366,7 +389,7 @@
               },
               "controllerUUID": "a3wcwir2whtqie2y28ks4tpl9vp7rny0",
               "renderer": null,
-              "controlsHeight": 200
+              "controlsHeight": 269
             }
           ]
         }
