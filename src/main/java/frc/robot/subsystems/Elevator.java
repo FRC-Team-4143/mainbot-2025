@@ -220,21 +220,21 @@ public class Elevator extends Subsystem {
         break;
     }
 
-    if (io_.target_elevator_height_ < ElevatorConstants.ELEVATOR_MIN_HEIGHT) {
+    if (io_.target_elevator_height_ < ElevatorConstants.ELEVATOR_HEIGHT_PIVOT_MIN) {
       DataLogManager.log(
           "ERROR: Target Elevator Height: "
               + io_.target_elevator_height_
               + " Min Elevator Height: "
-              + ElevatorConstants.ELEVATOR_MIN_HEIGHT);
-      io_.target_elevator_height_ = ElevatorConstants.ELEVATOR_MIN_HEIGHT;
+              + ElevatorConstants.ELEVATOR_HEIGHT_PIVOT_MIN);
+      io_.target_elevator_height_ = ElevatorConstants.ELEVATOR_HEIGHT_PIVOT_MIN;
     }
-    if (io_.target_elevator_height_ > ElevatorConstants.ELEVATOR_MAX_HEIGHT) {
+    if (io_.target_elevator_height_ > ElevatorConstants.ELEVATOR_HEIGHT_PIVOT_MAX) {
       DataLogManager.log(
           "ERROR: Target Elevator Height: "
               + io_.target_elevator_height_
               + " Min Elevator Height: "
-              + ElevatorConstants.ELEVATOR_MAX_HEIGHT);
-      io_.target_elevator_height_ = ElevatorConstants.ELEVATOR_MAX_HEIGHT;
+              + ElevatorConstants.ELEVATOR_HEIGHT_PIVOT_MAX);
+      io_.target_elevator_height_ = ElevatorConstants.ELEVATOR_HEIGHT_PIVOT_MAX;
     }
   }
 
@@ -243,7 +243,7 @@ public class Elevator extends Subsystem {
     elevator_master_.setControl(
         elevator_request_
             .withPosition(
-                ((io_.target_elevator_height + io_.elevator_offset_)
+                ((io_.target_elevator_height_ + io_.elevator_offset_)
                         - ElevatorConstants.ELEVATOR_HEIGHT_PIVOT_MIN)
                     / ElevatorConstants.ELEVATOR_ROTATIONS_TO_METERS)
             .withLimitReverseMotion(isElevatorAtMinimum()));
@@ -287,8 +287,8 @@ public class Elevator extends Subsystem {
           new Pose3d(
               0,
               0,
-              (io_.current_elevator_height_ - ElevatorConstants.ELEVATOR_MIN_HEIGHT) / 2
-                  + ElevatorConstants.ELEVATOR_MIN_HEIGHT,
+              (io_.current_elevator_height_ - ElevatorConstants.ELEVATOR_HEIGHT_PIVOT_MIN) / 2
+                  + ElevatorConstants.ELEVATOR_HEIGHT_PIVOT_MIN,
               new Rotation3d()),
           new Pose3d(0, 0, io_.current_elevator_height_, new Rotation3d())
         });
@@ -307,7 +307,7 @@ public class Elevator extends Subsystem {
     return Util.epislonEquals(
         io_.current_arm_angle_,
         io_.target_arm_angle_.getRadians(),
-        ElevatorConstants.ARM_TARGET_THRESHOLD);
+        ArmConstants.ARM_TARGET_THRESHOLD);
   }
 
   /**
@@ -453,7 +453,7 @@ public class Elevator extends Subsystem {
     // IO container for all variables
     @Log.File public ControlMode current_control_mode_ = ControlMode.PIVOT;
     @Log.File public double current_elevator_height_ = 0;
-    @Log.File public double target_elevator_height_ = ElevatorConstants.ELEVATOR_MIN_SAFETY;
+    @Log.File public double target_elevator_height_ = ElevatorConstants.ELEVATOR_HEIGHT_PIVOT_MIN;
     @Log.File public double current_arm_angle_ = 0;
     @Log.File public Target target_ = Target.STOW;
     @Log.File public Rotation2d target_arm_angle_ = Rotation2d.fromDegrees(-90);
