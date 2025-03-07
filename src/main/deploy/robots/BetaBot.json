@@ -30,7 +30,7 @@
             "Y_POSITION": 7.5,
             "INVERT_DRIVE": false,
             "MODULE_TYPE": "MK4N",
-            "MODULE_GEARING": "L3+"
+            "MODULE_GEARING": "L2+"
         },
         "fr": {
             "DRIVE_ID": 3,
@@ -40,7 +40,7 @@
             "Y_POSITION": -7.5,
             "INVERT_DRIVE": false,
             "MODULE_TYPE": "MK4I",
-            "MODULE_GEARING": "L3+"
+            "MODULE_GEARING": "L2+"
         },
         "bl": {
             "DRIVE_ID": 5,
@@ -50,7 +50,7 @@
             "Y_POSITION": 7.5,
             "INVERT_DRIVE": false,
             "MODULE_TYPE": "MK4N",
-            "MODULE_GEARING": "L3+"
+            "MODULE_GEARING": "L2+"
         },
         "br": {
             "DRIVE_ID": 7,
@@ -60,21 +60,21 @@
             "Y_POSITION": -7.5,
             "INVERT_DRIVE": false,
             "MODULE_TYPE": "MK4I",
-            "MODULE_GEARING": "L3+"
+            "MODULE_GEARING": "L2+"
         },
         "traj_controller": {
-            "TRANSLATION_P": 0.0,
+            "TRANSLATION_P": 0.5,
             "TRANSLATION_I": 0.0,
             "TRANSLATION_D": 0.0,
-            "HEADING_P": 0.0,
+            "HEADING_P": 2.0,
             "HEADING_I": 0.0,
             "HEADING_D": 0.0
         },
         "pose_controller": {
-            "TRANSLATION_P": 0.0,
+            "TRANSLATION_P": 3.0,
             "TRANSLATION_I": 0.0,
             "TRANSLATION_D": 0.0,
-            "HEADING_P": 0.0,
+            "HEADING_P": 3.0,
             "HEADING_I": 0.0,
             "HEADING_D": 0.0
         }
@@ -90,7 +90,11 @@
         "CONTROLLER_S": 0.06766,
         "CONTROLLER_V": 0.11733,
         "CONTROLLER_A": 0.0070285,
-        "CONTROLLER_G": 0.43
+        "CONTROLLER_G": 0.43,
+        "HEIGHT_PIVOT_MIN": 30.5,
+        "HEIGHT_PIVOT_MAX": 82.75,
+        "HEIGHT_PIVOT_TO_TOP": 10,
+        "ELEVATOR_GEAR_RATIO":4
     },
     "arm": {
         "CONTROLLER_P": 40.0,
@@ -99,7 +103,9 @@
         "CONTROLLER_S": 0.024495,
         "CONTROLLER_V": 8.778,
         "CONTROLLER_A": 0.25148,
-        "CONTROLLER_G": 0.28
+        "CONTROLLER_G": 0.28,
+        "LENGTH_PIVOT_TO_FUNNEL": 11.5,
+        "DEPTH_CORAL_POCKET":8.875
     },
     "vision": {
         "camera0": {

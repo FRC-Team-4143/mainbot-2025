@@ -95,7 +95,7 @@ public class Claw extends Subsystem {
     if (io_.game_piece_ == GamePiece.CORAL) {
       switch (io_.claw_mode_) {
         case SHOOT:
-          io_.wheel_output_ = ClawConstants.WHEEL_SHOOT_SPEED;
+          io_.wheel_output_ = ClawConstants.WHEEL_CORAL_SHOOT_SPEED;
           break;
         case LOAD:
           io_.wheel_output_ = ClawConstants.WHEEL_LOAD_SPEED;
@@ -108,7 +108,7 @@ public class Claw extends Subsystem {
     } else {
       switch (io_.claw_mode_) {
         case SHOOT:
-          io_.wheel_output_ = -ClawConstants.WHEEL_SHOOT_SPEED;
+          io_.wheel_output_ = -ClawConstants.WHEEL_ALGAE_SHOOT_SPEED;
           break;
         case LOAD:
           io_.wheel_output_ = -ClawConstants.WHEEL_LOAD_SPEED;
@@ -141,8 +141,8 @@ public class Claw extends Subsystem {
   public void outputTelemetry(double timestamp) {
     SmartDashboard.putString("Subsystems/Claw/Mode", io_.claw_mode_.toString());
     SmartDashboard.putNumber("Subsystems/Claw/Current_Output", io_.current_output_);
-    SmartDashboard.putBoolean("Subsystems/Claw/has Algae", hasAlgae());
-    SmartDashboard.putBoolean("Subsystems/Claw/has Coral", hasCoral());
+    SmartDashboard.putBoolean("Subsystems/Claw/Has Algae", hasAlgae());
+    SmartDashboard.putBoolean("Subsystems/Claw/Has Coral (On True)", hasCoral());
     SmartDashboard.putString(
         "Subsystems/Claw/Game Piece Mode",
         (io_.game_piece_ == GamePiece.CORAL)

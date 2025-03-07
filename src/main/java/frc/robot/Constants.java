@@ -227,7 +227,8 @@ public final class Constants {
 
   public static final class ClawConstants {
     public static final int WHEEL_MOTOR_ID = 11;
-    public static final double WHEEL_SHOOT_SPEED = 0.30;
+    public static final double WHEEL_CORAL_SHOOT_SPEED = 0.3;
+    public static final double WHEEL_ALGAE_SHOOT_SPEED = 0.15;
     public static final double WHEEL_LOAD_SPEED = -0.3;
     public static final double ALGAE_IDLE_SPEED = 0.1;
     public static final double STATOR_CURRENT_LIMIT = 40;
@@ -261,18 +262,24 @@ public final class Constants {
     // Units.inchesToMeters(Sprocket Circumference * Math.PI) / gearbox ratio *
     // rigging
     public static final double ELEVATOR_ROTATIONS_TO_METERS =
-        Units.inchesToMeters(1.751 * Math.PI) / 4 * 2;
+        Units.inchesToMeters(1.751 * Math.PI)
+            / LOADER.getDoubleValue("elevator", "ELEVATOR_GEAR_RATIO")
+            * 2;
     public static final double ELEVATOR_CRUISE_VELOCITY = 5.0 / ELEVATOR_ROTATIONS_TO_METERS;
     public static final double ELEVATOR_ACCEL = 3.0 / ELEVATOR_ROTATIONS_TO_METERS;
     public static final double ELEVATOR_EXPO_KV = 0.11733;
     public static final double ELEVATOR_EXPO_KA = 0.0070285;
     public static final double ELEVATOR_ZERO_THRESHOLD = 0; // In m
     public static final double ELEVATOR_STATOR_CURRENT_LIMIT = 80.0;
-    public static final double ELEVATOR_HEIGHT_ABOVE_PIVOT = Units.inchesToMeters(8.0);
-    public static final double ELEVATOR_MIN_HEIGHT = Units.inchesToMeters(28.25);
-    public static final double ELEVATOR_MAX_HEIGHT =
-        Units.inchesToMeters(96.76) - ELEVATOR_HEIGHT_ABOVE_PIVOT - 0.1; // 0.1m of safety
-    public static final double ELEVATOR_MIN_SAFETY = ELEVATOR_MIN_HEIGHT + Units.inchesToMeters(4);
+    public static final double ELEVATOR_HEIGHT_PIVOT_TO_TOP =
+        Units.inchesToMeters(LOADER.getDoubleValue("elevator", "HEIGHT_PIVOT_TO_TOP"));
+    public static final double ELEVATOR_HEIGHT_PIVOT_MIN =
+        Units.inchesToMeters(LOADER.getDoubleValue("elevator", "HEIGHT_PIVOT_MIN"));
+    public static final double ELEVATOR_HEIGHT_PIVOT_MAX =
+        Units.inchesToMeters(LOADER.getDoubleValue("elevator", "HEIGHT_PIVOT_MAX"))
+            - 0.1; // 0.1m of safety
+    public static final double ELEVATOR_HEIGHT_PIVOT_SAFETY =
+        ELEVATOR_HEIGHT_PIVOT_MIN + Units.inchesToMeters(4);
 
     public static final Slot0Configs ELEVATOR_GAINS =
         new Slot0Configs()
@@ -285,59 +292,31 @@ public final class Constants {
             .withKG(LOADER.getDoubleValue("elevator", "CONTROLLER_G"))
             .withGravityType(GravityTypeValue.Elevator_Static);
 
-    // Arm Constants:
-    public static final int ARM_MOTOR_ID = 23;
-    public static final int ARM_ENCODER_ID = 24;
-    public static final double ARM_TARGET_THRESHOLD = 0.25; // In rads
-    public static final InvertedValue ARM_FOLLOWER_INVERSION =
-        InvertedValue.CounterClockwise_Positive;
-    public static final double ARM_HOME_POSITION = 0;
-    public static final double CORAL_ARM_CRUISE_VELOCITY = 4;
-    public static final double CORAL_ARM_ACCELERATION = 1.75;
-    public static final double ALGAE_ARM_CRUISE_VELOCITY = 4;
-    public static final double ALGAE_ARM_ACCELERATION = 0.65;
-    public static final double ARM_LENGTH = Units.inchesToMeters(11.5);
-    // ((shaft sprocket / pivot sprocket) / gearbox) * rotations to radians ratio)
-    public static final double SENSOR_TO_MECHANISM_RATIO = (1.0 / ((16.0 / 64.0) / 20.0));
-    public static final double ARM_FORWARD_LIMT = Units.radiansToRotations(Math.PI);
-    public static final double ARM_REVERSE_LIMT =
-        Units.radiansToRotations(Units.degreesToRadians(-95));
-    public static final Slot0Configs ARM_GAINS =
-        new Slot0Configs()
-            .withKP(LOADER.getDoubleValue("arm", "CONTROLLER_P"))
-            .withKI(LOADER.getDoubleValue("arm", "CONTROLLER_I"))
-            .withKD(LOADER.getDoubleValue("arm", "CONTROLLER_D"))
-            .withKS(LOADER.getDoubleValue("arm", "CONTROLLER_S"))
-            .withKV(LOADER.getDoubleValue("arm", "CONTROLLER_V"))
-            .withKA(LOADER.getDoubleValue("arm", "CONTROLLER_A"))
-            .withKG(LOADER.getDoubleValue("arm", "CONTROLLER_G"))
-            .withGravityType(GravityTypeValue.Arm_Cosine);
-
     public enum Target {
       L4(
           FieldConstants.ReefHeight.L4.HEIGHT + Units.inchesToMeters(11),
           Rotation2d.fromDegrees(130),
           ControlType.EFFECTOR),
       L3(
-          FieldConstants.ReefHeight.L3.HEIGHT + Units.inchesToMeters(8),
+          FieldConstants.ReefHeight.L3.HEIGHT + Units.inchesToMeters(9),
           Rotation2d.fromDegrees(125),
           ControlType.EFFECTOR),
       L2(
-          FieldConstants.ReefHeight.L2.HEIGHT + Units.inchesToMeters(7),
+          FieldConstants.ReefHeight.L2.HEIGHT + Units.inchesToMeters(8),
           Rotation2d.fromDegrees(125),
           ControlType.EFFECTOR),
 
-      STATION(1.05, Rotation2d.fromRadians(-1.027767), ControlType.PIVOT),
-      CLIMB(ELEVATOR_MIN_SAFETY, new Rotation2d(), ControlType.PIVOT),
-      STOW(ELEVATOR_MIN_SAFETY, Rotation2d.fromDegrees(-90), ControlType.PIVOT),
-      ALGAE_LOW(ELEVATOR_MIN_HEIGHT, Rotation2d.fromDegrees(90 + 50), ControlType.EFFECTOR),
-      ALGAE_HIGH(1.250, Rotation2d.fromDegrees(90 + 35), ControlType.EFFECTOR),
-      ALGAE_PROCESSOR(0.9429, Rotation2d.fromDegrees(-55), ControlType.PIVOT),
+      STATION(0.8722, Rotation2d.fromRadians(-1.027767), ControlType.EFFECTOR),
+      CLIMB(ELEVATOR_HEIGHT_PIVOT_SAFETY, new Rotation2d(), ControlType.PIVOT),
+      STOW(ELEVATOR_HEIGHT_PIVOT_SAFETY, Rotation2d.fromDegrees(-90), ControlType.PIVOT),
+      ALGAE_LOW(0.9702231159054557, Rotation2d.fromDegrees(90 + 35), ControlType.EFFECTOR),
+      ALGAE_HIGH(1.2535345791562702, Rotation2d.fromDegrees(127.79), ControlType.EFFECTOR),
+      ALGAE_PROCESSOR(0.6381, Rotation2d.fromDegrees(-55), ControlType.EFFECTOR),
       BARGE(
-          FieldConstants.ReefHeight.L4.HEIGHT + 0.0762,
+          FieldConstants.ReefHeight.L4.HEIGHT + 0.3302,
           Rotation2d.fromDegrees(90),
-          ControlType.PIVOT),
-      ALGAE_STOW(ELEVATOR_MIN_HEIGHT, Rotation2d.fromDegrees(90), ControlType.PIVOT);
+          ControlType.EFFECTOR),
+      ALGAE_STOW(ELEVATOR_HEIGHT_PIVOT_MIN, Rotation2d.fromDegrees(90), ControlType.PIVOT);
 
       Target(double height, Rotation2d angle, ControlType type) {
         this.angle = angle;
@@ -355,5 +334,37 @@ public final class Constants {
 
       public final ControlType type;
     }
+  }
+
+  public class ArmConstants {
+    // Arm Constants:
+    public static final int ARM_MOTOR_ID = 23;
+    public static final int ARM_ENCODER_ID = 24;
+    public static final double ARM_TARGET_THRESHOLD = 0.25; // In rads
+    public static final InvertedValue ARM_FOLLOWER_INVERSION =
+        InvertedValue.CounterClockwise_Positive;
+    public static final double CORAL_ARM_CRUISE_VELOCITY = 4;
+    public static final double CORAL_ARM_ACCELERATION = 1.75;
+    public static final double ALGAE_ARM_CRUISE_VELOCITY = 4;
+    public static final double ALGAE_ARM_ACCELERATION = 0.65;
+    public static final double ARM_LENGTH =
+        Units.inchesToMeters(LOADER.getDoubleValue("arm", "LENGTH_PIVOT_TO_FUNNEL"));
+    public static final double ARM_WIDTH =
+        Units.inchesToMeters(LOADER.getDoubleValue("arm", "DEPTH_CORAL_POCKET"));
+    // ((shaft sprocket / pivot sprocket) / gearbox) * rotations to radians ratio)
+    public static final double SENSOR_TO_MECHANISM_RATIO = (1.0 / ((16.0 / 64.0) / 20.0));
+    public static final double ARM_FORWARD_LIMT = Units.radiansToRotations(Math.PI);
+    public static final double ARM_REVERSE_LIMT =
+        Units.radiansToRotations(Units.degreesToRadians(-95));
+    public static final Slot0Configs ARM_GAINS =
+        new Slot0Configs()
+            .withKP(LOADER.getDoubleValue("arm", "CONTROLLER_P"))
+            .withKI(LOADER.getDoubleValue("arm", "CONTROLLER_I"))
+            .withKD(LOADER.getDoubleValue("arm", "CONTROLLER_D"))
+            .withKS(LOADER.getDoubleValue("arm", "CONTROLLER_S"))
+            .withKV(LOADER.getDoubleValue("arm", "CONTROLLER_V"))
+            .withKA(LOADER.getDoubleValue("arm", "CONTROLLER_A"))
+            .withKG(LOADER.getDoubleValue("arm", "CONTROLLER_G"))
+            .withGravityType(GravityTypeValue.Arm_Cosine);
   }
 }
