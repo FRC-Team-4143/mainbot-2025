@@ -228,7 +228,7 @@ public final class Constants {
   public static final class ClawConstants {
     public static final int WHEEL_MOTOR_ID = 11;
     public static final double WHEEL_CORAL_SHOOT_SPEED = 0.3;
-    public static final double WHEEL_ALGAE_SHOOT_SPEED = 0.15;
+    public static final double WHEEL_ALGAE_SHOOT_SPEED = 0.3;
     public static final double WHEEL_LOAD_SPEED = -0.3;
     public static final double ALGAE_IDLE_SPEED = 0.1;
     public static final double STATOR_CURRENT_LIMIT = 40;
@@ -295,7 +295,7 @@ public final class Constants {
     public enum Target {
       L4(
           FieldConstants.ReefHeight.L4.HEIGHT + Units.inchesToMeters(11),
-          Rotation2d.fromDegrees(130),
+          Rotation2d.fromDegrees(135),
           ControlType.EFFECTOR),
       L3(
           FieldConstants.ReefHeight.L3.HEIGHT + Units.inchesToMeters(9),

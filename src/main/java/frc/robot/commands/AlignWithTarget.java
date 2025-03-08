@@ -5,7 +5,6 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.ConditionalCommand;
-import frc.mw_lib.command.DualConditionalCommand;
 import frc.robot.subsystems.Claw;
 import frc.robot.subsystems.PoseEstimator;
 
@@ -17,11 +16,10 @@ public class AlignWithTarget extends ConditionalCommand {
     super(
         new CoralReefScore(),
         new ConditionalCommand(
-            new DualConditionalCommand(
+            new ConditionalCommand(
                 new ScoreBarge(),
-                new ScoreProcessor(),
-                PoseEstimator.getInstance()::isBargeZone,
-                PoseEstimator.getInstance()::isProcessorZone),
+                new ScoreProcessor().onlyIf(PoseEstimator.getInstance()::isProcessorZone),
+                PoseEstimator.getInstance()::isBargeZone),
             new AlgaeReefPickup(),
             Claw.getInstance()::hasAlgae),
         Claw.getInstance()::isCoralMode);
