@@ -11,7 +11,7 @@ import java.util.Hashtable;
 
 public class FieldRegions {
 
-  private static PolygonRegion PROCESSOR_REGION =
+  public static PolygonRegion PROCESSOR_REGION =
       new PolygonRegion(
           new Translation2d[] {
             new Translation2d(4, 0),
@@ -21,7 +21,7 @@ public class FieldRegions {
             new Translation2d(4, 0),
           },
           "Processor");
-  private static PolygonRegion BARGE_REGION =
+  public static PolygonRegion BARGE_REGION =
       new PolygonRegion(
           new Translation2d[] {
             new Translation2d(
