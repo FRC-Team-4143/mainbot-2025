@@ -18,6 +18,7 @@ import frc.robot.commands.GamePieceEject;
 import frc.robot.commands.GamePieceLoad;
 import frc.robot.commands.ManualElevatorOverride;
 import frc.robot.commands.ManualElevatorOverride.Level;
+import frc.robot.commands.SwerveProfile;
 import frc.robot.subsystems.Claw;
 import frc.robot.subsystems.Elevator;
 import frc.robot.subsystems.Elevator.OffsetType;
@@ -152,6 +153,8 @@ public abstract class OI {
     operator_controller_
         .povRight()
         .onTrue(Commands.runOnce(() -> Elevator.getInstance().setOffset(OffsetType.ARM_CW)));
+
+    operator_controller_.start().whileTrue(new SwerveProfile(2.5, 0, 0));
   }
 
   /**

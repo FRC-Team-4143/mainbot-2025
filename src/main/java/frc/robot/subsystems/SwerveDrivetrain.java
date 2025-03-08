@@ -161,6 +161,13 @@ public class SwerveDrivetrain extends Subsystem {
     SmartDashboard.putData("Tuning/Swerve/Y Pose Controller", y_pose_controller_);
     SmartDashboard.putData("Tuning/Swerve/Heading Pose Controller", heading_pose_controller_);
 
+    SmartDashboard.putNumber(
+        "Subsystems/Swerve/TractorBeamRotationThreshold",
+        Constants.DrivetrainConstants.TRACTOR_BEAM_ROTATION_THRESHOLD);
+    SmartDashboard.putNumber(
+        "Subsystems/Swerve/TractorBeamDistanceThreshold",
+        Constants.DrivetrainConstants.TRACTOR_BEAM_TARGET_DISTANCE);
+
     // NT Publishers
     requested_state_pub_ =
         NetworkTableInstance.getDefault()
@@ -365,26 +372,26 @@ public class SwerveDrivetrain extends Subsystem {
         {
           double ropeEndHandOffThreshold = 0.05;
           double x_velocity =
-              x_pose_controller_.calculate(io_.current_pose_.getX(), io_.tight_rope_pose_A.getX());
+              x_pose_controller_.calculate(io_.current_pose_.getX(), io_.tight_rope_.poseA.getX());
           double y_velocity = 0;
           boolean pastA =
-              io_.current_pose_.getY() > io_.tight_rope_pose_A.getY() + ropeEndHandOffThreshold;
+              io_.current_pose_.getY() > io_.tight_rope_.poseA.getY() + ropeEndHandOffThreshold;
           boolean pastB =
-              io_.current_pose_.getY() < io_.tight_rope_pose_B.getY() - ropeEndHandOffThreshold;
+              io_.current_pose_.getY() < io_.tight_rope_.poseB.getY() - ropeEndHandOffThreshold;
           if (!pastA && !pastB) {
             y_velocity = -io_.joystick_left_x_ * DrivetrainConstants.MAX_DRIVE_SPEED;
           } else if (pastA) {
             y_velocity =
                 y_pose_controller_.calculate(
-                    io_.current_pose_.getY(), io_.tight_rope_pose_A.getY());
+                    io_.current_pose_.getY(), io_.tight_rope_.poseA.getY());
           } else if (pastB) {
             y_velocity =
                 y_pose_controller_.calculate(
-                    io_.current_pose_.getY(), io_.tight_rope_pose_B.getY());
+                    io_.current_pose_.getY(), io_.tight_rope_.poseB.getY());
           }
           this.setControl(
               field_centric_target_facing_
-                  .withTargetDirection(io_.tight_rope_pose_A.getRotation())
+                  .withTargetDirection(io_.tight_rope_.poseA.getRotation())
                   .withVelocityX(
                       Util.clamp(x_velocity, DrivetrainConstants.MAX_TRACTOR_BEAM_VELOCITY_SPEED))
                   .withVelocityY(
@@ -587,23 +594,30 @@ public class SwerveDrivetrain extends Subsystem {
   }
 
   /**
-   * Sets the target rope points and rotation and begins TIGHT_ROPE mode !! Only locks to the line
-   * along the Y axis !! pointA must have a --- Y than pointB
-   *
-   * @param pointA endA of the rope (this rotation is used to set the robot rotation)
-   * @param pointB endB of the rope
+   * @return if robot at its target Tractoy Beam Pose
    */
-  public void setTightRope(Pose2d pointA, Pose2d pointB) {
-    io_.drive_mode_ = DriveMode.TIGHT_ROPE;
-    io_.tight_rope_pose_A = pointA;
-    io_.tight_rope_pose_B = pointB;
+  public boolean atTractorBeamPose() {
+    return Util.epislonEquals(
+        io_.current_pose_,
+        io_.target_pose_,
+        SmartDashboard.getNumber(
+            "Subsystems/Swerve/TractorBeamRotationThreshold",
+            Constants.DrivetrainConstants.TRACTOR_BEAM_ROTATION_THRESHOLD),
+        SmartDashboard.getNumber(
+            "Subsystems/Swerve/TractorBeamDistanceThreshold",
+            Constants.DrivetrainConstants.TRACTOR_BEAM_TARGET_DISTANCE));
   }
 
-  /** Sets the target rope points and rotation and begins TIGHT_ROPE mode */
+  /**
+   * Sets the target rope points and rotation and begins TIGHT_ROPE mode !! Only locks to the line
+   * along the Y axis !! pointA must have a higher Y than pointB pointA rotation is used to set the
+   * robot rotation
+   *
+   * @param TightRope
+   */
   public void setTightRope(TightRope trightrope) {
     io_.drive_mode_ = DriveMode.TIGHT_ROPE;
-    io_.tight_rope_pose_A = trightrope.poseA;
-    io_.tight_rope_pose_B = trightrope.poseB;
+    io_.tight_rope_ = trightrope;
   }
 
   /**
@@ -636,8 +650,9 @@ public class SwerveDrivetrain extends Subsystem {
     @Log.File public double tractor_beam_scaling_factor_ = 0.0;
     @Log.File public Pose2d current_pose_ = new Pose2d();
     @Log.File public Pose2d target_pose_ = new Pose2d();
-    @Log.File public Pose2d tight_rope_pose_A = new Pose2d();
-    @Log.File public Pose2d tight_rope_pose_B = new Pose2d();
+
+    @Log.File
+    public TightRope tight_rope_ = new TightRope(new Pose2d(), new Pose2d(), "Defalut drivetrain");
 
     @Log.File
     public SwerveSample target_sample_ = new SwerveSample(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, null, null);
