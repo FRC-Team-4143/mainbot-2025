@@ -134,6 +134,8 @@ public final class Constants {
     public static final double MAX_TARGET_SPEED = 1;
     public static final double MAX_TRACTOR_BEAM_VELOCITY_SPEED = MAX_DRIVE_SPEED * 0.35;
     public static final double MAX_TRACTOR_BEAM_OMEGA_SPEED = MAX_DRIVE_ANGULAR_RATE * 0.6;
+    public static final double TRACTOR_BEAM_ROTATION_THRESHOLD = Units.degreesToRadians(2);
+    public static final double TRACTOR_BEAM_TARGET_DISTANCE = Units.inchesToMeters(1);
 
     private static final SwerveModuleConstantsFactory ConstantCreator =
         new SwerveModuleConstantsFactory()
@@ -366,5 +368,9 @@ public final class Constants {
             .withKA(LOADER.getDoubleValue("arm", "CONTROLLER_A"))
             .withKG(LOADER.getDoubleValue("arm", "CONTROLLER_G"))
             .withGravityType(GravityTypeValue.Arm_Cosine);
+  }
+
+  public class GameStateManager {
+    public static final double REQURED_ROTATION_FOR_ELVATOR = Units.degreesToRadians(45);
   }
 }
