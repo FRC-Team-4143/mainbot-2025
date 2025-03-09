@@ -12,7 +12,6 @@ import edu.wpi.first.apriltag.AprilTagFields;
 import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.controller.PIDController;
-import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation3d;
@@ -20,7 +19,6 @@ import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.util.Color;
-import frc.lib.FieldConstants;
 import frc.mw_lib.swerve.SwerveModule.ClosedLoopOutputType;
 import frc.mw_lib.swerve.SwerveModuleConstants;
 import frc.mw_lib.swerve.SwerveModuleConstants.SteerFeedbackType;
@@ -293,49 +291,6 @@ public final class Constants {
             .withKA(LOADER.getDoubleValue("elevator", "CONTROLLER_A"))
             .withKG(LOADER.getDoubleValue("elevator", "CONTROLLER_G"))
             .withGravityType(GravityTypeValue.Elevator_Static);
-
-    public enum Target {
-      L4(
-          FieldConstants.ReefHeight.L4.HEIGHT + Units.inchesToMeters(11),
-          Rotation2d.fromDegrees(135),
-          ControlType.EFFECTOR),
-      L3(
-          FieldConstants.ReefHeight.L3.HEIGHT + Units.inchesToMeters(9),
-          Rotation2d.fromDegrees(125),
-          ControlType.EFFECTOR),
-      L2(
-          FieldConstants.ReefHeight.L2.HEIGHT + Units.inchesToMeters(8),
-          Rotation2d.fromDegrees(125),
-          ControlType.EFFECTOR),
-
-      STATION(0.8722, Rotation2d.fromRadians(-1.027767), ControlType.EFFECTOR),
-      CLIMB(ELEVATOR_HEIGHT_PIVOT_SAFETY, new Rotation2d(), ControlType.PIVOT),
-      STOW(ELEVATOR_HEIGHT_PIVOT_SAFETY, Rotation2d.fromDegrees(-90), ControlType.PIVOT),
-      ALGAE_LOW(0.9702231159054557, Rotation2d.fromDegrees(90 + 35), ControlType.EFFECTOR),
-      ALGAE_HIGH(1.2535345791562702, Rotation2d.fromDegrees(127.79), ControlType.EFFECTOR),
-      ALGAE_PROCESSOR(0.6381, Rotation2d.fromDegrees(-55), ControlType.EFFECTOR),
-      BARGE(
-          FieldConstants.ReefHeight.L4.HEIGHT + 0.3302,
-          Rotation2d.fromDegrees(90),
-          ControlType.EFFECTOR),
-      ALGAE_STOW(ELEVATOR_HEIGHT_PIVOT_MIN, Rotation2d.fromDegrees(90), ControlType.PIVOT);
-
-      Target(double height, Rotation2d angle, ControlType type) {
-        this.angle = angle;
-        this.height = height;
-        this.type = type;
-      }
-
-      public final double height;
-      public final Rotation2d angle;
-
-      public enum ControlType {
-        PIVOT,
-        EFFECTOR
-      }
-
-      public final ControlType type;
-    }
   }
 
   public class ArmConstants {
@@ -371,6 +326,6 @@ public final class Constants {
   }
 
   public class GameStateManager {
-    public static final double REQURED_ROTATION_FOR_ELVATOR = Units.degreesToRadians(45);
+    public static final double REQUIRED_ROTATION_FOR_ELEVATOR = Units.degreesToRadians(45);
   }
 }

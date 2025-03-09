@@ -60,9 +60,7 @@ public class Robot extends TimedRobot {
   }
 
   @Override
-  public void autonomousInit() {
-    SwerveDrivetrain.getInstance().setDriveMode(DriveMode.TRAJECTORY);
-  }
+  public void autonomousInit() {}
 
   @Override
   public void autonomousPeriodic() {}

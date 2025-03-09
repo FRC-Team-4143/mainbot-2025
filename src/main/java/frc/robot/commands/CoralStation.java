@@ -5,10 +5,9 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.lib.ElevatorTargets.Target;
 import frc.lib.FieldRegions;
 import frc.lib.ScoringPoses;
-import frc.robot.Constants;
-import frc.robot.Constants.ElevatorConstants.Target;
 import frc.robot.subsystems.Claw;
 import frc.robot.subsystems.Claw.ClawMode;
 import frc.robot.subsystems.Claw.GamePiece;
@@ -32,7 +31,7 @@ public class CoralStation extends Command {
   @Override
   public void initialize() {
     elevator_.setSpeedLimit(SpeedLimit.CORAL);
-    elevator_.setTarget(Constants.ElevatorConstants.Target.STATION);
+    elevator_.setTarget(Target.STATION);
     Claw.getInstance().setGamePiece(GamePiece.CORAL);
     Claw.getInstance().setClawMode(ClawMode.LOAD);
   }
