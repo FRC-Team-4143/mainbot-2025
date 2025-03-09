@@ -186,7 +186,7 @@ public class PoseEstimator extends Subsystem {
    */
   public Optional<Region> loadStationRegion() {
     for (PolygonRegion region : FieldRegions.STATION_REGIONS) {
-      if (region.contains(io_.filtered_vision_pose_)) {
+      if (region.contains(getRobotPose())) {
         return Optional.of(region);
       }
     }
@@ -200,11 +200,19 @@ public class PoseEstimator extends Subsystem {
    */
   public Optional<Region> algaeRegion() {
     for (PolygonRegion region : FieldRegions.ALGAE_REGIONS) {
-      if (region.contains(io_.filtered_vision_pose_)) {
+      if (region.contains(getRobotPose())) {
         return Optional.of(region);
       }
     }
     return Optional.empty();
+  }
+
+  public boolean isBargeZone() {
+    return FieldRegions.BARGE_REGION.contains(getRobotPose());
+  }
+
+  public boolean isProcessorZone() {
+    return FieldRegions.PROCESSOR_REGION.contains(getRobotPose());
   }
 
   /**
@@ -214,7 +222,7 @@ public class PoseEstimator extends Subsystem {
    */
   public Optional<Region> reefPose() {
     for (PolygonRegion region : FieldRegions.REEF_REGIONS) {
-      if (region.contains(io_.filtered_vision_pose_)) {
+      if (region.contains(getRobotPose())) {
         return Optional.of(region);
       }
     }
