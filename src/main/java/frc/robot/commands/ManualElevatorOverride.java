@@ -28,6 +28,7 @@ public class ManualElevatorOverride extends Command {
   public ManualElevatorOverride(Level level) {
     level_ = level;
     addRequirements(Elevator.getInstance());
+    setName(this.getClass().getSimpleName());
   }
 
   // Called when the command is initially scheduled.

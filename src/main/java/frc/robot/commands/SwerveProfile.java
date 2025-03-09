@@ -23,6 +23,7 @@ public class SwerveProfile extends Command {
     x_speed_req = x_speed;
     y_speed_req = y_speed;
     rot_speed_req = rot_speed;
+    setName(this.getClass().getSimpleName());
   }
 
   // Called when the command is initially scheduled.

@@ -34,6 +34,7 @@ public class ScoreBarge extends Command {
     claw_ = Claw.getInstance();
     addRequirements(elevator_);
     addRequirements(drivetrain_);
+    setName(this.getClass().getSimpleName());
   }
 
   // Called when the command is initially scheduled.

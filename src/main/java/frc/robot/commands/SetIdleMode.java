@@ -14,6 +14,7 @@ public class SetIdleMode extends Command {
     // Add requirements for command schedule interuption handling
     // addRequirements(subsystem);
     addRequirements(SwerveDrivetrain.getInstance());
+    setName(this.getClass().getSimpleName());
   }
 
   // Called when the command is initially scheduled.

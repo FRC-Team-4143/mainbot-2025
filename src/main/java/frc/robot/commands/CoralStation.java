@@ -25,6 +25,7 @@ public class CoralStation extends Command {
   public CoralStation() {
     elevator_ = Elevator.getInstance();
     addRequirements(elevator_);
+    setName(this.getClass().getSimpleName());
   }
 
   // Called when the command is initially scheduled.

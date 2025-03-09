@@ -22,6 +22,7 @@ public class CoralLoad extends Command {
     // the lazy command to end
     claw_ = Claw.getInstance();
     addRequirements(claw_, Elevator.getInstance());
+    setName(this.getClass().getSimpleName());
   }
 
   // Called when the command is initially scheduled.

@@ -295,7 +295,9 @@ public class GameStateManager extends Subsystem {
     @Log.File public Optional<Pose2d> reef_target = Optional.empty();
     @Log.File public Column target_column = Column.LEFT;
     @Log.File public Column saved_target_column = Column.LEFT;
-    @Log.File public boolean algae_level_high = false; // false is low level and true is the higher level
+
+    @Log.File
+    public boolean algae_level_high = false; // false is low level and true is the higher level
   }
 
   @Override

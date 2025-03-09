@@ -23,5 +23,6 @@ public class AlignWithTarget extends ConditionalCommand {
             new AlgaeReefPickup(),
             Claw.getInstance()::hasAlgae),
         Claw.getInstance()::isCoralMode);
+    setName(this.getClass().getSimpleName());
   }
 }

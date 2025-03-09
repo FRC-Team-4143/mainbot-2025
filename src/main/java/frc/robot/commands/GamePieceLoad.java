@@ -18,5 +18,6 @@ public class GamePieceLoad extends NoReqConditionalCommand {
         new ConditionalCommand(new CoralStation(), new CoralLoad(), OI.use_vision),
         new AlgaeLoad(),
         Claw.getInstance()::isCoralMode);
+    setName(this.getClass().getSimpleName());
   }
 }
