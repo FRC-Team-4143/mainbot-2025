@@ -3,6 +3,8 @@ package frc.mw_lib.proxy_server;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Twist2d;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
+import frc.mw_lib.proxy_server.DetectionPacket.Detection;
+
 import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
@@ -101,7 +103,7 @@ public class ChassisProxyServer {
    *
    * @return most recent {@link Pose2d} from chassis proxy.
    */
-  public static Pose2d getPose() {
+  public static Pose2d getLatestPose() {
     return odom_packet_.pose_;
   }
 
@@ -110,7 +112,7 @@ public class ChassisProxyServer {
    *
    * @return most recent {@link Twist2d} from chassis proxy.
    */
-  public static Twist2d getTwist() {
+  public static Twist2d getLatestTwist() {
     return odom_packet_.twist_;
   }
 
@@ -120,7 +122,15 @@ public class ChassisProxyServer {
    *
    * @return array containing the {@link SwerveModuleState} for each module
    */
-  public static SwerveModuleState[] getModuleStates() {
+  public static SwerveModuleState[] getLatestModuleStates() {
     return states_packet_.module_states_;
+  }
+
+  /**
+   * Gets the current detection info. Detections are updated by calling {@link #updateData()}
+   * @return Detection current the latest Pose and ids used to determine pose.
+   */
+  public static Detection getLatestDetection(){
+    return detection_packet_.detection_;
   }
 }
