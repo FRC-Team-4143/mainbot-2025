@@ -14,6 +14,7 @@ public class ChassisProxyServer {
   // Data Packets
   private static OdomPacket odom_packet_ = new OdomPacket();
   private static StatesPacket states_packet_ = new StatesPacket();
+  private static DetectionPacket detection_packet_ = new DetectionPacket();
 
   // Socket Config
   private static DatagramSocket socket_ = null;
@@ -75,7 +76,9 @@ public class ChassisProxyServer {
           // States Packet Type
         case StatesPacket.TYPE_ID: // const uint8_t msg_id{ 2u };
           states_packet_.updateData(buffer);
-
+          break;
+        case DetectionPacket.TYPE_ID:
+          detection_packet_.updateData(buffer);
           break;
           // Unknown Packet Type
         default:
