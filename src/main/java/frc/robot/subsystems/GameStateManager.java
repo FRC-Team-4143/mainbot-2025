@@ -8,6 +8,7 @@ import frc.lib.FieldRegions;
 import frc.lib.ScoringPoses;
 import frc.mw_lib.subsystem.Subsystem;
 import frc.mw_lib.util.Util;
+import frc.robot.Constants;
 import frc.robot.Constants.ElevatorConstants;
 import frc.robot.subsystems.Elevator.SpeedLimit;
 import java.util.Optional;
@@ -102,13 +103,18 @@ public class GameStateManager extends Subsystem {
         }
         break;
       case APPROACHING_TARGET:
-        elevatorTargetSwitch(); // need to fix that switch cases were methods
+        if (Util.epislonEquals(
+            poseEstimator_.getRobotPose().getRotation(),
+            io_.reef_target.get().getRotation(),
+            Constants.GameStateManager
+                .REQURED_ROTATION_FOR_ELVATOR)) { // move elavator once within rotation
+          elevatorTargetSwitch();
+        }
         // drive towards final target
         io_.reef_target = reefPose(io_.target_column);
         drivetrain_.setTargetPose(io_.reef_target.get());
-        if (Util.epislonEquals(poseEstimator_.getRobotPose(), io_.reef_target.get(), 0.0873, 0.0508)
-            && elevator_.isElevatorAndArmAtTarget()) {
-          // Once at final target (both bot and elevator and arm), hand off control
+        if (drivetrain_.atTractorBeamPose() && elevator_.isElevatorAndArmAtTarget()) {
+          // Once at final target, hand off control
           drivetrain_.restoreDefaultDriveMode();
           io_.robot_state_ = RobotState.SCORING;
         }
@@ -289,9 +295,7 @@ public class GameStateManager extends Subsystem {
     @Log.File public Optional<Pose2d> reef_target = Optional.empty();
     @Log.File public Column target_column = Column.LEFT;
     @Log.File public Column saved_target_column = Column.LEFT;
-
-    @Log.File
-    public boolean algae_level_high = false; // false is low level and true is the higher level
+    @Log.File public boolean algae_level_high = false; // false is low level and true is the higher level
   }
 
   @Override
