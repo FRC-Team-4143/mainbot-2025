@@ -50,6 +50,6 @@ public class CoralLoad extends Command {
   // THIS IS TRUE & THE TIME HAS ELAPSED*}
   @Override
   public boolean isFinished() {
-    return false;
+    return Claw.getInstance().hasCoral();
   }
 }
