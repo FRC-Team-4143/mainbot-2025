@@ -271,8 +271,6 @@ public final class Constants {
     public static final double ELEVATOR_EXPO_KA = 0.0070285;
     public static final double ELEVATOR_ZERO_THRESHOLD = 0; // In m
     public static final double ELEVATOR_STATOR_CURRENT_LIMIT = 80.0;
-    public static final double ELEVATOR_HEIGHT_PIVOT_TO_TOP =
-        Units.inchesToMeters(LOADER.getDoubleValue("elevator", "HEIGHT_PIVOT_TO_TOP"));
     public static final double ELEVATOR_HEIGHT_PIVOT_MIN =
         Units.inchesToMeters(LOADER.getDoubleValue("elevator", "HEIGHT_PIVOT_MIN"));
     public static final double ELEVATOR_HEIGHT_PIVOT_MAX =
