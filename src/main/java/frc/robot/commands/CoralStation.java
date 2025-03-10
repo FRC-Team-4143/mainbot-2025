@@ -8,11 +8,14 @@ import edu.wpi.first.wpilibj2.command.Command;
 import frc.lib.ElevatorTargets.Target;
 import frc.lib.FieldRegions;
 import frc.lib.ScoringPoses;
+import frc.robot.Constants;
+import frc.robot.Constants.DrivetrainConstants;
 import frc.robot.subsystems.Claw;
 import frc.robot.subsystems.Claw.ClawMode;
 import frc.robot.subsystems.Claw.GamePiece;
 import frc.robot.subsystems.Elevator;
 import frc.robot.subsystems.Elevator.SpeedLimit;
+import frc.robot.subsystems.SwerveDrivetrain.SpeedPresets;
 import frc.robot.subsystems.PoseEstimator;
 import frc.robot.subsystems.SwerveDrivetrain;
 
@@ -40,17 +43,20 @@ public class CoralStation extends Command {
   @Override
   public void execute() {
 
+if (FieldRegions.LEFT_CORAL_STATION_SLOW_REGION.contains(PoseEstimator.getInstance().getRobotPose()) || FieldRegions.RIGHT_CORAL_STATION_SLOW_REGION.contains(PoseEstimator.getInstance().getRobotPose())) {
+  SwerveDrivetrain.getInstance().setActiveSpeed(SpeedPresets.ONE_THIRD_SPEED);
+}
     // if in zone
-    if (FieldRegions.STATION_REGIONS[1].contains(PoseEstimator.getInstance().getRobotPose())) {
+    if (FieldRegions.LEFT_CORAL_STATION_REGION.contains(PoseEstimator.getInstance().getRobotPose())) {
       SwerveDrivetrain.getInstance()
           .setTargetRotation(ScoringPoses.LEFT_CORAL_STATION_POSE.getRotation());
 
-    } else if (FieldRegions.STATION_REGIONS[0].contains(
-        PoseEstimator.getInstance().getRobotPose())) {
+    } else if (FieldRegions.RIGHT_CORAL_STATION_REGION.contains(PoseEstimator.getInstance().getRobotPose())) {
       SwerveDrivetrain.getInstance()
           .setTargetRotation(ScoringPoses.RIGHT_CORAL_STATION_POSE.getRotation());
 
     } else {
+      SwerveDrivetrain.getInstance().setActiveSpeed(SpeedPresets.MAX_SPEED);
       SwerveDrivetrain.getInstance().restoreDefaultDriveMode();
     }
     // then pull tag rotation

@@ -87,6 +87,17 @@ public class SwerveDrivetrain extends Subsystem {
     PROFILE
   }
 
+  public enum SpeedPresets {
+    MAX_SPEED(1.0),
+    THREE_FOURTHS_SPEED(0.75),
+    HALF_SPEED(0.5),
+    ONE_THIRD_SPEED(0.33);
+    private SpeedPresets(double val){
+      speed_limit = val;
+    };
+    public final double speed_limit;
+  }
+
   // Robot Hardware
   private final Pigeon2 pigeon_imu_;
   private final SwerveModule[] swerve_modules_;
@@ -276,9 +287,9 @@ public class SwerveDrivetrain extends Subsystem {
           setControl(
               robot_centric_
                   // Drive forward with negative Y (forward)
-                  .withVelocityX(-io_.joystick_left_y_ * DrivetrainConstants.MAX_DRIVE_SPEED)
+                  .withVelocityX(-io_.joystick_left_y_ * io_.active_max_speed)
                   // Drive left with negative X (left)
-                  .withVelocityY(-io_.joystick_left_x_ * DrivetrainConstants.MAX_DRIVE_SPEED)
+                  .withVelocityY(-io_.joystick_left_x_ * io_.active_max_speed)
                   // Drive counterclockwise with negative X (left)
                   .withRotationalRate(
                       -io_.joystick_right_x_ * DrivetrainConstants.MAX_DRIVE_ANGULAR_RATE));
@@ -289,9 +300,9 @@ public class SwerveDrivetrain extends Subsystem {
           setControl(
               field_centric_
                   // Drive forward with negative Y (forward)
-                  .withVelocityX(-io_.joystick_left_y_ * DrivetrainConstants.MAX_DRIVE_SPEED)
+                  .withVelocityX(-io_.joystick_left_y_ * io_.active_max_speed)
                   // Drive left with negative X (left)
-                  .withVelocityY(-io_.joystick_left_x_ * DrivetrainConstants.MAX_DRIVE_SPEED)
+                  .withVelocityY(-io_.joystick_left_x_ * io_.active_max_speed)
                   // Drive counterclockwise with negative X (left)
                   .withRotationalRate(
                       -io_.joystick_right_x_ * DrivetrainConstants.MAX_DRIVE_ANGULAR_RATE));
@@ -304,12 +315,12 @@ public class SwerveDrivetrain extends Subsystem {
                   // Drive forward with negative Y (forward)
                   .withVelocityX(
                       Util.clamp(
-                          -io_.joystick_left_y_ * DrivetrainConstants.MAX_DRIVE_SPEED,
+                          -io_.joystick_left_y_ * io_.active_max_speed,
                           DrivetrainConstants.MAX_TARGET_SPEED))
                   // Drive left with negative X (left)
                   .withVelocityY(
                       Util.clamp(
-                          -io_.joystick_left_x_ * DrivetrainConstants.MAX_DRIVE_SPEED,
+                          -io_.joystick_left_x_ * io_.active_max_speed,
                           DrivetrainConstants.MAX_TARGET_SPEED))
                   // Set Robots target rotation
                   .withTargetDirection(io_.target_rotation_));
@@ -342,7 +353,7 @@ public class SwerveDrivetrain extends Subsystem {
                       Math.pow(io_.joystick_left_x_, 2)
                           + Math.pow(io_.joystick_left_y_, 2)
                           + Math.pow(io_.joystick_right_x_, 2))
-                  * DrivetrainConstants.MAX_DRIVE_SPEED;
+                  * io_.active_max_speed;
           double x_velocity =
               // Util.clamp(
               x_pose_controller_.calculate(io_.current_pose_.getX(), io_.target_pose_.getX());
@@ -379,7 +390,7 @@ public class SwerveDrivetrain extends Subsystem {
           boolean pastB =
               io_.current_pose_.getY() < io_.tight_rope_.poseB.getY() - ropeEndHandOffThreshold;
           if (!pastA && !pastB) {
-            y_velocity = -io_.joystick_left_x_ * DrivetrainConstants.MAX_DRIVE_SPEED;
+            y_velocity = -io_.joystick_left_x_ * io_.active_max_speed;
           } else if (pastA) {
             y_velocity =
                 y_pose_controller_.calculate(
@@ -631,10 +642,20 @@ public class SwerveDrivetrain extends Subsystem {
   }
 
   /**
+   * alows the selction of max speed presets
+   * 
+   * @param preset
+   */
+  public void setActiveSpeed(SpeedPresets preset){
+    io_.active_max_speed =DrivetrainConstants.MAX_DRIVE_SPEED * preset.speed_limit;
+  }
+
+  /**
    * Plain-Old-Data class holding the state of the swerve drivetrain. This encapsulates most data
    * that is relevant for telemetry or decision-making from the Swerve Drive.
    */
   public class SwerveDrivetrainPeriodicIo implements Logged {
+    @Log.File public double active_max_speed = DrivetrainConstants.MAX_DRIVE_SPEED; 
     @Log.File public SwerveModuleState[] current_module_states_, requested_module_states_;
     @Log.File public SwerveModulePosition[] module_positions_;
     @Log.File public DriveMode drive_mode_ = DriveMode.IDLE;

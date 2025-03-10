@@ -44,7 +44,7 @@ public class FieldRegions {
           new Translation2d((FieldConstants.FIELD_LENGTH / 2) - 0.737, FieldConstants.FIELD_WIDTH)
       },
       "BargeEnter");
-  private static PolygonRegion RIGHT_CORAL_STATION_REGION = new PolygonRegion(
+  public static PolygonRegion RIGHT_CORAL_STATION_REGION = new PolygonRegion(
       new Translation2d[] {
           new Translation2d(0, 0),
           new Translation2d(0, 2.5),
@@ -53,7 +53,7 @@ public class FieldRegions {
           new Translation2d(0, 0)
       },
       "RightCoralStation");
-  private static PolygonRegion RIGHT_CORAL_STATION_SLOW_REGION = new PolygonRegion(
+  public static PolygonRegion RIGHT_CORAL_STATION_SLOW_REGION = new PolygonRegion(
       new Translation2d[] {
           new Translation2d(0, 0),
           new Translation2d(0, 1.75),
@@ -62,7 +62,7 @@ public class FieldRegions {
           new Translation2d(0, 0)
       },
       "RightCoralStationSlow");
-  private static PolygonRegion LEFT_CORAL_STATION_REGION = new PolygonRegion(
+  public static PolygonRegion LEFT_CORAL_STATION_REGION = new PolygonRegion(
       new Translation2d[] {
           new Translation2d(0, FieldConstants.FIELD_WIDTH),
           new Translation2d(2.5, FieldConstants.FIELD_WIDTH),
@@ -71,7 +71,7 @@ public class FieldRegions {
           new Translation2d(0, FieldConstants.FIELD_WIDTH)
       },
       "LeftCoralStation");
-  private static PolygonRegion LEFT_CORAL_STATION_SLOW_REGION = new PolygonRegion(
+  public static PolygonRegion LEFT_CORAL_STATION_SLOW_REGION = new PolygonRegion(
       new Translation2d[] {
           new Translation2d(0, FieldConstants.FIELD_WIDTH),
           new Translation2d(1.75, FieldConstants.FIELD_WIDTH),
@@ -80,7 +80,7 @@ public class FieldRegions {
           new Translation2d(0, FieldConstants.FIELD_WIDTH)
       },
       "LeftCoralStationSlow");
-  private static PolygonRegion REEF_FACE0_REGION = new PolygonRegion(
+  public static PolygonRegion REEF_FACE0_REGION = new PolygonRegion(
       new Translation2d[] {
           FieldConstants.Reef.CENTER,
           // approximation of the right side of the right coral station
@@ -90,7 +90,7 @@ public class FieldRegions {
           FieldConstants.Reef.CENTER,
       },
       "ReefFace0");
-  private static PolygonRegion REEF_FACE1_REGION = new PolygonRegion(
+  public static PolygonRegion REEF_FACE1_REGION = new PolygonRegion(
       new Translation2d[] {
           FieldConstants.Reef.CENTER,
           // approximation of the left side of the left coral station
@@ -103,7 +103,7 @@ public class FieldRegions {
           FieldConstants.Reef.CENTER,
       },
       "ReefFace1");
-  private static PolygonRegion REEF_FACE2_REGION = new PolygonRegion(
+  public static PolygonRegion REEF_FACE2_REGION = new PolygonRegion(
       new Translation2d[] {
           FieldConstants.Reef.CENTER,
           // approximation of an imaginary line drawn from the right side of face2
@@ -115,7 +115,7 @@ public class FieldRegions {
       }, // FieldConstants.Reef.center cage
       // constant
       "ReefFace2");
-  private static PolygonRegion REEF_FACE3_REGION = new PolygonRegion(
+  public static PolygonRegion REEF_FACE3_REGION = new PolygonRegion(
       new Translation2d[] {
           FieldConstants.Reef.CENTER,
           Barge.MIDDLE_CAGE,
@@ -124,7 +124,7 @@ public class FieldRegions {
           FieldConstants.Reef.CENTER,
       },
       "ReefFace3");
-  private static PolygonRegion REEF_FACE4_REGION = new PolygonRegion(
+  public static PolygonRegion REEF_FACE4_REGION = new PolygonRegion(
       new Translation2d[] {
           FieldConstants.Reef.CENTER,
           // approximation of an imaginary line drawn from the left side of face4
@@ -136,7 +136,7 @@ public class FieldRegions {
           FieldConstants.Reef.CENTER,
       },
       "ReefFace4");
-  private static PolygonRegion REEF_FACE5_REGION = new PolygonRegion(
+  public static PolygonRegion REEF_FACE5_REGION = new PolygonRegion(
       new Translation2d[] {
           FieldConstants.Reef.CENTER,
           // approximation of an imaginary line drawn from the left side of the
