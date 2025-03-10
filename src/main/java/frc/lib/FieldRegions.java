@@ -11,171 +11,178 @@ import java.util.Hashtable;
 
 public class FieldRegions {
 
-  public static PolygonRegion PROCESSOR_REGION =
-      new PolygonRegion(
-          new Translation2d[] {
-            new Translation2d(4, 0),
-            new Translation2d(4, 3),
-            new Translation2d(8, 3),
-            new Translation2d(8, 0),
-            new Translation2d(4, 0),
-          },
-          "Processor");
-  public static PolygonRegion BARGE_REGION =
-      new PolygonRegion(
-          new Translation2d[] {
-            new Translation2d(
-                (FieldConstants.FIELD_LENGTH / 2) - 0.737, FieldConstants.FIELD_WIDTH),
-            new Translation2d((FieldConstants.FIELD_LENGTH / 2) - 3, FieldConstants.FIELD_WIDTH),
-            new Translation2d(
-                (FieldConstants.FIELD_LENGTH / 2) - 3, FieldConstants.FIELD_WIDTH / 2),
-            new Translation2d(
-                (FieldConstants.FIELD_LENGTH / 2) - 0.737, FieldConstants.FIELD_WIDTH / 2),
-            new Translation2d((FieldConstants.FIELD_LENGTH / 2) - 0.737, FieldConstants.FIELD_WIDTH)
-          },
-          "Barge");
-  public static PolygonRegion BARGE_ENTER =
-      new PolygonRegion(
-          new Translation2d[] {
-            new Translation2d(
-                (FieldConstants.FIELD_LENGTH / 2) - 0.737, FieldConstants.FIELD_WIDTH),
-            new Translation2d((FieldConstants.FIELD_LENGTH / 2) - 2, FieldConstants.FIELD_WIDTH),
-            new Translation2d(
-                (FieldConstants.FIELD_LENGTH / 2) - 2, FieldConstants.FIELD_WIDTH / 2),
-            new Translation2d(
-                (FieldConstants.FIELD_LENGTH / 2) - 0.737, FieldConstants.FIELD_WIDTH / 2),
-            new Translation2d((FieldConstants.FIELD_LENGTH / 2) - 0.737, FieldConstants.FIELD_WIDTH)
-          },
-          "BargeEnter");
-  private static PolygonRegion RIGHT_CORAL_STATION_REGION =
-      new PolygonRegion(
-          new Translation2d[] {
-            new Translation2d(0, 0),
-            new Translation2d(0, 2.5),
-            new Translation2d(2.5, 2.5),
-            new Translation2d(2.5, 0),
-            new Translation2d(0, 0)
-          },
-          "RightCoralStation");
-  private static PolygonRegion LEFT_CORAL_STATION_REGION =
-      new PolygonRegion(
-          new Translation2d[] {
-            new Translation2d(0, FieldConstants.FIELD_WIDTH),
-            new Translation2d(2.5, FieldConstants.FIELD_WIDTH),
-            new Translation2d(2.5, FieldConstants.FIELD_WIDTH - 2.5),
-            new Translation2d(0, FieldConstants.FIELD_WIDTH - 2.5),
-            new Translation2d(0, FieldConstants.FIELD_WIDTH)
-          },
-          "LeftCoralStation");
-  private static PolygonRegion REEF_FACE0_REGION =
-      new PolygonRegion(
-          new Translation2d[] {
-            FieldConstants.Reef.CENTER,
-            // approximation of the right side of the right coral station
-            new Translation2d(0, Units.inchesToMeters(50)),
-            // approximation of the left side of the left coral station
-            new Translation2d(0, FieldConstants.FIELD_WIDTH - Units.inchesToMeters(50)),
-            FieldConstants.Reef.CENTER,
-          },
-          "ReefFace0");
-  private static PolygonRegion REEF_FACE1_REGION =
-      new PolygonRegion(
-          new Translation2d[] {
-            FieldConstants.Reef.CENTER,
-            // approximation of the left side of the left coral station
-            new Translation2d(0, FieldConstants.FIELD_WIDTH - Units.inchesToMeters(50)),
-            // approximation of the right side of the left coral station
-            new Translation2d(Units.inchesToMeters(68), FieldConstants.FIELD_WIDTH),
-            // approximation of an imaginary line drawn from the left side of face1
-            // to the left side of the field
-            new Translation2d(Units.inchesToMeters(176), FieldConstants.FIELD_WIDTH),
-            FieldConstants.Reef.CENTER,
-          },
-          "ReefFace1");
-  private static PolygonRegion REEF_FACE2_REGION =
-      new PolygonRegion(
-          new Translation2d[] {
-            FieldConstants.Reef.CENTER,
-            // approximation of an imaginary line drawn from the right side of face2
-            // to the left side of the field
-            new Translation2d(Units.inchesToMeters(176), FieldConstants.FIELD_WIDTH),
-            new Translation2d(FieldConstants.FIELD_LENGTH / 2, FieldConstants.FIELD_WIDTH),
-            Barge.MIDDLE_CAGE,
-            FieldConstants.Reef.CENTER,
-          }, // FieldConstants.Reef.center cage
-          // constant
-          "ReefFace2");
-  private static PolygonRegion REEF_FACE3_REGION =
-      new PolygonRegion(
-          new Translation2d[] {
-            FieldConstants.Reef.CENTER,
-            Barge.MIDDLE_CAGE,
-            // approximation of opponents middle cage
-            new Translation2d(FieldConstants.FIELD_LENGTH / 2, Units.inchesToMeters(56)),
-            FieldConstants.Reef.CENTER,
-          },
-          "ReefFace3");
-  private static PolygonRegion REEF_FACE4_REGION =
-      new PolygonRegion(
-          new Translation2d[] {
-            FieldConstants.Reef.CENTER,
-            // approximation of an imaginary line drawn from the left side of face4
-            // to the right side of the field
-            new Translation2d(Units.inchesToMeters(176), 0),
-            new Translation2d(FieldConstants.FIELD_LENGTH / 2, 0),
-            // approximation of the opponents FieldConstants.Reef.center cage
-            new Translation2d(FieldConstants.FIELD_LENGTH / 2, Units.inchesToMeters(56)),
-            FieldConstants.Reef.CENTER,
-          },
-          "ReefFace4");
-  private static PolygonRegion REEF_FACE5_REGION =
-      new PolygonRegion(
-          new Translation2d[] {
-            FieldConstants.Reef.CENTER,
-            // approximation of an imaginary line drawn from the left side of the
-            // face to the right side of the field
-            new Translation2d(Units.inchesToMeters(176), 0),
-            // approximation of the left side of the right coral station
-            new Translation2d(Units.inchesToMeters(68), 0),
-            // approximation of the right side of the right coral station
-            new Translation2d(0, Units.inchesToMeters(50)),
-            FieldConstants.Reef.CENTER,
-          },
-          "ReefFace5");
+  public static PolygonRegion PROCESSOR_REGION = new PolygonRegion(
+      new Translation2d[] {
+          new Translation2d(4, 0),
+          new Translation2d(4, 3),
+          new Translation2d(8, 3),
+          new Translation2d(8, 0),
+          new Translation2d(4, 0),
+      },
+      "Processor");
+  public static PolygonRegion BARGE_REGION = new PolygonRegion(
+      new Translation2d[] {
+          new Translation2d(
+              (FieldConstants.FIELD_LENGTH / 2) - 0.737, FieldConstants.FIELD_WIDTH),
+          new Translation2d((FieldConstants.FIELD_LENGTH / 2) - 3, FieldConstants.FIELD_WIDTH),
+          new Translation2d(
+              (FieldConstants.FIELD_LENGTH / 2) - 3, FieldConstants.FIELD_WIDTH / 2),
+          new Translation2d(
+              (FieldConstants.FIELD_LENGTH / 2) - 0.737, FieldConstants.FIELD_WIDTH / 2),
+          new Translation2d((FieldConstants.FIELD_LENGTH / 2) - 0.737, FieldConstants.FIELD_WIDTH)
+      },
+      "Barge");
+  public static PolygonRegion BARGE_ENTER = new PolygonRegion(
+      new Translation2d[] {
+          new Translation2d(
+              (FieldConstants.FIELD_LENGTH / 2) - 0.737, FieldConstants.FIELD_WIDTH),
+          new Translation2d((FieldConstants.FIELD_LENGTH / 2) - 2, FieldConstants.FIELD_WIDTH),
+          new Translation2d(
+              (FieldConstants.FIELD_LENGTH / 2) - 2, FieldConstants.FIELD_WIDTH / 2),
+          new Translation2d(
+              (FieldConstants.FIELD_LENGTH / 2) - 0.737, FieldConstants.FIELD_WIDTH / 2),
+          new Translation2d((FieldConstants.FIELD_LENGTH / 2) - 0.737, FieldConstants.FIELD_WIDTH)
+      },
+      "BargeEnter");
+  private static PolygonRegion RIGHT_CORAL_STATION_REGION = new PolygonRegion(
+      new Translation2d[] {
+          new Translation2d(0, 0),
+          new Translation2d(0, 2.5),
+          new Translation2d(2.5, 2.5),
+          new Translation2d(2.5, 0),
+          new Translation2d(0, 0)
+      },
+      "RightCoralStation");
+  private static PolygonRegion RIGHT_CORAL_STATION_SLOW_REGION = new PolygonRegion(
+      new Translation2d[] {
+          new Translation2d(0, 0),
+          new Translation2d(0, 1.75),
+          new Translation2d(1.75, 1.75),
+          new Translation2d(1.75, 0),
+          new Translation2d(0, 0)
+      },
+      "RightCoralStationSlow");
+  private static PolygonRegion LEFT_CORAL_STATION_REGION = new PolygonRegion(
+      new Translation2d[] {
+          new Translation2d(0, FieldConstants.FIELD_WIDTH),
+          new Translation2d(2.5, FieldConstants.FIELD_WIDTH),
+          new Translation2d(2.5, FieldConstants.FIELD_WIDTH - 2.5),
+          new Translation2d(0, FieldConstants.FIELD_WIDTH - 2.5),
+          new Translation2d(0, FieldConstants.FIELD_WIDTH)
+      },
+      "LeftCoralStation");
+  private static PolygonRegion LEFT_CORAL_STATION_SLOW_REGION = new PolygonRegion(
+      new Translation2d[] {
+          new Translation2d(0, FieldConstants.FIELD_WIDTH),
+          new Translation2d(1.75, FieldConstants.FIELD_WIDTH),
+          new Translation2d(1.75, FieldConstants.FIELD_WIDTH - 1.75),
+          new Translation2d(0, FieldConstants.FIELD_WIDTH - 1.75),
+          new Translation2d(0, FieldConstants.FIELD_WIDTH)
+      },
+      "LeftCoralStationSlow");
+  private static PolygonRegion REEF_FACE0_REGION = new PolygonRegion(
+      new Translation2d[] {
+          FieldConstants.Reef.CENTER,
+          // approximation of the right side of the right coral station
+          new Translation2d(0, Units.inchesToMeters(50)),
+          // approximation of the left side of the left coral station
+          new Translation2d(0, FieldConstants.FIELD_WIDTH - Units.inchesToMeters(50)),
+          FieldConstants.Reef.CENTER,
+      },
+      "ReefFace0");
+  private static PolygonRegion REEF_FACE1_REGION = new PolygonRegion(
+      new Translation2d[] {
+          FieldConstants.Reef.CENTER,
+          // approximation of the left side of the left coral station
+          new Translation2d(0, FieldConstants.FIELD_WIDTH - Units.inchesToMeters(50)),
+          // approximation of the right side of the left coral station
+          new Translation2d(Units.inchesToMeters(68), FieldConstants.FIELD_WIDTH),
+          // approximation of an imaginary line drawn from the left side of face1
+          // to the left side of the field
+          new Translation2d(Units.inchesToMeters(176), FieldConstants.FIELD_WIDTH),
+          FieldConstants.Reef.CENTER,
+      },
+      "ReefFace1");
+  private static PolygonRegion REEF_FACE2_REGION = new PolygonRegion(
+      new Translation2d[] {
+          FieldConstants.Reef.CENTER,
+          // approximation of an imaginary line drawn from the right side of face2
+          // to the left side of the field
+          new Translation2d(Units.inchesToMeters(176), FieldConstants.FIELD_WIDTH),
+          new Translation2d(FieldConstants.FIELD_LENGTH / 2, FieldConstants.FIELD_WIDTH),
+          Barge.MIDDLE_CAGE,
+          FieldConstants.Reef.CENTER,
+      }, // FieldConstants.Reef.center cage
+      // constant
+      "ReefFace2");
+  private static PolygonRegion REEF_FACE3_REGION = new PolygonRegion(
+      new Translation2d[] {
+          FieldConstants.Reef.CENTER,
+          Barge.MIDDLE_CAGE,
+          // approximation of opponents middle cage
+          new Translation2d(FieldConstants.FIELD_LENGTH / 2, Units.inchesToMeters(56)),
+          FieldConstants.Reef.CENTER,
+      },
+      "ReefFace3");
+  private static PolygonRegion REEF_FACE4_REGION = new PolygonRegion(
+      new Translation2d[] {
+          FieldConstants.Reef.CENTER,
+          // approximation of an imaginary line drawn from the left side of face4
+          // to the right side of the field
+          new Translation2d(Units.inchesToMeters(176), 0),
+          new Translation2d(FieldConstants.FIELD_LENGTH / 2, 0),
+          // approximation of the opponents FieldConstants.Reef.center cage
+          new Translation2d(FieldConstants.FIELD_LENGTH / 2, Units.inchesToMeters(56)),
+          FieldConstants.Reef.CENTER,
+      },
+      "ReefFace4");
+  private static PolygonRegion REEF_FACE5_REGION = new PolygonRegion(
+      new Translation2d[] {
+          FieldConstants.Reef.CENTER,
+          // approximation of an imaginary line drawn from the left side of the
+          // face to the right side of the field
+          new Translation2d(Units.inchesToMeters(176), 0),
+          // approximation of the left side of the right coral station
+          new Translation2d(Units.inchesToMeters(68), 0),
+          // approximation of the right side of the right coral station
+          new Translation2d(0, Units.inchesToMeters(50)),
+          FieldConstants.Reef.CENTER,
+      },
+      "ReefFace5");
 
   // Region Lists
-  public static PolygonRegion[] ALGAE_REGIONS = {BARGE_REGION, PROCESSOR_REGION};
+  public static PolygonRegion[] ALGAE_REGIONS = { BARGE_REGION, PROCESSOR_REGION };
   public static PolygonRegion[] STATION_REGIONS = {
-    RIGHT_CORAL_STATION_REGION, LEFT_CORAL_STATION_REGION
+      RIGHT_CORAL_STATION_REGION, LEFT_CORAL_STATION_REGION, RIGHT_CORAL_STATION_SLOW_REGION, LEFT_CORAL_STATION_SLOW_REGION
   };
   public static PolygonRegion[] REEF_REGIONS = {
-    REEF_FACE0_REGION,
-    REEF_FACE1_REGION,
-    REEF_FACE2_REGION,
-    REEF_FACE3_REGION,
-    REEF_FACE4_REGION,
-    REEF_FACE5_REGION
+      REEF_FACE0_REGION,
+      REEF_FACE1_REGION,
+      REEF_FACE2_REGION,
+      REEF_FACE3_REGION,
+      REEF_FACE4_REGION,
+      REEF_FACE5_REGION
   };
 
-  public static CircularRegion REEF_ENTER =
-      new CircularRegion(FieldConstants.Reef.CENTER, 3, "Reef Enter");
-  public static CircularRegion REEF_EXIT =
-      new CircularRegion(FieldConstants.Reef.CENTER, 2, "Reef Exit");
+  public static CircularRegion REEF_ENTER = new CircularRegion(FieldConstants.Reef.CENTER, 3, "Reef Enter");
+  public static CircularRegion REEF_EXIT = new CircularRegion(FieldConstants.Reef.CENTER, 2, "Reef Exit");
 
   private static Region[] ALL_REGIONS = {
-    BARGE_REGION,
-    BARGE_ENTER,
-    PROCESSOR_REGION,
-    RIGHT_CORAL_STATION_REGION,
-    LEFT_CORAL_STATION_REGION,
-    REEF_FACE0_REGION,
-    REEF_FACE1_REGION,
-    REEF_FACE2_REGION,
-    REEF_FACE3_REGION,
-    REEF_FACE4_REGION,
-    REEF_FACE5_REGION,
-    REEF_ENTER,
-    REEF_EXIT
+      BARGE_REGION,
+      BARGE_ENTER,
+      PROCESSOR_REGION,
+      RIGHT_CORAL_STATION_REGION,
+      LEFT_CORAL_STATION_REGION,
+      RIGHT_CORAL_STATION_SLOW_REGION, 
+      LEFT_CORAL_STATION_SLOW_REGION,
+      REEF_FACE0_REGION,
+      REEF_FACE1_REGION,
+      REEF_FACE2_REGION,
+      REEF_FACE3_REGION,
+      REEF_FACE4_REGION,
+      REEF_FACE5_REGION,
+      REEF_ENTER,
+      REEF_EXIT
   };
 
   // Region to Target Pose Table
