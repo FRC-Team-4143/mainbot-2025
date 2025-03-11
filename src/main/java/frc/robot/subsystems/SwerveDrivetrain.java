@@ -475,6 +475,7 @@ public class SwerveDrivetrain extends Subsystem {
     SmartDashboard.putNumber(
         "Subsystems/Swerve/BR Encoder",
         Units.rotationsToDegrees(swerve_modules_[3].getEncoderValue()));
+    SmartDashboard.putNumber("Subsystems/Swerve/Active Max Speed", io_.active_max_speed);
   }
 
   public Command applyRequest(Supplier<SwerveRequest> requestSupplier) {
