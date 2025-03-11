@@ -24,11 +24,12 @@ import edu.wpi.first.math.util.Units;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.networktables.StructArrayPublisher;
 import edu.wpi.first.networktables.StructPublisher;
+import edu.wpi.first.util.sendable.Sendable;
+import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import frc.mw_lib.geometry.TightRope;
-import frc.mw_lib.proxy_server.ChassisProxyServer;
 import frc.mw_lib.subsystem.Subsystem;
 import frc.mw_lib.swerve.*;
 import frc.mw_lib.swerve.SwerveRequest.ForwardReference;
@@ -135,13 +136,28 @@ public class SwerveDrivetrain extends Subsystem {
     // make new io instance
     io_ = new SwerveDrivetrainPeriodicIo();
 
-    // configure chassis server for comms
-    ChassisProxyServer.configureServer();
-
     // Setup the Pigeon IMU
     pigeon_imu_ =
         new Pigeon2(DrivetrainConstants.PIGEON2_ID, DrivetrainConstants.MODULE_CANBUS_NAME[0]);
     pigeon_imu_.optimizeBusUtilization();
+
+    // Begin configuring swerve modules
+    module_locations_ = new Translation2d[modules.length];
+    swerve_modules_ = new SwerveModule[modules.length];
+    io_.module_positions_ = new SwerveModulePosition[modules.length];
+    io_.current_module_states_ = new SwerveModuleState[modules.length];
+    io_.requested_module_states_ = new SwerveModuleState[modules.length];
+
+    // Construct the swerve modules
+    for (int i = 0; i < modules.length; i++) {
+      SwerveModuleConstants module = modules[i];
+      swerve_modules_[i] = new SwerveModule(module, DrivetrainConstants.MODULE_CANBUS_NAME[i]);
+      module_locations_[i] = new Translation2d(module.LocationX, module.LocationY);
+      io_.module_positions_[i] = swerve_modules_[i].getPosition(true);
+      io_.current_module_states_[i] = swerve_modules_[i].getCurrentState();
+      io_.requested_module_states_[i] = swerve_modules_[i].getTargetState();
+    }
+    kinematics_ = new SwerveDriveKinematics(module_locations_);
 
     // PID Controllers
     x_traj_controller_ = Constants.DrivetrainConstants.X_TRAJECTORY_TRANSLATION;
@@ -181,24 +197,44 @@ public class SwerveDrivetrain extends Subsystem {
         NetworkTableInstance.getDefault()
             .getStructTopic("Swerve/Chassis Speeds", ChassisSpeeds.struct)
             .publish();
+    SmartDashboard.putData(
+        "Subsystems/Swerve/Overview",
+        new Sendable() {
+          @Override
+          public void initSendable(SendableBuilder builder) {
+            builder.setSmartDashboardType("SwerveDrive");
 
-    // Begin configuring swerve modules
-    module_locations_ = new Translation2d[modules.length];
-    swerve_modules_ = new SwerveModule[modules.length];
-    io_.module_positions_ = new SwerveModulePosition[modules.length];
-    io_.current_module_states_ = new SwerveModuleState[modules.length];
-    io_.requested_module_states_ = new SwerveModuleState[modules.length];
+            builder.addDoubleProperty(
+                "Front Left Angle", () -> io_.current_module_states_[0].angle.getRadians(), null);
+            builder.addDoubleProperty(
+                "Front Left Velocity",
+                () -> io_.current_module_states_[0].speedMetersPerSecond,
+                null);
 
-    // Construct the swerve modules
-    for (int i = 0; i < modules.length; i++) {
-      SwerveModuleConstants module = modules[i];
-      swerve_modules_[i] = new SwerveModule(module, DrivetrainConstants.MODULE_CANBUS_NAME[i]);
-      module_locations_[i] = new Translation2d(module.LocationX, module.LocationY);
-      io_.module_positions_[i] = swerve_modules_[i].getPosition(true);
-      io_.current_module_states_[i] = swerve_modules_[i].getCurrentState();
-      io_.requested_module_states_[i] = swerve_modules_[i].getTargetState();
-    }
-    kinematics_ = new SwerveDriveKinematics(module_locations_);
+            builder.addDoubleProperty(
+                "Front Right Angle", () -> io_.current_module_states_[1].angle.getRadians(), null);
+            builder.addDoubleProperty(
+                "Front Right Velocity",
+                () -> io_.current_module_states_[1].speedMetersPerSecond,
+                null);
+
+            builder.addDoubleProperty(
+                "Back Left Angle", () -> io_.current_module_states_[2].angle.getRadians(), null);
+            builder.addDoubleProperty(
+                "Back Left Velocity",
+                () -> io_.current_module_states_[2].speedMetersPerSecond,
+                null);
+
+            builder.addDoubleProperty(
+                "Back Right Angle", () -> io_.current_module_states_[3].angle.getRadians(), null);
+            builder.addDoubleProperty(
+                "Back Right Velocity",
+                () -> io_.current_module_states_[3].speedMetersPerSecond,
+                null);
+
+            builder.addDoubleProperty("Robot Angle", () -> io_.robot_yaw_.getRadians(), null);
+          }
+        });
 
     // Drive mode requests
     field_centric_ =
@@ -262,9 +298,6 @@ public class SwerveDrivetrain extends Subsystem {
         Rotation2d.fromRadians(MathUtil.angleModulus(pigeon_imu_.getYaw().getValue().in(Radians)));
     io_.chassis_speeds_ = kinematics_.toChassisSpeeds(io_.current_module_states_);
     io_.current_pose_ = PoseEstimator.getInstance().getRobotPose();
-
-    // recieve new chassis info
-    ChassisProxyServer.updateData();
   }
 
   @Override
