@@ -4,15 +4,15 @@
 
 package frc.robot.commands;
 
-import edu.wpi.first.wpilibj2.command.Command;
 import frc.lib.ElevatorTargets.Target;
+import frc.mw_lib.command.LazyCommand;
 import frc.robot.subsystems.Claw;
 import frc.robot.subsystems.Claw.ClawMode;
 import frc.robot.subsystems.Claw.GamePiece;
 import frc.robot.subsystems.Elevator;
 import frc.robot.subsystems.Elevator.SpeedLimit;
 
-public class CoralLoad extends Command {
+public class CoralLoad extends LazyCommand {
   static Claw claw_;
 
   /** Creates a new ExampleLazyCommand. */
@@ -20,6 +20,7 @@ public class CoralLoad extends Command {
     // Creates a new LazyCommand with the selected amount of seconds(double) to wait
     // before allowing
     // the lazy command to end
+    super(0.5);
     claw_ = Claw.getInstance();
     addRequirements(claw_, Elevator.getInstance());
     setName(this.getClass().getSimpleName());
@@ -32,6 +33,7 @@ public class CoralLoad extends Command {
     claw_.setClawMode(ClawMode.LOAD);
     Elevator.getInstance().setTarget(Target.STATION);
     Elevator.getInstance().setSpeedLimit(SpeedLimit.CORAL);
+    this.timerReset();
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -49,7 +51,7 @@ public class CoralLoad extends Command {
   // COMMAND WILL END IF
   // THIS IS TRUE & THE TIME HAS ELAPSED*}
   @Override
-  public boolean isFinished() {
+  public boolean isConditionMet() {
     return Claw.getInstance().hasCoral();
   }
 }

@@ -38,7 +38,7 @@ public class Claw extends Subsystem {
   // Singleton pattern
   private static Claw claw_instance_ = null;
 
-  private Debouncer coral_debouncer_ = new Debouncer(0.25, Debouncer.DebounceType.kFalling);
+  private Debouncer coral_debouncer_ = new Debouncer(0.30, Debouncer.DebounceType.kBoth);
   private Debouncer algae_debouncer_ = new Debouncer(0.25, Debouncer.DebounceType.kFalling);
 
   public static Claw getInstance() {
