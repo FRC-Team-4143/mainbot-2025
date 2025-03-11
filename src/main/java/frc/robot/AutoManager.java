@@ -33,7 +33,7 @@ public class AutoManager {
     autoChooser = new AutoChooser();
 
     // Add options to the chooser
-    autoChooser.addRoutine("Move Forward", autoTest1::getAutoRoutine);
+    autoChooser.addRoutine("Auto Test", autoTest1::getAutoRoutine);
 
     // Put the auto chooser on the dashboard
     SmartDashboard.putData("Auto Chooser", autoChooser);

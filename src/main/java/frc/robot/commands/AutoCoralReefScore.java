@@ -23,7 +23,9 @@ public class AutoCoralReefScore extends SequentialCommandGroup {
   public AutoCoralReefScore(ReefScoringTarget level, Column column) {
     // Add your commands in the addCommands() call, e.g.
     // addCommands(new FooCommand(), new BarCommand());
-    addCommands(new GetToReefTarget(level, column), new CoralEject().withTimeout(0.5),
+    addCommands(
+        new GetToReefTarget(level, column),
+        new CoralEject().withTimeout(0.5),
         Commands.runOnce(() -> GameStateManager.getInstance().setRobotState(RobotState.END)));
 
     setName(this.getClass().getSimpleName());
@@ -32,6 +34,7 @@ public class AutoCoralReefScore extends SequentialCommandGroup {
   public class GetToReefTarget extends Command {
     /** Creates a new GetToReefTarget. */
     private ReefScoringTarget target_level;
+
     private Column target_column;
 
     public GetToReefTarget(ReefScoringTarget level, Column column) {
@@ -56,13 +59,11 @@ public class AutoCoralReefScore extends SequentialCommandGroup {
 
     // Called every time the scheduler runs while the command is scheduled.
     @Override
-    public void execute() {
-    }
+    public void execute() {}
 
     // Called once the command ends or is interrupted.
     @Override
-    public void end(boolean interrupted) {
-    }
+    public void end(boolean interrupted) {}
 
     // Returns true when the command should end.
     @Override
