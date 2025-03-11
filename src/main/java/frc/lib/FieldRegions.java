@@ -48,7 +48,6 @@ public class FieldRegions {
       new Translation2d[] {
           new Translation2d(0, 0),
           new Translation2d(0, 2.5),
-          new Translation2d(2.5, 2.5),
           new Translation2d(2.5, 0),
           new Translation2d(0, 0)
       },
@@ -57,7 +56,6 @@ public class FieldRegions {
       new Translation2d[] {
           new Translation2d(0, 0),
           new Translation2d(0, 1.75),
-          new Translation2d(1.75, 1.75),
           new Translation2d(1.75, 0),
           new Translation2d(0, 0)
       },
@@ -66,7 +64,6 @@ public class FieldRegions {
       new Translation2d[] {
           new Translation2d(0, FieldConstants.FIELD_WIDTH),
           new Translation2d(2.5, FieldConstants.FIELD_WIDTH),
-          new Translation2d(2.5, FieldConstants.FIELD_WIDTH - 2.5),
           new Translation2d(0, FieldConstants.FIELD_WIDTH - 2.5),
           new Translation2d(0, FieldConstants.FIELD_WIDTH)
       },
@@ -75,7 +72,6 @@ public class FieldRegions {
       new Translation2d[] {
           new Translation2d(0, FieldConstants.FIELD_WIDTH),
           new Translation2d(1.75, FieldConstants.FIELD_WIDTH),
-          new Translation2d(1.75, FieldConstants.FIELD_WIDTH - 1.75),
           new Translation2d(0, FieldConstants.FIELD_WIDTH - 1.75),
           new Translation2d(0, FieldConstants.FIELD_WIDTH)
       },
