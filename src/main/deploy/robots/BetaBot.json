@@ -108,14 +108,14 @@
     },
     "vision": {
         "camera0": {
-            "NAME": "vi-output,_ov9281_9-0060",
+            "NAME": "PC_Camera",
             "location": {
-                "X": 9.5,
-                "Y": 9.5,
-                "Z": 21.25,
+                "X": -10,
+                "Y": -9,
+                "Z": 8,
                 "ROLL": 0,
-                "PITCH": 10,
-                "YAW": -5
+                "PITCH": -14,
+                "YAW": 15
             }
         },
         "camera1": {

@@ -59,16 +59,17 @@ public class Vision {
 
   public Vision() {
 
-    cameras = new PhotonCamera[] {new PhotonCamera(CAMERA1_NAME), new PhotonCamera(CAMERA2_NAME)};
+    cameras =
+        new PhotonCamera[] {new PhotonCamera(CAMERA1_NAME)}; // , new PhotonCamera(CAMERA2_NAME)};
     photonEstimators =
         new PhotonPoseEstimator[] {
           new PhotonPoseEstimator(
-              TAG_LAYOUT, PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR, ROBOT_TO_CAM1),
-          new PhotonPoseEstimator(
-              TAG_LAYOUT, PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR, ROBOT_TO_CAM2)
+              TAG_LAYOUT, PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR, ROBOT_TO_CAM1)
+          // new PhotonPoseEstimator(
+          //     TAG_LAYOUT, PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR, ROBOT_TO_CAM2)
         };
     photonEstimators[0].setMultiTagFallbackStrategy(PoseStrategy.LOWEST_AMBIGUITY);
-    photonEstimators[1].setMultiTagFallbackStrategy(PoseStrategy.LOWEST_AMBIGUITY);
+    // photonEstimators[1].setMultiTagFallbackStrategy(PoseStrategy.LOWEST_AMBIGUITY);
   }
 
   /**
