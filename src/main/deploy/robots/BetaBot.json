@@ -91,9 +91,8 @@
         "CONTROLLER_V": 0.11733,
         "CONTROLLER_A": 0.0070285,
         "CONTROLLER_G": 0.43,
-        "HEIGHT_PIVOT_MIN": 30.5,
-        "HEIGHT_PIVOT_MAX": 82.75,
-        "HEIGHT_PIVOT_TO_TOP": 10,
+        "HEIGHT_PIVOT_MIN": 28.5,
+        "HEIGHT_PIVOT_MAX": 80.75,
         "ELEVATOR_GEAR_RATIO":4
     },
     "arm": {

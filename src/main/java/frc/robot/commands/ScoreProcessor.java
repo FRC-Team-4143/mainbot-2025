@@ -5,9 +5,9 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.lib.ElevatorTargets.Target;
 import frc.lib.ScoringPoses;
 import frc.mw_lib.geometry.Region;
-import frc.robot.Constants.ElevatorConstants.Target;
 import frc.robot.subsystems.Claw;
 import frc.robot.subsystems.Claw.GamePiece;
 import frc.robot.subsystems.Elevator;

@@ -4,12 +4,12 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.networktables.StructPublisher;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import frc.lib.ElevatorTargets.Target;
 import frc.lib.FieldRegions;
 import frc.lib.ScoringPoses;
 import frc.mw_lib.subsystem.Subsystem;
 import frc.mw_lib.util.Util;
 import frc.robot.Constants;
-import frc.robot.Constants.ElevatorConstants;
 import frc.robot.subsystems.Elevator.SpeedLimit;
 import java.util.Optional;
 import monologue.Annotations.Log;
@@ -107,7 +107,7 @@ public class GameStateManager extends Subsystem {
             poseEstimator_.getRobotPose().getRotation(),
             io_.reef_target.get().getRotation(),
             Constants.GameStateManager
-                .REQURED_ROTATION_FOR_ELVATOR)) { // move elavator once within rotation
+                .REQUIRED_ROTATION_FOR_ELEVATOR)) { // move elevator once within rotation
           elevatorTargetSwitch();
         }
         // drive towards final target
@@ -130,10 +130,10 @@ public class GameStateManager extends Subsystem {
         drivetrain_.restoreDefaultDriveMode();
         if (Claw.getInstance().isCoralMode()) {
           elevator_.setSpeedLimit(SpeedLimit.CORAL);
-          elevator_.setTarget(ElevatorConstants.Target.STOW);
+          elevator_.setTarget(Target.STOW);
         } else {
           elevator_.setSpeedLimit(SpeedLimit.ALGAE);
-          elevator_.setTarget(ElevatorConstants.Target.ALGAE_STOW);
+          elevator_.setTarget(Target.ALGAE_STOW);
         }
         io_.robot_state_ = RobotState.TELEOP_CONTROL;
         break;
@@ -259,24 +259,24 @@ public class GameStateManager extends Subsystem {
   public void elevatorTargetSwitch() {
     switch (io_.scoring_target) {
       case L2:
-        elevator_.setTarget(ElevatorConstants.Target.L2);
+        elevator_.setTarget(Target.L2);
         break;
       case L3:
-        elevator_.setTarget(ElevatorConstants.Target.L3);
+        elevator_.setTarget(Target.L3);
         break;
       case L4:
-        elevator_.setTarget(ElevatorConstants.Target.L4);
+        elevator_.setTarget(Target.L4);
         break;
       case ALGAE:
         if (io_.algae_level_high) {
-          elevator_.setTarget(ElevatorConstants.Target.ALGAE_HIGH);
+          elevator_.setTarget(Target.ALGAE_HIGH);
         } else {
-          elevator_.setTarget(ElevatorConstants.Target.ALGAE_LOW);
+          elevator_.setTarget(Target.ALGAE_LOW);
         }
         break;
       case TURTLE:
       default:
-        elevator_.setTarget(ElevatorConstants.Target.STOW);
+        elevator_.setTarget(Target.STOW);
         break;
       case TELEOP_CONTROL:
         break;
