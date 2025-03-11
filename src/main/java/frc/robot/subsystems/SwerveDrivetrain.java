@@ -647,7 +647,7 @@ public class SwerveDrivetrain extends Subsystem {
    * @param preset
    */
   public void setActiveSpeed(SpeedPresets preset){
-    io_.active_max_speed =DrivetrainConstants.MAX_DRIVE_SPEED * preset.speed_limit;
+    io_.active_max_speed = DrivetrainConstants.MAX_DRIVE_SPEED * preset.speed_limit;
   }
 
   /**
