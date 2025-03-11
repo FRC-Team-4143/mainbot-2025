@@ -18,7 +18,6 @@ import frc.robot.subsystems.Elevator.SpeedLimit;
 import frc.robot.subsystems.SwerveDrivetrain.SpeedPresets;
 import frc.robot.subsystems.PoseEstimator;
 import frc.robot.subsystems.SwerveDrivetrain;
-import frc.robot.Constants.DrivetrainConstants.Target;
 
 public class CoralStation extends Command {
   /** Creates a new CoralStationLoad. */
@@ -30,10 +29,8 @@ public class CoralStation extends Command {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    elevator_.setSpeedLimit(SpeedLimit.CORAL);
-    elevator_.setTarget(Target.STATION);
     Elevator.getInstance().setSpeedLimit(SpeedLimit.CORAL);
-    Elevator.getInstance().setTarget(Constants.ElevatorConstants.Target.STATION);
+    Elevator.getInstance().setTarget(Target.STATION);
     Claw.getInstance().setGamePiece(GamePiece.CORAL);
     Claw.getInstance().setClawMode(ClawMode.LOAD);
   }
