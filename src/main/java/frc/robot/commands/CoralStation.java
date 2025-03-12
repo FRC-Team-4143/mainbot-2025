@@ -4,10 +4,10 @@
 
 package frc.robot.commands;
 
-import edu.wpi.first.wpilibj2.command.Command;
 import frc.lib.ElevatorTargets.Target;
 import frc.lib.FieldRegions;
 import frc.lib.ScoringPoses;
+import frc.mw_lib.command.LazyCommand;
 import frc.robot.subsystems.Claw;
 import frc.robot.subsystems.Claw.ClawMode;
 import frc.robot.subsystems.Claw.GamePiece;
@@ -17,10 +17,15 @@ import frc.robot.subsystems.PoseEstimator;
 import frc.robot.subsystems.SwerveDrivetrain;
 import frc.robot.subsystems.SwerveDrivetrain.SpeedPresets;
 
-public class CoralStation extends Command {
+public class CoralStation extends LazyCommand {
+
+  static Elevator elevator_;
+
   /** Creates a new CoralStationLoad. */
   public CoralStation() {
-    addRequirements(Elevator.getInstance());
+    super(0.5);
+    elevator_ = Elevator.getInstance();
+    addRequirements(elevator_);
     setName(this.getClass().getSimpleName());
   }
 
@@ -31,6 +36,7 @@ public class CoralStation extends Command {
     Elevator.getInstance().setTarget(Target.STATION);
     Claw.getInstance().setGamePiece(GamePiece.CORAL);
     Claw.getInstance().setClawMode(ClawMode.LOAD);
+    this.timerReset();
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -71,7 +77,7 @@ public class CoralStation extends Command {
 
   // Returns true when the command should end.
   @Override
-  public boolean isFinished() {
-    return false;
+  public boolean isConditionMet() {
+    return Claw.getInstance().hasCoral();
   }
 }
