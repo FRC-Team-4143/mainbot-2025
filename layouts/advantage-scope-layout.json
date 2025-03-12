@@ -4,10 +4,10 @@
       "x": -8,
       "y": -8,
       "width": 1552,
-      "height": 928,
+      "height": 832,
       "state": {
         "sidebar": {
-          "width": 291,
+          "width": 344,
           "expanded": [
             "/NT",
             "/NT/Robot",
@@ -19,18 +19,16 @@
             "/module_states",
             "/SmartDashboard/Debug/Swerve/Rotation Control",
             "/Swerve/Module States",
-            "/Subsystems/Elevator",
-            "/Subsystems/Elevator/Stages",
+            "/SmartDashboard/Subsystems",
+            "/SmartDashboard/Subsystems/Arm",
+            "/PoseEstimation/Robot Pose",
             "/Components/Elevator",
             "/Components/Elevator/Stages",
-            "/Components/Arm",
-            "/SmartDashboard/Subsystems",
-            "/SmartDashboard/Subsystems/PoseEstimator",
-            "/PoseEstimation"
+            "/Regions"
           ]
         },
         "tabs": {
-          "selected": 3,
+          "selected": 1,
           "tabs": [
             {
               "type": 0,
@@ -57,21 +55,11 @@
                   },
                   {
                     "type": "trajectory",
-                    "logKey": "NT:Regions/RightCoralStation",
+                    "logKey": "NT:Regions/BargeEnter",
                     "logType": "Translation2d[]",
                     "visible": true,
                     "options": {
-                      "color": "#00ffff",
-                      "size": "normal"
-                    }
-                  },
-                  {
-                    "type": "trajectory",
-                    "logKey": "NT:Regions/LeftCoralStation",
-                    "logType": "Translation2d[]",
-                    "visible": true,
-                    "options": {
-                      "color": "#00ffff",
+                      "color": "#00ff00",
                       "size": "normal"
                     }
                   },
@@ -87,17 +75,54 @@
                   },
                   {
                     "type": "trajectory",
+                    "logKey": "NT:Regions/LeftCoralStation",
+                    "logType": "Translation2d[]",
+                    "visible": true,
+                    "options": {
+                      "color": "#00ffff",
+                      "size": "normal"
+                    }
+                  },
+                  {
+                    "type": "trajectory",
+                    "logKey": "NT:Regions/RightCoralStation",
+                    "logType": "Translation2d[]",
+                    "visible": true,
+                    "options": {
+                      "color": "#00ffff",
+                      "size": "normal"
+                    }
+                  },
+                  {
+                    "type": "robot",
+                    "logKey": "NT:PoseEstimation/Robot Pose",
+                    "logType": "Pose2d",
+                    "visible": true,
+                    "options": {}
+                  },
+                  {
+                    "type": "trajectory",
+                    "logKey": "NT:TightRopes/Barge",
+                    "logType": "Translation2d[]",
+                    "visible": true,
+                    "options": {
+                      "color": "#ff00ff",
+                      "size": "normal"
+                    }
+                  },
+                  {
+                    "type": "trajectory",
                     "logKey": "NT:TightRopes/Processor",
                     "logType": "Translation2d[]",
                     "visible": true,
                     "options": {
                       "color": "#ff00ff",
-                      "size": "bold"
+                      "size": "normal"
                     }
                   },
                   {
                     "type": "trajectory",
-                    "logKey": "NT:Regions/BargeEnter",
+                    "logKey": "NT:Regions/RightCoralStationSlow",
                     "logType": "Translation2d[]",
                     "visible": true,
                     "options": {
@@ -107,20 +132,13 @@
                   },
                   {
                     "type": "trajectory",
-                    "logKey": "NT:TightRopes/Barge",
+                    "logKey": "NT:Regions/LeftCoralStationSlow",
                     "logType": "Translation2d[]",
                     "visible": true,
                     "options": {
-                      "color": "#ff00ff",
-                      "size": "bold"
+                      "color": "#00ff00",
+                      "size": "normal"
                     }
-                  },
-                  {
-                    "type": "robot",
-                    "logKey": "NT:PoseEstimation/Robot Pose",
-                    "logType": "Pose2d",
-                    "visible": true,
-                    "options": {}
                   }
                 ],
                 "game": "2025 Field (Welded)",
@@ -131,7 +149,7 @@
               },
               "controllerUUID": "3izc54ec84cqyt2b08nq52c8bcohgwpe",
               "renderer": null,
-              "controlsHeight": 0
+              "controlsHeight": 233
             },
             {
               "type": 2,
@@ -144,8 +162,8 @@
                     "logType": "Translation2d[]",
                     "visible": true,
                     "options": {
-                      "color": "#00ffff",
-                      "size": "bold"
+                      "color": "#00ff00",
+                      "size": "normal"
                     }
                   },
                   {
@@ -154,7 +172,7 @@
                     "logType": "Translation2d[]",
                     "visible": true,
                     "options": {
-                      "color": "#00ffff",
+                      "color": "#00ff00",
                       "size": "normal"
                     }
                   },
@@ -164,8 +182,8 @@
                     "logType": "Translation2d[]",
                     "visible": true,
                     "options": {
-                      "color": "#ff0000",
-                      "size": "bold"
+                      "color": "#00ff00",
+                      "size": "normal"
                     }
                   },
                   {
@@ -174,8 +192,8 @@
                     "logType": "Translation2d[]",
                     "visible": true,
                     "options": {
-                      "color": "#ff8c00",
-                      "size": "bold"
+                      "color": "#ff0000",
+                      "size": "normal"
                     }
                   },
                   {
@@ -184,8 +202,8 @@
                     "logType": "Translation2d[]",
                     "visible": true,
                     "options": {
-                      "color": "#ffff00",
-                      "size": "bold"
+                      "color": "#0000ff",
+                      "size": "normal"
                     }
                   },
                   {
@@ -194,8 +212,8 @@
                     "logType": "Translation2d[]",
                     "visible": true,
                     "options": {
-                      "color": "#00ff00",
-                      "size": "bold"
+                      "color": "#ff8c00",
+                      "size": "normal"
                     }
                   },
                   {
@@ -204,8 +222,8 @@
                     "logType": "Translation2d[]",
                     "visible": true,
                     "options": {
-                      "color": "#0000ff",
-                      "size": "bold"
+                      "color": "#00ffff",
+                      "size": "normal"
                     }
                   },
                   {
@@ -215,7 +233,7 @@
                     "visible": true,
                     "options": {
                       "color": "#ff00ff",
-                      "size": "bold"
+                      "size": "normal"
                     }
                   },
                   {
@@ -224,15 +242,6 @@
                     "logType": "Pose2d",
                     "visible": true,
                     "options": {}
-                  },
-                  {
-                    "type": "arrow",
-                    "logKey": "NT:ReefTarget",
-                    "logType": "Pose2d",
-                    "visible": true,
-                    "options": {
-                      "position": "center"
-                    }
                   }
                 ],
                 "game": "2025 Field (Welded)",
@@ -243,11 +252,11 @@
               },
               "controllerUUID": "rco8h9ytf5q9nx4sw7uc5xvn6hyhtbd7",
               "renderer": null,
-              "controlsHeight": 0
+              "controlsHeight": 259
             },
             {
               "type": 3,
-              "title": "Localization",
+              "title": "Vision",
               "controller": {
                 "sources": [
                   {
@@ -286,39 +295,9 @@
                     "logType": "Pose3d",
                     "visible": true,
                     "options": {}
-                  },
-                  {
-                    "type": "swerveStates",
-                    "logKey": "NT:Swerve/Module States/Current",
-                    "logType": "SwerveModuleState[]",
-                    "visible": true,
-                    "options": {
-                      "color": "#ff0000",
-                      "arrangement": "0,1,2,3"
-                    }
-                  },
-                  {
-                    "type": "ghost",
-                    "logKey": "NT:PoseEstimation/Vision Pose",
-                    "logType": "Pose2d",
-                    "visible": true,
-                    "options": {
-                      "model": "2025 MARS/WARS Base",
-                      "color": "#00ff00"
-                    }
-                  },
-                  {
-                    "type": "vision",
-                    "logKey": "NT:PoseEstimation/Tags Detected",
-                    "logType": "Pose3d[]",
-                    "visible": true,
-                    "options": {
-                      "color": "#00ff00",
-                      "size": "normal"
-                    }
                   }
                 ],
-                "game": "2025 Field (Welded)",
+                "game": "Axes",
                 "origin": "blue"
               },
               "controllerUUID": "9c1meejh9cpjxrrgngznlfsa2fl0dnfc",
@@ -326,17 +305,17 @@
                 "cameraIndex": -2,
                 "orbitFov": 50,
                 "cameraPosition": [
-                  -1.3596278711427794,
-                  1.5201783351510747,
-                  1.96402522543482
+                  2.0099316927168167,
+                  0.6190995320745635,
+                  -0.6293278798805173
                 ],
                 "cameraTarget": [
-                  -0.05431328316004069,
-                  0.5681366086111578,
-                  0.0745582620145028
+                  -0.09529184552522152,
+                  0.4220685840647531,
+                  -0.34291532556767074
                 ]
               },
-              "controlsHeight": 444
+              "controlsHeight": 200
             },
             {
               "type": 9,
@@ -374,7 +353,7 @@
                   },
                   {
                     "type": "rotationLegacy",
-                    "logKey": "NT:/SmartDashboard/Subsystems/Swerve/Yaw",
+                    "logKey": "NT:/SmartDashboard/Debug/Swerve/Yaw",
                     "logType": "Number",
                     "visible": true,
                     "options": {
@@ -389,7 +368,7 @@
               },
               "controllerUUID": "a3wcwir2whtqie2y28ks4tpl9vp7rny0",
               "renderer": null,
-              "controlsHeight": 269
+              "controlsHeight": 200
             }
           ]
         }
