@@ -1,5 +1,6 @@
 {
   "name": "2025 MARS/WARS Mainbot",
+  "disableSimplification": false,
   "rotations": [
     {
       "axis": "x",

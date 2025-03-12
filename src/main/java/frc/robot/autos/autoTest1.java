@@ -34,7 +34,7 @@ public class autoTest1 {
         .onTrue(
             Commands.sequence(
                 new CoralLoad().withTimeout(5),
-                LeftStation_to_KL.cmd().until(kill_LeftStation_to_KL)));
+                LeftStation_to_KL.cmd().until(kill_LeftStation_to_KL::getAsBoolean)));
     LeftStation_to_KL.inactive().onTrue(new AutoCoralReefScore(ReefScoringTarget.L3, Column.LEFT));
 
     return routine;

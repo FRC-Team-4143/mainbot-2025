@@ -277,7 +277,7 @@ public final class Constants {
         Units.inchesToMeters(LOADER.getDoubleValue("elevator", "HEIGHT_PIVOT_MAX"))
             - 0.1; // 0.1m of safety
     public static final double ELEVATOR_HEIGHT_PIVOT_SAFETY =
-        ELEVATOR_HEIGHT_PIVOT_MIN + Units.inchesToMeters(4);
+        ELEVATOR_HEIGHT_PIVOT_MIN + Units.inchesToMeters(6);
 
     public static final Slot0Configs ELEVATOR_GAINS =
         new Slot0Configs()
