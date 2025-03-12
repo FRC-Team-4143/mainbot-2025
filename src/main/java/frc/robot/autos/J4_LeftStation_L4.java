@@ -10,12 +10,12 @@ import frc.robot.commands.CoralLoad;
 import frc.robot.subsystems.GameStateManager.Column;
 import frc.robot.subsystems.GameStateManager.ReefScoringTarget;
 
-public class autoTest1 {
+public class J4_LeftStation_L4 {
 
   public static AutoRoutine getAutoRoutine() {
 
     AutoFactory autoFactory = AutoManager.getInstance().getAutoFactory();
-    AutoRoutine routine = autoFactory.newRoutine("autoTest1");
+    AutoRoutine routine = autoFactory.newRoutine("J4_LeftStation_L4");
 
     AutoTrajectory Mid_to_IJ = routine.trajectory("Blue Mid to IJ");
     AutoTrajectory IJ_to_LeftStation = routine.trajectory("IJ to Left Station");
