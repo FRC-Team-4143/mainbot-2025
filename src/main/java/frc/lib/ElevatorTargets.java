@@ -10,7 +10,7 @@ public class ElevatorTargets {
     L4(
         new TargetData(
             FieldConstants.ReefHeight.L4.HEIGHT + Units.inchesToMeters(11),
-            Rotation2d.fromDegrees(135),
+            Rotation2d.fromDegrees(145.3),
             ControlType.EFFECTOR)),
     L3(
         new TargetData(
@@ -40,12 +40,12 @@ public class ElevatorTargets {
     ALGAE_LOW(
         new TargetData(
             0.9702231159054557 + Units.inchesToMeters(0),
-            Rotation2d.fromDegrees(90 + 35),
+            Rotation2d.fromDegrees(149),
             ControlType.EFFECTOR)),
     ALGAE_HIGH(
         new TargetData(
             1.2535345791562702 + Units.inchesToMeters(0),
-            Rotation2d.fromDegrees(127.79),
+            Rotation2d.fromDegrees(130.79),
             ControlType.EFFECTOR)),
     ALGAE_PROCESSOR(
         new TargetData(

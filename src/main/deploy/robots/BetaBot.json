@@ -80,8 +80,8 @@
         }
     },
     "imp": {
-        "coral_offset": -5.5,
-        "algae_offset": -5.5
+        "coral_offset": -4,
+        "algae_offset": -4
     },
     "elevator": {
         "CONTROLLER_P": 1.0,
