@@ -52,16 +52,17 @@ public class FieldRegions {
           new Translation2d[] {
             new Translation2d(0, 0),
             new Translation2d(0, 3.5),
-            new Translation2d(3.5, 0),
+            new Translation2d(4, 0),
             new Translation2d(0, 0)
           },
           "RightCoralStation");
   public static PolygonRegion RIGHT_CORAL_STATION_SLOW_REGION =
       new PolygonRegion(
           new Translation2d[] {
+            // the corner to side of the coral station is 1.4m
             new Translation2d(0, 0),
             new Translation2d(0, 2.5),
-            new Translation2d(2.5, 0),
+            new Translation2d(2.9, 0),
             new Translation2d(0, 0)
           },
           "RightCoralStationSlow");
@@ -69,7 +70,7 @@ public class FieldRegions {
       new PolygonRegion(
           new Translation2d[] {
             new Translation2d(0, FieldConstants.FIELD_WIDTH),
-            new Translation2d(3.5, FieldConstants.FIELD_WIDTH),
+            new Translation2d(4, FieldConstants.FIELD_WIDTH),
             new Translation2d(0, FieldConstants.FIELD_WIDTH - 3.5),
             new Translation2d(0, FieldConstants.FIELD_WIDTH)
           },
@@ -78,7 +79,7 @@ public class FieldRegions {
       new PolygonRegion(
           new Translation2d[] {
             new Translation2d(0, FieldConstants.FIELD_WIDTH),
-            new Translation2d(2.5, FieldConstants.FIELD_WIDTH),
+            new Translation2d(2.9, FieldConstants.FIELD_WIDTH),
             new Translation2d(0, FieldConstants.FIELD_WIDTH - 2.5),
             new Translation2d(0, FieldConstants.FIELD_WIDTH)
           },

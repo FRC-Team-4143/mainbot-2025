@@ -8,16 +8,14 @@ import edu.wpi.first.wpilibj2.command.Command;
 import frc.lib.ElevatorTargets.Target;
 import frc.lib.FieldRegions;
 import frc.lib.ScoringPoses;
-import frc.robot.Constants;
-import frc.robot.Constants.DrivetrainConstants;
 import frc.robot.subsystems.Claw;
 import frc.robot.subsystems.Claw.ClawMode;
 import frc.robot.subsystems.Claw.GamePiece;
 import frc.robot.subsystems.Elevator;
 import frc.robot.subsystems.Elevator.SpeedLimit;
-import frc.robot.subsystems.SwerveDrivetrain.SpeedPresets;
 import frc.robot.subsystems.PoseEstimator;
 import frc.robot.subsystems.SwerveDrivetrain;
+import frc.robot.subsystems.SwerveDrivetrain.SpeedPresets;
 
 public class CoralStation extends Command {
   /** Creates a new CoralStationLoad. */
@@ -38,11 +36,13 @@ public class CoralStation extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    if (FieldRegions.LEFT_CORAL_STATION_REGION.contains(PoseEstimator.getInstance().getRobotPose())) {
+    if (FieldRegions.LEFT_CORAL_STATION_REGION.contains(
+        PoseEstimator.getInstance().getRobotPose())) {
       SwerveDrivetrain.getInstance()
           .setTargetRotation(ScoringPoses.LEFT_CORAL_STATION_POSE.getRotation());
 
-    } else if (FieldRegions.RIGHT_CORAL_STATION_REGION.contains(PoseEstimator.getInstance().getRobotPose())) {
+    } else if (FieldRegions.RIGHT_CORAL_STATION_REGION.contains(
+        PoseEstimator.getInstance().getRobotPose())) {
       SwerveDrivetrain.getInstance()
           .setTargetRotation(ScoringPoses.RIGHT_CORAL_STATION_POSE.getRotation());
 
@@ -50,8 +50,10 @@ public class CoralStation extends Command {
       SwerveDrivetrain.getInstance().restoreDefaultDriveMode();
     }
 
-    if (FieldRegions.LEFT_CORAL_STATION_SLOW_REGION.contains(PoseEstimator.getInstance().getRobotPose()) 
-    || FieldRegions.RIGHT_CORAL_STATION_SLOW_REGION.contains(PoseEstimator.getInstance().getRobotPose())) {
+    if (FieldRegions.LEFT_CORAL_STATION_SLOW_REGION.contains(
+            PoseEstimator.getInstance().getRobotPose())
+        || FieldRegions.RIGHT_CORAL_STATION_SLOW_REGION.contains(
+            PoseEstimator.getInstance().getRobotPose())) {
       SwerveDrivetrain.getInstance().setActiveSpeed(SpeedPresets.ONE_THIRD_SPEED);
     } else {
       SwerveDrivetrain.getInstance().setActiveSpeed(SpeedPresets.MAX_SPEED);

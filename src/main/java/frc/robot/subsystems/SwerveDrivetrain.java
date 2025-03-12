@@ -92,9 +92,12 @@ public class SwerveDrivetrain extends Subsystem {
     THREE_FOURTHS_SPEED(0.75),
     HALF_SPEED(0.5),
     ONE_THIRD_SPEED(0.33);
-    private SpeedPresets(double val){
+
+    private SpeedPresets(double val) {
       speed_limit = val;
-    };
+    }
+    ;
+
     public final double speed_limit;
   }
 
@@ -644,10 +647,10 @@ public class SwerveDrivetrain extends Subsystem {
 
   /**
    * alows the selction of max speed presets
-   * 
+   *
    * @param preset
    */
-  public void setActiveSpeed(SpeedPresets preset){
+  public void setActiveSpeed(SpeedPresets preset) {
     io_.active_max_speed = DrivetrainConstants.MAX_DRIVE_SPEED * preset.speed_limit;
   }
 
@@ -656,7 +659,7 @@ public class SwerveDrivetrain extends Subsystem {
    * that is relevant for telemetry or decision-making from the Swerve Drive.
    */
   public class SwerveDrivetrainPeriodicIo implements Logged {
-    @Log.File public double active_max_speed = DrivetrainConstants.MAX_DRIVE_SPEED; 
+    @Log.File public double active_max_speed = DrivetrainConstants.MAX_DRIVE_SPEED;
     @Log.File public SwerveModuleState[] current_module_states_, requested_module_states_;
     @Log.File public SwerveModulePosition[] module_positions_;
     @Log.File public DriveMode drive_mode_ = DriveMode.IDLE;
