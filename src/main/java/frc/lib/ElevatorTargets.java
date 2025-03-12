@@ -29,8 +29,8 @@ public class ElevatorTargets {
             ControlType.EFFECTOR)),
     CLIMB(
         new TargetData(
-            ElevatorConstants.ELEVATOR_HEIGHT_PIVOT_SAFETY + Units.inchesToMeters(0),
-            new Rotation2d(),
+            ElevatorConstants.ELEVATOR_HEIGHT_PIVOT_MIN,
+            Rotation2d.fromDegrees(0),
             ControlType.PIVOT)),
     STOW(
         new TargetData(
