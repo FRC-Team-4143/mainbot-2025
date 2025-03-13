@@ -10,8 +10,7 @@ import frc.robot.AutoManager;
 import frc.robot.subsystems.SwerveDrivetrain;
 import frc.robot.subsystems.SwerveDrivetrain.DriveMode;
 
-public class autoTest1 implements Auto {
-
+public class autoTest1 {
   public AutoRoutine getAutoRoutine() {
 
     AutoFactory autoFactory = AutoManager.getInstance().getAutoFactory();
