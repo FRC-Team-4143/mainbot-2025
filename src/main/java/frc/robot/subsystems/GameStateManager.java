@@ -199,6 +199,11 @@ public class GameStateManager extends Subsystem {
     }
   }
 
+  public void setScoringObj(Column col, ReefScoringTarget target, boolean save) {
+    setScoringColum(col, save);
+    setScoringTarget(target, save);
+  }
+
   public ReefScoringTarget getSavedScoringTarget() {
     return io_.saved_scoring_target;
   }

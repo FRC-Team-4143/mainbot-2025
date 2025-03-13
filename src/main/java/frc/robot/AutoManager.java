@@ -33,7 +33,8 @@ public class AutoManager {
     autoChooser = new AutoChooser();
 
     // Add options to the chooser
-    autoChooser.addRoutine("J4_LeftStation_L4", J4_LeftStation_L4_LeftStation_K4::getAutoRoutine);
+    autoChooser.addRoutine(
+        "J4_LeftStation_L4_LeftStation_K4", J4_LeftStation_L4_LeftStation_K4::getAutoRoutine);
 
     // Put the auto chooser on the dashboard
     SmartDashboard.putData("Auto Chooser", autoChooser);
