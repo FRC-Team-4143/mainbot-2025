@@ -17,10 +17,9 @@ import frc.robot.commands.ElevatorL3Target;
 import frc.robot.commands.ElevatorL4Target;
 import frc.robot.commands.GamePieceEject;
 import frc.robot.commands.GamePieceLoad;
-import frc.robot.commands.ManualElevatorOverride;
-import frc.robot.commands.ManualElevatorOverride.Level;
 import frc.robot.commands.SwerveProfile;
 import frc.robot.subsystems.Claw;
+import frc.robot.subsystems.Climber;
 import frc.robot.subsystems.Elevator;
 import frc.robot.subsystems.Elevator.OffsetType;
 import frc.robot.subsystems.GameStateManager;
@@ -79,14 +78,9 @@ public abstract class OI {
     // Toggle Game Piece
     driver_controller_.leftBumper().onTrue(Claw.getInstance().toggleGamePieceCommand());
 
-    // TODO: Remove this once automation commands are added
-    driver_controller_
-        .a()
-        .toggleOnTrue(new ManualElevatorOverride(Level.L1).onlyIf(Claw.getInstance()::isAlgaeMode));
-    // TODO: Remove this once automation commands are added
-    driver_controller_
-        .y()
-        .toggleOnTrue(new ManualElevatorOverride(Level.L4).onlyIf(Claw.getInstance()::isAlgaeMode));
+    driver_controller_.start().onFalse(Commands.runOnce(() -> Climber.getInstance().nextStage()));
+
+    driver_controller_.back().onFalse(Commands.runOnce(() -> Climber.getInstance().backStage()));
 
     // Swap Between Robot Centric and Field Centric
     driver_controller_
