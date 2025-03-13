@@ -4,7 +4,7 @@ import choreo.auto.AutoChooser;
 import choreo.auto.AutoFactory;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.button.RobotModeTriggers;
-import frc.robot.autos.J4_LeftStation_L4;
+import frc.robot.autos.J4_LeftStation_L4_LeftStation_K4;
 import frc.robot.subsystems.PoseEstimator;
 import frc.robot.subsystems.SwerveDrivetrain;
 
@@ -33,7 +33,7 @@ public class AutoManager {
     autoChooser = new AutoChooser();
 
     // Add options to the chooser
-    autoChooser.addRoutine("J4_LeftStation_L4", J4_LeftStation_L4::getAutoRoutine);
+    autoChooser.addRoutine("J4_LeftStation_L4", J4_LeftStation_L4_LeftStation_K4::getAutoRoutine);
 
     // Put the auto chooser on the dashboard
     SmartDashboard.putData("Auto Chooser", autoChooser);
