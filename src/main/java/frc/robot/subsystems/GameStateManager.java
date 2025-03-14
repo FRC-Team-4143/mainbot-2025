@@ -4,6 +4,8 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.networktables.StructPublisher;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Commands;
 import frc.lib.ElevatorTargets.Target;
 import frc.lib.FieldRegions;
 import frc.lib.ScoringPoses;
@@ -202,6 +204,10 @@ public class GameStateManager extends Subsystem {
   public void setScoringObj(Column col, ReefScoringTarget target, boolean save) {
     setScoringColum(col, save);
     setScoringTarget(target, save);
+  }
+
+  public static Command setScoringCommand(Column col, ReefScoringTarget target) {
+    return Commands.runOnce(() -> getInstance().setScoringObj(col, target, false));
   }
 
   public ReefScoringTarget getSavedScoringTarget() {

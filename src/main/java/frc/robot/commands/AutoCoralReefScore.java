@@ -24,7 +24,7 @@ public class AutoCoralReefScore extends SequentialCommandGroup {
     // addCommands(new FooCommand(), new BarCommand());
     addCommands(
         new GetToReefTarget(),
-        new CoralEject().withTimeout(0.5).beforeStarting(new WaitCommand(0.5)),
+        new CoralEject().withTimeout(0.5).beforeStarting(new WaitCommand(0.2)),
         Commands.runOnce(() -> GameStateManager.getInstance().setRobotState(RobotState.END)));
 
     setName(this.getClass().getSimpleName());
