@@ -1,16 +1,16 @@
 package frc.robot;
 
-import choreo.auto.AutoChooser;
 import choreo.auto.AutoFactory;
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.RobotModeTriggers;
-import frc.robot.autos.J4_LeftStation_L4;
 import frc.robot.subsystems.PoseEstimator;
 import frc.robot.subsystems.SwerveDrivetrain;
 
 public class AutoManager {
   public final AutoFactory autoFactory;
-  public final AutoChooser autoChooser;
+  public final SendableChooser<Command> autoChooser;
   // Singleton pattern
   private static AutoManager autoManagerInstance = null;
 
@@ -30,19 +30,20 @@ public class AutoManager {
             true, // enables auto flipping
             SwerveDrivetrain.getInstance());
     // Create the auto chooser
-    autoChooser = new AutoChooser();
-
-    // Add options to the chooser
-    autoChooser.addRoutine("J4_LeftStation_L4", J4_LeftStation_L4::getAutoRoutine);
+    autoChooser = new SendableChooser<Command>();
 
     // Put the auto chooser on the dashboard
     SmartDashboard.putData("Auto Chooser", autoChooser);
 
     // Schedule the selected auto during the autonomous period
-    RobotModeTriggers.autonomous().whileTrue(autoChooser.selectedCommandScheduler());
+    RobotModeTriggers.autonomous().whileTrue(autoChooser.getSelected());
   }
 
   public AutoFactory getAutoFactory() {
     return autoFactory;
+  }
+
+  public SendableChooser<Command> getAutoChooser(){
+    return autoChooser;
   }
 }
