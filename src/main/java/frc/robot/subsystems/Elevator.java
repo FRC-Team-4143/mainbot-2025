@@ -212,7 +212,16 @@ public class Elevator extends Subsystem {
 
   /** Computes updated outputs for the actuators */
   public void updateLogic(double timestamp) {
-    io_.target_arm_angle_ = io_.target_.getAngle();
+    if (io_.target_.getStagingArmAngle().isPresent()) {
+      if (isArmAtStagingAngle() && io_.has_hit_staging_angle_ == false) {
+        io_.target_arm_angle_ = io_.target_.getStagingArmAngle().get();
+      } else {
+        io_.has_hit_staging_angle_ = true;
+        io_.target_arm_angle_ = io_.target_.getAngle();
+      }
+    } else {
+      io_.target_arm_angle_ = io_.target_.getAngle();
+    }
     switch (io_.current_control_mode_) {
       case END_EFFECTOR:
         io_.target_elevator_height_ =
@@ -312,6 +321,19 @@ public class Elevator extends Subsystem {
   }
 
   /**
+   * @return If the arm is within the threshold of its target
+   */
+  public boolean isArmAtStagingAngle() {
+    if(io_.target_.getStagingArmAngle().isPresent()) {
+      return Util.epislonEquals(
+        io_.current_arm_angle_,
+        io_.target_.getStagingArmAngle().get().getRadians(),
+        ArmConstants.ARM_TARGET_THRESHOLD);
+    }
+    return false;
+  }
+
+  /**
    * @return If the elevator is within the threshold of its target
    */
   public boolean isElevatorAtTarget() {
@@ -383,6 +405,7 @@ public class Elevator extends Subsystem {
 
   public void setTarget(Target target) {
     io_.target_ = target;
+    io_.has_hit_staging_angle_ = false;
     if (target.getControlType() == ControlType.PIVOT) {
       io_.current_control_mode_ = ControlMode.PIVOT;
     } else if (target.getControlType() == ControlType.EFFECTOR) {
@@ -447,6 +470,7 @@ public class Elevator extends Subsystem {
     @Log.File public double elevator_master_rotations_ = 0;
     @Log.File public double elevator_follower_rotations_ = 0;
     @Log.File public TargetData target_data_ = target_.getLoggingObject();
+    @Log.File public boolean has_hit_staging_angle_ = false;
   }
 
   /** Get logging object from subsystem */
