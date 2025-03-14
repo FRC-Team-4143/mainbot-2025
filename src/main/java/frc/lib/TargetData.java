@@ -1,8 +1,7 @@
 package frc.lib;
 
-import java.util.Optional;
-
 import edu.wpi.first.math.geometry.Rotation2d;
+import java.util.Optional;
 import monologue.Annotations.Log;
 import monologue.Logged;
 
