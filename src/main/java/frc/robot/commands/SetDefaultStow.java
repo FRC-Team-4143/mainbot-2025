@@ -7,8 +7,8 @@ import frc.robot.subsystems.Claw;
 import frc.robot.subsystems.Elevator;
 import frc.robot.subsystems.PoseEstimator;
 
-public class SetDefaultPose extends Command {
-  public SetDefaultPose() {
+public class SetDefaultStow extends Command {
+  public SetDefaultStow() {
     addRequirements(Elevator.getInstance());
     setName(this.getClass().getSimpleName());
   }
