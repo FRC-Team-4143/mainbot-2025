@@ -1,6 +1,7 @@
 package frc.lib;
 
 import edu.wpi.first.math.geometry.Rotation2d;
+import java.util.Optional;
 import monologue.Annotations.Log;
 import monologue.Logged;
 
@@ -8,13 +9,15 @@ public class TargetData implements Logged {
   @Log.File public double height_;
   @Log.File public Rotation2d angle_;
   @Log.File public ControlType type_;
+  @Log.File public Optional<Rotation2d> staging_arm_angle_;
   @Log.File public double height_offset_ = 0;
   @Log.File public Rotation2d angle_offset_ = new Rotation2d();
 
-  public TargetData(double h, Rotation2d a, ControlType t) {
+  public TargetData(double h, Rotation2d a, ControlType t, Optional<Rotation2d> stagingArmAngle) {
     this.height_ = h;
     this.angle_ = a;
     this.type_ = t;
+    this.staging_arm_angle_ = stagingArmAngle;
   }
 
   public enum ControlType {
@@ -81,6 +84,10 @@ public class TargetData implements Logged {
    */
   public Rotation2d getAngleOffset() {
     return angle_offset_;
+  }
+
+  public Optional<Rotation2d> getStagingArmAngle() {
+    return staging_arm_angle_;
   }
 
   /** Resets the angle offset to 0 */
