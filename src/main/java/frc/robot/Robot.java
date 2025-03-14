@@ -39,7 +39,7 @@ public class Robot extends TimedRobot {
   @Override
   public void disabledInit() {
     SwerveDrivetrain.getInstance().setDriveMode(DriveMode.IDLE);
-    if(GameStateManager.getInstance().getRobotState() != RobotState.END){
+    if (GameStateManager.getInstance().getRobotState() != RobotState.END) {
       GameStateManager.getInstance().setRobotState(RobotState.END);
     }
   }

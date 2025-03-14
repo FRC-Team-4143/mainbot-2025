@@ -215,6 +215,11 @@ public class PoseEstimator extends Subsystem {
     return FieldRegions.PROCESSOR_REGION.contains(getRobotPose());
   }
 
+  public boolean isStationZone() {
+    return FieldRegions.LEFT_CORAL_STATION_REGION.contains(getRobotPose())
+        || FieldRegions.RIGHT_CORAL_STATION_REGION.contains(getRobotPose());
+  }
+
   /**
    * Returns the robots current reef region or an empty optional if not in any.
    *
