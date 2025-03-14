@@ -35,8 +35,8 @@ import frc.mw_lib.util.MWPreferences;
 import frc.mw_lib.util.Util;
 import frc.robot.Constants.ArmConstants;
 import frc.robot.Constants.ElevatorConstants;
-import frc.robot.commands.SetDefaultPose;
 import frc.robot.OI;
+import frc.robot.commands.SetDefaultPose;
 import java.util.function.BooleanSupplier;
 import monologue.Annotations.Log;
 import monologue.Logged;
@@ -192,12 +192,12 @@ public class Elevator extends Subsystem {
         arm_encoder_.getAbsolutePosition().getValueAsDouble()
             - (MWPreferences.getInstance().getPreferenceDouble("ArmEncoderOffset", 0)));
     elevatorPosReset();
-
-    setDefaultCommand(new SetDefaultPose());
   }
 
   /** Called to reset and configure the subsystem */
-  public void reset() {}
+  public void reset() {
+    setDefaultCommand(new SetDefaultPose());
+  }
 
   /** Reads all sensors and stores periodic data */
   public void readPeriodicInputs(double timestamp) {

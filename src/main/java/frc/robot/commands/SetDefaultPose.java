@@ -1,15 +1,47 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.ConditionalCommand;
+import frc.lib.ElevatorTargets.Target;
 import frc.robot.OI;
-import frc.robot.commands.ManualElevatorOverride.Level;
+import frc.robot.subsystems.Claw;
 import frc.robot.subsystems.Elevator;
-
+import frc.robot.subsystems.PoseEstimator;
 
 public class SetDefaultPose extends Command {
   public SetDefaultPose() {
-    Elevator.getInstance().stowElevator();
+    addRequirements(Elevator.getInstance());
     setName(this.getClass().getSimpleName());
+  }
+
+  // Called when the command is initially scheduled.
+  @Override
+  public void initialize() {}
+
+  // Called every time the scheduler runs while the command is scheduled.
+  @Override
+  public void execute() {
+    if (Claw.getInstance().isAlgaeMode()) {
+      Elevator.getInstance().setTarget(Target.ALGAE_STOW);
+    } else {
+      if (OI.use_vision.getAsBoolean()) {
+        if (PoseEstimator.getInstance().isStationZone()) {
+          Elevator.getInstance().setTarget(Target.STOW);
+        } else {
+          Elevator.getInstance().setTarget(Target.CORAL_STOW);
+        }
+      } else {
+        Elevator.getInstance().setTarget(Target.STOW);
+      }
+    }
+  }
+
+  // Called once the command ends or is interrupted.
+  @Override
+  public void end(boolean interrupted) {}
+
+  // Returns true when the command should end.
+  @Override
+  public boolean isFinished() {
+    return false;
   }
 }
