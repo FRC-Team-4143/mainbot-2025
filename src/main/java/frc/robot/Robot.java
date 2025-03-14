@@ -11,6 +11,8 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.lib.FieldRegions;
 import frc.mw_lib.logging.Elastic;
+import frc.robot.subsystems.GameStateManager;
+import frc.robot.subsystems.GameStateManager.RobotState;
 import frc.robot.subsystems.SwerveDrivetrain;
 import frc.robot.subsystems.SwerveDrivetrain.DriveMode;
 import java.util.Optional;
@@ -41,6 +43,9 @@ public class Robot extends TimedRobot {
   @Override
   public void disabledInit() {
     SwerveDrivetrain.getInstance().setDriveMode(DriveMode.IDLE);
+    if (GameStateManager.getInstance().getRobotState() != RobotState.END) {
+      GameStateManager.getInstance().setRobotState(RobotState.END);
+    }
   }
 
   @Override

@@ -37,6 +37,7 @@ import frc.mw_lib.util.Util;
 import frc.robot.Constants.ArmConstants;
 import frc.robot.Constants.ElevatorConstants;
 import frc.robot.OI;
+import frc.robot.commands.SetDefaultPose;
 import java.util.function.BooleanSupplier;
 import monologue.Annotations.Log;
 import monologue.Logged;
@@ -195,7 +196,9 @@ public class Elevator extends Subsystem {
   }
 
   /** Called to reset and configure the subsystem */
-  public void reset() {}
+  public void reset() {
+    setDefaultCommand(new SetDefaultPose());
+  }
 
   /** Reads all sensors and stores periodic data */
   public void readPeriodicInputs(double timestamp) {

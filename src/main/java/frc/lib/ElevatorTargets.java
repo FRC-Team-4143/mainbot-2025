@@ -37,6 +37,11 @@ public class ElevatorTargets {
             ElevatorConstants.ELEVATOR_HEIGHT_PIVOT_SAFETY + Units.inchesToMeters(0),
             Rotation2d.fromDegrees(-90),
             ControlType.PIVOT)),
+    CORAL_STOW(
+        new TargetData(
+            ElevatorConstants.ELEVATOR_HEIGHT_PIVOT_SAFETY + Units.inchesToMeters(0),
+            Rotation2d.fromDegrees(90),
+            ControlType.PIVOT)),
     ALGAE_LOW(
         new TargetData(
             0.9702231159054557 + Units.inchesToMeters(0),
