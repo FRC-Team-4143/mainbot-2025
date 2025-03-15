@@ -90,8 +90,8 @@ public class ConstantsLoader extends JSONReader {
     return getChildren(current);
   }
 
-  public List<CameraConstants> getCameras(String... path_steps) {
-    ArrayList<CameraConstants> cameras = new ArrayList<>();
+  public List<CamConstants> getCameras(String... path_steps) {
+    ArrayList<CamConstants> cameras = new ArrayList<>();
 
     JsonNode cameras_root = walkTree(root_node_, path_steps);
 
@@ -99,7 +99,7 @@ public class ConstantsLoader extends JSONReader {
     for (String name : names) {
       JsonNode camera_root = walkTree(cameras_root, name);
 
-      CameraConstants config = new CameraConstants();
+      CamConstants config = new CamConstants();
       config.camera_name = walkTree(camera_root, "NAME").asText();
       config.camera_transform =
           new Transform3d(

@@ -20,7 +20,7 @@ import frc.mw_lib.swerve.SwerveModuleConstants;
 import frc.mw_lib.swerve.SwerveModuleConstants.SteerFeedbackType;
 import frc.mw_lib.swerve.SwerveModuleConstantsFactory;
 import frc.mw_lib.swerve.utility.ModuleType;
-import frc.mw_lib.util.CameraConstants;
+import frc.mw_lib.util.CamConstants;
 import frc.mw_lib.util.ConstantsLoader;
 import java.util.List;
 import frc.mw_lib.util.TagLayouts;
@@ -38,7 +38,7 @@ public final class Constants {
   private static final ConstantsLoader LOADER = ConstantsLoader.getInstance();
 
   public static class Vision {
-    public static final List<CameraConstants> CAMERAS = LOADER.getCameras("vision");
+    public static final List<CamConstants> CAMERAS = LOADER.getCameras("vision");
 
     // The layout of the AprilTags on the field
     public static final AprilTagFieldLayout TAG_LAYOUT =
