@@ -1,31 +1,34 @@
 package frc.mw_lib.auto;
 
-import java.util.ArrayList;
-
-import choreo.auto.AutoChooser;
-import choreo.auto.AutoFactory;
-import edu.wpi.first.math.trajectory.Trajectory;
-import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
-import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
-import frc.robot.AutoManager;
+import frc.lib.AllianceFlipUtil;
+import java.util.ArrayList;
+import java.util.List;
 
 public class Auto extends SequentialCommandGroup {
 
-  private static final AutoFactory auto_factory_ = AutoManager.getInstance().getAutoFactory();
-  public static final SendableChooser<Command> auto_chooser_ = AutoManager.getInstance().getAutoChooser();
+  protected ArrayList<Pose2d[]> trajectory_list_ = new ArrayList<>();
 
-  private String name_ = "Auto";
-  private ArrayList<Trajectory> trajectory_list_ = new ArrayList<>();
-
-  Auto(String name){}
-
-  public ArrayList<Trajectory> getTrajectories(){
-    return trajectory_list_;
+  public List<Pose2d> getPath() {
+    ArrayList<Pose2d> path_poses = new ArrayList<>();
+    for (Pose2d[] trajectory : trajectory_list_) {
+      for (Pose2d pose : trajectory) {
+        DriverStation.getAlliance()
+            .ifPresentOrElse(
+                (alliance) -> {
+                  if (alliance == Alliance.Red) {
+                    path_poses.add(AllianceFlipUtil.apply(pose));
+                  } else {
+                    path_poses.add(pose);
+                  }
+                  // Default to Blue when no alliance present
+                },
+                () -> path_poses.add(pose));
+      }
+    }
+    return path_poses;
   }
-  
-  private void registerAuto(){
-    auto_chooser_.addOption(name_, this);
-  }
-  
 }

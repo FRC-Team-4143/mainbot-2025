@@ -24,7 +24,7 @@ public class Robot extends TimedRobot {
   @Override
   public void robotInit() {
     robot_container_ = RobotContainer.getInstance();
-    AutoManager.getInstance();
+    AutoManager.getInstance().registerAutos();
     OI.configureBindings();
     FieldRegions.makeRegions();
   }
@@ -86,9 +86,7 @@ public class Robot extends TimedRobot {
   }
 
   @Override
-  public void teleopPeriodic() {
-    // GameStateManager.getInstance().updateGameState();
-  }
+  public void teleopPeriodic() {}
 
   @Override
   public void testInit() {
