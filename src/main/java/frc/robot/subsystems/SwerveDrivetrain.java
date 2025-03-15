@@ -216,7 +216,7 @@ public class SwerveDrivetrain extends Subsystem {
         NetworkTableInstance.getDefault()
             .getStructTopic("Swerve/Chassis Speeds/Current", ChassisSpeeds.struct)
             .publish();
-    
+
     SmartDashboard.putData(
         "Subsystems/Swerve/Overview",
         new Sendable() {
