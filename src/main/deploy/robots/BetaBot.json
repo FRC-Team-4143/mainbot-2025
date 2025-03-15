@@ -117,17 +117,6 @@
                 "PITCH": -14,
                 "YAW": 15
             }
-        },
-        "camera1": {
-            "NAME": "vi-output,_ov9281_10-0060",
-            "location": {
-                "X": 7.5,
-                "Y": 9.5,
-                "Z": 21.25,
-                "ROLL": 0,
-                "PITCH": 30,
-                "YAW": -5
-            }
         }
     }
 }

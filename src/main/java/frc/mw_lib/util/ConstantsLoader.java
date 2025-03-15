@@ -1,9 +1,7 @@
 package frc.mw_lib.util;
 
 import com.fasterxml.jackson.databind.JsonNode;
-
 import edu.wpi.first.math.geometry.Rotation3d;
-import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.util.Units;
@@ -37,10 +35,12 @@ public class ConstantsLoader extends JSONReader {
       DriverStation.reportError(
           "Failed to retrieve robot name on startup, using default: " + robot_name, false);
     } else {
-      robot_name = MWPreferences.getInstance().getPreferenceString(robot_name_pref_name, robot_name);
+      robot_name =
+          MWPreferences.getInstance().getPreferenceString(robot_name_pref_name, robot_name);
     }
 
-    Path json_path = Filesystem.getDeployDirectory().toPath().resolve("robots/" + robot_name + ".json");
+    Path json_path =
+        Filesystem.getDeployDirectory().toPath().resolve("robots/" + robot_name + ".json");
     try {
       loadJson(json_path);
     } catch (IOException e) {
@@ -101,14 +101,16 @@ public class ConstantsLoader extends JSONReader {
 
       CameraConstants config = new CameraConstants();
       config.camera_name = walkTree(camera_root, "NAME").asText();
-      config.camera_transform = new Transform3d(
-          new Translation3d(Units.inchesToMeters(walkTree(camera_root, "location", "X").asDouble()),
-              Units.inchesToMeters(walkTree(camera_root, "location", "Y").asDouble()),
-              Units.inchesToMeters(walkTree(camera_root, "location", "Z").asDouble())),
-          new Rotation3d(
-              Units.degreesToRadians(walkTree(camera_root, "location", "ROLL").asDouble()),
-              Units.degreesToRadians(walkTree(camera_root, "location", "PITCH").asDouble()),
-              Units.degreesToRadians(walkTree(camera_root, "location", "YAW").asDouble())));
+      config.camera_transform =
+          new Transform3d(
+              new Translation3d(
+                  Units.inchesToMeters(walkTree(camera_root, "location", "X").asDouble()),
+                  Units.inchesToMeters(walkTree(camera_root, "location", "Y").asDouble()),
+                  Units.inchesToMeters(walkTree(camera_root, "location", "Z").asDouble())),
+              new Rotation3d(
+                  Units.degreesToRadians(walkTree(camera_root, "location", "ROLL").asDouble()),
+                  Units.degreesToRadians(walkTree(camera_root, "location", "PITCH").asDouble()),
+                  Units.degreesToRadians(walkTree(camera_root, "location", "YAW").asDouble())));
 
       cameras.add(config);
     }

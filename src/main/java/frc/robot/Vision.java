@@ -30,6 +30,7 @@ import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
+import edu.wpi.first.wpilibj.DataLogManager;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.mw_lib.util.CameraConstants;
 import frc.robot.subsystems.PoseEstimator;
@@ -63,11 +64,14 @@ public class Vision {
 
     cameras = new PhotonCamera[cameras_size];
     photonEstimators = new PhotonPoseEstimator[cameras_size];
-    
-    for(int i = 0; i < cameras_size; i++){
+
+    for (int i = 0; i < cameras_size; i++) {
       CameraConstants config = Constants.Vision.CAMERAS.get(i);
       cameras[i] = new PhotonCamera(config.camera_name);
-      photonEstimators[i] = new PhotonPoseEstimator(TAG_LAYOUT, PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR, config.camera_transform);
+      DataLogManager.log("Registering camera " + config.camera_name);
+      photonEstimators[i] =
+          new PhotonPoseEstimator(
+              TAG_LAYOUT, PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR, config.camera_transform);
       photonEstimators[i].setMultiTagFallbackStrategy(PoseStrategy.LOWEST_AMBIGUITY);
     }
   }
