@@ -114,9 +114,7 @@ public class PoseEstimator extends Subsystem {
         for (var target : est.targetsUsed) {
           Optional<Pose3d> tagPose = Constants.Vision.TAG_LAYOUT.getTagPose(target.fiducialId);
           if (tagPose.isPresent()) {
-            io_.detected_tags_
-                .get(i)
-                .add(tagPose.get());
+            io_.detected_tags_.get(i).add(tagPose.get());
           }
         }
       } else {

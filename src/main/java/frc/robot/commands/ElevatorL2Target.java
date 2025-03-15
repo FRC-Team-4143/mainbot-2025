@@ -5,7 +5,6 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.Commands;
-import edu.wpi.first.wpilibj2.command.ConditionalCommand;
 import frc.mw_lib.command.NoReqConditionalCommand;
 import frc.robot.OI;
 import frc.robot.commands.ManualElevatorOverride.Level;

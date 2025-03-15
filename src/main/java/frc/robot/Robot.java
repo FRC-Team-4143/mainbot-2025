@@ -10,7 +10,11 @@ import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.lib.FieldRegions;
+import frc.mw_lib.auto.Auto;
+import frc.mw_lib.auto.AutoManager;
 import frc.mw_lib.logging.Elastic;
+import frc.robot.autos.J4_LeftStation_L4;
+import frc.robot.autos.J4_LeftStation_L4_LeftStation_K4;
 import frc.robot.subsystems.GameStateManager;
 import frc.robot.subsystems.GameStateManager.RobotState;
 import frc.robot.subsystems.SwerveDrivetrain;
@@ -24,9 +28,11 @@ public class Robot extends TimedRobot {
   @Override
   public void robotInit() {
     robot_container_ = RobotContainer.getInstance();
-    AutoManager.getInstance().registerAutos();
     OI.configureBindings();
     FieldRegions.makeRegions();
+
+    AutoManager.getInstance()
+        .registerAutos(new J4_LeftStation_L4(), new J4_LeftStation_L4_LeftStation_K4());
   }
 
   @Override
@@ -71,6 +77,8 @@ public class Robot extends TimedRobot {
   @Override
   public void autonomousInit() {
     Elastic.selectTab("Auto");
+    Auto auto = AutoManager.getInstance().getSelectedAuto();
+    CommandScheduler.getInstance().schedule(auto);
   }
 
   @Override

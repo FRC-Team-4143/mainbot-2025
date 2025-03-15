@@ -1,10 +1,9 @@
-package frc.robot;
+package frc.mw_lib.auto;
 
 import choreo.auto.AutoFactory;
+import edu.wpi.first.wpilibj.DataLogManager;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import edu.wpi.first.wpilibj2.command.button.RobotModeTriggers;
-import frc.mw_lib.auto.Auto;
 import frc.robot.autos.*;
 import frc.robot.subsystems.PoseEstimator;
 import frc.robot.subsystems.SwerveDrivetrain;
@@ -39,30 +38,12 @@ public class AutoManager {
     auto_chooser_.onChange((auto) -> displaySelectedAuto(auto));
   }
 
-  public void registerAutos() {
-    // Register Autos
-    registerAuto(J4_LeftStation_L4.class);
-    registerAuto(J4_LeftStation_L4_LeftStation_K4.class);
-
+  public void registerAutos(Auto... autos) {
+    for (Auto auto : autos) {
+      auto_chooser_.addOption(auto.getClass().getSimpleName(), (Auto) auto);
+    }
     // Put the auto chooser on the dashboard
     SmartDashboard.putData("Auto Chooser", auto_chooser_);
-
-    // Schedule the selected auto during the autonomous period
-    RobotModeTriggers.autonomous().whileTrue(auto_chooser_.getSelected());
-  }
-
-  /**
-   * Takes the supplied class type and adds a new instance of it to the auto chooser list
-   *
-   * @param <T>
-   * @param clazz class to register to auto chooser
-   */
-  public <T> void registerAuto(Class<T> clazz) {
-    try {
-      auto_chooser_.addOption(clazz.getSimpleName(), (Auto) clazz.newInstance());
-    } catch (InstantiationException | IllegalAccessException e) {
-      e.printStackTrace();
-    }
   }
 
   /**
@@ -72,6 +53,12 @@ public class AutoManager {
    */
   public AutoFactory getAutoFactory() {
     return auto_factory_;
+  }
+
+  public Auto getSelectedAuto() {
+    Auto auto = auto_chooser_.getSelected();
+    DataLogManager.log("Selected auto routine: " + auto.getClass().getSimpleName());
+    return auto;
   }
 
   /**
