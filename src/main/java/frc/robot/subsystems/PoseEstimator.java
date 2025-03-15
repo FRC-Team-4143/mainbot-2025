@@ -43,30 +43,34 @@ public class PoseEstimator extends Subsystem {
   private StructArrayPublisher<Pose3d> used_tags_pub_;
 
   int update_counter_ = 2;
-  double[] vision_std_devs_ = { 1, 1, 1 };
+  double[] vision_std_devs_ = {1, 1, 1};
 
   PoseEstimator() {
     io_ = new PoseEstimatorPeriodicIo();
     field_ = new Field2d();
 
-    cam_pose_pub_ = NetworkTableInstance.getDefault()
-        .getStructTopic("PoseEstimation/Vision Pose", Pose2d.struct)
-        .publish();
-    robot_pose_pub_ = NetworkTableInstance.getDefault()
-        .getStructTopic("PoseEstimation/Robot Pose", Pose2d.struct)
-        .publish();
-    used_tags_pub_ = NetworkTableInstance.getDefault()
-        .getStructArrayTopic("PoseEstimation/Tags Detected", Pose3d.struct)
-        .publish();
+    cam_pose_pub_ =
+        NetworkTableInstance.getDefault()
+            .getStructTopic("PoseEstimation/Vision Pose", Pose2d.struct)
+            .publish();
+    robot_pose_pub_ =
+        NetworkTableInstance.getDefault()
+            .getStructTopic("PoseEstimation/Robot Pose", Pose2d.struct)
+            .publish();
+    used_tags_pub_ =
+        NetworkTableInstance.getDefault()
+            .getStructArrayTopic("PoseEstimation/Tags Detected", Pose3d.struct)
+            .publish();
   }
 
   @Override
   public void reset() {
-    vision_filtered_odometry_ = new SwerveDrivePoseEstimator(
-        SwerveDrivetrain.getInstance().kinematics_,
-        new Rotation2d(),
-        SwerveDrivetrain.getInstance().getModulePositions(),
-        new Pose2d());
+    vision_filtered_odometry_ =
+        new SwerveDrivePoseEstimator(
+            SwerveDrivetrain.getInstance().kinematics_,
+            new Rotation2d(),
+            SwerveDrivetrain.getInstance().getModulePositions(),
+            new Pose2d());
   }
 
   @Override
@@ -121,16 +125,16 @@ public class PoseEstimator extends Subsystem {
         io_.raw_vision_pose_ = Optional.empty();
       }
 
-      io_.filtered_vision_pose_ = vision_filtered_odometry_.updateWithTime(
-          timestamp,
-          SwerveDrivetrain.getInstance().getImuYaw(),
-          SwerveDrivetrain.getInstance().getModulePositions());
+      io_.filtered_vision_pose_ =
+          vision_filtered_odometry_.updateWithTime(
+              timestamp,
+              SwerveDrivetrain.getInstance().getImuYaw(),
+              SwerveDrivetrain.getInstance().getModulePositions());
     }
   }
 
   @Override
-  public void writePeriodicOutputs(double timestamp) {
-  }
+  public void writePeriodicOutputs(double timestamp) {}
 
   @Override
   public void outputTelemetry(double timestamp) {
@@ -140,8 +144,7 @@ public class PoseEstimator extends Subsystem {
     SmartDashboard.putData("Subsystems/PoseEstimator/Field", field_);
     // Publish Detected Tags as Vision Targets
     ArrayList<Pose3d> allTags = new ArrayList<>();
-    for (List<Pose3d> array : io_.detected_tags_)
-      allTags.addAll(array);
+    for (List<Pose3d> array : io_.detected_tags_) allTags.addAll(array);
 
     Pose3d[] tags = new Pose3d[allTags.size()];
     tags = allTags.toArray(tags);
@@ -173,13 +176,13 @@ public class PoseEstimator extends Subsystem {
 
   /** Simulates an external force applied to the robot */
   public void disturbPose() {
-    var disturbance = new Transform2d(new Translation2d(1.0, 1.0), new Rotation2d(0.17 * 2 * Math.PI));
+    var disturbance =
+        new Transform2d(new Translation2d(1.0, 1.0), new Rotation2d(0.17 * 2 * Math.PI));
     setRobotOdometry(getRobotPose().plus(disturbance));
   }
 
   /**
-   * Returns the robots current load station region or an empty optional if not in
-   * any.
+   * Returns the robots current load station region or an empty optional if not in any.
    *
    * @return current region
    */
@@ -234,16 +237,14 @@ public class PoseEstimator extends Subsystem {
   }
 
   public class PoseEstimatorPeriodicIo implements Logged {
-    @Log.File
-    public Pose2d filtered_vision_pose_ = new Pose2d();
-    @Log.File
-    public Optional<Pose2d> raw_vision_pose_ = Optional.empty();
+    @Log.File public Pose2d filtered_vision_pose_ = new Pose2d();
+    @Log.File public Optional<Pose2d> raw_vision_pose_ = Optional.empty();
 
     @Log.File
-    public ArrayList<Optional<EstimatedRobotPose>> vision_data_packet_ = new ArrayList<Optional<EstimatedRobotPose>>();
+    public ArrayList<Optional<EstimatedRobotPose>> vision_data_packet_ =
+        new ArrayList<Optional<EstimatedRobotPose>>();
 
-    @Log.File
-    public List<List<Pose3d>> detected_tags_ = new ArrayList<>();
+    @Log.File public List<List<Pose3d>> detected_tags_ = new ArrayList<>();
   }
 
   @Override
