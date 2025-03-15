@@ -137,7 +137,7 @@ public class PoseEstimator extends Subsystem {
   @Override
   public void outputTelemetry(double timestamp) {
     field_.setRobotPose(io_.filtered_vision_pose_);
-    if (io_.raw_vision_pose_.isPresent()) cam_pose_pub_.set(io_.raw_vision_pose_.get());
+    io_.raw_vision_pose_.ifPresent((pose) -> cam_pose_pub_.set(pose));
     robot_pose_pub_.set(io_.filtered_vision_pose_);
     SmartDashboard.putData("Subsystems/PoseEstimator/Field", field_);
     // Publish Detected Tags as Vision Targets

@@ -13,24 +13,21 @@ import frc.robot.subsystems.Elevator;
 import frc.robot.subsystems.Elevator.SpeedLimit;
 
 public class CoralLoad extends LazyCommand {
-  static Claw claw_;
-
   /** Creates a new ExampleLazyCommand. */
   public CoralLoad() {
     // Creates a new LazyCommand with the selected amount of seconds(double) to wait
     // before allowing
     // the lazy command to end
     super(0.5);
-    claw_ = Claw.getInstance();
-    addRequirements(claw_, Elevator.getInstance());
+    addRequirements(Claw.getInstance(), Elevator.getInstance());
     setName(this.getClass().getSimpleName());
   }
 
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    claw_.setGamePiece(GamePiece.CORAL);
-    claw_.setClawMode(ClawMode.LOAD);
+    Claw.getInstance().setGamePiece(GamePiece.CORAL);
+    Claw.getInstance().setClawMode(ClawMode.LOAD);
     Elevator.getInstance().setTarget(Target.STATION);
     Elevator.getInstance().setSpeedLimit(SpeedLimit.CORAL);
     this.timerReset();
@@ -43,7 +40,7 @@ public class CoralLoad extends LazyCommand {
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    claw_.setClawMode(ClawMode.IDLE);
+    Claw.getInstance().setClawMode(ClawMode.IDLE);
     Elevator.getInstance().setTarget(Target.STOW);
   }
 

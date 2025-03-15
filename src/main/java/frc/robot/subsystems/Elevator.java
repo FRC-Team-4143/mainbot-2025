@@ -16,6 +16,7 @@ import com.ctre.phoenix6.signals.SensorDirectionValue;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Rotation3d;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.networktables.StructArrayPublisher;
 import edu.wpi.first.networktables.StructPublisher;
@@ -268,13 +269,18 @@ public class Elevator extends Subsystem {
     SmartDashboard.putNumber("Subsystems/Elevator/Target Height", io_.target_elevator_height_);
     SmartDashboard.putNumber("Subsystems/Elevator/Current Height", io_.current_elevator_height_);
     SmartDashboard.putNumber("Subsystems/Elevator/Manual Offset", io_.target_.getHeightOffset());
+    SmartDashboard.putNumber(
+        "Subsystems/Elevator/Inches Off Zero",
+        Units.metersToInches(
+            io_.current_elevator_height_ - ElevatorConstants.ELEVATOR_HEIGHT_PIVOT_MIN));
     SmartDashboard.putString(
         "Subsystems/Elevator/Motor Temp Master", elevator_master_.getDeviceTemp().toString());
     SmartDashboard.putString(
         "Subsystems/Elevator/Motor Temp Follower", elevator_follower_.getDeviceTemp().toString());
 
     SmartDashboard.putString("Subsystems/Arm/Control Mode", io_.current_control_mode_.toString());
-    SmartDashboard.putNumber("Subsystems/Arm/Current Angle", io_.current_arm_angle_);
+    SmartDashboard.putNumber(
+        "Subsystems/Arm/Current Angle", Units.radiansToDegrees(io_.current_arm_angle_));
     SmartDashboard.putNumber("Subsystems/Arm/Target Angle", io_.target_arm_angle_.getRadians());
     SmartDashboard.putNumber(
         "Subsystems/Arm/Current Height",

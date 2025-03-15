@@ -7,8 +7,10 @@ package frc.robot;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.TimedRobot;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.lib.FieldRegions;
+import frc.mw_lib.logging.Elastic;
 import frc.robot.subsystems.GameStateManager;
 import frc.robot.subsystems.GameStateManager.RobotState;
 import frc.robot.subsystems.SwerveDrivetrain;
@@ -17,12 +19,12 @@ import java.util.Optional;
 
 public class Robot extends TimedRobot {
   private RobotContainer robot_container_;
-  private Alliance allaince_ = Alliance.Blue;
+  private Alliance alliance_ = Alliance.Blue;
 
   @Override
   public void robotInit() {
     robot_container_ = RobotContainer.getInstance();
-    AutoManager.getInstance();
+    AutoManager.getInstance().registerAutos();
     OI.configureBindings();
     FieldRegions.makeRegions();
   }
@@ -34,6 +36,8 @@ public class Robot extends TimedRobot {
 
     // tell the subsystems to output telemetry to smartdashboard
     robot_container_.outputTelemetry();
+
+    SmartDashboard.putNumber("Match Time", DriverStation.getMatchTime());
   }
 
   @Override
@@ -50,12 +54,12 @@ public class Robot extends TimedRobot {
     // Drives Station is Connected
     if (alliance.isPresent()) {
       // Alliance Has Changed
-      if (alliance.get() != allaince_) {
-        allaince_ = alliance.get();
-        // Update Driver Prespective
+      if (alliance.get() != alliance_) {
+        alliance_ = alliance.get();
+        // Update Driver Perspective
         SwerveDrivetrain.getInstance()
             .setDriverPerspective(
-                allaince_ == Alliance.Red
+                alliance_ == Alliance.Red
                     ? SwerveDrivetrain.getInstance().RED_ALLIANCE_HEADING
                     : SwerveDrivetrain.getInstance().BLUE_ALLIANCE_HEADING);
         // Flip Field Regions
@@ -71,15 +75,18 @@ public class Robot extends TimedRobot {
   public void autonomousPeriodic() {}
 
   @Override
+  public void autonomousExit() {
+    Elastic.selectTab("Teleoperated");
+  }
+
+  @Override
   public void teleopInit() {
     SwerveDrivetrain.getInstance().restoreDefaultDriveMode();
     CommandScheduler.getInstance().cancelAll();
   }
 
   @Override
-  public void teleopPeriodic() {
-    // GameStateManager.getInstance().updateGameState();
-  }
+  public void teleopPeriodic() {}
 
   @Override
   public void testInit() {
