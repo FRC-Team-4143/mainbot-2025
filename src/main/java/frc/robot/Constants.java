@@ -242,11 +242,23 @@ public final class Constants {
   }
 
   public class ClimberConstants {
-    public static final int CLIMBER_ID = 35;
-    public static final double DEPLOYED_ROTATIONS = 30;
+    public static final int STRAP_ID = 31;
+    public static final int PRONG_ID = 1;
+    public static final int ARM_ID = 0;
+    public static final int PRONG_COUNTER_ID = 0;
+    public static final InvertedValue STRAP_INVERSION = InvertedValue.Clockwise_Positive;
     public static final double RETRACTED_ROTATIONS = 30;
-    public static final Slot0Configs CLIMBER_GAINS =
+    public static final Slot0Configs STRAP_GAINS =
         new Slot0Configs().withKP(0.0).withKD(0.0).withKS(0.0).withKV(0.0).withKA(0.0);
+    public static final double PRONG_DEPLOY_SPEED = 0.4;
+    public static final double PRONG_HOLD_SPEED = -0.6;
+    public static final double ARM_DEPLOY_SPEED = 0.75;
+    public static final double ARM_HOLD_SPEED = 0.5;
+    public static final double STRAP_RETRACTED_POSITION = 30;
+    public static final double PRONG_PRESET_COUNT = 80;
+    public static final double DEPLOYING_TIME = 1.2;
+    public static final double PRONG_P = 0.008;
+    public static final double PRONG_D = 0.001;
   }
 
   public class ElevatorConstants {

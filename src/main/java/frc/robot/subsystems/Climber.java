@@ -4,30 +4,41 @@
 
 package frc.robot.subsystems;
 
-import static edu.wpi.first.units.Units.Amps;
-
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
-import com.ctre.phoenix6.controls.MotionMagicVoltage;
 import com.ctre.phoenix6.controls.PositionVoltage;
-import com.ctre.phoenix6.controls.VoltageOut;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.NeutralModeValue;
+
+import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.wpilibj.Counter;
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.RobotController;
+import edu.wpi.first.wpilibj.motorcontrol.Spark;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import frc.mw_lib.controls.TalonFXTuner;
+import frc.lib.ElevatorTargets.Target;
 import frc.mw_lib.subsystem.Subsystem;
-import frc.robot.Constants.ClimberConstants;
-import frc.robot.OI;
+import frc.robot.Constants;
 import monologue.Annotations.Log;
 import monologue.Logged;
 
 public class Climber extends Subsystem {
 
-  private TalonFX climber_motor_;
-  private TalonFXConfiguration climber_config_;
-  private PositionVoltage climber_request_;
-  private TalonFXTuner climber_tuner_;
+  private TalonFX strap_motor_;
+  private PositionVoltage strap_controller_;
+  private TalonFXConfiguration strap_config_;
 
-  enum ClimberMode {
+  private Counter prong_counter_;
+  private PIDController prong_controller_;
+  private Spark prong_motor_;
+
+  private Spark arm_motor_;
+
+  public enum ClimberMode {
+    DISABLED,
+    PRECLIMB,
+    STAGING,
+    PRESET,
+    DEPLOYING,
     DEPLOYED,
     RETRACTED
   }
@@ -48,19 +59,27 @@ public class Climber extends Subsystem {
   private Climber() {
     // Create io object first in subsystem configuration
     io_ = new ClimberPeriodicIo();
-    climber_motor_ = new TalonFX(ClimberConstants.CLIMBER_ID);
-    climber_request_ = new PositionVoltage(0).withSlot(0);
 
-    climber_config_ = new TalonFXConfiguration();
-    climber_config_.MotorOutput.NeutralMode = NeutralModeValue.Brake;
-    climber_config_.Slot0 = ClimberConstants.CLIMBER_GAINS;
+    strap_motor_ = new TalonFX(Constants.ClimberConstants.STRAP_ID);
+    prong_motor_ = new Spark(Constants.ClimberConstants.PRONG_ID);
+    prong_motor_.setInverted(true);
+    arm_motor_ = new Spark(Constants.ClimberConstants.ARM_ID);
+    arm_motor_.setInverted(true);
 
-    climber_motor_.getConfigurator().apply(climber_config_);
+    strap_motor_.getConfigurator().apply(Constants.ClimberConstants.STRAP_GAINS);
 
-    climber_tuner_ = new TalonFXTuner(climber_motor_, "Climber", this);
-    bindTuner(climber_tuner_, 5, 10);
+    strap_controller_ = new PositionVoltage(0.0);
+    strap_controller_.withSlot(0);
 
-    // Call reset last in subsystem configuration
+    strap_config_ = new TalonFXConfiguration();
+    strap_config_.MotorOutput.Inverted = Constants.ClimberConstants.STRAP_INVERSION;
+    strap_config_.MotorOutput.NeutralMode = NeutralModeValue.Brake;
+
+    prong_counter_ = new Counter(Constants.ClimberConstants.PRONG_COUNTER_ID);
+    prong_controller_ =
+        new PIDController(
+            Constants.ClimberConstants.PRONG_P, 0, Constants.ClimberConstants.PRONG_D);
+
     reset();
   }
 
@@ -69,7 +88,9 @@ public class Climber extends Subsystem {
    * initialization, and should handle I/O configuration and initializing data members.
    */
   @Override
-  public void reset() {}
+  public void reset() {
+    prong_counter_.reset();
+  }
 
   /**
    * Inside this function, all of the SENSORS should be read into variables stored in the PeriodicIO
@@ -77,10 +98,7 @@ public class Climber extends Subsystem {
    * function.
    */
   @Override
-  public void readPeriodicInputs(double timestamp) {
-    io_.current_amps_ = climber_motor_.getSupplyCurrent().getValue().in(Amps);
-    io_.current_rotations_ = climber_motor_.getPosition().getValueAsDouble();
-  }
+  public void readPeriodicInputs(double timestamp) {}
 
   /**
    * Inside this function, all of the LOGIC should compute updates to output variables in the
@@ -90,14 +108,46 @@ public class Climber extends Subsystem {
   @Override
   public void updateLogic(double timestamp) {
     switch (io_.current_mode_) {
+      case PRECLIMB:
+        io_.deploying_start_time_ = 0;
+        break;
+      case STAGING:
+        prong_controller_.setSetpoint(Constants.ClimberConstants.PRONG_PRESET_COUNT);
+        double vcomp = 11.0 / RobotController.getBatteryVoltage(); // Tuned at 11.0v
+        io_.prong_motor_target = prong_controller_.calculate(prong_counter_.get()) * vcomp;
+
+        if (prong_counter_.get() >= Constants.ClimberConstants.PRONG_PRESET_COUNT) {
+          io_.current_mode_ = ClimberMode.PRESET;
+        }
+        break;
+      case PRESET:
+        io_.prong_motor_target = Constants.ClimberConstants.PRONG_HOLD_SPEED;
+        // wait
+        break;
+      case DEPLOYING:
+        io_.prong_motor_target = Constants.ClimberConstants.PRONG_DEPLOY_SPEED;
+        io_.arm_motor_target = Constants.ClimberConstants.ARM_DEPLOY_SPEED;
+        if (io_.deploying_start_time_ == 0) {
+          io_.deploying_start_time_ = timestamp;
+        }
+        if (timestamp - io_.deploying_start_time_ >= Constants.ClimberConstants.DEPLOYING_TIME) {
+          io_.current_mode_ = ClimberMode.DEPLOYED;
+        }
+        break;
       case DEPLOYED:
-        io_.target_rotations_ = ClimberConstants.DEPLOYED_ROTATIONS;
+        io_.arm_motor_target = Constants.ClimberConstants.ARM_HOLD_SPEED;
+        io_.prong_motor_target = Constants.ClimberConstants.PRONG_DEPLOY_SPEED;
+        // Wait for transition
         break;
       case RETRACTED:
-        io_.target_rotations_ = ClimberConstants.RETRACTED_ROTATIONS;
+        io_.strap_motor_target = Constants.ClimberConstants.STRAP_RETRACTED_POSITION;
+        io_.arm_motor_target = 0;
+        io_.prong_motor_target = Constants.ClimberConstants.PRONG_DEPLOY_SPEED;
         break;
+
+      case DISABLED:
       default:
-        io_.target_rotations_ = ClimberConstants.RETRACTED_ROTATIONS;
+        // do nothing
         break;
     }
   }
@@ -109,7 +159,9 @@ public class Climber extends Subsystem {
    */
   @Override
   public void writePeriodicOutputs(double timestamp) {
-    climber_motor_.setControl(climber_request_.withPosition(io_.target_rotations_));
+    strap_motor_.setControl(strap_controller_.withPosition(io_.arm_motor_target));
+    prong_motor_.set(io_.prong_motor_target);
+    arm_motor_.set(io_.arm_motor_target);
   }
 
   /**
@@ -120,55 +172,52 @@ public class Climber extends Subsystem {
    */
   @Override
   public void outputTelemetry(double timestamp) {
-    SmartDashboard.putString("Subsystems/Climber/Mode", io_.current_mode_.toString());
-    SmartDashboard.putNumber("Subsystems/Climber/Target Rotations", io_.target_rotations_);
-    SmartDashboard.putNumber("Subsystems/Climber/Current Rotations", io_.current_rotations_);
+    SmartDashboard.putNumber("Subsystems/Climber/strap_motor_target", io_.strap_motor_target);
+    SmartDashboard.putNumber("Subsystems/Climber/prong_motor_target", io_.prong_motor_target);
+    SmartDashboard.putNumber("Subsystems/Climber/arm_motor_target", io_.arm_motor_target);
+    SmartDashboard.putString("Subsystems/Climber/current_mode_", io_.current_mode_.toString());
+    SmartDashboard.putNumber("Subsystems/Climber/prong_count", prong_counter_.get());
   }
 
-  /**
-   * Sets the current mode of climber
-   *
-   * @param target_mode new mode that is being set
-   */
-  public void setClimberMode(ClimberMode target_mode) {
-    io_.current_mode_ = target_mode;
+  public void nextStage() {
+    switch (io_.current_mode_) {
+      case DISABLED:
+        prong_counter_.reset();
+        io_.current_mode_ = ClimberMode.PRECLIMB;
+        Elevator.getInstance().setTarget(Target.CLIMB);
+        break;
+      case PRECLIMB:
+        io_.current_mode_ = ClimberMode.STAGING;
+        break;
+      case PRESET:
+        io_.current_mode_ = ClimberMode.DEPLOYING;
+        break;
+      case DEPLOYED:
+        io_.current_mode_ = ClimberMode.RETRACTED;
+        break;
+      default:
+        break;
+    }
   }
 
-  /**
-   * @return Returns current rotations in rotations
-   */
-  public double getCurrentRotations() {
-    return io_.current_rotations_;
-  }
-
-  /**
-   * @return Returns current amps in amps
-   */
-  public double getCurrentAmps() {
-    return io_.current_amps_;
-  }
-
-  /** Resets to the zero position of the climber motor */
-  public void resetClimberPosition() {
-    climber_motor_.setPosition(0);
-  }
-
-  public void bindTuner(TalonFXTuner tuner, double pos1, double pos2) {
-    tuner.bindSetpoint(new MotionMagicVoltage(pos1), OI.getDriverJoystickAButtonTrigger());
-    tuner.bindSetpoint(new MotionMagicVoltage(pos2), OI.getDriverJoystickYButtonTrigger());
-    tuner.bindSetpoint(new VoltageOut(-1), OI.getDriverJoystickXButtonTrigger());
-    tuner.bindSetpoint(new VoltageOut(1), OI.getDriverJoystickBButtonTrigger());
-    tuner.bindDynamicForward(OI.getOperatorJoystickAButtonTrigger());
-    tuner.bindDynamicReverse(OI.getOperatorJoystickBButtonTrigger());
-    tuner.bindQuasistaticForward(OI.getOperatorJoystickXButtonTrigger());
-    tuner.bindQuasistaticReverse(OI.getOperatorJoystickYButtonTrigger());
+  public void backStage() {
+    switch (io_.current_mode_) {
+      case PRECLIMB:
+        io_.current_mode_ = ClimberMode.DISABLED;
+        Elevator.getInstance().setTarget(Target.STOW);
+        break;
+      default:
+        DriverStation.reportError("NO", false);
+        break;
+    }
   }
 
   public class ClimberPeriodicIo implements Logged {
-    @Log.File public double current_rotations_ = 0;
-    @Log.File public ClimberMode current_mode_ = ClimberMode.RETRACTED;
-    @Log.File public double current_amps_;
-    @Log.File public double target_rotations_ = 0;
+    @Log.File public double strap_motor_target = 0;
+    @Log.File public double prong_motor_target = 0;
+    @Log.File public double arm_motor_target = 0;
+    @Log.File public ClimberMode current_mode_ = ClimberMode.DISABLED;
+    @Log.File public double deploying_start_time_ = 0;
   }
 
   @Override
