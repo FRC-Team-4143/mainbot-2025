@@ -16,6 +16,7 @@ import com.ctre.phoenix6.signals.SensorDirectionValue;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Rotation3d;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.networktables.StructArrayPublisher;
 import edu.wpi.first.networktables.StructPublisher;
@@ -36,6 +37,7 @@ import frc.mw_lib.util.Util;
 import frc.robot.Constants.ArmConstants;
 import frc.robot.Constants.ElevatorConstants;
 import frc.robot.OI;
+import frc.robot.commands.SetDefaultPose;
 import java.util.function.BooleanSupplier;
 import monologue.Annotations.Log;
 import monologue.Logged;
@@ -194,7 +196,9 @@ public class Elevator extends Subsystem {
   }
 
   /** Called to reset and configure the subsystem */
-  public void reset() {}
+  public void reset() {
+    setDefaultCommand(new SetDefaultPose());
+  }
 
   /** Reads all sensors and stores periodic data */
   public void readPeriodicInputs(double timestamp) {
@@ -209,7 +213,15 @@ public class Elevator extends Subsystem {
 
   /** Computes updated outputs for the actuators */
   public void updateLogic(double timestamp) {
-    io_.target_arm_angle_ = io_.target_.getAngle();
+    if (io_.target_.getStagingArmAngle().isPresent()) {
+      if (isElevatorAtTarget()) {
+        io_.target_arm_angle_ = io_.target_.getAngle();
+      } else {
+        io_.target_arm_angle_ = io_.target_.getStagingArmAngle().get();
+      }
+    } else {
+      io_.target_arm_angle_ = io_.target_.getAngle();
+    }
     switch (io_.current_control_mode_) {
       case END_EFFECTOR:
         io_.target_elevator_height_ =
@@ -257,13 +269,18 @@ public class Elevator extends Subsystem {
     SmartDashboard.putNumber("Subsystems/Elevator/Target Height", io_.target_elevator_height_);
     SmartDashboard.putNumber("Subsystems/Elevator/Current Height", io_.current_elevator_height_);
     SmartDashboard.putNumber("Subsystems/Elevator/Manual Offset", io_.target_.getHeightOffset());
+    SmartDashboard.putNumber(
+        "Subsystems/Elevator/Inches Off Zero",
+        Units.metersToInches(
+            io_.current_elevator_height_ - ElevatorConstants.ELEVATOR_HEIGHT_PIVOT_MIN));
     SmartDashboard.putString(
         "Subsystems/Elevator/Motor Temp Master", elevator_master_.getDeviceTemp().toString());
     SmartDashboard.putString(
         "Subsystems/Elevator/Motor Temp Follower", elevator_follower_.getDeviceTemp().toString());
 
     SmartDashboard.putString("Subsystems/Arm/Control Mode", io_.current_control_mode_.toString());
-    SmartDashboard.putNumber("Subsystems/Arm/Current Angle", io_.current_arm_angle_);
+    SmartDashboard.putNumber(
+        "Subsystems/Arm/Current Angle", Units.radiansToDegrees(io_.current_arm_angle_));
     SmartDashboard.putNumber("Subsystems/Arm/Target Angle", io_.target_arm_angle_.getRadians());
     SmartDashboard.putNumber(
         "Subsystems/Arm/Current Height",
@@ -306,6 +323,19 @@ public class Elevator extends Subsystem {
         io_.current_arm_angle_,
         io_.target_arm_angle_.getRadians(),
         ArmConstants.ARM_TARGET_THRESHOLD);
+  }
+
+  /**
+   * @return If the arm is within the threshold of its target
+   */
+  public boolean isArmAtStagingAngle() {
+    if (io_.target_.getStagingArmAngle().isPresent()) {
+      return Util.epislonEquals(
+          io_.current_arm_angle_,
+          io_.target_.getStagingArmAngle().get().getRadians(),
+          ArmConstants.ARM_TARGET_THRESHOLD);
+    }
+    return false;
   }
 
   /**

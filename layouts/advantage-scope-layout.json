@@ -1,46 +1,151 @@
 {
   "hubs": [
     {
-      "x": -8,
-      "y": -8,
-      "width": 1552,
-      "height": 832,
+      "x": 0,
+      "y": 64,
+      "width": 1503,
+      "height": 938,
       "state": {
         "sidebar": {
-          "width": 344,
+          "width": 300,
           "expanded": [
             "/NT",
-            "/NT/Robot",
             "/NT/Robot/subsystems_ios",
-            "/NT/Robot/subsystems_ios/ElevatorPeriodicIo[3]",
-            "/NT/SmartDashboard",
-            "/SmartDashboard/TalonFXTuner - climber",
-            "/CameraPublisher/photonvision_Port_1181_Input_MJPEG_Server",
-            "/module_states",
-            "/SmartDashboard/Debug/Swerve/Rotation Control",
-            "/Swerve/Module States",
-            "/SmartDashboard/Subsystems",
-            "/SmartDashboard/Subsystems/Arm",
-            "/PoseEstimation/Robot Pose",
-            "/Components/Elevator",
-            "/Components/Elevator/Stages",
-            "/Regions"
+            "/NT/Components/Elevator",
+            "/NT/Components/Elevator/Stages",
+            "/NT/Components/Arm",
+            "/NT/SmartDashboard/Subsystems",
+            "/NT/Robot/subsystems_ios/GameStateManagerPeriodicIo[4]",
+            "/DS/joystick0",
+            "/NT/PoseEstimation"
           ]
         },
         "tabs": {
-          "selected": 1,
+          "selected": 7,
           "tabs": [
             {
               "type": 0,
               "title": "",
               "controller": null,
-              "controllerUUID": "2cs73ouajlwy3snsylrj7q3no2ikrv70",
+              "controllerUUID": "5lnb89ee8hwk9ghnvqd4q7phhv13flsq",
               "renderer": "#/",
               "controlsHeight": 0
             },
             {
               "type": 2,
-              "title": "Region Display Other",
+              "title": "Reef Regions",
+              "controller": {
+                "sources": [
+                  {
+                    "type": "trajectory",
+                    "logKey": "NT:Regions/ReefFace0",
+                    "logType": "Translation2d[]",
+                    "visible": true,
+                    "options": {
+                      "color": "#ff0000",
+                      "size": "bold"
+                    }
+                  },
+                  {
+                    "type": "trajectory",
+                    "logKey": "NT:Regions/ReefFace1",
+                    "logType": "Translation2d[]",
+                    "visible": true,
+                    "options": {
+                      "color": "#ff8c00",
+                      "size": "bold"
+                    }
+                  },
+                  {
+                    "type": "trajectory",
+                    "logKey": "NT:Regions/ReefFace2",
+                    "logType": "Translation2d[]",
+                    "visible": true,
+                    "options": {
+                      "color": "#ffff00",
+                      "size": "bold"
+                    }
+                  },
+                  {
+                    "type": "trajectory",
+                    "logKey": "NT:Regions/ReefFace3",
+                    "logType": "Translation2d[]",
+                    "visible": true,
+                    "options": {
+                      "color": "#00ff00",
+                      "size": "bold"
+                    }
+                  },
+                  {
+                    "type": "trajectory",
+                    "logKey": "NT:Regions/ReefFace4",
+                    "logType": "Translation2d[]",
+                    "visible": true,
+                    "options": {
+                      "color": "#0000ff",
+                      "size": "bold"
+                    }
+                  },
+                  {
+                    "type": "trajectory",
+                    "logKey": "NT:Regions/ReefFace5",
+                    "logType": "Translation2d[]",
+                    "visible": true,
+                    "options": {
+                      "color": "#ff00ff",
+                      "size": "bold"
+                    }
+                  },
+                  {
+                    "type": "trajectory",
+                    "logKey": "NT:Regions/Reef Enter",
+                    "logType": "Translation2d[]",
+                    "visible": true,
+                    "options": {
+                      "color": "#00ffff",
+                      "size": "bold"
+                    }
+                  },
+                  {
+                    "type": "trajectory",
+                    "logKey": "NT:Regions/Reef Exit",
+                    "logType": "Translation2d[]",
+                    "visible": true,
+                    "options": {
+                      "color": "#00ffff",
+                      "size": "normal"
+                    }
+                  },
+                  {
+                    "type": "robot",
+                    "logKey": "NT:PoseEstimation/Robot Pose",
+                    "logType": "Pose2d",
+                    "visible": true,
+                    "options": {}
+                  },
+                  {
+                    "type": "arrow",
+                    "logKey": "NT:ReefTarget",
+                    "logType": "Pose2d",
+                    "visible": true,
+                    "options": {
+                      "position": "center"
+                    }
+                  }
+                ],
+                "game": "2025 Field (Welded)",
+                "bumpers": "auto",
+                "origin": "blue",
+                "orientation": 0,
+                "size": 30
+              },
+              "controllerUUID": "tito8v00t7dq5w81quqg06ie018dkrmo",
+              "renderer": null,
+              "controlsHeight": 0
+            },
+            {
+              "type": 2,
+              "title": "Aux Regions",
               "controller": {
                 "sources": [
                   {
@@ -65,12 +170,12 @@
                   },
                   {
                     "type": "trajectory",
-                    "logKey": "NT:Regions/Processor",
+                    "logKey": "NT:TightRopes/Barge",
                     "logType": "Translation2d[]",
                     "visible": true,
                     "options": {
-                      "color": "#00ff00",
-                      "size": "normal"
+                      "color": "#ff00ff",
+                      "size": "bold"
                     }
                   },
                   {
@@ -85,38 +190,21 @@
                   },
                   {
                     "type": "trajectory",
+                    "logKey": "NT:Regions/LeftCoralStationSlow",
+                    "logType": "Translation2d[]",
+                    "visible": true,
+                    "options": {
+                      "color": "#00ff00",
+                      "size": "normal"
+                    }
+                  },
+                  {
+                    "type": "trajectory",
                     "logKey": "NT:Regions/RightCoralStation",
                     "logType": "Translation2d[]",
                     "visible": true,
                     "options": {
                       "color": "#00ffff",
-                      "size": "normal"
-                    }
-                  },
-                  {
-                    "type": "robot",
-                    "logKey": "NT:PoseEstimation/Robot Pose",
-                    "logType": "Pose2d",
-                    "visible": true,
-                    "options": {}
-                  },
-                  {
-                    "type": "trajectory",
-                    "logKey": "NT:TightRopes/Barge",
-                    "logType": "Translation2d[]",
-                    "visible": true,
-                    "options": {
-                      "color": "#ff00ff",
-                      "size": "normal"
-                    }
-                  },
-                  {
-                    "type": "trajectory",
-                    "logKey": "NT:TightRopes/Processor",
-                    "logType": "Translation2d[]",
-                    "visible": true,
-                    "options": {
-                      "color": "#ff00ff",
                       "size": "normal"
                     }
                   },
@@ -132,33 +220,7 @@
                   },
                   {
                     "type": "trajectory",
-                    "logKey": "NT:Regions/LeftCoralStationSlow",
-                    "logType": "Translation2d[]",
-                    "visible": true,
-                    "options": {
-                      "color": "#00ff00",
-                      "size": "normal"
-                    }
-                  }
-                ],
-                "game": "2025 Field (Welded)",
-                "bumpers": "auto",
-                "origin": "blue",
-                "orientation": 0,
-                "size": 30
-              },
-              "controllerUUID": "3izc54ec84cqyt2b08nq52c8bcohgwpe",
-              "renderer": null,
-              "controlsHeight": 233
-            },
-            {
-              "type": 2,
-              "title": "Region Display Reef",
-              "controller": {
-                "sources": [
-                  {
-                    "type": "trajectory",
-                    "logKey": "NT:Regions/Reef Enter",
+                    "logKey": "NT:Regions/Processor",
                     "logType": "Translation2d[]",
                     "visible": true,
                     "options": {
@@ -168,72 +230,12 @@
                   },
                   {
                     "type": "trajectory",
-                    "logKey": "NT:Regions/Reef Exit",
-                    "logType": "Translation2d[]",
-                    "visible": true,
-                    "options": {
-                      "color": "#00ff00",
-                      "size": "normal"
-                    }
-                  },
-                  {
-                    "type": "trajectory",
-                    "logKey": "NT:Regions/ReefFace0",
-                    "logType": "Translation2d[]",
-                    "visible": true,
-                    "options": {
-                      "color": "#00ff00",
-                      "size": "normal"
-                    }
-                  },
-                  {
-                    "type": "trajectory",
-                    "logKey": "NT:Regions/ReefFace1",
-                    "logType": "Translation2d[]",
-                    "visible": true,
-                    "options": {
-                      "color": "#ff0000",
-                      "size": "normal"
-                    }
-                  },
-                  {
-                    "type": "trajectory",
-                    "logKey": "NT:Regions/ReefFace2",
-                    "logType": "Translation2d[]",
-                    "visible": true,
-                    "options": {
-                      "color": "#0000ff",
-                      "size": "normal"
-                    }
-                  },
-                  {
-                    "type": "trajectory",
-                    "logKey": "NT:Regions/ReefFace3",
-                    "logType": "Translation2d[]",
-                    "visible": true,
-                    "options": {
-                      "color": "#ff8c00",
-                      "size": "normal"
-                    }
-                  },
-                  {
-                    "type": "trajectory",
-                    "logKey": "NT:Regions/ReefFace4",
-                    "logType": "Translation2d[]",
-                    "visible": true,
-                    "options": {
-                      "color": "#00ffff",
-                      "size": "normal"
-                    }
-                  },
-                  {
-                    "type": "trajectory",
-                    "logKey": "NT:Regions/ReefFace5",
+                    "logKey": "NT:TightRopes/Processor",
                     "logType": "Translation2d[]",
                     "visible": true,
                     "options": {
                       "color": "#ff00ff",
-                      "size": "normal"
+                      "size": "bold"
                     }
                   },
                   {
@@ -250,13 +252,13 @@
                 "orientation": 0,
                 "size": 30
               },
-              "controllerUUID": "rco8h9ytf5q9nx4sw7uc5xvn6hyhtbd7",
+              "controllerUUID": "ni5kibjvstnwqlp66jtyg3ehsof6axkl",
               "renderer": null,
-              "controlsHeight": 259
+              "controlsHeight": 0
             },
             {
               "type": 3,
-              "title": "Vision",
+              "title": "3D Field",
               "controller": {
                 "sources": [
                   {
@@ -295,27 +297,57 @@
                     "logType": "Pose3d",
                     "visible": true,
                     "options": {}
+                  },
+                  {
+                    "type": "ghost",
+                    "logKey": "NT:PoseEstimation/Vision Pose",
+                    "logType": "Pose2d",
+                    "visible": true,
+                    "options": {
+                      "model": "2025 MARS/WARS Base",
+                      "color": "#00ff00"
+                    }
+                  },
+                  {
+                    "type": "vision",
+                    "logKey": "NT:PoseEstimation/Tags Detected",
+                    "logType": "Pose3d[]",
+                    "visible": true,
+                    "options": {
+                      "color": "#00ff00",
+                      "size": "normal"
+                    }
+                  },
+                  {
+                    "type": "ghost",
+                    "logKey": "NT:ReefTarget",
+                    "logType": "Pose2d",
+                    "visible": true,
+                    "options": {
+                      "model": "2025 MARS/WARS Base",
+                      "color": "#ff8c00"
+                    }
                   }
                 ],
-                "game": "Axes",
+                "game": "2025 Field (Welded)",
                 "origin": "blue"
               },
-              "controllerUUID": "9c1meejh9cpjxrrgngznlfsa2fl0dnfc",
+              "controllerUUID": "m1ztkrgvb2rk8mgn84immhzwfqu24dn4",
               "renderer": {
-                "cameraIndex": -2,
+                "cameraIndex": -1,
                 "orbitFov": 50,
                 "cameraPosition": [
-                  2.0099316927168167,
-                  0.6190995320745635,
-                  -0.6293278798805173
+                  1.4695761589768238e-15,
+                  5.999999999999999,
+                  -12
                 ],
                 "cameraTarget": [
-                  -0.09529184552522152,
-                  0.4220685840647531,
-                  -0.34291532556767074
+                  0,
+                  0.5,
+                  0
                 ]
               },
-              "controlsHeight": 200
+              "controlsHeight": 0
             },
             {
               "type": 9,
@@ -353,7 +385,7 @@
                   },
                   {
                     "type": "rotationLegacy",
-                    "logKey": "NT:/SmartDashboard/Debug/Swerve/Yaw",
+                    "logKey": "NT:/SmartDashboard/Subsystems/Swerve/Yaw",
                     "logType": "Number",
                     "visible": true,
                     "options": {
@@ -364,11 +396,326 @@
                 "maxSpeed": 5,
                 "sizeX": 0.65,
                 "sizeY": 0.65,
-                "orientation": 1
+                "orientation": 0
               },
-              "controllerUUID": "a3wcwir2whtqie2y28ks4tpl9vp7rny0",
+              "controllerUUID": "9oe8p7rwz92ytboh8i44unnbdncge5x1",
+              "renderer": null,
+              "controlsHeight": 279
+            },
+            {
+              "type": 1,
+              "title": "Elevator",
+              "controller": {
+                "leftSources": [
+                  {
+                    "type": "stepped",
+                    "logKey": "NT:/SmartDashboard/Subsystems/Elevator/Current Height",
+                    "logType": "Number",
+                    "visible": true,
+                    "options": {
+                      "color": "#af2437",
+                      "size": "normal"
+                    }
+                  },
+                  {
+                    "type": "stepped",
+                    "logKey": "NT:/SmartDashboard/Subsystems/Elevator/Target Height",
+                    "logType": "Number",
+                    "visible": true,
+                    "options": {
+                      "color": "#80588e",
+                      "size": "normal"
+                    }
+                  }
+                ],
+                "rightSources": [
+                  {
+                    "type": "stepped",
+                    "logKey": "NT:/SmartDashboard/Subsystems/Arm/Current Angle",
+                    "logType": "Number",
+                    "visible": true,
+                    "options": {
+                      "color": "#e48b32",
+                      "size": "normal"
+                    }
+                  },
+                  {
+                    "type": "stepped",
+                    "logKey": "NT:/SmartDashboard/Subsystems/Arm/Target Angle",
+                    "logType": "Number",
+                    "visible": true,
+                    "options": {
+                      "color": "#c0b487",
+                      "size": "normal"
+                    }
+                  }
+                ],
+                "discreteSources": [
+                  {
+                    "type": "stripes",
+                    "logKey": "NT:/SmartDashboard/Subsystems/Elevator/Control Mode",
+                    "logType": "String",
+                    "visible": true,
+                    "options": {
+                      "color": "#2b66a2"
+                    }
+                  },
+                  {
+                    "type": "stripes",
+                    "logKey": "NT:/Robot/subsystems_ios/ElevatorPeriodicIo[3]/target_",
+                    "logType": "String",
+                    "visible": true,
+                    "options": {
+                      "color": "#e5b31b"
+                    }
+                  },
+                  {
+                    "type": "stripes",
+                    "logKey": "DS:enabled",
+                    "logType": "Boolean",
+                    "visible": true,
+                    "options": {
+                      "color": "#3b875a"
+                    }
+                  },
+                  {
+                    "type": "stripes",
+                    "logKey": "DS:autonomous",
+                    "logType": "Boolean",
+                    "visible": true,
+                    "options": {
+                      "color": "#d993aa"
+                    }
+                  }
+                ],
+                "leftLockedRange": [
+                  0.6647544003646675,
+                  2.0027305488649545
+                ],
+                "rightLockedRange": [
+                  -1.7761343132920295,
+                  2.741301389644894
+                ],
+                "leftUnitConversion": {
+                  "type": null,
+                  "factor": 1
+                },
+                "rightUnitConversion": {
+                  "type": null,
+                  "factor": 1
+                },
+                "leftFilter": 0,
+                "rightFilter": 0
+              },
+              "controllerUUID": "hp104ez19lx8ffpdzxkw5jwvhvroj1hx",
               "renderer": null,
               "controlsHeight": 200
+            },
+            {
+              "type": 1,
+              "title": "Claw",
+              "controller": {
+                "leftSources": [
+                  {
+                    "type": "stepped",
+                    "logKey": "NT:/Robot/subsystems_ios/ClawPeriodicIo[2]/current_output_",
+                    "logType": "Number",
+                    "visible": true,
+                    "options": {
+                      "color": "#80588e",
+                      "size": "normal"
+                    }
+                  }
+                ],
+                "rightSources": [],
+                "discreteSources": [
+                  {
+                    "type": "stripes",
+                    "logKey": "NT:/SmartDashboard/Subsystems/Claw/Mode",
+                    "logType": "String",
+                    "visible": true,
+                    "options": {
+                      "color": "#2b66a2"
+                    }
+                  },
+                  {
+                    "type": "stripes",
+                    "logKey": "NT:/SmartDashboard/Subsystems/Claw/Has Algae",
+                    "logType": "Boolean",
+                    "visible": true,
+                    "options": {
+                      "color": "#e5b31b"
+                    }
+                  },
+                  {
+                    "type": "stripes",
+                    "logKey": "NT:/SmartDashboard/Subsystems/Claw/Has Coral (On True)",
+                    "logType": "Boolean",
+                    "visible": true,
+                    "options": {
+                      "color": "#af2437"
+                    }
+                  },
+                  {
+                    "type": "stripes",
+                    "logKey": "NT:/Robot/subsystems_ios/ClawPeriodicIo[2]/game_piece_",
+                    "logType": "String",
+                    "visible": true,
+                    "options": {
+                      "color": "#e48b32"
+                    }
+                  },
+                  {
+                    "type": "stripes",
+                    "logKey": "DS:enabled",
+                    "logType": "Boolean",
+                    "visible": true,
+                    "options": {
+                      "color": "#3b875a"
+                    }
+                  },
+                  {
+                    "type": "stripes",
+                    "logKey": "DS:autonomous",
+                    "logType": "Boolean",
+                    "visible": true,
+                    "options": {
+                      "color": "#d993aa"
+                    }
+                  }
+                ],
+                "leftLockedRange": [
+                  -0.679,
+                  14.259
+                ],
+                "rightLockedRange": null,
+                "leftUnitConversion": {
+                  "type": null,
+                  "factor": 1
+                },
+                "rightUnitConversion": {
+                  "type": null,
+                  "factor": 1
+                },
+                "leftFilter": 0,
+                "rightFilter": 0
+              },
+              "controllerUUID": "sc1blb9ed4n4hp99pv9srxf8c8lf31gg",
+              "renderer": null,
+              "controlsHeight": 302
+            },
+            {
+              "type": 1,
+              "title": "GSM",
+              "controller": {
+                "leftSources": [],
+                "rightSources": [],
+                "discreteSources": [
+                  {
+                    "type": "stripes",
+                    "logKey": "NT:/SmartDashboard/Subsystems/GameStateManager/Robot State",
+                    "logType": "String",
+                    "visible": true,
+                    "options": {
+                      "color": "#2b66a2"
+                    }
+                  },
+                  {
+                    "type": "stripes",
+                    "logKey": "NT:/SmartDashboard/Subsystems/GameStateManager/Saved Colum",
+                    "logType": "String",
+                    "visible": true,
+                    "options": {
+                      "color": "#e5b31b"
+                    }
+                  },
+                  {
+                    "type": "stripes",
+                    "logKey": "NT:/SmartDashboard/Subsystems/GameStateManager/Target Colum",
+                    "logType": "String",
+                    "visible": true,
+                    "options": {
+                      "color": "#af2437"
+                    }
+                  },
+                  {
+                    "type": "stripes",
+                    "logKey": "NT:/SmartDashboard/Subsystems/GameStateManager/Target Level",
+                    "logType": "String",
+                    "visible": true,
+                    "options": {
+                      "color": "#80588e"
+                    }
+                  },
+                  {
+                    "type": "stripes",
+                    "logKey": "NT:/SmartDashboard/Subsystems/GameStateManager/Saved Target Level",
+                    "logType": "String",
+                    "visible": true,
+                    "options": {
+                      "color": "#e48b32"
+                    }
+                  },
+                  {
+                    "type": "stripes",
+                    "logKey": "DS:enabled",
+                    "logType": "Boolean",
+                    "visible": true,
+                    "options": {
+                      "color": "#3b875a"
+                    }
+                  },
+                  {
+                    "type": "stripes",
+                    "logKey": "DS:autonomous",
+                    "logType": "Boolean",
+                    "visible": true,
+                    "options": {
+                      "color": "#d993aa"
+                    }
+                  }
+                ],
+                "leftLockedRange": null,
+                "rightLockedRange": null,
+                "leftUnitConversion": {
+                  "type": null,
+                  "factor": 1
+                },
+                "rightUnitConversion": {
+                  "type": null,
+                  "factor": 1
+                },
+                "leftFilter": 0,
+                "rightFilter": 0
+              },
+              "controllerUUID": "1ci7c7y3fyv6xuvx80rfguc20grjlzg1",
+              "renderer": null,
+              "controlsHeight": 429
+            },
+            {
+              "type": 8,
+              "title": "Joysticks",
+              "controller": [
+                "Xbox Controller (White)",
+                "Xbox Controller (Blue)",
+                "None",
+                "None",
+                "None",
+                "None"
+              ],
+              "controllerUUID": "ptky000y6m0nusjqgfypl726lvewwdho",
+              "renderer": null,
+              "controlsHeight": 85
+            },
+            {
+              "type": 5,
+              "title": "Console",
+              "controller": "console",
+              "controllerUUID": "u41xx4l7i9wyg3caf0d9kixg1e0jwjpb",
+              "renderer": {
+                "highlight": false
+              },
+              "controlsHeight": 0
             }
           ]
         }
@@ -376,5 +723,5 @@
     }
   ],
   "satellites": [],
-  "version": "4.1.2"
+  "version": "4.1.4"
 }

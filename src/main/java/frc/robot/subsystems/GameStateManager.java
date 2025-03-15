@@ -4,6 +4,8 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.networktables.StructPublisher;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Commands;
 import frc.lib.ElevatorTargets.Target;
 import frc.lib.FieldRegions;
 import frc.lib.ScoringPoses;
@@ -170,6 +172,8 @@ public class GameStateManager extends Subsystem {
         "Subsystems/GameStateManager/Target Level", io_.scoring_target.toString());
     SmartDashboard.putString(
         "Subsystems/GameStateManager/Saved Target Level", io_.saved_scoring_target.toString());
+    SmartDashboard.putBoolean(
+        "Subsystems/GameStateManager/Ready to Score", (io_.robot_state_ == RobotState.SCORING));
     if (io_.reef_target.isPresent()) {
       reef_target_publisher.set(io_.reef_target.get());
     } else {
@@ -197,6 +201,15 @@ public class GameStateManager extends Subsystem {
     if (save) {
       io_.saved_scoring_target = target;
     }
+  }
+
+  public void setScoringObj(Column col, ReefScoringTarget target, boolean save) {
+    setScoringColum(col, save);
+    setScoringTarget(target, save);
+  }
+
+  public static Command setScoringCommand(Column col, ReefScoringTarget target) {
+    return Commands.runOnce(() -> getInstance().setScoringObj(col, target, false));
   }
 
   public ReefScoringTarget getSavedScoringTarget() {
