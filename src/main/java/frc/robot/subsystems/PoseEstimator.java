@@ -1,7 +1,5 @@
 package frc.robot.subsystems;
 
-import static frc.robot.Constants.Vision.TAG_LAYOUT;
-
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
@@ -17,6 +15,7 @@ import frc.lib.FieldRegions;
 import frc.mw_lib.geometry.PolygonRegion;
 import frc.mw_lib.geometry.Region;
 import frc.mw_lib.subsystem.Subsystem;
+import frc.robot.Constants;
 import frc.robot.Vision;
 import java.util.ArrayList;
 import java.util.List;
@@ -117,7 +116,9 @@ public class PoseEstimator extends Subsystem {
         }
         io_.detected_tags_.get(i).clear();
         for (var target : est.targetsUsed) {
-          io_.detected_tags_.get(i).add(TAG_LAYOUT.getTagPose(target.fiducialId).get());
+          io_.detected_tags_
+              .get(i)
+              .add(Constants.Vision.TAG_LAYOUT.getTagPose(target.fiducialId).get());
         }
       } else {
         io_.raw_vision_pose_ = Optional.empty();
