@@ -319,7 +319,7 @@ public class Elevator extends Subsystem {
    * @return If the arm is within the threshold of its target
    */
   public boolean isArmAtTarget() {
-    if(io_.target_.getStagingArmAngle().isPresent() && isArmAtStagingAngle()) {
+    if (io_.target_.getStagingArmAngle().isPresent() && isArmAtStagingAngle()) {
       return false;
     }
     return Util.epislonEquals(
