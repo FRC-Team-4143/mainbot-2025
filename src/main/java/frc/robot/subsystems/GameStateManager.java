@@ -115,7 +115,7 @@ public class GameStateManager extends Subsystem {
         // drive towards final target
         io_.reef_target = reefPose(io_.target_column);
         drivetrain_.setTargetPose(io_.reef_target.get());
-        if (drivetrain_.atTractorBeamPose() && elevator_.isElevatorAndArmAtTarget()) {
+        if (drivetrain_.atTractorBeamPose() && elevator_.isElevatorAndArmAtFinalTarget()) {
           // Once at final target, hand off control
           drivetrain_.restoreDefaultDriveMode();
           io_.robot_state_ = RobotState.SCORING;
@@ -175,7 +175,7 @@ public class GameStateManager extends Subsystem {
     SmartDashboard.putBoolean(
         "Subsystems/GameStateManager/Ready to Score",
         (drivetrain_.atTractorBeamPose()
-            && elevator_.isElevatorAndArmAtTarget()
+            && elevator_.isElevatorAndArmAtFinalTarget()
             && io_.robot_state_ == RobotState.SCORING));
     if (io_.reef_target.isPresent()) {
       reef_target_publisher.set(io_.reef_target.get());
