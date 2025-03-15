@@ -9,6 +9,7 @@ import edu.wpi.first.wpilibj.Filesystem;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.ArrayList;
 import java.util.Iterator;
 
 public class JSONReader {
@@ -88,5 +89,17 @@ public class JSONReader {
     }
 
     return current;
+  }
+
+  protected static ArrayList<String> getChildren(JsonNode parent) {
+    ArrayList<String> children = new ArrayList<>();
+    parent
+        .fieldNames()
+        .forEachRemaining(
+            (String name) -> {
+              children.add(name);
+            });
+
+    return children;
   }
 }
