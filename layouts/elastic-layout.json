@@ -768,7 +768,86 @@
     {
       "name": "Climb",
       "grid_layout": {
-        "layouts": [],
+        "layouts": [
+          {
+            "title": "Climber",
+            "x": 1152.0,
+            "y": 0.0,
+            "width": 384.0,
+            "height": 640.0,
+            "type": "List Layout",
+            "properties": {
+              "label_position": "TOP"
+            },
+            "children": [
+              {
+                "title": "arm_motor_target",
+                "x": 0.0,
+                "y": 0.0,
+                "width": 128.0,
+                "height": 128.0,
+                "type": "Large Text Display",
+                "properties": {
+                  "topic": "/SmartDashboard/Subsystems/Climber/arm_motor_target",
+                  "period": 0.06,
+                  "data_type": "double"
+                }
+              },
+              {
+                "title": "current_mode_",
+                "x": 0.0,
+                "y": 0.0,
+                "width": 128.0,
+                "height": 128.0,
+                "type": "Large Text Display",
+                "properties": {
+                  "topic": "/SmartDashboard/Subsystems/Climber/current_mode_",
+                  "period": 0.06,
+                  "data_type": "string"
+                }
+              },
+              {
+                "title": "prong_count",
+                "x": 0.0,
+                "y": 0.0,
+                "width": 128.0,
+                "height": 128.0,
+                "type": "Large Text Display",
+                "properties": {
+                  "topic": "/SmartDashboard/Subsystems/Climber/prong_count",
+                  "period": 0.06,
+                  "data_type": "double"
+                }
+              },
+              {
+                "title": "prong_motor_target",
+                "x": 0.0,
+                "y": 0.0,
+                "width": 128.0,
+                "height": 128.0,
+                "type": "Large Text Display",
+                "properties": {
+                  "topic": "/SmartDashboard/Subsystems/Climber/prong_motor_target",
+                  "period": 0.06,
+                  "data_type": "double"
+                }
+              },
+              {
+                "title": "strap_motor_target",
+                "x": 0.0,
+                "y": 0.0,
+                "width": 128.0,
+                "height": 128.0,
+                "type": "Large Text Display",
+                "properties": {
+                  "topic": "/SmartDashboard/Subsystems/Climber/strap_motor_target",
+                  "period": 0.06,
+                  "data_type": "double"
+                }
+              }
+            ]
+          }
+        ],
         "containers": [
           {
             "title": "Match Time",
@@ -797,6 +876,19 @@
               "topic": "/CameraPublisher/photonvision_Port_1181_Input_MJPEG_Server",
               "period": 0.06,
               "rotation_turns": 0
+            }
+          },
+          {
+            "title": "current_mode_",
+            "x": 512.0,
+            "y": 512.0,
+            "width": 640.0,
+            "height": 128.0,
+            "type": "Large Text Display",
+            "properties": {
+              "topic": "/SmartDashboard/Subsystems/Climber/current_mode_",
+              "period": 0.06,
+              "data_type": "string"
             }
           }
         ]
