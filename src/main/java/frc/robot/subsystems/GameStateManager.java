@@ -173,7 +173,10 @@ public class GameStateManager extends Subsystem {
     SmartDashboard.putString(
         "Subsystems/GameStateManager/Saved Target Level", io_.saved_scoring_target.toString());
     SmartDashboard.putBoolean(
-        "Subsystems/GameStateManager/Ready to Score", (io_.robot_state_ == RobotState.SCORING));
+        "Subsystems/GameStateManager/Ready to Score",
+        (drivetrain_.atTractorBeamPose()
+            && elevator_.isElevatorAndArmAtTarget()
+            && io_.robot_state_ == RobotState.SCORING));
     if (io_.reef_target.isPresent()) {
       reef_target_publisher.set(io_.reef_target.get());
     } else {

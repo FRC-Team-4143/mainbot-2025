@@ -69,20 +69,24 @@ public class Robot extends TimedRobot {
   }
 
   @Override
-  public void autonomousInit() {}
+  public void autonomousInit() {
+    Elastic.selectTab("Auto");
+  }
 
   @Override
   public void autonomousPeriodic() {}
 
   @Override
   public void autonomousExit() {
-    Elastic.selectTab("Teleoperated");
+    Elastic.selectTab("Teleop");
   }
 
   @Override
   public void teleopInit() {
     SwerveDrivetrain.getInstance().restoreDefaultDriveMode();
     CommandScheduler.getInstance().cancelAll();
+    AutoManager.getInstance().removeDisplayedAuto();
+    Elastic.selectTab("Teleop");
   }
 
   @Override
