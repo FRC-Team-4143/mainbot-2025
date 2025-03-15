@@ -3,13 +3,13 @@
   "grid_size": 128,
   "tabs": [
     {
-      "name": "Teleoperated",
+      "name": "Prematch",
       "grid_layout": {
         "layouts": [
           {
             "title": "Vision Enable",
-            "x": 256.0,
-            "y": 512.0,
+            "x": 1152.0,
+            "y": 0.0,
             "width": 256.0,
             "height": 256.0,
             "type": "List Layout",
@@ -51,8 +51,8 @@
           },
           {
             "title": "Field Centric Offset",
-            "x": 0.0,
-            "y": 512.0,
+            "x": 1152.0,
+            "y": 256.0,
             "width": 256.0,
             "height": 256.0,
             "type": "List Layout",
@@ -87,22 +87,150 @@
                 }
               }
             ]
+          },
+          {
+            "title": "GitData",
+            "x": 1664.0,
+            "y": 0.0,
+            "width": 256.0,
+            "height": 384.0,
+            "type": "List Layout",
+            "properties": {
+              "label_position": "TOP"
+            },
+            "children": [
+              {
+                "title": "Build Branch",
+                "x": 0.0,
+                "y": 0.0,
+                "width": 128.0,
+                "height": 128.0,
+                "type": "Text Display",
+                "properties": {
+                  "topic": "/SmartDashboard/GitData/Build Branch",
+                  "period": 0.06,
+                  "data_type": "string",
+                  "show_submit_button": false
+                }
+              },
+              {
+                "title": "Build Date",
+                "x": 0.0,
+                "y": 0.0,
+                "width": 128.0,
+                "height": 128.0,
+                "type": "Text Display",
+                "properties": {
+                  "topic": "/SmartDashboard/GitData/Build Date",
+                  "period": 0.06,
+                  "data_type": "string",
+                  "show_submit_button": false
+                }
+              },
+              {
+                "title": "Dirty Git",
+                "x": 0.0,
+                "y": 0.0,
+                "width": 128.0,
+                "height": 128.0,
+                "type": "Boolean Box",
+                "properties": {
+                  "topic": "/SmartDashboard/GitData/Dirty Git",
+                  "period": 0.06,
+                  "data_type": "boolean",
+                  "true_color": 4283215696,
+                  "false_color": 4294198070,
+                  "true_icon": "None",
+                  "false_icon": "None"
+                }
+              },
+              {
+                "title": "Project Name",
+                "x": 0.0,
+                "y": 0.0,
+                "width": 128.0,
+                "height": 128.0,
+                "type": "Text Display",
+                "properties": {
+                  "topic": "/SmartDashboard/GitData/Project Name",
+                  "period": 0.06,
+                  "data_type": "string",
+                  "show_submit_button": false
+                }
+              }
+            ]
+          },
+          {
+            "title": "List Layout",
+            "x": 1664.0,
+            "y": 384.0,
+            "width": 256.0,
+            "height": 256.0,
+            "type": "List Layout",
+            "properties": {
+              "label_position": "LEFT"
+            },
+            "children": [
+              {
+                "title": "FL Encoder",
+                "x": 0.0,
+                "y": 0.0,
+                "width": 128.0,
+                "height": 128.0,
+                "type": "Text Display",
+                "properties": {
+                  "topic": "/SmartDashboard/Subsystems/Swerve/FL Encoder",
+                  "period": 0.06,
+                  "data_type": "double",
+                  "show_submit_button": false
+                }
+              },
+              {
+                "title": "FR Encoder",
+                "x": 0.0,
+                "y": 0.0,
+                "width": 128.0,
+                "height": 128.0,
+                "type": "Text Display",
+                "properties": {
+                  "topic": "/SmartDashboard/Subsystems/Swerve/FR Encoder",
+                  "period": 0.06,
+                  "data_type": "double",
+                  "show_submit_button": false
+                }
+              },
+              {
+                "title": "BL Encoder",
+                "x": 0.0,
+                "y": 0.0,
+                "width": 128.0,
+                "height": 128.0,
+                "type": "Text Display",
+                "properties": {
+                  "topic": "/SmartDashboard/Subsystems/Swerve/BL Encoder",
+                  "period": 0.06,
+                  "data_type": "double",
+                  "show_submit_button": false
+                }
+              },
+              {
+                "title": "BR Encoder",
+                "x": 0.0,
+                "y": 0.0,
+                "width": 128.0,
+                "height": 128.0,
+                "type": "Text Display",
+                "properties": {
+                  "topic": "/SmartDashboard/Subsystems/Swerve/BR Encoder",
+                  "period": 0.06,
+                  "data_type": "double",
+                  "show_submit_button": false
+                }
+              }
+            ]
           }
         ],
         "containers": [
-          {
-            "title": "Game Piece Mode",
-            "x": 1152.0,
-            "y": 0.0,
-            "width": 256.0,
-            "height": 512.0,
-            "type": "Single Color View",
-            "properties": {
-              "topic": "/SmartDashboard/Subsystems/Claw/Game Piece Mode",
-              "period": 0.06,
-              "data_type": "string"
-            }
-          },
           {
             "title": "Field",
             "x": 0.0,
@@ -121,6 +249,554 @@
               "field_rotation": 0.0,
               "robot_color": 4294198070,
               "trajectory_color": 4294967295
+            }
+          },
+          {
+            "title": "Auto Chooser",
+            "x": 0.0,
+            "y": 512.0,
+            "width": 640.0,
+            "height": 128.0,
+            "type": "ComboBox Chooser",
+            "properties": {
+              "topic": "/SmartDashboard/Auto Chooser",
+              "period": 0.06,
+              "sort_options": true
+            }
+          },
+          {
+            "title": "Current Arm Angle",
+            "x": 1408.0,
+            "y": 0.0,
+            "width": 256.0,
+            "height": 128.0,
+            "type": "Large Text Display",
+            "properties": {
+              "topic": "/SmartDashboard/Subsystems/Arm/Current Angle",
+              "period": 0.033,
+              "data_type": "double"
+            }
+          },
+          {
+            "title": "Pivot Inches Off Zero",
+            "x": 1408.0,
+            "y": 128.0,
+            "width": 256.0,
+            "height": 128.0,
+            "type": "Large Text Display",
+            "properties": {
+              "topic": "/SmartDashboard/Subsystems/Elevator/Inches Off Zero",
+              "period": 0.06,
+              "data_type": "double"
+            }
+          },
+          {
+            "title": "Zero Elevator & Arm",
+            "x": 1408.0,
+            "y": 256.0,
+            "width": 256.0,
+            "height": 128.0,
+            "type": "Command",
+            "properties": {
+              "topic": "/SmartDashboard/Commands/Zero Elevator & Arm",
+              "period": 0.06,
+              "show_type": false
+            }
+          },
+          {
+            "title": "FMSInfo",
+            "x": 640.0,
+            "y": 512.0,
+            "width": 640.0,
+            "height": 128.0,
+            "type": "FMSInfo",
+            "properties": {
+              "topic": "/FMSInfo",
+              "period": 0.06
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "Auto",
+      "grid_layout": {
+        "layouts": [
+          {
+            "title": "GameStateManager",
+            "x": 1536.0,
+            "y": 0.0,
+            "width": 384.0,
+            "height": 640.0,
+            "type": "List Layout",
+            "properties": {
+              "label_position": "TOP"
+            },
+            "children": [
+              {
+                "title": "Saved Target Level",
+                "x": 0.0,
+                "y": 0.0,
+                "width": 128.0,
+                "height": 128.0,
+                "type": "Large Text Display",
+                "properties": {
+                  "topic": "/SmartDashboard/Subsystems/GameStateManager/Saved Target Level",
+                  "period": 0.06,
+                  "data_type": "string"
+                }
+              },
+              {
+                "title": "Saved Colum",
+                "x": 0.0,
+                "y": 0.0,
+                "width": 128.0,
+                "height": 128.0,
+                "type": "Large Text Display",
+                "properties": {
+                  "topic": "/SmartDashboard/Subsystems/GameStateManager/Saved Colum",
+                  "period": 0.06,
+                  "data_type": "string"
+                }
+              },
+              {
+                "title": "Robot State",
+                "x": 0.0,
+                "y": 0.0,
+                "width": 128.0,
+                "height": 128.0,
+                "type": "Large Text Display",
+                "properties": {
+                  "topic": "/SmartDashboard/Subsystems/GameStateManager/Robot State",
+                  "period": 0.06,
+                  "data_type": "string"
+                }
+              },
+              {
+                "title": "Target Level",
+                "x": 0.0,
+                "y": 0.0,
+                "width": 128.0,
+                "height": 128.0,
+                "type": "Large Text Display",
+                "properties": {
+                  "topic": "/SmartDashboard/Subsystems/GameStateManager/Target Level",
+                  "period": 0.06,
+                  "data_type": "string"
+                }
+              },
+              {
+                "title": "Target Colum",
+                "x": 0.0,
+                "y": 0.0,
+                "width": 128.0,
+                "height": 128.0,
+                "type": "Large Text Display",
+                "properties": {
+                  "topic": "/SmartDashboard/Subsystems/GameStateManager/Target Colum",
+                  "period": 0.06,
+                  "data_type": "string"
+                }
+              }
+            ]
+          }
+        ],
+        "containers": [
+          {
+            "title": "Field",
+            "x": 0.0,
+            "y": 0.0,
+            "width": 1152.0,
+            "height": 512.0,
+            "type": "Field",
+            "properties": {
+              "topic": "/SmartDashboard/Subsystems/PoseEstimator/Field",
+              "period": 0.06,
+              "field_game": "Reefscape",
+              "robot_width": 0.85,
+              "robot_length": 0.85,
+              "show_other_objects": true,
+              "show_trajectories": true,
+              "field_rotation": 0.0,
+              "robot_color": 4294198070,
+              "trajectory_color": 4294967295
+            }
+          },
+          {
+            "title": "CommandScheduler",
+            "x": 1152.0,
+            "y": 0.0,
+            "width": 384.0,
+            "height": 512.0,
+            "type": "Scheduler",
+            "properties": {
+              "topic": "/SmartDashboard/CommandScheduler",
+              "period": 0.06
+            }
+          },
+          {
+            "title": "Match Time",
+            "x": 0.0,
+            "y": 512.0,
+            "width": 512.0,
+            "height": 256.0,
+            "type": "Match Time",
+            "properties": {
+              "topic": "/SmartDashboard/Match Time",
+              "period": 0.06,
+              "data_type": "double",
+              "time_display_mode": "Minutes and Seconds",
+              "red_start_time": 15,
+              "yellow_start_time": 30
+            }
+          },
+          {
+            "title": "Has Coral",
+            "x": 512.0,
+            "y": 512.0,
+            "width": 256.0,
+            "height": 128.0,
+            "type": "Boolean Box",
+            "properties": {
+              "topic": "/SmartDashboard/Subsystems/Claw/Has Coral (On True)",
+              "period": 0.06,
+              "data_type": "boolean",
+              "true_color": 4283215696,
+              "false_color": 4294198070,
+              "true_icon": "None",
+              "false_icon": "None"
+            }
+          },
+          {
+            "title": "Has Algae",
+            "x": 512.0,
+            "y": 640.0,
+            "width": 256.0,
+            "height": 128.0,
+            "type": "Boolean Box",
+            "properties": {
+              "topic": "/SmartDashboard/Subsystems/Claw/Has Algae",
+              "period": 0.06,
+              "data_type": "boolean",
+              "true_color": 4283215696,
+              "false_color": 4294198070,
+              "true_icon": "None",
+              "false_icon": "None"
+            }
+          },
+          {
+            "title": "Game Piece Mode",
+            "x": 768.0,
+            "y": 512.0,
+            "width": 384.0,
+            "height": 256.0,
+            "type": "Single Color View",
+            "properties": {
+              "topic": "/SmartDashboard/Subsystems/Claw/Game Piece Mode",
+              "period": 0.06,
+              "data_type": "string"
+            }
+          },
+          {
+            "title": "Ready to Score",
+            "x": 1152.0,
+            "y": 512.0,
+            "width": 384.0,
+            "height": 256.0,
+            "type": "Boolean Box",
+            "properties": {
+              "topic": "/SmartDashboard/Subsystems/GameStateManager/Ready to Score",
+              "period": 0.06,
+              "data_type": "boolean",
+              "true_color": 4283215696,
+              "false_color": 4294198070,
+              "true_icon": "None",
+              "false_icon": "None"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "Telop",
+      "grid_layout": {
+        "layouts": [
+          {
+            "title": "GameStateManager",
+            "x": 1536.0,
+            "y": 0.0,
+            "width": 384.0,
+            "height": 640.0,
+            "type": "List Layout",
+            "properties": {
+              "label_position": "TOP"
+            },
+            "children": [
+              {
+                "title": "Saved Colum",
+                "x": 0.0,
+                "y": 0.0,
+                "width": 128.0,
+                "height": 128.0,
+                "type": "Large Text Display",
+                "properties": {
+                  "topic": "/SmartDashboard/Subsystems/GameStateManager/Saved Colum",
+                  "period": 0.06,
+                  "data_type": "string"
+                }
+              },
+              {
+                "title": "Saved Target Level",
+                "x": 0.0,
+                "y": 0.0,
+                "width": 128.0,
+                "height": 128.0,
+                "type": "Large Text Display",
+                "properties": {
+                  "topic": "/SmartDashboard/Subsystems/GameStateManager/Saved Target Level",
+                  "period": 0.06,
+                  "data_type": "string"
+                }
+              },
+              {
+                "title": "Robot State",
+                "x": 0.0,
+                "y": 0.0,
+                "width": 128.0,
+                "height": 128.0,
+                "type": "Large Text Display",
+                "properties": {
+                  "topic": "/SmartDashboard/Subsystems/GameStateManager/Robot State",
+                  "period": 0.06,
+                  "data_type": "string"
+                }
+              },
+              {
+                "title": "Target Colum",
+                "x": 0.0,
+                "y": 0.0,
+                "width": 128.0,
+                "height": 128.0,
+                "type": "Large Text Display",
+                "properties": {
+                  "topic": "/SmartDashboard/Subsystems/GameStateManager/Target Colum",
+                  "period": 0.06,
+                  "data_type": "string"
+                }
+              },
+              {
+                "title": "Target Level",
+                "x": 0.0,
+                "y": 0.0,
+                "width": 128.0,
+                "height": 128.0,
+                "type": "Large Text Display",
+                "properties": {
+                  "topic": "/SmartDashboard/Subsystems/GameStateManager/Target Level",
+                  "period": 0.06,
+                  "data_type": "string"
+                }
+              }
+            ]
+          },
+          {
+            "title": "List Layout",
+            "x": 1152.0,
+            "y": 256.0,
+            "width": 384.0,
+            "height": 256.0,
+            "type": "List Layout",
+            "properties": {
+              "label_position": "TOP"
+            },
+            "children": [
+              {
+                "title": "Seed Field Centric",
+                "x": 0.0,
+                "y": 0.0,
+                "width": 256.0,
+                "height": 128.0,
+                "type": "Command",
+                "properties": {
+                  "topic": "/SmartDashboard/Commands/Seed Field Centric",
+                  "period": 0.06,
+                  "show_type": false
+                }
+              },
+              {
+                "title": "Yaw",
+                "x": 0.0,
+                "y": 0.0,
+                "width": 128.0,
+                "height": 128.0,
+                "type": "Large Text Display",
+                "properties": {
+                  "topic": "/SmartDashboard/Subsystems/Swerve/Yaw",
+                  "period": 0.06,
+                  "data_type": "double"
+                }
+              }
+            ]
+          },
+          {
+            "title": "List Layout",
+            "x": 1152.0,
+            "y": 0.0,
+            "width": 384.0,
+            "height": 256.0,
+            "type": "List Layout",
+            "properties": {
+              "label_position": "TOP"
+            },
+            "children": [
+              {
+                "title": "Use Vision Features",
+                "x": 1152.0,
+                "y": 128.0,
+                "width": 128.0,
+                "height": 128.0,
+                "type": "Boolean Box",
+                "properties": {
+                  "topic": "/SmartDashboard/Vision/Use Vision Features",
+                  "period": 0.06,
+                  "data_type": "boolean",
+                  "true_color": 4283215696,
+                  "false_color": 4294198070,
+                  "true_icon": "None",
+                  "false_icon": "None"
+                }
+              },
+              {
+                "title": "Use Vision Features",
+                "x": 1152.0,
+                "y": 128.0,
+                "width": 128.0,
+                "height": 128.0,
+                "type": "Toggle Switch",
+                "properties": {
+                  "topic": "/SmartDashboard/Vision/Use Vision Features",
+                  "period": 0.06,
+                  "data_type": "boolean"
+                }
+              }
+            ]
+          }
+        ],
+        "containers": [
+          {
+            "title": "Field",
+            "x": 0.0,
+            "y": 0.0,
+            "width": 1152.0,
+            "height": 512.0,
+            "type": "Field",
+            "properties": {
+              "topic": "/SmartDashboard/Subsystems/PoseEstimator/Field",
+              "period": 0.06,
+              "field_game": "Reefscape",
+              "robot_width": 0.85,
+              "robot_length": 0.85,
+              "show_other_objects": true,
+              "show_trajectories": true,
+              "field_rotation": 0.0,
+              "robot_color": 4294198070,
+              "trajectory_color": 4294967295
+            }
+          },
+          {
+            "title": "Match Time",
+            "x": 0.0,
+            "y": 512.0,
+            "width": 512.0,
+            "height": 256.0,
+            "type": "Match Time",
+            "properties": {
+              "topic": "/SmartDashboard/Match Time",
+              "period": 0.06,
+              "data_type": "double",
+              "time_display_mode": "Minutes and Seconds",
+              "red_start_time": 15,
+              "yellow_start_time": 30
+            }
+          },
+          {
+            "title": "Game Piece Mode",
+            "x": 512.0,
+            "y": 512.0,
+            "width": 512.0,
+            "height": 256.0,
+            "type": "Single Color View",
+            "properties": {
+              "topic": "/SmartDashboard/Subsystems/Claw/Game Piece Mode",
+              "period": 0.06,
+              "data_type": "string"
+            }
+          },
+          {
+            "title": "Ready to Score",
+            "x": 1024.0,
+            "y": 512.0,
+            "width": 512.0,
+            "height": 256.0,
+            "type": "Boolean Box",
+            "properties": {
+              "topic": "/SmartDashboard/Subsystems/GameStateManager/Ready to Score",
+              "period": 0.06,
+              "data_type": "boolean",
+              "true_color": 4283215696,
+              "false_color": 4294198070,
+              "true_icon": "None",
+              "false_icon": "None"
+            }
+          },
+          {
+            "title": "Reset Arm & Elevator Manual Offsets",
+            "x": 1536.0,
+            "y": 640.0,
+            "width": 384.0,
+            "height": 128.0,
+            "type": "Command",
+            "properties": {
+              "topic": "/SmartDashboard/Commands/Reset Arm & Elevator Manual Offsets",
+              "period": 0.06,
+              "show_type": false
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "Climb",
+      "grid_layout": {
+        "layouts": [],
+        "containers": [
+          {
+            "title": "Match Time",
+            "x": 0.0,
+            "y": 512.0,
+            "width": 512.0,
+            "height": 256.0,
+            "type": "Match Time",
+            "properties": {
+              "topic": "/SmartDashboard/Match Time",
+              "period": 0.06,
+              "data_type": "double",
+              "time_display_mode": "Minutes and Seconds",
+              "red_start_time": 15,
+              "yellow_start_time": 30
+            }
+          },
+          {
+            "title": "photonvision_Port_1181_Input_MJPEG_Server",
+            "x": 0.0,
+            "y": 0.0,
+            "width": 1152.0,
+            "height": 512.0,
+            "type": "Camera Stream",
+            "properties": {
+              "topic": "/CameraPublisher/photonvision_Port_1181_Input_MJPEG_Server",
+              "period": 0.06,
+              "rotation_turns": 0
             }
           }
         ]
@@ -1387,10 +2063,10 @@
           },
           {
             "title": "Field",
-            "x": 768.0,
+            "x": 1152.0,
             "y": 0.0,
-            "width": 768.0,
-            "height": 384.0,
+            "width": 512.0,
+            "height": 256.0,
             "type": "Field",
             "properties": {
               "topic": "/SmartDashboard/Subsystems/PoseEstimator/Field",
@@ -1429,6 +2105,20 @@
               "topic": "/SmartDashboard/Commands/Seed Field Centric",
               "period": 0.06,
               "show_type": false
+            }
+          },
+          {
+            "title": "Overview",
+            "x": 640.0,
+            "y": 0.0,
+            "width": 512.0,
+            "height": 512.0,
+            "type": "SwerveDrive",
+            "properties": {
+              "topic": "/SmartDashboard/Subsystems/Swerve/Overview",
+              "period": 0.06,
+              "show_robot_rotation": true,
+              "rotation_unit": "Radians"
             }
           }
         ]
