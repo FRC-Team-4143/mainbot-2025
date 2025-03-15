@@ -30,7 +30,9 @@ import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
+import edu.wpi.first.wpilibj.DataLogManager;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import frc.mw_lib.util.CamConstants;
 import frc.robot.subsystems.PoseEstimator;
 import java.util.List;
 import java.util.Optional;
@@ -58,18 +60,20 @@ public class Vision {
   private int numTags;
 
   public Vision() {
+    int cameras_size = Constants.Vision.CAMERAS.size();
 
-    cameras =
-        new PhotonCamera[] {new PhotonCamera(CAMERA1_NAME)}; // , new PhotonCamera(CAMERA2_NAME)};
-    photonEstimators =
-        new PhotonPoseEstimator[] {
+    cameras = new PhotonCamera[cameras_size];
+    photonEstimators = new PhotonPoseEstimator[cameras_size];
+
+    for (int i = 0; i < cameras_size; i++) {
+      CamConstants config = Constants.Vision.CAMERAS.get(i);
+      cameras[i] = new PhotonCamera(config.camera_name);
+      DataLogManager.log("Registering camera " + config.camera_name);
+      photonEstimators[i] =
           new PhotonPoseEstimator(
-              TAG_LAYOUT, PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR, ROBOT_TO_CAM1)
-          // new PhotonPoseEstimator(
-          //     TAG_LAYOUT, PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR, ROBOT_TO_CAM2)
-        };
-    photonEstimators[0].setMultiTagFallbackStrategy(PoseStrategy.LOWEST_AMBIGUITY);
-    // photonEstimators[1].setMultiTagFallbackStrategy(PoseStrategy.LOWEST_AMBIGUITY);
+              TAG_LAYOUT, PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR, config.camera_transform);
+      photonEstimators[i].setMultiTagFallbackStrategy(PoseStrategy.LOWEST_AMBIGUITY);
+    }
   }
 
   /**

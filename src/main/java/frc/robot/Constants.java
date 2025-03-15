@@ -11,9 +11,6 @@ import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.controller.PIDController;
-import edu.wpi.first.math.geometry.Rotation3d;
-import edu.wpi.first.math.geometry.Transform3d;
-import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.math.util.Units;
@@ -23,7 +20,9 @@ import frc.mw_lib.swerve.SwerveModuleConstants;
 import frc.mw_lib.swerve.SwerveModuleConstants.SteerFeedbackType;
 import frc.mw_lib.swerve.SwerveModuleConstantsFactory;
 import frc.mw_lib.swerve.utility.ModuleType;
+import frc.mw_lib.util.CamConstants;
 import frc.mw_lib.util.ConstantsLoader;
+import java.util.List;
 import frc.mw_lib.util.TagLayouts;
 
 /**
@@ -39,35 +38,7 @@ public final class Constants {
   private static final ConstantsLoader LOADER = ConstantsLoader.getInstance();
 
   public static class Vision {
-    public static final String CAMERA1_NAME = LOADER.getStringValue("vision", "camera0", "NAME");
-    public static final String CAMERA2_NAME = LOADER.getStringValue("vision", "camera1", "NAME");
-    public static final Transform3d ROBOT_TO_CAM1 =
-        new Transform3d(
-            new Translation3d(
-                Units.inchesToMeters(LOADER.getDoubleValue("vision", "camera0", "location", "X")),
-                Units.inchesToMeters(LOADER.getDoubleValue("vision", "camera0", "location", "Y")),
-                Units.inchesToMeters(LOADER.getDoubleValue("vision", "camera0", "location", "Z"))),
-            new Rotation3d(
-                Units.degreesToRadians(
-                    LOADER.getDoubleValue("vision", "camera0", "location", "ROLL")),
-                Units.degreesToRadians(
-                    LOADER.getDoubleValue("vision", "camera0", "location", "PITCH")),
-                Units.degreesToRadians(
-                    LOADER.getDoubleValue("vision", "camera0", "location", "YAW"))));
-
-    public static final Transform3d ROBOT_TO_CAM2 =
-        new Transform3d(
-            new Translation3d(
-                Units.inchesToMeters(LOADER.getDoubleValue("vision", "camera1", "location", "X")),
-                Units.inchesToMeters(LOADER.getDoubleValue("vision", "camera1", "location", "Y")),
-                Units.inchesToMeters(LOADER.getDoubleValue("vision", "camera1", "location", "Z"))),
-            new Rotation3d(
-                Units.degreesToRadians(
-                    LOADER.getDoubleValue("vision", "camera1", "location", "ROLL")),
-                Units.degreesToRadians(
-                    LOADER.getDoubleValue("vision", "camera1", "location", "PITCH")),
-                Units.degreesToRadians(
-                    LOADER.getDoubleValue("vision", "camera1", "location", "YAW"))));
+    public static final List<CamConstants> CAMERAS = LOADER.getCameras("vision");
 
     // The layout of the AprilTags on the field
     public static final AprilTagFieldLayout TAG_LAYOUT =

@@ -1,6 +1,10 @@
 package frc.mw_lib.util;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import edu.wpi.first.math.geometry.Rotation3d;
+import edu.wpi.first.math.geometry.Transform3d;
+import edu.wpi.first.math.geometry.Translation3d;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DataLogManager;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Filesystem;
@@ -9,6 +13,8 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Commands;
 import java.io.IOException;
 import java.nio.file.Path;
+import java.util.ArrayList;
+import java.util.List;
 
 public class ConstantsLoader extends JSONReader {
   private static ConstantsLoader instance_;
@@ -77,5 +83,38 @@ public class ConstantsLoader extends JSONReader {
   public String getStringValue(String... path_steps) {
     JsonNode current = walkTree(root_node_, path_steps);
     return current.asText();
+  }
+
+  public List<String> getStringList(String... path_steps) {
+    JsonNode current = walkTree(root_node_, path_steps);
+    return getChildren(current);
+  }
+
+  public List<CamConstants> getCameras(String... path_steps) {
+    ArrayList<CamConstants> cameras = new ArrayList<>();
+
+    JsonNode cameras_root = walkTree(root_node_, path_steps);
+
+    List<String> names = getStringList(path_steps);
+    for (String name : names) {
+      JsonNode camera_root = walkTree(cameras_root, name);
+
+      CamConstants config = new CamConstants();
+      config.camera_name = walkTree(camera_root, "NAME").asText();
+      config.camera_transform =
+          new Transform3d(
+              new Translation3d(
+                  Units.inchesToMeters(walkTree(camera_root, "location", "X").asDouble()),
+                  Units.inchesToMeters(walkTree(camera_root, "location", "Y").asDouble()),
+                  Units.inchesToMeters(walkTree(camera_root, "location", "Z").asDouble())),
+              new Rotation3d(
+                  Units.degreesToRadians(walkTree(camera_root, "location", "ROLL").asDouble()),
+                  Units.degreesToRadians(walkTree(camera_root, "location", "PITCH").asDouble()),
+                  Units.degreesToRadians(walkTree(camera_root, "location", "YAW").asDouble())));
+
+      cameras.add(config);
+    }
+
+    return cameras;
   }
 }
