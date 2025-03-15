@@ -21,5 +21,6 @@ public class ElevatorL1Target extends ConditionalCommand {
             () -> GameStateManager.getInstance().setScoringTarget(ReefScoringTarget.L1, true)),
         new ManualElevatorOverride(Level.L1),
         OI.use_vision);
+    setName(this.getClass().getSimpleName());
   }
 }

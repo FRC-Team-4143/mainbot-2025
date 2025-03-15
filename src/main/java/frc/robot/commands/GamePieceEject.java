@@ -13,5 +13,6 @@ public class GamePieceEject extends ConditionalCommand {
   public GamePieceEject() {
     // Use addRequirements() here to declare subsystem dependencies.
     super(new CoralEject(), new AlgaeEject(), Claw.getInstance()::isCoralMode);
+    setName(this.getClass().getSimpleName());
   }
 }

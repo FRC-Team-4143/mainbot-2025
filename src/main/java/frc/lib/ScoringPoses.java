@@ -32,8 +32,7 @@ public class ScoringPoses {
           new Translation2d(DrivetrainConstants.CENTER_OFFSET_X, 0), Rotation2d.fromDegrees(180));
 
   public static final Transform2d ALGAE_ALIGN_OFFSET =
-      new Transform2d(
-          0, Units.inchesToMeters(-Constants.ClawConstants.ALGAE_IMP_OFFSET), new Rotation2d());
+      new Transform2d(0, -Constants.ClawConstants.ALGAE_IMP_OFFSET, new Rotation2d());
   public static final double CORAL_ALIGN_OFFSET = -Constants.ClawConstants.CORAL_IMP_OFFSET;
 
   public static final Transform2d LEFT_COLUMN_OFFSET =
@@ -59,10 +58,10 @@ public class ScoringPoses {
   public static Pose2d RIGHT_CORAL_STATION_POSE =
       FieldConstants.CoralStation.RIGHT_CENTER_FACE.transformBy(CORAL_STATION_OFFSET);
   public static Pose2d BARGE_TIGHT_ROPE_POSE_A =
-      new Pose2d(7.68, FieldConstants.FIELD_WIDTH, Rotation2d.fromDegrees(0));
+      new Pose2d(7.7562, FieldConstants.FIELD_WIDTH, Rotation2d.fromDegrees(0));
   public static Pose2d BARGE_TIGHT_ROPE_POSE_B =
       new Pose2d(
-          7.68,
+          7.7562,
           (FieldConstants.FIELD_WIDTH / 2)
               + Units.inchesToMeters(7)
               - Constants.ClawConstants.ALGAE_IMP_OFFSET

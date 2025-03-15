@@ -19,6 +19,7 @@ public class CoralReefScore extends Command {
   public CoralReefScore() {
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(Elevator.getInstance());
+    setName(this.getClass().getSimpleName());
   }
 
   // Called when the command is initially scheduled.

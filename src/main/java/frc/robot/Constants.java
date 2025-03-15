@@ -12,7 +12,6 @@ import edu.wpi.first.apriltag.AprilTagFields;
 import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.controller.PIDController;
-import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation3d;
@@ -20,7 +19,6 @@ import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.util.Color;
-import frc.lib.FieldConstants;
 import frc.mw_lib.swerve.SwerveModule.ClosedLoopOutputType;
 import frc.mw_lib.swerve.SwerveModuleConstants;
 import frc.mw_lib.swerve.SwerveModuleConstants.SteerFeedbackType;
@@ -41,8 +39,9 @@ public final class Constants {
   private static final ConstantsLoader LOADER = ConstantsLoader.getInstance();
 
   public static class Vision {
-    public static final String CAMERA_NAME = LOADER.getStringValue("vision", "camera0", "NAME");
-    public static final Transform3d ROBOT_TO_CAM =
+    public static final String CAMERA1_NAME = LOADER.getStringValue("vision", "camera0", "NAME");
+    public static final String CAMERA2_NAME = LOADER.getStringValue("vision", "camera1", "NAME");
+    public static final Transform3d ROBOT_TO_CAM1 =
         new Transform3d(
             new Translation3d(
                 Units.inchesToMeters(LOADER.getDoubleValue("vision", "camera0", "location", "X")),
@@ -56,11 +55,26 @@ public final class Constants {
                 Units.degreesToRadians(
                     LOADER.getDoubleValue("vision", "camera0", "location", "YAW"))));
 
+    public static final Transform3d ROBOT_TO_CAM2 =
+        new Transform3d(
+            new Translation3d(
+                Units.inchesToMeters(LOADER.getDoubleValue("vision", "camera1", "location", "X")),
+                Units.inchesToMeters(LOADER.getDoubleValue("vision", "camera1", "location", "Y")),
+                Units.inchesToMeters(LOADER.getDoubleValue("vision", "camera1", "location", "Z"))),
+            new Rotation3d(
+                Units.degreesToRadians(
+                    LOADER.getDoubleValue("vision", "camera1", "location", "ROLL")),
+                Units.degreesToRadians(
+                    LOADER.getDoubleValue("vision", "camera1", "location", "PITCH")),
+                Units.degreesToRadians(
+                    LOADER.getDoubleValue("vision", "camera1", "location", "YAW"))));
+
     // The layout of the AprilTags on the field
     public static final AprilTagFieldLayout TAG_LAYOUT =
         AprilTagFieldLayout.loadField(AprilTagFields.kDefaultField);
 
-    // The standard deviations of our vision estimated poses, which affect correction rate
+    // The standard deviations of our vision estimated poses, which affect
+    // correction rate
     // (Fake values. Experiment and determine estimation noise on an actual robot.)
     public static final Matrix<N3, N1> SINGLE_TAG_STD_DEVS = VecBuilder.fill(4, 4, 8);
     public static final Matrix<N3, N1> MULTI_TAG_STD_DEVS = VecBuilder.fill(0.5, 0.5, 1);
@@ -118,6 +132,8 @@ public final class Constants {
     public static final double MAX_TARGET_SPEED = 1;
     public static final double MAX_TRACTOR_BEAM_VELOCITY_SPEED = MAX_DRIVE_SPEED * 0.35;
     public static final double MAX_TRACTOR_BEAM_OMEGA_SPEED = MAX_DRIVE_ANGULAR_RATE * 0.6;
+    public static final double TRACTOR_BEAM_ROTATION_THRESHOLD = Units.degreesToRadians(2);
+    public static final double TRACTOR_BEAM_TARGET_DISTANCE = Units.inchesToMeters(1);
 
     private static final SwerveModuleConstantsFactory ConstantCreator =
         new SwerveModuleConstantsFactory()
@@ -211,7 +227,8 @@ public final class Constants {
 
   public static final class ClawConstants {
     public static final int WHEEL_MOTOR_ID = 11;
-    public static final double WHEEL_SHOOT_SPEED = 0.30;
+    public static final double WHEEL_CORAL_SHOOT_SPEED = 0.3;
+    public static final double WHEEL_ALGAE_SHOOT_SPEED = 0.3;
     public static final double WHEEL_LOAD_SPEED = -0.3;
     public static final double ALGAE_IDLE_SPEED = 0.1;
     public static final double STATOR_CURRENT_LIMIT = 40;
@@ -245,18 +262,22 @@ public final class Constants {
     // Units.inchesToMeters(Sprocket Circumference * Math.PI) / gearbox ratio *
     // rigging
     public static final double ELEVATOR_ROTATIONS_TO_METERS =
-        Units.inchesToMeters(1.751 * Math.PI) / 4 * 2;
+        Units.inchesToMeters(1.751 * Math.PI)
+            / LOADER.getDoubleValue("elevator", "ELEVATOR_GEAR_RATIO")
+            * 2;
     public static final double ELEVATOR_CRUISE_VELOCITY = 5.0 / ELEVATOR_ROTATIONS_TO_METERS;
     public static final double ELEVATOR_ACCEL = 3.0 / ELEVATOR_ROTATIONS_TO_METERS;
     public static final double ELEVATOR_EXPO_KV = 0.11733;
     public static final double ELEVATOR_EXPO_KA = 0.0070285;
     public static final double ELEVATOR_ZERO_THRESHOLD = 0; // In m
     public static final double ELEVATOR_STATOR_CURRENT_LIMIT = 80.0;
-    public static final double ELEVATOR_HEIGHT_ABOVE_PIVOT = Units.inchesToMeters(8.0);
-    public static final double ELEVATOR_MIN_HEIGHT = Units.inchesToMeters(28.25);
-    public static final double ELEVATOR_MAX_HEIGHT =
-        Units.inchesToMeters(96.76) - ELEVATOR_HEIGHT_ABOVE_PIVOT - 0.1; // 0.1m of safety
-    public static final double ELEVATOR_MIN_SAFETY = ELEVATOR_MIN_HEIGHT + Units.inchesToMeters(4);
+    public static final double ELEVATOR_HEIGHT_PIVOT_MIN =
+        Units.inchesToMeters(LOADER.getDoubleValue("elevator", "HEIGHT_PIVOT_MIN"));
+    public static final double ELEVATOR_HEIGHT_PIVOT_MAX =
+        Units.inchesToMeters(LOADER.getDoubleValue("elevator", "HEIGHT_PIVOT_MAX"))
+            - 0.1; // 0.1m of safety
+    public static final double ELEVATOR_HEIGHT_PIVOT_SAFETY =
+        ELEVATOR_HEIGHT_PIVOT_MIN + Units.inchesToMeters(6);
 
     public static final Slot0Configs ELEVATOR_GAINS =
         new Slot0Configs()
@@ -268,19 +289,23 @@ public final class Constants {
             .withKA(LOADER.getDoubleValue("elevator", "CONTROLLER_A"))
             .withKG(LOADER.getDoubleValue("elevator", "CONTROLLER_G"))
             .withGravityType(GravityTypeValue.Elevator_Static);
+  }
 
+  public class ArmConstants {
     // Arm Constants:
     public static final int ARM_MOTOR_ID = 23;
     public static final int ARM_ENCODER_ID = 24;
     public static final double ARM_TARGET_THRESHOLD = 0.25; // In rads
     public static final InvertedValue ARM_FOLLOWER_INVERSION =
         InvertedValue.CounterClockwise_Positive;
-    public static final double ARM_HOME_POSITION = 0;
     public static final double CORAL_ARM_CRUISE_VELOCITY = 4;
     public static final double CORAL_ARM_ACCELERATION = 1.75;
     public static final double ALGAE_ARM_CRUISE_VELOCITY = 4;
     public static final double ALGAE_ARM_ACCELERATION = 0.65;
-    public static final double ARM_LENGTH = Units.inchesToMeters(11.5);
+    public static final double ARM_LENGTH =
+        Units.inchesToMeters(LOADER.getDoubleValue("arm", "LENGTH_PIVOT_TO_FUNNEL"));
+    public static final double ARM_WIDTH =
+        Units.inchesToMeters(LOADER.getDoubleValue("arm", "DEPTH_CORAL_POCKET"));
     // ((shaft sprocket / pivot sprocket) / gearbox) * rotations to radians ratio)
     public static final double SENSOR_TO_MECHANISM_RATIO = (1.0 / ((16.0 / 64.0) / 20.0));
     public static final double ARM_FORWARD_LIMT = Units.radiansToRotations(Math.PI);
@@ -296,48 +321,9 @@ public final class Constants {
             .withKA(LOADER.getDoubleValue("arm", "CONTROLLER_A"))
             .withKG(LOADER.getDoubleValue("arm", "CONTROLLER_G"))
             .withGravityType(GravityTypeValue.Arm_Cosine);
+  }
 
-    public enum Target {
-      L4(
-          FieldConstants.ReefHeight.L4.HEIGHT + Units.inchesToMeters(11),
-          Rotation2d.fromDegrees(130),
-          ControlType.EFFECTOR),
-      L3(
-          FieldConstants.ReefHeight.L3.HEIGHT + Units.inchesToMeters(8),
-          Rotation2d.fromDegrees(125),
-          ControlType.EFFECTOR),
-      L2(
-          FieldConstants.ReefHeight.L2.HEIGHT + Units.inchesToMeters(7),
-          Rotation2d.fromDegrees(125),
-          ControlType.EFFECTOR),
-
-      STATION(1.05, Rotation2d.fromRadians(-1.027767), ControlType.PIVOT),
-      CLIMB(ELEVATOR_MIN_SAFETY, new Rotation2d(), ControlType.PIVOT),
-      STOW(ELEVATOR_MIN_SAFETY, Rotation2d.fromDegrees(-90), ControlType.PIVOT),
-      ALGAE_LOW(ELEVATOR_MIN_HEIGHT, Rotation2d.fromDegrees(90 + 50), ControlType.EFFECTOR),
-      ALGAE_HIGH(1.250, Rotation2d.fromDegrees(90 + 35), ControlType.EFFECTOR),
-      ALGAE_PROCESSOR(0.9429, Rotation2d.fromDegrees(-55), ControlType.PIVOT),
-      BARGE(
-          FieldConstants.ReefHeight.L4.HEIGHT + 0.0762,
-          Rotation2d.fromDegrees(90),
-          ControlType.PIVOT),
-      ALGAE_STOW(ELEVATOR_MIN_HEIGHT, Rotation2d.fromDegrees(90), ControlType.PIVOT);
-
-      Target(double height, Rotation2d angle, ControlType type) {
-        this.angle = angle;
-        this.height = height;
-        this.type = type;
-      }
-
-      public final double height;
-      public final Rotation2d angle;
-
-      public enum ControlType {
-        PIVOT,
-        EFFECTOR
-      }
-
-      public final ControlType type;
-    }
+  public class GameStateManager {
+    public static final double REQUIRED_ROTATION_FOR_ELEVATOR = Units.degreesToRadians(45);
   }
 }

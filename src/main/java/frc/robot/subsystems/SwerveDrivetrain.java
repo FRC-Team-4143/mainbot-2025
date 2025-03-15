@@ -24,11 +24,12 @@ import edu.wpi.first.math.util.Units;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.networktables.StructArrayPublisher;
 import edu.wpi.first.networktables.StructPublisher;
+import edu.wpi.first.util.sendable.Sendable;
+import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import frc.mw_lib.geometry.TightRope;
-import frc.mw_lib.proxy_server.ChassisProxyServer;
 import frc.mw_lib.subsystem.Subsystem;
 import frc.mw_lib.swerve.*;
 import frc.mw_lib.swerve.SwerveRequest.ForwardReference;
@@ -87,6 +88,20 @@ public class SwerveDrivetrain extends Subsystem {
     PROFILE
   }
 
+  public enum SpeedPresets {
+    MAX_SPEED(1.0),
+    THREE_FOURTHS_SPEED(0.75),
+    HALF_SPEED(0.5),
+    ONE_THIRD_SPEED(0.33);
+
+    private SpeedPresets(double val) {
+      speed_limit = val;
+    }
+    ;
+
+    public final double speed_limit;
+  }
+
   // Robot Hardware
   private final Pigeon2 pigeon_imu_;
   private final SwerveModule[] swerve_modules_;
@@ -136,13 +151,28 @@ public class SwerveDrivetrain extends Subsystem {
     // make new io instance
     io_ = new SwerveDrivetrainPeriodicIo();
 
-    // configure chassis server for comms
-    ChassisProxyServer.configureServer();
-
     // Setup the Pigeon IMU
     pigeon_imu_ =
         new Pigeon2(DrivetrainConstants.PIGEON2_ID, DrivetrainConstants.MODULE_CANBUS_NAME[0]);
     pigeon_imu_.optimizeBusUtilization();
+
+    // Begin configuring swerve modules
+    module_locations_ = new Translation2d[modules.length];
+    swerve_modules_ = new SwerveModule[modules.length];
+    io_.module_positions_ = new SwerveModulePosition[modules.length];
+    io_.current_module_states_ = new SwerveModuleState[modules.length];
+    io_.requested_module_states_ = new SwerveModuleState[modules.length];
+
+    // Construct the swerve modules
+    for (int i = 0; i < modules.length; i++) {
+      SwerveModuleConstants module = modules[i];
+      swerve_modules_[i] = new SwerveModule(module, DrivetrainConstants.MODULE_CANBUS_NAME[i]);
+      module_locations_[i] = new Translation2d(module.LocationX, module.LocationY);
+      io_.module_positions_[i] = swerve_modules_[i].getPosition(true);
+      io_.current_module_states_[i] = swerve_modules_[i].getCurrentState();
+      io_.requested_module_states_[i] = swerve_modules_[i].getTargetState();
+    }
+    kinematics_ = new SwerveDriveKinematics(module_locations_);
 
     // PID Controllers
     x_traj_controller_ = Constants.DrivetrainConstants.X_TRAJECTORY_TRANSLATION;
@@ -162,6 +192,13 @@ public class SwerveDrivetrain extends Subsystem {
     SmartDashboard.putData("Tuning/Swerve/Y Pose Controller", y_pose_controller_);
     SmartDashboard.putData("Tuning/Swerve/Heading Pose Controller", heading_pose_controller_);
 
+    SmartDashboard.putNumber(
+        "Subsystems/Swerve/TractorBeamRotationThreshold",
+        Constants.DrivetrainConstants.TRACTOR_BEAM_ROTATION_THRESHOLD);
+    SmartDashboard.putNumber(
+        "Subsystems/Swerve/TractorBeamDistanceThreshold",
+        Constants.DrivetrainConstants.TRACTOR_BEAM_TARGET_DISTANCE);
+
     // NT Publishers
     requested_state_pub_ =
         NetworkTableInstance.getDefault()
@@ -180,24 +217,44 @@ public class SwerveDrivetrain extends Subsystem {
             .getStructTopic("Swerve/Chassis Speeds/Current", ChassisSpeeds.struct)
             .publish();
     
+    SmartDashboard.putData(
+        "Subsystems/Swerve/Overview",
+        new Sendable() {
+          @Override
+          public void initSendable(SendableBuilder builder) {
+            builder.setSmartDashboardType("SwerveDrive");
 
-    // Begin configuring swerve modules
-    module_locations_ = new Translation2d[modules.length];
-    swerve_modules_ = new SwerveModule[modules.length];
-    io_.module_positions_ = new SwerveModulePosition[modules.length];
-    io_.current_module_states_ = new SwerveModuleState[modules.length];
-    io_.requested_module_states_ = new SwerveModuleState[modules.length];
+            builder.addDoubleProperty(
+                "Front Left Angle", () -> io_.current_module_states_[0].angle.getRadians(), null);
+            builder.addDoubleProperty(
+                "Front Left Velocity",
+                () -> io_.current_module_states_[0].speedMetersPerSecond,
+                null);
 
-    // Construct the swerve modules
-    for (int i = 0; i < modules.length; i++) {
-      SwerveModuleConstants module = modules[i];
-      swerve_modules_[i] = new SwerveModule(module, DrivetrainConstants.MODULE_CANBUS_NAME[i]);
-      module_locations_[i] = new Translation2d(module.LocationX, module.LocationY);
-      io_.module_positions_[i] = swerve_modules_[i].getPosition(true);
-      io_.current_module_states_[i] = swerve_modules_[i].getCurrentState();
-      io_.requested_module_states_[i] = swerve_modules_[i].getTargetState();
-    }
-    kinematics_ = new SwerveDriveKinematics(module_locations_);
+            builder.addDoubleProperty(
+                "Front Right Angle", () -> io_.current_module_states_[1].angle.getRadians(), null);
+            builder.addDoubleProperty(
+                "Front Right Velocity",
+                () -> io_.current_module_states_[1].speedMetersPerSecond,
+                null);
+
+            builder.addDoubleProperty(
+                "Back Left Angle", () -> io_.current_module_states_[2].angle.getRadians(), null);
+            builder.addDoubleProperty(
+                "Back Left Velocity",
+                () -> io_.current_module_states_[2].speedMetersPerSecond,
+                null);
+
+            builder.addDoubleProperty(
+                "Back Right Angle", () -> io_.current_module_states_[3].angle.getRadians(), null);
+            builder.addDoubleProperty(
+                "Back Right Velocity",
+                () -> io_.current_module_states_[3].speedMetersPerSecond,
+                null);
+
+            builder.addDoubleProperty("Robot Angle", () -> io_.robot_yaw_.getRadians(), null);
+          }
+        });
 
     // Drive mode requests
     field_centric_ =
@@ -262,9 +319,6 @@ public class SwerveDrivetrain extends Subsystem {
     io_.current_chassis_speeds_ = kinematics_.toChassisSpeeds(io_.current_module_states_);
     io_.requested_chassis_speeds_ = kinematics_.toChassisSpeeds(io_.requested_module_states_);
     io_.current_pose_ = PoseEstimator.getInstance().getRobotPose();
-
-    // recieve new chassis info
-    ChassisProxyServer.updateData();
   }
 
   @Override
@@ -276,9 +330,9 @@ public class SwerveDrivetrain extends Subsystem {
           setControl(
               robot_centric_
                   // Drive forward with negative Y (forward)
-                  .withVelocityX(-io_.joystick_left_y_ * DrivetrainConstants.MAX_DRIVE_SPEED)
+                  .withVelocityX(-io_.joystick_left_y_ * io_.active_max_speed)
                   // Drive left with negative X (left)
-                  .withVelocityY(-io_.joystick_left_x_ * DrivetrainConstants.MAX_DRIVE_SPEED)
+                  .withVelocityY(-io_.joystick_left_x_ * io_.active_max_speed)
                   // Drive counterclockwise with negative X (left)
                   .withRotationalRate(
                       -io_.joystick_right_x_ * DrivetrainConstants.MAX_DRIVE_ANGULAR_RATE));
@@ -289,9 +343,9 @@ public class SwerveDrivetrain extends Subsystem {
           setControl(
               field_centric_
                   // Drive forward with negative Y (forward)
-                  .withVelocityX(-io_.joystick_left_y_ * DrivetrainConstants.MAX_DRIVE_SPEED)
+                  .withVelocityX(-io_.joystick_left_y_ * io_.active_max_speed)
                   // Drive left with negative X (left)
-                  .withVelocityY(-io_.joystick_left_x_ * DrivetrainConstants.MAX_DRIVE_SPEED)
+                  .withVelocityY(-io_.joystick_left_x_ * io_.active_max_speed)
                   // Drive counterclockwise with negative X (left)
                   .withRotationalRate(
                       -io_.joystick_right_x_ * DrivetrainConstants.MAX_DRIVE_ANGULAR_RATE));
@@ -304,12 +358,12 @@ public class SwerveDrivetrain extends Subsystem {
                   // Drive forward with negative Y (forward)
                   .withVelocityX(
                       Util.clamp(
-                          -io_.joystick_left_y_ * DrivetrainConstants.MAX_DRIVE_SPEED,
+                          -io_.joystick_left_y_ * io_.active_max_speed,
                           DrivetrainConstants.MAX_TARGET_SPEED))
                   // Drive left with negative X (left)
                   .withVelocityY(
                       Util.clamp(
-                          -io_.joystick_left_x_ * DrivetrainConstants.MAX_DRIVE_SPEED,
+                          -io_.joystick_left_x_ * io_.active_max_speed,
                           DrivetrainConstants.MAX_TARGET_SPEED))
                   // Set Robots target rotation
                   .withTargetDirection(io_.target_rotation_));
@@ -342,7 +396,7 @@ public class SwerveDrivetrain extends Subsystem {
                       Math.pow(io_.joystick_left_x_, 2)
                           + Math.pow(io_.joystick_left_y_, 2)
                           + Math.pow(io_.joystick_right_x_, 2))
-                  * DrivetrainConstants.MAX_DRIVE_SPEED;
+                  * io_.active_max_speed;
           double x_velocity =
               // Util.clamp(
               x_pose_controller_.calculate(io_.current_pose_.getX(), io_.target_pose_.getX());
@@ -372,26 +426,26 @@ public class SwerveDrivetrain extends Subsystem {
         {
           double ropeEndHandOffThreshold = 0.05;
           double x_velocity =
-              x_pose_controller_.calculate(io_.current_pose_.getX(), io_.tight_rope_pose_A.getX());
+              x_pose_controller_.calculate(io_.current_pose_.getX(), io_.tight_rope_.poseA.getX());
           double y_velocity = 0;
           boolean pastA =
-              io_.current_pose_.getY() > io_.tight_rope_pose_A.getY() + ropeEndHandOffThreshold;
+              io_.current_pose_.getY() > io_.tight_rope_.poseA.getY() + ropeEndHandOffThreshold;
           boolean pastB =
-              io_.current_pose_.getY() < io_.tight_rope_pose_B.getY() - ropeEndHandOffThreshold;
+              io_.current_pose_.getY() < io_.tight_rope_.poseB.getY() - ropeEndHandOffThreshold;
           if (!pastA && !pastB) {
-            y_velocity = -io_.joystick_left_x_ * DrivetrainConstants.MAX_DRIVE_SPEED;
+            y_velocity = -io_.joystick_left_x_ * io_.active_max_speed;
           } else if (pastA) {
             y_velocity =
                 y_pose_controller_.calculate(
-                    io_.current_pose_.getY(), io_.tight_rope_pose_A.getY());
+                    io_.current_pose_.getY(), io_.tight_rope_.poseA.getY());
           } else if (pastB) {
             y_velocity =
                 y_pose_controller_.calculate(
-                    io_.current_pose_.getY(), io_.tight_rope_pose_B.getY());
+                    io_.current_pose_.getY(), io_.tight_rope_.poseB.getY());
           }
           this.setControl(
               field_centric_target_facing_
-                  .withTargetDirection(io_.tight_rope_pose_A.getRotation())
+                  .withTargetDirection(io_.tight_rope_.poseA.getRotation())
                   .withVelocityX(
                       Util.clamp(x_velocity, DrivetrainConstants.MAX_TRACTOR_BEAM_VELOCITY_SPEED))
                   .withVelocityY(
@@ -465,6 +519,7 @@ public class SwerveDrivetrain extends Subsystem {
     SmartDashboard.putNumber(
         "Subsystems/Swerve/BR Encoder",
         Units.rotationsToDegrees(swerve_modules_[3].getEncoderValue()));
+    SmartDashboard.putNumber("Subsystems/Swerve/Active Max Speed", io_.active_max_speed);
   }
 
   public Command applyRequest(Supplier<SwerveRequest> requestSupplier) {
@@ -595,23 +650,30 @@ public class SwerveDrivetrain extends Subsystem {
   }
 
   /**
-   * Sets the target rope points and rotation and begins TIGHT_ROPE mode !! Only locks to the line
-   * along the Y axis !! pointA must have a --- Y than pointB
-   *
-   * @param pointA endA of the rope (this rotation is used to set the robot rotation)
-   * @param pointB endB of the rope
+   * @return if robot at its target Tractoy Beam Pose
    */
-  public void setTightRope(Pose2d pointA, Pose2d pointB) {
-    io_.drive_mode_ = DriveMode.TIGHT_ROPE;
-    io_.tight_rope_pose_A = pointA;
-    io_.tight_rope_pose_B = pointB;
+  public boolean atTractorBeamPose() {
+    return Util.epislonEquals(
+        io_.current_pose_,
+        io_.target_pose_,
+        SmartDashboard.getNumber(
+            "Subsystems/Swerve/TractorBeamRotationThreshold",
+            Constants.DrivetrainConstants.TRACTOR_BEAM_ROTATION_THRESHOLD),
+        SmartDashboard.getNumber(
+            "Subsystems/Swerve/TractorBeamDistanceThreshold",
+            Constants.DrivetrainConstants.TRACTOR_BEAM_TARGET_DISTANCE));
   }
 
-  /** Sets the target rope points and rotation and begins TIGHT_ROPE mode */
+  /**
+   * Sets the target rope points and rotation and begins TIGHT_ROPE mode !! Only locks to the line
+   * along the Y axis !! pointA must have a higher Y than pointB pointA rotation is used to set the
+   * robot rotation
+   *
+   * @param TightRope
+   */
   public void setTightRope(TightRope trightrope) {
     io_.drive_mode_ = DriveMode.TIGHT_ROPE;
-    io_.tight_rope_pose_A = trightrope.poseA;
-    io_.tight_rope_pose_B = trightrope.poseB;
+    io_.tight_rope_ = trightrope;
   }
 
   /**
@@ -625,10 +687,20 @@ public class SwerveDrivetrain extends Subsystem {
   }
 
   /**
+   * alows the selction of max speed presets
+   *
+   * @param preset
+   */
+  public void setActiveSpeed(SpeedPresets preset) {
+    io_.active_max_speed = DrivetrainConstants.MAX_DRIVE_SPEED * preset.speed_limit;
+  }
+
+  /**
    * Plain-Old-Data class holding the state of the swerve drivetrain. This encapsulates most data
    * that is relevant for telemetry or decision-making from the Swerve Drive.
    */
   public class SwerveDrivetrainPeriodicIo implements Logged {
+    @Log.File public double active_max_speed = DrivetrainConstants.MAX_DRIVE_SPEED;
     @Log.File public SwerveModuleState[] current_module_states_, requested_module_states_;
     @Log.File public SwerveModulePosition[] module_positions_;
     @Log.File public DriveMode drive_mode_ = DriveMode.IDLE;
@@ -645,8 +717,9 @@ public class SwerveDrivetrain extends Subsystem {
     @Log.File public double tractor_beam_scaling_factor_ = 0.0;
     @Log.File public Pose2d current_pose_ = new Pose2d();
     @Log.File public Pose2d target_pose_ = new Pose2d();
-    @Log.File public Pose2d tight_rope_pose_A = new Pose2d();
-    @Log.File public Pose2d tight_rope_pose_B = new Pose2d();
+
+    @Log.File
+    public TightRope tight_rope_ = new TightRope(new Pose2d(), new Pose2d(), "Defalut drivetrain");
 
     @Log.File
     public SwerveSample target_sample_ = new SwerveSample(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, null, null);

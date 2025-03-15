@@ -4,11 +4,10 @@
 
 package frc.robot.commands;
 
-import edu.wpi.first.wpilibj2.command.Command;
+import frc.lib.ElevatorTargets.Target;
 import frc.lib.FieldRegions;
 import frc.lib.ScoringPoses;
-import frc.robot.Constants;
-import frc.robot.Constants.ElevatorConstants.Target;
+import frc.mw_lib.command.LazyCommand;
 import frc.robot.subsystems.Claw;
 import frc.robot.subsystems.Claw.ClawMode;
 import frc.robot.subsystems.Claw.GamePiece;
@@ -16,36 +15,39 @@ import frc.robot.subsystems.Elevator;
 import frc.robot.subsystems.Elevator.SpeedLimit;
 import frc.robot.subsystems.PoseEstimator;
 import frc.robot.subsystems.SwerveDrivetrain;
+import frc.robot.subsystems.SwerveDrivetrain.SpeedPresets;
 
-public class CoralStation extends Command {
+public class CoralStation extends LazyCommand {
 
   static Elevator elevator_;
 
   /** Creates a new CoralStationLoad. */
   public CoralStation() {
+    super(0.5);
     elevator_ = Elevator.getInstance();
     addRequirements(elevator_);
+    setName(this.getClass().getSimpleName());
   }
 
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    elevator_.setSpeedLimit(SpeedLimit.CORAL);
-    elevator_.setTarget(Constants.ElevatorConstants.Target.STATION);
+    Elevator.getInstance().setSpeedLimit(SpeedLimit.CORAL);
+    Elevator.getInstance().setTarget(Target.STATION);
     Claw.getInstance().setGamePiece(GamePiece.CORAL);
     Claw.getInstance().setClawMode(ClawMode.LOAD);
+    this.timerReset();
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-
-    // if in zone
-    if (FieldRegions.STATION_REGIONS[1].contains(PoseEstimator.getInstance().getRobotPose())) {
+    if (FieldRegions.LEFT_CORAL_STATION_REGION.contains(
+        PoseEstimator.getInstance().getRobotPose())) {
       SwerveDrivetrain.getInstance()
           .setTargetRotation(ScoringPoses.LEFT_CORAL_STATION_POSE.getRotation());
 
-    } else if (FieldRegions.STATION_REGIONS[0].contains(
+    } else if (FieldRegions.RIGHT_CORAL_STATION_REGION.contains(
         PoseEstimator.getInstance().getRobotPose())) {
       SwerveDrivetrain.getInstance()
           .setTargetRotation(ScoringPoses.RIGHT_CORAL_STATION_POSE.getRotation());
@@ -53,23 +55,29 @@ public class CoralStation extends Command {
     } else {
       SwerveDrivetrain.getInstance().restoreDefaultDriveMode();
     }
-    // then pull tag rotation
 
-    // then set target angle based on rotation
-
+    if (FieldRegions.LEFT_CORAL_STATION_SLOW_REGION.contains(
+            PoseEstimator.getInstance().getRobotPose())
+        || FieldRegions.RIGHT_CORAL_STATION_SLOW_REGION.contains(
+            PoseEstimator.getInstance().getRobotPose())) {
+      SwerveDrivetrain.getInstance().setActiveSpeed(SpeedPresets.ONE_THIRD_SPEED);
+    } else {
+      SwerveDrivetrain.getInstance().setActiveSpeed(SpeedPresets.MAX_SPEED);
+    }
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
     SwerveDrivetrain.getInstance().restoreDefaultDriveMode();
+    SwerveDrivetrain.getInstance().setActiveSpeed(SpeedPresets.MAX_SPEED);
     Claw.getInstance().setClawMode(ClawMode.IDLE);
     Elevator.getInstance().setTarget(Target.STOW);
   }
 
   // Returns true when the command should end.
   @Override
-  public boolean isFinished() {
-    return false;
+  public boolean isConditionMet() {
+    return Claw.getInstance().hasCoral();
   }
 }

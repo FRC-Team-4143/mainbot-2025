@@ -1,11 +1,15 @@
 package frc.robot.subsystems;
 
+import static frc.robot.Constants.Vision.TAG_LAYOUT;
+
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.networktables.NetworkTableInstance;
+import edu.wpi.first.networktables.StructArrayPublisher;
 import edu.wpi.first.networktables.StructPublisher;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -14,6 +18,8 @@ import frc.mw_lib.geometry.PolygonRegion;
 import frc.mw_lib.geometry.Region;
 import frc.mw_lib.subsystem.Subsystem;
 import frc.robot.Vision;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 import monologue.Annotations.Log;
 import monologue.Logged;
@@ -35,6 +41,7 @@ public class PoseEstimator extends Subsystem {
   private SwerveDrivePoseEstimator vision_filtered_odometry_;
   private StructPublisher<Pose2d> cam_pose_pub_;
   private StructPublisher<Pose2d> robot_pose_pub_;
+  private StructArrayPublisher<Pose3d> used_tags_pub_;
 
   int update_counter_ = 2;
   double[] vision_std_devs_ = {1, 1, 1};
@@ -51,6 +58,10 @@ public class PoseEstimator extends Subsystem {
         NetworkTableInstance.getDefault()
             .getStructTopic("PoseEstimation/Robot Pose", Pose2d.struct)
             .publish();
+    used_tags_pub_ =
+        NetworkTableInstance.getDefault()
+            .getStructArrayTopic("PoseEstimation/Tags Detected", Pose3d.struct)
+            .publish();
   }
 
   @Override
@@ -65,39 +76,59 @@ public class PoseEstimator extends Subsystem {
 
   @Override
   public void readPeriodicInputs(double timestamp) {
-    // Correct pose estimate with vision measurements from Photonvision
-    io_.vision_data_packet_ = Vision.getInstance().getEstimatedGlobalPose();
+    if (io_.vision_data_packet_.size() < Vision.getInstance().getNumCameras()) {
+      io_.vision_data_packet_.ensureCapacity(Vision.getInstance().getNumCameras());
+      for (int i = 0; i < Vision.getInstance().getNumCameras(); i++) {
+        io_.vision_data_packet_.add(null);
+      }
+    }
+
+    for (int i = 0; i < Vision.getInstance().getNumCameras(); i++) {
+      io_.vision_data_packet_.set(i, Vision.getInstance().getEstimatedGlobalPose(i));
+    }
   }
 
   // Make a subscriber, integate vision measurements wpilib method on the new
   // odometry, getLastChange?
   @Override
   public void updateLogic(double timestamp) {
-    io_.vision_data_packet_.ifPresentOrElse(
-        est -> {
-          // Change our trust in the measurement based on the tags we can see
-          var estStdDevs = Vision.getInstance().getEstimationStdDevs();
+    for (int i = 0; i < io_.vision_data_packet_.size(); i++) {
+      if (io_.vision_data_packet_.get(i).isPresent()) {
+        var est = io_.vision_data_packet_.get(i).get();
 
-          var est_timestamp = est.timestampSeconds;
-          var latency = timestamp - est_timestamp;
-          SmartDashboard.putNumber("Subsystems/PoseEstimator/Vision Latency", latency);
-          if (latency < 0 || latency > .05) {
-            // keep latency sane
-            latency = .05;
-            est_timestamp = timestamp - latency;
-          }
-          io_.raw_vision_pose_ = Optional.of(est.estimatedPose.toPose2d());
+        // Change our trust in the measurement based on the tags we can see
+        var estStdDevs = Vision.getInstance().getEstimationStdDevs();
 
-          vision_filtered_odometry_.addVisionMeasurement(
-              io_.raw_vision_pose_.get(), est_timestamp, estStdDevs);
-        },
-        () -> io_.raw_vision_pose_ = Optional.empty());
+        var est_timestamp = est.timestampSeconds;
+        var latency = timestamp - est_timestamp;
+        SmartDashboard.putNumber("Subsystems/PoseEstimator/Vision Latency", latency);
+        if (latency < 0 || latency > .05) {
+          // keep latency sane
+          latency = .05;
+          est_timestamp = timestamp - latency;
+        }
+        io_.raw_vision_pose_ = Optional.of(est.estimatedPose.toPose2d());
 
-    io_.filtered_vision_pose_ =
-        vision_filtered_odometry_.updateWithTime(
-            timestamp,
-            SwerveDrivetrain.getInstance().getImuYaw(),
-            SwerveDrivetrain.getInstance().getModulePositions());
+        vision_filtered_odometry_.addVisionMeasurement(
+            io_.raw_vision_pose_.get(), est_timestamp, estStdDevs);
+
+        if (io_.detected_tags_.size() <= i) {
+          io_.detected_tags_.add(new ArrayList<>());
+        }
+        io_.detected_tags_.get(i).clear();
+        for (var target : est.targetsUsed) {
+          io_.detected_tags_.get(i).add(TAG_LAYOUT.getTagPose(target.fiducialId).get());
+        }
+      } else {
+        io_.raw_vision_pose_ = Optional.empty();
+      }
+
+      io_.filtered_vision_pose_ =
+          vision_filtered_odometry_.updateWithTime(
+              timestamp,
+              SwerveDrivetrain.getInstance().getImuYaw(),
+              SwerveDrivetrain.getInstance().getModulePositions());
+    }
   }
 
   @Override
@@ -106,9 +137,16 @@ public class PoseEstimator extends Subsystem {
   @Override
   public void outputTelemetry(double timestamp) {
     field_.setRobotPose(io_.filtered_vision_pose_);
-    if (io_.raw_vision_pose_.isPresent()) cam_pose_pub_.set(io_.raw_vision_pose_.get());
+    io_.raw_vision_pose_.ifPresent((pose) -> cam_pose_pub_.set(pose));
     robot_pose_pub_.set(io_.filtered_vision_pose_);
     SmartDashboard.putData("Subsystems/PoseEstimator/Field", field_);
+    // Publish Detected Tags as Vision Targets
+    ArrayList<Pose3d> allTags = new ArrayList<>();
+    for (List<Pose3d> array : io_.detected_tags_) allTags.addAll(array);
+
+    Pose3d[] tags = new Pose3d[allTags.size()];
+    tags = allTags.toArray(tags);
+    used_tags_pub_.set(tags);
   }
 
   public Field2d getFieldWidget() {
@@ -148,7 +186,7 @@ public class PoseEstimator extends Subsystem {
    */
   public Optional<Region> loadStationRegion() {
     for (PolygonRegion region : FieldRegions.STATION_REGIONS) {
-      if (region.contains(io_.filtered_vision_pose_)) {
+      if (region.contains(getRobotPose())) {
         return Optional.of(region);
       }
     }
@@ -162,11 +200,24 @@ public class PoseEstimator extends Subsystem {
    */
   public Optional<Region> algaeRegion() {
     for (PolygonRegion region : FieldRegions.ALGAE_REGIONS) {
-      if (region.contains(io_.filtered_vision_pose_)) {
+      if (region.contains(getRobotPose())) {
         return Optional.of(region);
       }
     }
     return Optional.empty();
+  }
+
+  public boolean isBargeZone() {
+    return FieldRegions.BARGE_REGION.contains(getRobotPose());
+  }
+
+  public boolean isProcessorZone() {
+    return FieldRegions.PROCESSOR_REGION.contains(getRobotPose());
+  }
+
+  public boolean isStationZone() {
+    return FieldRegions.LEFT_CORAL_STATION_REGION.contains(getRobotPose())
+        || FieldRegions.RIGHT_CORAL_STATION_REGION.contains(getRobotPose());
   }
 
   /**
@@ -176,7 +227,7 @@ public class PoseEstimator extends Subsystem {
    */
   public Optional<Region> reefPose() {
     for (PolygonRegion region : FieldRegions.REEF_REGIONS) {
-      if (region.contains(io_.filtered_vision_pose_)) {
+      if (region.contains(getRobotPose())) {
         return Optional.of(region);
       }
     }
@@ -186,7 +237,12 @@ public class PoseEstimator extends Subsystem {
   public class PoseEstimatorPeriodicIo implements Logged {
     @Log.File public Pose2d filtered_vision_pose_ = new Pose2d();
     @Log.File public Optional<Pose2d> raw_vision_pose_ = Optional.empty();
-    @Log.File public Optional<EstimatedRobotPose> vision_data_packet_ = Optional.empty();
+
+    @Log.File
+    public ArrayList<Optional<EstimatedRobotPose>> vision_data_packet_ =
+        new ArrayList<Optional<EstimatedRobotPose>>();
+
+    @Log.File public List<List<Pose3d>> detected_tags_ = new ArrayList<>();
   }
 
   @Override

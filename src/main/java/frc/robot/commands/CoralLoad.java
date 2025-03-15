@@ -4,33 +4,33 @@
 
 package frc.robot.commands;
 
-import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.Constants.ElevatorConstants.Target;
+import frc.lib.ElevatorTargets.Target;
+import frc.mw_lib.command.LazyCommand;
 import frc.robot.subsystems.Claw;
 import frc.robot.subsystems.Claw.ClawMode;
 import frc.robot.subsystems.Claw.GamePiece;
 import frc.robot.subsystems.Elevator;
 import frc.robot.subsystems.Elevator.SpeedLimit;
 
-public class CoralLoad extends Command {
-  static Claw claw_;
-
+public class CoralLoad extends LazyCommand {
   /** Creates a new ExampleLazyCommand. */
   public CoralLoad() {
     // Creates a new LazyCommand with the selected amount of seconds(double) to wait
     // before allowing
     // the lazy command to end
-    claw_ = Claw.getInstance();
-    addRequirements(claw_, Elevator.getInstance());
+    super(0.5);
+    addRequirements(Claw.getInstance(), Elevator.getInstance());
+    setName(this.getClass().getSimpleName());
   }
 
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    claw_.setGamePiece(GamePiece.CORAL);
-    claw_.setClawMode(ClawMode.LOAD);
+    Claw.getInstance().setGamePiece(GamePiece.CORAL);
+    Claw.getInstance().setClawMode(ClawMode.LOAD);
     Elevator.getInstance().setTarget(Target.STATION);
     Elevator.getInstance().setSpeedLimit(SpeedLimit.CORAL);
+    this.timerReset();
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -40,7 +40,7 @@ public class CoralLoad extends Command {
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    claw_.setClawMode(ClawMode.IDLE);
+    Claw.getInstance().setClawMode(ClawMode.IDLE);
     Elevator.getInstance().setTarget(Target.STOW);
   }
 
@@ -48,7 +48,7 @@ public class CoralLoad extends Command {
   // COMMAND WILL END IF
   // THIS IS TRUE & THE TIME HAS ELAPSED*}
   @Override
-  public boolean isFinished() {
-    return false;
+  public boolean isConditionMet() {
+    return Claw.getInstance().hasCoral();
   }
 }

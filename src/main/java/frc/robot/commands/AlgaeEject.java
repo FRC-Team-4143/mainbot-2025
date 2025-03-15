@@ -17,6 +17,7 @@ public class AlgaeEject extends Command {
   public AlgaeEject() {
     claw_ = Claw.getInstance();
     addRequirements(claw_);
+    setName(this.getClass().getSimpleName());
   }
 
   // Called when the command is initially scheduled.

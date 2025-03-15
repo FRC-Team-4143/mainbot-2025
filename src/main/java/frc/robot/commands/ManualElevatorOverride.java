@@ -5,7 +5,7 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.Constants.ElevatorConstants.Target;
+import frc.lib.ElevatorTargets.Target;
 import frc.robot.subsystems.Claw;
 import frc.robot.subsystems.Claw.GamePiece;
 import frc.robot.subsystems.Elevator;
@@ -28,6 +28,7 @@ public class ManualElevatorOverride extends Command {
   public ManualElevatorOverride(Level level) {
     level_ = level;
     addRequirements(Elevator.getInstance());
+    setName(this.getClass().getSimpleName());
   }
 
   // Called when the command is initially scheduled.
