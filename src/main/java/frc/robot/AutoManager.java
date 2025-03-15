@@ -85,4 +85,9 @@ public class AutoManager {
         .getObject("Selected Auto")
         .setPoses(selected_auto.getPath());
   }
+
+  /** Removes the Selected Auto object */
+  public void removeDisplayedAuto() {
+    PoseEstimator.getInstance().getFieldWidget().getObject("Selected Auto").setPoses();
+  }
 }

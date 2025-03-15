@@ -518,7 +518,7 @@
       }
     },
     {
-      "name": "Telop",
+      "name": "Teleop",
       "grid_layout": {
         "layouts": [
           {

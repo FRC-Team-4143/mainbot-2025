@@ -85,6 +85,8 @@ public class Robot extends TimedRobot {
   public void teleopInit() {
     SwerveDrivetrain.getInstance().restoreDefaultDriveMode();
     CommandScheduler.getInstance().cancelAll();
+    AutoManager.getInstance().removeDisplayedAuto();
+    Elastic.selectTab("Teleop");
   }
 
   @Override
