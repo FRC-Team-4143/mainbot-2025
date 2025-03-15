@@ -8,7 +8,6 @@ import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.signals.GravityTypeValue;
 import com.ctre.phoenix6.signals.InvertedValue;
 import edu.wpi.first.apriltag.AprilTagFieldLayout;
-import edu.wpi.first.apriltag.AprilTagFields;
 import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.controller.PIDController;
@@ -24,6 +23,7 @@ import frc.mw_lib.swerve.utility.ModuleType;
 import frc.mw_lib.util.CameraConstants;
 import frc.mw_lib.util.ConstantsLoader;
 import java.util.List;
+import frc.mw_lib.util.TagLayouts;
 
 /**
  * The Constants class provides a convenient place for teams to hold robot-wide numerical or boolean
@@ -42,7 +42,7 @@ public final class Constants {
 
     // The layout of the AprilTags on the field
     public static final AprilTagFieldLayout TAG_LAYOUT =
-        AprilTagFieldLayout.loadField(AprilTagFields.kDefaultField);
+        TagLayouts.getTagLayoutFromPath("apriltagLayouts/onlyReef.json");
 
     // The standard deviations of our vision estimated poses, which affect
     // correction rate

@@ -18,6 +18,8 @@ import frc.robot.commands.ElevatorL4Target;
 import frc.robot.commands.GamePieceEject;
 import frc.robot.commands.GamePieceLoad;
 import frc.robot.commands.SwerveProfile;
+import frc.robot.commands.ManualElevatorOverride;
+import frc.robot.commands.ManualElevatorOverride.Level;
 import frc.robot.subsystems.Claw;
 import frc.robot.subsystems.Climber;
 import frc.robot.subsystems.Elevator;
@@ -150,7 +152,14 @@ public abstract class OI {
         .povRight()
         .onTrue(Commands.runOnce(() -> Elevator.getInstance().setOffset(OffsetType.ARM_CW)));
 
-    operator_controller_.start().whileTrue(new SwerveProfile(2.5, 0, 0));
+    operator_controller_
+        .start()
+        .onTrue(
+            Commands.runOnce(() -> SmartDashboard.putBoolean("Vision/Use Vision Features", true)));
+    operator_controller_
+        .back()
+        .onTrue(
+            Commands.runOnce(() -> SmartDashboard.putBoolean("Vision/Use Vision Features", false)));
   }
 
   /**
