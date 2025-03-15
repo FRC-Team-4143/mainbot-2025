@@ -108,14 +108,14 @@
     },
     "vision": {
         "camera0": {
-            "NAME": "OV9281-9",
+            "NAME": "PC_Camera",
             "location": {
-                "X": 7.5,
-                "Y": -7,
-                "Z": 8.25,
+                "X": -10,
+                "Y": -9,
+                "Z": 8,
                 "ROLL": 0,
-                "PITCH": 0,
-                "YAW": 0
+                "PITCH": -14,
+                "YAW": 15
             }
         },
         "camera1": {
