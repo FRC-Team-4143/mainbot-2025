@@ -16,6 +16,7 @@ import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.motorcontrol.Spark;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.lib.ElevatorTargets.Target;
+import frc.mw_lib.logging.Elastic;
 import frc.mw_lib.subsystem.Subsystem;
 import frc.robot.Constants;
 import monologue.Annotations.Log;
@@ -76,16 +77,17 @@ public class Climber extends Subsystem {
     strap_config_.MotorOutput.NeutralMode = NeutralModeValue.Brake;
 
     prong_counter_ = new Counter(Constants.ClimberConstants.PRONG_COUNTER_ID);
-    prong_controller_ =
-        new PIDController(
-            Constants.ClimberConstants.PRONG_P, 0, Constants.ClimberConstants.PRONG_D);
+    prong_controller_ = new PIDController(
+        Constants.ClimberConstants.PRONG_P, 0, Constants.ClimberConstants.PRONG_D);
 
     reset();
   }
 
   /**
-   * This function should be logic and code to fully reset your subsystem. This is called during
-   * initialization, and should handle I/O configuration and initializing data members.
+   * This function should be logic and code to fully reset your subsystem. This is
+   * called during
+   * initialization, and should handle I/O configuration and initializing data
+   * members.
    */
   @Override
   public void reset() {
@@ -93,16 +95,21 @@ public class Climber extends Subsystem {
   }
 
   /**
-   * Inside this function, all of the SENSORS should be read into variables stored in the PeriodicIO
-   * class defined below. There should be no calls to output to actuators, or any logic within this
+   * Inside this function, all of the SENSORS should be read into variables stored
+   * in the PeriodicIO
+   * class defined below. There should be no calls to output to actuators, or any
+   * logic within this
    * function.
    */
   @Override
-  public void readPeriodicInputs(double timestamp) {}
+  public void readPeriodicInputs(double timestamp) {
+  }
 
   /**
-   * Inside this function, all of the LOGIC should compute updates to output variables in the
-   * PeriodicIO class defined below. There should be no calls to read from sensors or write to
+   * Inside this function, all of the LOGIC should compute updates to output
+   * variables in the
+   * PeriodicIO class defined below. There should be no calls to read from sensors
+   * or write to
    * actuators in this function.
    */
   @Override
@@ -153,8 +160,10 @@ public class Climber extends Subsystem {
   }
 
   /**
-   * Inside this function actuator OUTPUTS should be updated from data contained in the PeriodicIO
-   * class defined below. There should be little to no logic contained within this function, and no
+   * Inside this function actuator OUTPUTS should be updated from data contained
+   * in the PeriodicIO
+   * class defined below. There should be little to no logic contained within this
+   * function, and no
    * sensors should be read.
    */
   @Override
@@ -165,9 +174,12 @@ public class Climber extends Subsystem {
   }
 
   /**
-   * Inside this function telemetry should be output to smartdashboard. The data should be collected
-   * out of the PeriodicIO class instance defined below. There should be no sensor information read
-   * in this function nor any outputs made to actuators within this function. Only publish to
+   * Inside this function telemetry should be output to smartdashboard. The data
+   * should be collected
+   * out of the PeriodicIO class instance defined below. There should be no sensor
+   * information read
+   * in this function nor any outputs made to actuators within this function. Only
+   * publish to
    * smartdashboard here.
    */
   @Override
@@ -185,6 +197,7 @@ public class Climber extends Subsystem {
         prong_counter_.reset();
         io_.current_mode_ = ClimberMode.PRECLIMB;
         Elevator.getInstance().setTarget(Target.CLIMB);
+        Elastic.selectTab("Climb");
         break;
       case PRECLIMB:
         io_.current_mode_ = ClimberMode.STAGING;
@@ -205,6 +218,7 @@ public class Climber extends Subsystem {
       case PRECLIMB:
         io_.current_mode_ = ClimberMode.DISABLED;
         Elevator.getInstance().setTarget(Target.STOW);
+        Elastic.selectTab("Teleop");
         break;
       default:
         DriverStation.reportError("NO", false);
@@ -213,11 +227,16 @@ public class Climber extends Subsystem {
   }
 
   public class ClimberPeriodicIo implements Logged {
-    @Log.File public double strap_motor_target = 0;
-    @Log.File public double prong_motor_target = 0;
-    @Log.File public double arm_motor_target = 0;
-    @Log.File public ClimberMode current_mode_ = ClimberMode.DISABLED;
-    @Log.File public double deploying_start_time_ = 0;
+    @Log.File
+    public double strap_motor_target = 0;
+    @Log.File
+    public double prong_motor_target = 0;
+    @Log.File
+    public double arm_motor_target = 0;
+    @Log.File
+    public ClimberMode current_mode_ = ClimberMode.DISABLED;
+    @Log.File
+    public double deploying_start_time_ = 0;
   }
 
   @Override
