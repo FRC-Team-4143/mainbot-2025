@@ -37,7 +37,7 @@ import frc.mw_lib.util.Util;
 import frc.robot.Constants.ArmConstants;
 import frc.robot.Constants.ElevatorConstants;
 import frc.robot.OI;
-import frc.robot.commands.SetDefaultPose;
+import frc.robot.commands.SetDefaultStow;
 import java.util.function.BooleanSupplier;
 import monologue.Annotations.Log;
 import monologue.Logged;
@@ -197,7 +197,7 @@ public class Elevator extends Subsystem {
 
   /** Called to reset and configure the subsystem */
   public void reset() {
-    setDefaultCommand(new SetDefaultPose());
+    setDefaultCommand(new SetDefaultStow());
   }
 
   /** Reads all sensors and stores periodic data */
@@ -319,6 +319,9 @@ public class Elevator extends Subsystem {
    * @return If the arm is within the threshold of its target
    */
   public boolean isArmAtTarget() {
+    if(io_.target_.getStagingArmAngle().isPresent() && isArmAtStagingAngle()) {
+      return false;
+    }
     return Util.epislonEquals(
         io_.current_arm_angle_,
         io_.target_arm_angle_.getRadians(),
