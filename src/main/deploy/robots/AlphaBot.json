@@ -91,8 +91,8 @@
         "CONTROLLER_V": 0.11733,
         "CONTROLLER_A": 0.0070285,
         "CONTROLLER_G": 0.43,
-        "HEIGHT_PIVOT_MIN":28.375,
-        "HEIGHT_PIVOT_MAX":81,
+        "HEIGHT_PIVOT_MIN":28.5,
+        "HEIGHT_PIVOT_MAX":82.25,
         "ELEVATOR_GEAR_RATIO":9
     },
     "arm": {
@@ -103,8 +103,8 @@
         "CONTROLLER_V": 9.2434,
         "CONTROLLER_A": 0.36146,
         "CONTROLLER_G": 0.27387,
-        "LENGTH_PIVOT_TO_FUNNEL":12,
-        "DEPTH_CORAL_POCKET":8.875
+        "LENGTH_PIVOT_TO_FUNNEL":13,
+        "DEPTH_CORAL_POCKET":10
     },
     "vision": {
         "camera0": {

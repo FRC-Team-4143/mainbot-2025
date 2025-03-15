@@ -7,11 +7,10 @@ package frc.robot.commands;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.subsystems.Claw;
 import frc.robot.subsystems.Elevator;
 import frc.robot.subsystems.GameStateManager;
-import frc.robot.subsystems.GameStateManager.Column;
-import frc.robot.subsystems.GameStateManager.ReefScoringTarget;
 import frc.robot.subsystems.GameStateManager.RobotState;
 import frc.robot.subsystems.SwerveDrivetrain;
 
@@ -20,26 +19,20 @@ import frc.robot.subsystems.SwerveDrivetrain;
 // https://docs.wpilib.org/en/stable/docs/software/commandbased/convenience-features.html
 public class AutoCoralReefScore extends SequentialCommandGroup {
   /** Creates a new AutoScoreCoral. */
-  public AutoCoralReefScore(ReefScoringTarget level, Column column) {
+  public AutoCoralReefScore() {
     // Add your commands in the addCommands() call, e.g.
     // addCommands(new FooCommand(), new BarCommand());
     addCommands(
-        new GetToReefTarget(level, column),
-        new CoralEject().withTimeout(0.5),
+        new GetToReefTarget(),
+        new CoralEject().withTimeout(0.5).beforeStarting(new WaitCommand(0.2)),
         Commands.runOnce(() -> GameStateManager.getInstance().setRobotState(RobotState.END)));
 
     setName(this.getClass().getSimpleName());
   }
 
   public class GetToReefTarget extends Command {
-    /** Creates a new GetToReefTarget. */
-    private ReefScoringTarget target_level;
 
-    private Column target_column;
-
-    public GetToReefTarget(ReefScoringTarget level, Column column) {
-      this.target_column = column;
-      this.target_level = level;
+    public GetToReefTarget() {
 
       // Use addRequirements() here to declare subsystem dependencies.
       addRequirements(Elevator.getInstance());
@@ -52,8 +45,6 @@ public class AutoCoralReefScore extends SequentialCommandGroup {
     // Called when the command is initially scheduled.
     @Override
     public void initialize() {
-      GameStateManager.getInstance().setScoringColum(target_column, false);
-      GameStateManager.getInstance().setScoringTarget(target_level, false);
       GameStateManager.getInstance().setRobotState(RobotState.TARGET_ACQUISITION);
     }
 
