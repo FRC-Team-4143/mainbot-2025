@@ -46,24 +46,15 @@ import monologue.Logged;
 /**
  * Swerve Drive class utilizing CTR Electronics' Phoenix 6 API.
  *
- * <p>
- * This class handles the kinematics, configuration, and odometry of a swerve
- * drive utilizing CTR
- * Electronics devices. We recommend that users use the Swerve Mechanism
- * Generator in Tuner X to
+ * <p>This class handles the kinematics, configuration, and odometry of a swerve drive utilizing CTR
+ * Electronics devices. We recommend that users use the Swerve Mechanism Generator in Tuner X to
  * create a template project that demonstrates how to use this class.
  *
- * <p>
- * This class will construct the hardware devices internally, so the user only
- * specifies the
- * constants (IDs, PID gains, gear ratios, etc). Getters for these hardware
- * devices are available.
+ * <p>This class will construct the hardware devices internally, so the user only specifies the
+ * constants (IDs, PID gains, gear ratios, etc). Getters for these hardware devices are available.
  *
- * <p>
- * If using the generator, the order in which modules are constructed is Front
- * Left, Front Right,
- * Back Left, Back Right. This means if you need the Back Left module, call
- * {@code getModule(2);} to
+ * <p>If using the generator, the order in which modules are constructed is Front Left, Front Right,
+ * Back Left, Back Right. This means if you need the Back Left module, call {@code getModule(2);} to
  * get the 3rd index (0-indexed) module, corresponding to the Back Left module.
  */
 public class SwerveDrivetrain extends Subsystem {
@@ -71,11 +62,12 @@ public class SwerveDrivetrain extends Subsystem {
 
   public static SwerveDrivetrain getInstance() {
     if (instance_ == null) {
-      instance_ = new SwerveDrivetrain(
-          DrivetrainConstants.FL_MODULE_CONSTANTS,
-          DrivetrainConstants.FR_MODULE_CONSTANTS,
-          DrivetrainConstants.BL_MODULE_CONSTANTS,
-          DrivetrainConstants.BR_MODULE_CONSTANTS);
+      instance_ =
+          new SwerveDrivetrain(
+              DrivetrainConstants.FL_MODULE_CONSTANTS,
+              DrivetrainConstants.FR_MODULE_CONSTANTS,
+              DrivetrainConstants.BL_MODULE_CONSTANTS,
+              DrivetrainConstants.BR_MODULE_CONSTANTS);
     }
     return instance_;
   }
@@ -104,7 +96,8 @@ public class SwerveDrivetrain extends Subsystem {
 
     private SpeedPresets(double val) {
       speed_limit = val;
-    };
+    }
+    ;
 
     public final double speed_limit;
   }
@@ -148,11 +141,8 @@ public class SwerveDrivetrain extends Subsystem {
   /**
    * Constructs a SwerveDrivetrain using the specified constants.
    *
-   * <p>
-   * This constructs the underlying hardware devices, so user should not construct
-   * the devices
-   * themselves. If they need the devices, they can access them through getters in
-   * the classes.
+   * <p>This constructs the underlying hardware devices, so user should not construct the devices
+   * themselves. If they need the devices, they can access them through getters in the classes.
    *
    * @param modules Constants for each specific module
    */
@@ -162,7 +152,8 @@ public class SwerveDrivetrain extends Subsystem {
     io_ = new SwerveDrivetrainPeriodicIo();
 
     // Setup the Pigeon IMU
-    pigeon_imu_ = new Pigeon2(DrivetrainConstants.PIGEON2_ID, DrivetrainConstants.MODULE_CANBUS_NAME[0]);
+    pigeon_imu_ =
+        new Pigeon2(DrivetrainConstants.PIGEON2_ID, DrivetrainConstants.MODULE_CANBUS_NAME[0]);
     pigeon_imu_.optimizeBusUtilization();
 
     // Begin configuring swerve modules
@@ -209,18 +200,22 @@ public class SwerveDrivetrain extends Subsystem {
         Constants.DrivetrainConstants.TRACTOR_BEAM_TARGET_DISTANCE);
 
     // NT Publishers
-    requested_state_pub_ = NetworkTableInstance.getDefault()
-        .getStructArrayTopic("Swerve/Module States/Request", SwerveModuleState.struct)
-        .publish();
-    current_state_pub_ = NetworkTableInstance.getDefault()
-        .getStructArrayTopic("Swerve/Module States/Current", SwerveModuleState.struct)
-        .publish();
-    requested_chassis_speeds_pub_ = NetworkTableInstance.getDefault()
-        .getStructTopic("Swerve/Chassis Speeds/Request", ChassisSpeeds.struct)
-        .publish();
-    current_chassis_speeds_pub_ = NetworkTableInstance.getDefault()
-        .getStructTopic("Swerve/Chassis Speeds/Current", ChassisSpeeds.struct)
-        .publish();
+    requested_state_pub_ =
+        NetworkTableInstance.getDefault()
+            .getStructArrayTopic("Swerve/Module States/Request", SwerveModuleState.struct)
+            .publish();
+    current_state_pub_ =
+        NetworkTableInstance.getDefault()
+            .getStructArrayTopic("Swerve/Module States/Current", SwerveModuleState.struct)
+            .publish();
+    requested_chassis_speeds_pub_ =
+        NetworkTableInstance.getDefault()
+            .getStructTopic("Swerve/Chassis Speeds/Request", ChassisSpeeds.struct)
+            .publish();
+    current_chassis_speeds_pub_ =
+        NetworkTableInstance.getDefault()
+            .getStructTopic("Swerve/Chassis Speeds/Current", ChassisSpeeds.struct)
+            .publish();
     SmartDashboard.putData(
         "Subsystems/Swerve/Overview",
         new Sendable() {
@@ -261,26 +256,30 @@ public class SwerveDrivetrain extends Subsystem {
         });
 
     // Drive mode requests
-    field_centric_ = new SwerveRequest.FieldCentric()
-        .withDriveRequestType(SwerveModule.DriveRequestType.OpenLoopVoltage)
-        .withSteerRequestType(SwerveModule.SteerRequestType.MotionMagic)
-        .withDeadband(DrivetrainConstants.MAX_DRIVE_SPEED * 0.01)
-        .withRotationalDeadband(DrivetrainConstants.MAX_DRIVE_ANGULAR_RATE * 0.01);
+    field_centric_ =
+        new SwerveRequest.FieldCentric()
+            .withDriveRequestType(SwerveModule.DriveRequestType.OpenLoopVoltage)
+            .withSteerRequestType(SwerveModule.SteerRequestType.MotionMagic)
+            .withDeadband(DrivetrainConstants.MAX_DRIVE_SPEED * 0.01)
+            .withRotationalDeadband(DrivetrainConstants.MAX_DRIVE_ANGULAR_RATE * 0.01);
     field_centric_.ForwardReference = ForwardReference.OperatorPerspective;
-    robot_centric_ = new SwerveRequest.RobotCentric()
-        .withDriveRequestType(SwerveModule.DriveRequestType.OpenLoopVoltage)
-        .withSteerRequestType(SwerveModule.SteerRequestType.MotionMagic)
-        .withDeadband(DrivetrainConstants.MAX_DRIVE_SPEED * 0.01)
-        .withRotationalDeadband(DrivetrainConstants.MAX_DRIVE_ANGULAR_RATE * 0.01);
-    field_centric_target_facing_ = new SwerveRequest.FieldCentricFacingAngle()
-        .withDriveRequestType(SwerveModule.DriveRequestType.OpenLoopVoltage)
-        .withSteerRequestType(SwerveModule.SteerRequestType.MotionMagic)
-        .withDeadband(DrivetrainConstants.MAX_DRIVE_SPEED * 0.01)
-        .withRotationalDeadband(DrivetrainConstants.MAX_DRIVE_ANGULAR_RATE * 0.01);
+    robot_centric_ =
+        new SwerveRequest.RobotCentric()
+            .withDriveRequestType(SwerveModule.DriveRequestType.OpenLoopVoltage)
+            .withSteerRequestType(SwerveModule.SteerRequestType.MotionMagic)
+            .withDeadband(DrivetrainConstants.MAX_DRIVE_SPEED * 0.01)
+            .withRotationalDeadband(DrivetrainConstants.MAX_DRIVE_ANGULAR_RATE * 0.01);
+    field_centric_target_facing_ =
+        new SwerveRequest.FieldCentricFacingAngle()
+            .withDriveRequestType(SwerveModule.DriveRequestType.OpenLoopVoltage)
+            .withSteerRequestType(SwerveModule.SteerRequestType.MotionMagic)
+            .withDeadband(DrivetrainConstants.MAX_DRIVE_SPEED * 0.01)
+            .withRotationalDeadband(DrivetrainConstants.MAX_DRIVE_ANGULAR_RATE * 0.01);
     field_centric_target_facing_.ForwardReference = ForwardReference.OperatorPerspective;
-    auto_request_ = new SwerveRequest.FieldCentric()
-        .withDriveRequestType(SwerveModule.DriveRequestType.Velocity)
-        .withSteerRequestType(SwerveModule.SteerRequestType.MotionMagic);
+    auto_request_ =
+        new SwerveRequest.FieldCentric()
+            .withDriveRequestType(SwerveModule.DriveRequestType.Velocity)
+            .withSteerRequestType(SwerveModule.SteerRequestType.MotionMagic);
     auto_request_.ForwardReference = ForwardReference.RedAlliance;
     request_parameters_ = new SwerveControlRequestParameters();
     request_to_apply_ = new SwerveRequest.Idle();
@@ -294,7 +293,7 @@ public class SwerveDrivetrain extends Subsystem {
       swerve_modules_[i].optimizeCan();
       swerve_modules_[i].resetToAbsolute();
     }
-    BaseStatusSignal[] imuSignals = { pigeon_imu_.getYaw() };
+    BaseStatusSignal[] imuSignals = {pigeon_imu_.getYaw()};
     BaseStatusSignal.setUpdateFrequencyForAll(100, imuSignals);
     pigeon_imu_.optimizeBusUtilization();
   }
@@ -314,7 +313,8 @@ public class SwerveDrivetrain extends Subsystem {
     io_.joystick_pov = OI.getDriverJoystickPOV();
 
     // Position and Odom Info
-    io_.robot_yaw_ = Rotation2d.fromRadians(MathUtil.angleModulus(pigeon_imu_.getYaw().getValue().in(Radians)));
+    io_.robot_yaw_ =
+        Rotation2d.fromRadians(MathUtil.angleModulus(pigeon_imu_.getYaw().getValue().in(Radians)));
     io_.current_chassis_speeds_ = kinematics_.toChassisSpeeds(io_.current_module_states_);
     io_.requested_chassis_speeds_ = kinematics_.toChassisSpeeds(io_.requested_module_states_);
     io_.current_pose_ = PoseEstimator.getInstance().getRobotPose();
@@ -324,138 +324,155 @@ public class SwerveDrivetrain extends Subsystem {
   public synchronized void updateLogic(double timestamp) {
     request_parameters_.currentPose = new Pose2d(0, 0, io_.robot_yaw_);
     switch (io_.drive_mode_) {
-      case ROBOT_CENTRIC: {
-        setControl(
-            robot_centric_
-                // Drive forward with negative Y (forward)
-                .withVelocityX(-io_.joystick_left_y_ * io_.active_max_speed)
-                // Drive left with negative X (left)
-                .withVelocityY(-io_.joystick_left_x_ * io_.active_max_speed)
-                // Drive counterclockwise with negative X (left)
-                .withRotationalRate(
-                    -io_.joystick_right_x_ * DrivetrainConstants.MAX_DRIVE_ANGULAR_RATE));
-      }
-        break;
-      case FIELD_CENTRIC: {
-        setControl(
-            field_centric_
-                // Drive forward with negative Y (forward)
-                .withVelocityX(-io_.joystick_left_y_ * io_.active_max_speed)
-                // Drive left with negative X (left)
-                .withVelocityY(-io_.joystick_left_x_ * io_.active_max_speed)
-                // Drive counterclockwise with negative X (left)
-                .withRotationalRate(
-                    -io_.joystick_right_x_ * DrivetrainConstants.MAX_DRIVE_ANGULAR_RATE));
-      }
-        break;
-      case TARGET_FACING: {
-        setControl(
-            field_centric_target_facing_
-                // Drive forward with negative Y (forward)
-                .withVelocityX(
-                    Util.clamp(
-                        -io_.joystick_left_y_ * io_.active_max_speed,
-                        DrivetrainConstants.MAX_TARGET_SPEED))
-                // Drive left with negative X (left)
-                .withVelocityY(
-                    Util.clamp(
-                        -io_.joystick_left_x_ * io_.active_max_speed,
-                        DrivetrainConstants.MAX_TARGET_SPEED))
-                // Set Robots target rotation
-                .withTargetDirection(io_.target_rotation_));
-      }
-        break;
-      case TRAJECTORY: {
-        double x_velocity = io_.target_sample_.vx
-            + x_traj_controller_.calculate(io_.current_pose_.getX(), io_.target_sample_.x);
-        double y_velocity = io_.target_sample_.vy
-            + y_traj_controller_.calculate(io_.current_pose_.getY(), io_.target_sample_.y);
-        double omega = (io_.target_sample_.omega)
-            + heading_traj_controller_.calculate(
-                io_.current_pose_.getRotation().getRadians(), io_.target_sample_.heading);
-        this.setControl(
-            auto_request_
-                .withVelocityX(x_velocity)
-                .withVelocityY(y_velocity)
-                .withRotationalRate(omega));
-        request_parameters_.currentPose = io_.current_pose_;
-      }
-        break;
-      case TRACTOR_BEAM: {
-        io_.tractor_beam_scaling_factor_ = Math.sqrt(
-            Math.pow(io_.joystick_left_x_, 2)
-                + Math.pow(io_.joystick_left_y_, 2)
-                + Math.pow(io_.joystick_right_x_, 2))
-            * io_.active_max_speed;
-        double x_velocity =
-            // Util.clamp(
-            x_pose_controller_.calculate(io_.current_pose_.getX(), io_.target_pose_.getX());
-        // io_.tractor_beam_scaling_factor_);
-        double y_velocity =
-            // Util.clamp(
-            y_pose_controller_.calculate(io_.current_pose_.getY(), io_.target_pose_.getY());
-        // io_.tractor_beam_scaling_factor_);
-        double omega =
-            // Util.clamp(
-            heading_pose_controller_.calculate(
-                io_.current_pose_.getRotation().getRadians(),
-                io_.target_pose_.getRotation().getRadians());
-        // io_.tractor_beam_scaling_factor_);
-        this.setControl(
-            auto_request_
-                .withVelocityX(
-                    Util.clamp(x_velocity, DrivetrainConstants.MAX_TRACTOR_BEAM_VELOCITY_SPEED))
-                .withVelocityY(
-                    Util.clamp(y_velocity, DrivetrainConstants.MAX_TRACTOR_BEAM_VELOCITY_SPEED))
-                .withRotationalRate(
-                    Util.clamp(omega, DrivetrainConstants.MAX_TRACTOR_BEAM_OMEGA_SPEED)));
-        request_parameters_.currentPose = io_.current_pose_;
-      }
-        break;
-      case TIGHT_ROPE: {
-        double ropeEndHandOffThreshold = 0.05;
-        double x_velocity = x_pose_controller_.calculate(io_.current_pose_.getX(), io_.tight_rope_.poseA.getX());
-        double y_velocity = 0;
-        boolean pastA = io_.current_pose_.getY() > io_.tight_rope_.poseA.getY() + ropeEndHandOffThreshold;
-        boolean pastB = io_.current_pose_.getY() < io_.tight_rope_.poseB.getY() - ropeEndHandOffThreshold;
-        if (!pastA && !pastB) {
-          y_velocity = -io_.joystick_left_x_ * io_.active_max_speed;
-        } else if (pastA) {
-          y_velocity = y_pose_controller_.calculate(
-              io_.current_pose_.getY(), io_.tight_rope_.poseA.getY());
-        } else if (pastB) {
-          y_velocity = y_pose_controller_.calculate(
-              io_.current_pose_.getY(), io_.tight_rope_.poseB.getY());
-        }
-        this.setControl(
-            field_centric_target_facing_
-                .withTargetDirection(io_.tight_rope_.poseA.getRotation())
-                .withVelocityX(
-                    Util.clamp(x_velocity, DrivetrainConstants.MAX_TRACTOR_BEAM_VELOCITY_SPEED))
-                .withVelocityY(
-                    Util.clamp(y_velocity, DrivetrainConstants.MAX_TRACTOR_BEAM_VELOCITY_SPEED)));
-      }
-        break;
-      case CRAWL: {
-        if (io_.joystick_pov.isPresent()) {
+      case ROBOT_CENTRIC:
+        {
           setControl(
               robot_centric_
                   // Drive forward with negative Y (forward)
+                  .withVelocityX(-io_.joystick_left_y_ * io_.active_max_speed)
+                  // Drive left with negative X (left)
+                  .withVelocityY(-io_.joystick_left_x_ * io_.active_max_speed)
+                  // Drive counterclockwise with negative X (left)
+                  .withRotationalRate(
+                      -io_.joystick_right_x_ * DrivetrainConstants.MAX_DRIVE_ANGULAR_RATE));
+        }
+        break;
+      case FIELD_CENTRIC:
+        {
+          setControl(
+              field_centric_
+                  // Drive forward with negative Y (forward)
+                  .withVelocityX(-io_.joystick_left_y_ * io_.active_max_speed)
+                  // Drive left with negative X (left)
+                  .withVelocityY(-io_.joystick_left_x_ * io_.active_max_speed)
+                  // Drive counterclockwise with negative X (left)
+                  .withRotationalRate(
+                      -io_.joystick_right_x_ * DrivetrainConstants.MAX_DRIVE_ANGULAR_RATE));
+        }
+        break;
+      case TARGET_FACING:
+        {
+          setControl(
+              field_centric_target_facing_
+                  // Drive forward with negative Y (forward)
                   .withVelocityX(
-                      Math.round(io_.joystick_pov.get().getCos())
-                          * DrivetrainConstants.CRAWL_DRIVE_SPEED)
+                      Util.clamp(
+                          -io_.joystick_left_y_ * io_.active_max_speed,
+                          DrivetrainConstants.MAX_TARGET_SPEED))
                   // Drive left with negative X (left)
                   .withVelocityY(
-                      Math.round(-io_.joystick_pov.get().getSin())
-                          * DrivetrainConstants.CRAWL_DRIVE_SPEED)
-                  .withRotationalRate(
-                      -io_.joystick_right_x_ * DrivetrainConstants.CRAWL_DRIVE_SPEED));
+                      Util.clamp(
+                          -io_.joystick_left_x_ * io_.active_max_speed,
+                          DrivetrainConstants.MAX_TARGET_SPEED))
+                  // Set Robots target rotation
+                  .withTargetDirection(io_.target_rotation_));
         }
-      }
         break;
-      case IDLE: {
-        setControl(new SwerveRequest.Idle());
-      }
+      case TRAJECTORY:
+        {
+          double x_velocity =
+              io_.target_sample_.vx
+                  + x_traj_controller_.calculate(io_.current_pose_.getX(), io_.target_sample_.x);
+          double y_velocity =
+              io_.target_sample_.vy
+                  + y_traj_controller_.calculate(io_.current_pose_.getY(), io_.target_sample_.y);
+          double omega =
+              (io_.target_sample_.omega)
+                  + heading_traj_controller_.calculate(
+                      io_.current_pose_.getRotation().getRadians(), io_.target_sample_.heading);
+          this.setControl(
+              auto_request_
+                  .withVelocityX(x_velocity)
+                  .withVelocityY(y_velocity)
+                  .withRotationalRate(omega));
+          request_parameters_.currentPose = io_.current_pose_;
+        }
+        break;
+      case TRACTOR_BEAM:
+        {
+          io_.tractor_beam_scaling_factor_ =
+              Math.sqrt(
+                      Math.pow(io_.joystick_left_x_, 2)
+                          + Math.pow(io_.joystick_left_y_, 2)
+                          + Math.pow(io_.joystick_right_x_, 2))
+                  * io_.active_max_speed;
+          double x_velocity =
+              // Util.clamp(
+              x_pose_controller_.calculate(io_.current_pose_.getX(), io_.target_pose_.getX());
+          // io_.tractor_beam_scaling_factor_);
+          double y_velocity =
+              // Util.clamp(
+              y_pose_controller_.calculate(io_.current_pose_.getY(), io_.target_pose_.getY());
+          // io_.tractor_beam_scaling_factor_);
+          double omega =
+              // Util.clamp(
+              heading_pose_controller_.calculate(
+                  io_.current_pose_.getRotation().getRadians(),
+                  io_.target_pose_.getRotation().getRadians());
+          // io_.tractor_beam_scaling_factor_);
+          this.setControl(
+              auto_request_
+                  .withVelocityX(
+                      Util.clamp(x_velocity, DrivetrainConstants.MAX_TRACTOR_BEAM_VELOCITY_SPEED))
+                  .withVelocityY(
+                      Util.clamp(y_velocity, DrivetrainConstants.MAX_TRACTOR_BEAM_VELOCITY_SPEED))
+                  .withRotationalRate(
+                      Util.clamp(omega, DrivetrainConstants.MAX_TRACTOR_BEAM_OMEGA_SPEED)));
+          request_parameters_.currentPose = io_.current_pose_;
+        }
+        break;
+      case TIGHT_ROPE:
+        {
+          double ropeEndHandOffThreshold = 0.05;
+          double x_velocity =
+              x_pose_controller_.calculate(io_.current_pose_.getX(), io_.tight_rope_.poseA.getX());
+          double y_velocity = 0;
+          boolean pastA =
+              io_.current_pose_.getY() > io_.tight_rope_.poseA.getY() + ropeEndHandOffThreshold;
+          boolean pastB =
+              io_.current_pose_.getY() < io_.tight_rope_.poseB.getY() - ropeEndHandOffThreshold;
+          if (!pastA && !pastB) {
+            y_velocity = -io_.joystick_left_x_ * io_.active_max_speed;
+          } else if (pastA) {
+            y_velocity =
+                y_pose_controller_.calculate(
+                    io_.current_pose_.getY(), io_.tight_rope_.poseA.getY());
+          } else if (pastB) {
+            y_velocity =
+                y_pose_controller_.calculate(
+                    io_.current_pose_.getY(), io_.tight_rope_.poseB.getY());
+          }
+          this.setControl(
+              field_centric_target_facing_
+                  .withTargetDirection(io_.tight_rope_.poseA.getRotation())
+                  .withVelocityX(
+                      Util.clamp(x_velocity, DrivetrainConstants.MAX_TRACTOR_BEAM_VELOCITY_SPEED))
+                  .withVelocityY(
+                      Util.clamp(y_velocity, DrivetrainConstants.MAX_TRACTOR_BEAM_VELOCITY_SPEED)));
+        }
+        break;
+      case CRAWL:
+        {
+          if (io_.joystick_pov.isPresent()) {
+            setControl(
+                robot_centric_
+                    // Drive forward with negative Y (forward)
+                    .withVelocityX(
+                        Math.round(io_.joystick_pov.get().getCos())
+                            * DrivetrainConstants.CRAWL_DRIVE_SPEED)
+                    // Drive left with negative X (left)
+                    .withVelocityY(
+                        Math.round(-io_.joystick_pov.get().getSin())
+                            * DrivetrainConstants.CRAWL_DRIVE_SPEED)
+                    .withRotationalRate(
+                        -io_.joystick_right_x_ * DrivetrainConstants.CRAWL_DRIVE_SPEED));
+          }
+        }
+        break;
+      case IDLE:
+        {
+          setControl(new SwerveRequest.Idle());
+        }
         break;
       default:
         break;
@@ -509,17 +526,16 @@ public class SwerveDrivetrain extends Subsystem {
   }
 
   /**
-   * Takes the current orientation of the robot and makes it X forward for
-   * field-relative maneuvers.
+   * Takes the current orientation of the robot and makes it X forward for field-relative maneuvers.
    */
   public void seedFieldRelative(Rotation2d seed_rotation) {
     pigeon_imu_.setYaw(seed_rotation.getDegrees());
-    io_.robot_yaw_ = Rotation2d.fromRadians(MathUtil.angleModulus(pigeon_imu_.getYaw().getValue().in(Radians)));
+    io_.robot_yaw_ =
+        Rotation2d.fromRadians(MathUtil.angleModulus(pigeon_imu_.getYaw().getValue().in(Radians)));
   }
 
   /**
-   * Takes the current orientation of the robot and makes it X forward for
-   * field-relative maneuvers.
+   * Takes the current orientation of the robot and makes it X forward for field-relative maneuvers.
    */
   public Command seedFieldRelativeCommand() {
     return Commands.runOnce(() -> seedFieldRelative(io_.drivers_station_perspective_));
@@ -544,8 +560,7 @@ public class SwerveDrivetrain extends Subsystem {
   }
 
   /**
-   * Zero's this swerve drive's odometry entirely. This will zero the entire
-   * odometry, and place the
+   * Zero's this swerve drive's odometry entirely. This will zero the entire odometry, and place the
    * robot at 0,0
    */
   public void tareEverything() {
@@ -562,8 +577,7 @@ public class SwerveDrivetrain extends Subsystem {
   }
 
   /**
-   * Returns the module locations in reference to the center of the robot as an
-   * array [FrontLeft,
+   * Returns the module locations in reference to the center of the robot as an array [FrontLeft,
    * FrontRight, BackLeft, BackRight]
    */
   public SwerveModulePosition[] getModulePositions() {
@@ -571,8 +585,7 @@ public class SwerveDrivetrain extends Subsystem {
   }
 
   /**
-   * Returns the module states of the swerve drive as an array [FrontLeft,
-   * FrontRight, BackLeft,
+   * Returns the module states of the swerve drive as an array [FrontLeft, FrontRight, BackLeft,
    * BackRight]
    */
   public SwerveModuleState[] getModuleStates() {
@@ -580,17 +593,14 @@ public class SwerveDrivetrain extends Subsystem {
   }
 
   /**
-   * updates the mode flag thats changes what request is applied to the drive
-   * train. If request
+   * updates the mode flag thats changes what request is applied to the drive train. If request
    * modes are ROBOT_CENTRIC or FIELD_CENTRIC the default request is updated.
    *
    * @param mode request drive mode
    */
   public synchronized void setDriveMode(DriveMode mode) {
-    if (mode == DriveMode.FIELD_CENTRIC)
-      io_.default_drive_mode_ = mode;
-    if (mode == DriveMode.ROBOT_CENTRIC)
-      io_.default_drive_mode_ = mode;
+    if (mode == DriveMode.FIELD_CENTRIC) io_.default_drive_mode_ = mode;
+    if (mode == DriveMode.ROBOT_CENTRIC) io_.default_drive_mode_ = mode;
     io_.drive_mode_ = mode;
   }
 
@@ -603,10 +613,8 @@ public class SwerveDrivetrain extends Subsystem {
   public Command toggleFieldCentric() {
     return Commands.runOnce(
         () -> {
-          if (io_.drive_mode_ == DriveMode.FIELD_CENTRIC)
-            setDriveMode(DriveMode.ROBOT_CENTRIC);
-          else
-            setDriveMode(DriveMode.FIELD_CENTRIC);
+          if (io_.drive_mode_ == DriveMode.FIELD_CENTRIC) setDriveMode(DriveMode.ROBOT_CENTRIC);
+          else setDriveMode(DriveMode.FIELD_CENTRIC);
         });
   }
 
@@ -620,8 +628,7 @@ public class SwerveDrivetrain extends Subsystem {
   }
 
   /**
-   * Updates the internal target for the robot to follow and begins TRAJECTORY
-   * mode
+   * Updates the internal target for the robot to follow and begins TRAJECTORY mode
    *
    * @param sample swerve drive sample that includes target twist and pose
    */
@@ -632,8 +639,7 @@ public class SwerveDrivetrain extends Subsystem {
   }
 
   /**
-   * Updates the internal target for the robot to reach and begins TRACTOR_BEAM
-   * mode
+   * Updates the internal target for the robot to reach and begins TRACTOR_BEAM mode
    *
    * @param target_pose target pose for the robot to reach
    */
@@ -658,10 +664,8 @@ public class SwerveDrivetrain extends Subsystem {
   }
 
   /**
-   * Sets the target rope points and rotation and begins TIGHT_ROPE mode !! Only
-   * locks to the line
-   * along the Y axis !! pointA must have a higher Y than pointB pointA rotation
-   * is used to set the
+   * Sets the target rope points and rotation and begins TIGHT_ROPE mode !! Only locks to the line
+   * along the Y axis !! pointA must have a higher Y than pointB pointA rotation is used to set the
    * robot rotation
    *
    * @param TightRope
@@ -672,8 +676,7 @@ public class SwerveDrivetrain extends Subsystem {
   }
 
   /**
-   * Updates the internal target for the robot to point at and begins
-   * TARGET_FACING mode
+   * Updates the internal target for the robot to point at and begins TARGET_FACING mode
    *
    * @param target_angle
    */
@@ -692,45 +695,27 @@ public class SwerveDrivetrain extends Subsystem {
   }
 
   /**
-   * Plain-Old-Data class holding the state of the swerve drivetrain. This
-   * encapsulates most data
+   * Plain-Old-Data class holding the state of the swerve drivetrain. This encapsulates most data
    * that is relevant for telemetry or decision-making from the Swerve Drive.
    */
   public class SwerveDrivetrainPeriodicIo implements Logged {
-    @Log.File
-    public double active_max_speed = DrivetrainConstants.MAX_DRIVE_SPEED;
-    @Log.File
-    public SwerveModuleState[] current_module_states_, requested_module_states_;
-    @Log.File
-    public SwerveModulePosition[] module_positions_;
-    @Log.File
-    public DriveMode drive_mode_ = DriveMode.IDLE;
-    @Log.File
-    public DriveMode default_drive_mode_ = DriveMode.FIELD_CENTRIC;
-    @Log.File
-    public double joystick_left_x_ = 0.0;
-    @Log.File
-    public double joystick_left_y_ = 0.0;
-    @Log.File
-    public double joystick_right_x_ = 0.0;
-    @Log.File
-    public Optional<Rotation2d> joystick_pov = Optional.empty();
-    @Log.File
-    public Rotation2d drivers_station_perspective_ = new Rotation2d();
-    @Log.File
-    public Rotation2d robot_yaw_ = new Rotation2d();
-    @Log.File
-    public ChassisSpeeds current_chassis_speeds_ = new ChassisSpeeds();
-    @Log.File
-    public ChassisSpeeds requested_chassis_speeds_ = new ChassisSpeeds();
-    @Log.File
-    public Rotation2d target_rotation_ = new Rotation2d();
-    @Log.File
-    public double tractor_beam_scaling_factor_ = 0.0;
-    @Log.File
-    public Pose2d current_pose_ = new Pose2d();
-    @Log.File
-    public Pose2d target_pose_ = new Pose2d();
+    @Log.File public double active_max_speed = DrivetrainConstants.MAX_DRIVE_SPEED;
+    @Log.File public SwerveModuleState[] current_module_states_, requested_module_states_;
+    @Log.File public SwerveModulePosition[] module_positions_;
+    @Log.File public DriveMode drive_mode_ = DriveMode.IDLE;
+    @Log.File public DriveMode default_drive_mode_ = DriveMode.FIELD_CENTRIC;
+    @Log.File public double joystick_left_x_ = 0.0;
+    @Log.File public double joystick_left_y_ = 0.0;
+    @Log.File public double joystick_right_x_ = 0.0;
+    @Log.File public Optional<Rotation2d> joystick_pov = Optional.empty();
+    @Log.File public Rotation2d drivers_station_perspective_ = new Rotation2d();
+    @Log.File public Rotation2d robot_yaw_ = new Rotation2d();
+    @Log.File public ChassisSpeeds current_chassis_speeds_ = new ChassisSpeeds();
+    @Log.File public ChassisSpeeds requested_chassis_speeds_ = new ChassisSpeeds();
+    @Log.File public Rotation2d target_rotation_ = new Rotation2d();
+    @Log.File public double tractor_beam_scaling_factor_ = 0.0;
+    @Log.File public Pose2d current_pose_ = new Pose2d();
+    @Log.File public Pose2d target_pose_ = new Pose2d();
 
     @Log.File
     public TightRope tight_rope_ = new TightRope(new Pose2d(), new Pose2d(), "Defalut drivetrain");
