@@ -15,14 +15,14 @@ public class J4_LeftStation_L4 extends Auto {
     // this.setName(getClass().getSimpleName());
 
     // Register the paths first
-    this.loadTrajectory("Blue Mid to IJ");
+    this.loadTrajectory("Left Start to IJ");
     this.loadTrajectory("IJ to Left Station");
     this.loadTrajectory("Left Station to KL");
 
     this.addCommands(
         // Score game Piece 1
         GameStateManager.setScoringCommand(Column.RIGHT, ReefScoringTarget.L4),
-        this.getTrajectoryCmd("Blue Mid to IJ"),
+        this.getTrajectoryCmd("Left Start to IJ"),
         new AutoCoralReefScore(),
 
         // Get game piece 2

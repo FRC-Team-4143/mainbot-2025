@@ -13,7 +13,7 @@ public class J4_LeftStation_L4_LeftStation_K4 extends Auto {
 
   public J4_LeftStation_L4_LeftStation_K4() {
     // Register Trajectories first
-    this.loadTrajectory("Blue Mid to IJ");
+    this.loadTrajectory("Left Start to IJ");
     this.loadTrajectory("IJ to Left Station");
     this.loadTrajectory("Left Station to KL");
     this.loadTrajectory("KL to Left Station");
@@ -22,7 +22,7 @@ public class J4_LeftStation_L4_LeftStation_K4 extends Auto {
     this.addCommands(
         // Score game Piece 1
         GameStateManager.setScoringCommand(Column.RIGHT, ReefScoringTarget.L4),
-        this.getTrajectoryCmd("Blue Mid to IJ"),
+        this.getTrajectoryCmd("Left Start to IJ"),
         new AutoCoralReefScore(),
 
         // Get game piece 2
