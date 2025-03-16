@@ -13,6 +13,8 @@ import frc.lib.FieldRegions;
 import frc.mw_lib.auto.Auto;
 import frc.mw_lib.auto.AutoManager;
 import frc.mw_lib.logging.Elastic;
+import frc.robot.autos.E4_RightStation_C4;
+import frc.robot.autos.E4_RightStation_C4_RightStation_D4;
 import frc.robot.autos.J4_LeftStation_L4;
 import frc.robot.autos.J4_LeftStation_L4_LeftStation_K4;
 import frc.robot.subsystems.GameStateManager;
@@ -32,7 +34,11 @@ public class Robot extends TimedRobot {
     FieldRegions.makeRegions();
 
     AutoManager.getInstance()
-        .registerAutos(new J4_LeftStation_L4(), new J4_LeftStation_L4_LeftStation_K4());
+        .registerAutos(
+            new J4_LeftStation_L4(),
+            new J4_LeftStation_L4_LeftStation_K4(),
+            new E4_RightStation_C4(),
+            new E4_RightStation_C4_RightStation_D4());
   }
 
   @Override
