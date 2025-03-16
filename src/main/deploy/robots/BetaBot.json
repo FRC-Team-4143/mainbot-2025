@@ -1,4 +1,7 @@
 {
+    "subsystems": [
+        "Climber"
+    ],
     "drive": {
         "com": {
             "CENTER_OFFSET_X": 18,

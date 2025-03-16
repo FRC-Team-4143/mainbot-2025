@@ -16,7 +16,8 @@ public abstract class SubsystemManager {
   private static final int START_THREAD_PRIORITY = 99;
 
   public class Contain implements Logged {
-    @Log.File public ArrayList<Logged> subsystems_ios = new ArrayList<>();
+    @Log.File
+    public ArrayList<Logged> subsystems_ios = new ArrayList<>();
   }
 
   protected ArrayList<Subsystem> subsystems;
@@ -38,8 +39,12 @@ public abstract class SubsystemManager {
   }
 
   public void registerSubsystem(Subsystem system) {
-    subsystems.add(system);
-    ios.subsystems_ios.add(system.getLoggingObject());
+    if (system instanceof RemovableSubsystem && !((RemovableSubsystem) system).isEnabled()) {
+      DataLogManager.log("Disabled subsystem: " + system.getClass().getSimpleName());
+    } else {
+      subsystems.add(system);
+      ios.subsystems_ios.add(system.getLoggingObject());
+    }
   }
 
   private void doControlLoop() {
@@ -83,7 +88,10 @@ public abstract class SubsystemManager {
     }
   }
 
-  /** Completes the subsystem registration process and begins calling each subsystem in a loop */
+  /**
+   * Completes the subsystem registration process and begins calling each
+   * subsystem in a loop
+   */
   protected void completeRegistration() {
     loopThread.startPeriodic(.01);
 
@@ -114,8 +122,10 @@ public abstract class SubsystemManager {
   }
 
   /**
-   * When ready to put telemetry out to smartdashboard, call this function to trigger each subsystem
-   * to publish its held data. This is supposed to be called by robotPeriodic so telemetry is output
+   * When ready to put telemetry out to smartdashboard, call this function to
+   * trigger each subsystem
+   * to publish its held data. This is supposed to be called by robotPeriodic so
+   * telemetry is output
    * in any mode.
    */
   public void outputTelemetry() {
@@ -125,8 +135,10 @@ public abstract class SubsystemManager {
   }
 
   /**
-   * If subsystems all need to be reset before a robot mode change, call this function to cleanly
-   * handle resetting them together. If only one subsystem needs to be reset, that can be accessed
+   * If subsystems all need to be reset before a robot mode change, call this
+   * function to cleanly
+   * handle resetting them together. If only one subsystem needs to be reset, that
+   * can be accessed
    * through the getInstance method.
    */
   public void reset() {
