@@ -103,7 +103,7 @@
         "CONTROLLER_V": 9.2434,
         "CONTROLLER_A": 0.36146,
         "CONTROLLER_G": 0.27387,
-        "LENGTH_PIVOT_TO_FUNNEL":12,
+        "LENGTH_PIVOT_TO_FUNNEL":11.5,
         "DEPTH_CORAL_POCKET":10
     },
     "vision": {
