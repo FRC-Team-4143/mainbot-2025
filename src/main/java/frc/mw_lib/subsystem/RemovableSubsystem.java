@@ -1,8 +1,7 @@
 package frc.mw_lib.subsystem;
 
-import java.util.List;
-
 import frc.mw_lib.util.ConstantsLoader;
+import java.util.List;
 
 public abstract class RemovableSubsystem extends Subsystem {
 
@@ -17,7 +16,7 @@ public abstract class RemovableSubsystem extends Subsystem {
     is_enabled_ = subsystems.contains(subsystem_name_);
   }
 
-  public boolean isEnabled(){
+  public boolean isEnabled() {
     return is_enabled_;
   }
 }

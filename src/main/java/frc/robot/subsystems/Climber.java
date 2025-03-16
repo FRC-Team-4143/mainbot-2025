@@ -83,18 +83,17 @@ public class Climber extends RemovableSubsystem {
       strap_config_.MotorOutput.NeutralMode = NeutralModeValue.Brake;
 
       prong_counter_ = new Counter(Constants.ClimberConstants.PRONG_COUNTER_ID);
-      prong_controller_ = new PIDController(
-          Constants.ClimberConstants.PRONG_P, 0, Constants.ClimberConstants.PRONG_D);
+      prong_controller_ =
+          new PIDController(
+              Constants.ClimberConstants.PRONG_P, 0, Constants.ClimberConstants.PRONG_D);
 
       reset();
     }
   }
 
   /**
-   * This function should be logic and code to fully reset your subsystem. This is
-   * called during
-   * initialization, and should handle I/O configuration and initializing data
-   * members.
+   * This function should be logic and code to fully reset your subsystem. This is called during
+   * initialization, and should handle I/O configuration and initializing data members.
    */
   @Override
   public void reset() {
@@ -102,10 +101,8 @@ public class Climber extends RemovableSubsystem {
   }
 
   /**
-   * Inside this function, all of the SENSORS should be read into variables stored
-   * in the PeriodicIO
-   * class defined below. There should be no calls to output to actuators, or any
-   * logic within this
+   * Inside this function, all of the SENSORS should be read into variables stored in the PeriodicIO
+   * class defined below. There should be no calls to output to actuators, or any logic within this
    * function.
    */
   @Override
@@ -114,10 +111,8 @@ public class Climber extends RemovableSubsystem {
   }
 
   /**
-   * Inside this function, all of the LOGIC should compute updates to output
-   * variables in the
-   * PeriodicIO class defined below. There should be no calls to read from sensors
-   * or write to
+   * Inside this function, all of the LOGIC should compute updates to output variables in the
+   * PeriodicIO class defined below. There should be no calls to read from sensors or write to
    * actuators in this function.
    */
   @Override
@@ -162,16 +157,14 @@ public class Climber extends RemovableSubsystem {
         break;
       case DISABLED:
       default:
-        // do nothing
+        prong_counter_.reset();
         break;
     }
   }
 
   /**
-   * Inside this function actuator OUTPUTS should be updated from data contained
-   * in the PeriodicIO
-   * class defined below. There should be little to no logic contained within this
-   * function, and no
+   * Inside this function actuator OUTPUTS should be updated from data contained in the PeriodicIO
+   * class defined below. There should be little to no logic contained within this function, and no
    * sensors should be read.
    */
   @Override
@@ -182,12 +175,9 @@ public class Climber extends RemovableSubsystem {
   }
 
   /**
-   * Inside this function telemetry should be output to smartdashboard. The data
-   * should be collected
-   * out of the PeriodicIO class instance defined below. There should be no sensor
-   * information read
-   * in this function nor any outputs made to actuators within this function. Only
-   * publish to
+   * Inside this function telemetry should be output to smartdashboard. The data should be collected
+   * out of the PeriodicIO class instance defined below. There should be no sensor information read
+   * in this function nor any outputs made to actuators within this function. Only publish to
    * smartdashboard here.
    */
   @Override
@@ -196,13 +186,12 @@ public class Climber extends RemovableSubsystem {
     SmartDashboard.putNumber("Subsystems/Climber/prong_motor_target", io_.prong_motor_target);
     SmartDashboard.putNumber("Subsystems/Climber/arm_motor_target", io_.arm_motor_target);
     SmartDashboard.putString("Subsystems/Climber/current_mode_", io_.current_mode_.toString());
-    SmartDashboard.putNumber("Subsystems/Climber/prong_count", prong_counter_.get());
+    SmartDashboard.putNumber("Subsystems/Climber/prong_count", io_.prong_count);
   }
 
   public void nextStage() {
     switch (io_.current_mode_) {
       case DISABLED:
-        prong_counter_.reset();
         io_.current_mode_ = ClimberMode.PRECLIMB;
         Elastic.selectTab("Climb");
         break;
