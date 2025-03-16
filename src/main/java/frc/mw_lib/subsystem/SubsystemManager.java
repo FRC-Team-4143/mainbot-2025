@@ -5,7 +5,11 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Notifier;
 import edu.wpi.first.wpilibj.Timer;
 import frc.mw_lib.logging.GitLogger;
+import frc.mw_lib.util.ConstantsLoader;
+
 import java.util.ArrayList;
+import java.util.List;
+
 import monologue.Annotations.Log;
 import monologue.Logged;
 import monologue.Monologue;
@@ -23,6 +27,7 @@ public abstract class SubsystemManager {
   protected Notifier loopThread;
   protected boolean log_init = false;
   protected Contain ios;
+  protected List<String> enabled_systems_;
 
   public SubsystemManager() {
     // Initialize the subsystem list
@@ -34,12 +39,13 @@ public abstract class SubsystemManager {
 
     ios = new Contain();
 
-    // Logger
+    enabled_systems_ = ConstantsLoader.getInstance().getStringList("subsytems");
+    DataLogManager.log("Expecting " + enabled_systems_.toString());
   }
 
   public void registerSubsystem(Subsystem system) {
     if (system instanceof RemovableSubsystem && !((RemovableSubsystem) system).isEnabled()) {
-      DataLogManager.log("Disabled subsystem: " + system.getClass().getSimpleName());
+      DataLogManager.log("Registered disabled subsystem: " + system.getClass().getSimpleName());
     } else {
       subsystems.add(system);
       ios.subsystems_ios.add(system.getLoggingObject());
