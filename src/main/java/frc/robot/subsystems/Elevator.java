@@ -187,12 +187,10 @@ public class Elevator extends Subsystem {
     // Sync Elevator and Arm Sensor to "Home" Position
     SmartDashboard.putData(
         "Commands/Zero Elevator",
-        Commands.runOnce(() -> Elevator.getInstance().elevatorPosReset())
-            .ignoringDisable(true));
+        Commands.runOnce(() -> Elevator.getInstance().elevatorPosReset()).ignoringDisable(true));
     SmartDashboard.putData(
         "Commands/Zero Arm",
-        Commands.runOnce(() -> Elevator.getInstance().armPosReset())
-            .ignoringDisable(true));
+        Commands.runOnce(() -> Elevator.getInstance().armPosReset()).ignoringDisable(true));
     arm_motor_.setPosition(
         arm_encoder_.getAbsolutePosition().getValueAsDouble()
             - (MWPreferences.getInstance().getPreferenceDouble("ArmEncoderOffset", 0)));

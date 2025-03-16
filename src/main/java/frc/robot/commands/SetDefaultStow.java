@@ -1,8 +1,8 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.lib.FieldRegions;
 import frc.lib.ElevatorTargets.Target;
+import frc.lib.FieldRegions;
 import frc.robot.OI;
 import frc.robot.subsystems.Claw;
 import frc.robot.subsystems.Climber;
@@ -25,7 +25,8 @@ public class SetDefaultStow extends Command {
   public void execute() {
     if (Climber.getInstance().getMode() == ClimberMode.DISABLED) {
       if (Claw.getInstance().isAlgaeMode()) {
-        if (FieldRegions.PROCESSOR_DEAD_REGION.contains(PoseEstimator.getInstance().getRobotPose())) {
+        if (FieldRegions.PROCESSOR_DEAD_REGION.contains(
+            PoseEstimator.getInstance().getRobotPose())) {
           Elevator.getInstance().setTarget(Target.STOW);
         } else {
           Elevator.getInstance().setTarget(Target.ALGAE_STOW);

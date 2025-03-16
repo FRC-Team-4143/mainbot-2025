@@ -8,7 +8,6 @@ import frc.mw_lib.geometry.CircularRegion;
 import frc.mw_lib.geometry.PolygonRegion;
 import frc.mw_lib.geometry.Region;
 import frc.robot.Constants;
-
 import java.util.Hashtable;
 
 public class FieldRegions {
@@ -23,16 +22,16 @@ public class FieldRegions {
             new Translation2d(4, 0),
           },
           "Processor");
-          public static PolygonRegion PROCESSOR_DEAD_REGION =
-          new PolygonRegion(
-              new Translation2d[] {
-                new Translation2d(4, 0),
-                new Translation2d(4, Constants.DrivetrainConstants.CENTER_OFFSET_X),
-                new Translation2d(8, Constants.DrivetrainConstants.CENTER_OFFSET_X),
-                new Translation2d(8, 0),
-                new Translation2d(4, 0),
-              },
-              "Processor Dead-zone");
+  public static PolygonRegion PROCESSOR_DEAD_REGION =
+      new PolygonRegion(
+          new Translation2d[] {
+            new Translation2d(4, 0),
+            new Translation2d(4, Constants.DrivetrainConstants.CENTER_OFFSET_X),
+            new Translation2d(8, Constants.DrivetrainConstants.CENTER_OFFSET_X),
+            new Translation2d(8, 0),
+            new Translation2d(4, 0),
+          },
+          "Processor Dead-zone");
   public static PolygonRegion BARGE_REGION =
       new PolygonRegion(
           new Translation2d[] {
@@ -63,8 +62,8 @@ public class FieldRegions {
       new PolygonRegion(
           new Translation2d[] {
             new Translation2d(0, 0),
-            new Translation2d(0, 3.5),
-            new Translation2d(4, 0),
+            new Translation2d(0, 4),
+            new Translation2d(4.5, 0),
             new Translation2d(0, 0)
           },
           "RightCoralStation");
@@ -82,8 +81,8 @@ public class FieldRegions {
       new PolygonRegion(
           new Translation2d[] {
             new Translation2d(0, FieldConstants.FIELD_WIDTH),
-            new Translation2d(4, FieldConstants.FIELD_WIDTH),
-            new Translation2d(0, FieldConstants.FIELD_WIDTH - 3.5),
+            new Translation2d(4.5, FieldConstants.FIELD_WIDTH),
+            new Translation2d(0, FieldConstants.FIELD_WIDTH - 4),
             new Translation2d(0, FieldConstants.FIELD_WIDTH)
           },
           "LeftCoralStation");
