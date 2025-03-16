@@ -9,7 +9,7 @@
             "MAX_DRIVE_SPEED": 5.0,
             "MAX_DRIVE_ANGULAR_RATE": 6.28,
             "STEER_MOTOR_REVERSED": true,
-            "DRIVE_GAINS_P": 0.75,
+            "DRIVE_GAINS_P": 0.30,
             "DRIVE_GAINS_I": 0,
             "DRIVE_GAINS_D": 0.0,
             "DRIVE_GAINS_S": 0.15,

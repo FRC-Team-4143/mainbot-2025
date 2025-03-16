@@ -195,7 +195,9 @@ public class Claw extends Subsystem {
 
   public boolean hasCoral() {
     return coral_debouncer_.calculate(
-        isCoralMode() && wheel_motor_.getSupplyCurrent().getValueAsDouble() > 5.5);
+        isCoralMode()
+            && wheel_motor_.getSupplyCurrent().getValueAsDouble()
+                > ClawConstants.CORAL_CURRENT_THRESHOLD);
   }
 
   public class ClawPeriodicIo implements Logged {

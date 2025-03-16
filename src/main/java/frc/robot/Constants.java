@@ -210,6 +210,7 @@ public final class Constants {
         Units.inchesToMeters(LOADER.getDoubleValue("imp", "coral_offset"));
     public static final double ALGAE_IMP_OFFSET =
         Units.inchesToMeters(LOADER.getDoubleValue("imp", "algae_offset"));
+    public static final double CORAL_CURRENT_THRESHOLD = 4.25;
   }
 
   public class ClimberConstants {

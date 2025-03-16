@@ -322,7 +322,7 @@ public class SwerveDrivetrain extends Subsystem {
 
   @Override
   public synchronized void updateLogic(double timestamp) {
-    request_parameters_.currentPose = new Pose2d(0, 0, io_.robot_yaw_);
+    request_parameters_.currentPose = io_.current_pose_;
     switch (io_.drive_mode_) {
       case ROBOT_CENTRIC:
         {
@@ -385,7 +385,6 @@ public class SwerveDrivetrain extends Subsystem {
                   .withVelocityX(x_velocity)
                   .withVelocityY(y_velocity)
                   .withRotationalRate(omega));
-          request_parameters_.currentPose = io_.current_pose_;
         }
         break;
       case TRACTOR_BEAM:
@@ -418,7 +417,6 @@ public class SwerveDrivetrain extends Subsystem {
                       Util.clamp(y_velocity, DrivetrainConstants.MAX_TRACTOR_BEAM_VELOCITY_SPEED))
                   .withRotationalRate(
                       Util.clamp(omega, DrivetrainConstants.MAX_TRACTOR_BEAM_OMEGA_SPEED)));
-          request_parameters_.currentPose = io_.current_pose_;
         }
         break;
       case TIGHT_ROPE:

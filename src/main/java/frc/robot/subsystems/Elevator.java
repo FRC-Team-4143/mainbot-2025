@@ -205,8 +205,7 @@ public class Elevator extends Subsystem {
     io_.elevator_follower_rotations_ = elevator_follower_.getPosition().getValue().in(Rotations);
     io_.elevator_master_rotations_ = elevator_master_.getPosition().getValue().in(Rotations);
     io_.current_elevator_height_ =
-        (((io_.elevator_master_rotations_ + io_.elevator_follower_rotations_) / 2)
-                * ElevatorConstants.ELEVATOR_ROTATIONS_TO_METERS)
+        io_.elevator_master_rotations_ * ElevatorConstants.ELEVATOR_ROTATIONS_TO_METERS
             + ElevatorConstants.ELEVATOR_HEIGHT_PIVOT_MIN;
     io_.current_arm_angle_ = arm_motor_.getPosition().getValue().in(Radians);
   }
