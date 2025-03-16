@@ -207,8 +207,7 @@ public class Elevator extends Subsystem {
     io_.elevator_follower_rotations_ = elevator_follower_.getPosition().getValue().in(Rotations);
     io_.elevator_master_rotations_ = elevator_master_.getPosition().getValue().in(Rotations);
     io_.current_elevator_height_ =
-        (((io_.elevator_master_rotations_ + io_.elevator_follower_rotations_) / 2)
-                * ElevatorConstants.ELEVATOR_ROTATIONS_TO_METERS)
+        ((io_.elevator_master_rotations_) * ElevatorConstants.ELEVATOR_ROTATIONS_TO_METERS)
             + ElevatorConstants.ELEVATOR_HEIGHT_PIVOT_MIN;
     io_.current_arm_angle_ = arm_motor_.getPosition().getValue().in(Radians);
   }
@@ -234,7 +233,7 @@ public class Elevator extends Subsystem {
           break;
       }
 
-      if (isElevatorAndArmAtCurrentTarget()) {
+      if (this.isElevatorAndArmAtCurrentTarget() == true) {
         io_.intermediate_targets_.remove(0);
       }
     } else {
@@ -318,6 +317,9 @@ public class Elevator extends Subsystem {
         arm_encoder_.getAbsolutePosition().getValue().in(Rotations));
     SmartDashboard.putNumber(
         "Subsystems/Arm/Manual Offset", io_.final_target_.getAngleOffset().getRadians());
+    SmartDashboard.putNumber(
+        "Subsystems/Arm/intermediate_targets_", io_.intermediate_targets_.size());
+    SmartDashboard.putBoolean("isElevatorAndArmAtCurrentTarget", isArmAtCurrentTarget());
     updateMechanism();
   }
 
@@ -455,7 +457,7 @@ public class Elevator extends Subsystem {
       io_.intermediate_targets_.add(io_.final_target_.getIntermediateExitTarget().get());
     }
     if (target.getIntermediateEnterTarget().isPresent()) {
-      io_.intermediate_targets_.add(io_.final_target_.getIntermediateEnterTarget().get());
+      io_.intermediate_targets_.add(target.getIntermediateEnterTarget().get());
     }
 
     io_.final_target_ = target;
