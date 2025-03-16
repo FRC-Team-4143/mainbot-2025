@@ -20,7 +20,7 @@ public class ElevatorTargets {
             FieldConstants.ReefHeight.L3.HEIGHT + Units.inchesToMeters(8),
             Rotation2d.fromDegrees(125),
             ControlType.EFFECTOR),
-        Optional.empty(),
+        Optional.of(IntermediateTarget.L2_I),
         Optional.empty()),
     L2(
         new TargetData(

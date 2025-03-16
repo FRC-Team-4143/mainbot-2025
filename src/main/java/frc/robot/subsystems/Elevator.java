@@ -203,6 +203,7 @@ public class Elevator extends Subsystem {
   }
 
   /** Reads all sensors and stores periodic data */
+  @Override
   public void readPeriodicInputs(double timestamp) {
     io_.elevator_follower_rotations_ = elevator_follower_.getPosition().getValue().in(Rotations);
     io_.elevator_master_rotations_ = elevator_master_.getPosition().getValue().in(Rotations);
@@ -213,7 +214,8 @@ public class Elevator extends Subsystem {
   }
 
   /** Computes updated outputs for the actuators */
-  public void updateLogic(double timestamp) {
+  @Override
+  public synchronized void updateLogic(double timestamp) {
     if (io_.intermediate_targets_.size() > 0) {
       if (io_.intermediate_targets_.get(0).getControlType() == ControlType.PIVOT) {
         io_.current_control_mode_ = ControlMode.PIVOT;
@@ -276,6 +278,7 @@ public class Elevator extends Subsystem {
   }
 
   /** Writes the periodic outputs to actuators (motors and etc...) */
+  @Override
   public void writePeriodicOutputs(double timestamp) {
     elevator_master_.setControl(
         elevator_request_
@@ -288,6 +291,7 @@ public class Elevator extends Subsystem {
   }
 
   /** Outputs all logging information to the SmartDashboard */
+  @Override
   public void outputTelemetry(double timestamp) {
     SmartDashboard.putString(
         "Subsystems/Elevator/Control Mode", io_.current_control_mode_.toString());
@@ -322,6 +326,7 @@ public class Elevator extends Subsystem {
         "Subsystems/Arm/intermediate_targets_", io_.intermediate_targets_.size());
     SmartDashboard.putBoolean("isElevatorAndArmAtCurrentTarget", isArmAtCurrentTarget());
     SmartDashboard.putBoolean("isElevatorAndArmAtFinalTarget", isElevatorAndArmAtFinalTarget());
+    SmartDashboard.putString("finalTarget", io_.final_target_.toString());
     updateMechanism();
   }
 
