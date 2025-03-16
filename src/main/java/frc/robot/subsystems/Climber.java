@@ -5,7 +5,9 @@
 package frc.robot.subsystems;
 
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
+import com.ctre.phoenix6.controls.ControlRequest;
 import com.ctre.phoenix6.controls.PositionVoltage;
+import com.ctre.phoenix6.controls.VoltageOut;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import edu.wpi.first.math.controller.PIDController;
@@ -25,7 +27,9 @@ import monologue.Logged;
 public class Climber extends Subsystem {
 
   private TalonFX strap_motor_;
-  private PositionVoltage strap_controller_;
+  private ControlRequest strap_request_;
+  private PositionVoltage strap_position_request_;
+  private VoltageOut strap_voltage_request_;
   private TalonFXConfiguration strap_config_;
 
   private Counter prong_counter_;
@@ -69,8 +73,9 @@ public class Climber extends Subsystem {
 
     strap_motor_.getConfigurator().apply(Constants.ClimberConstants.STRAP_GAINS);
 
-    strap_controller_ = new PositionVoltage(0.0);
-    strap_controller_.withSlot(0);
+    strap_position_request_ = new PositionVoltage(0.0);
+    strap_position_request_.withSlot(0);
+    strap_voltage_request_ = new VoltageOut(0);
 
     strap_config_ = new TalonFXConfiguration();
     strap_config_.MotorOutput.Inverted = Constants.ClimberConstants.STRAP_INVERSION;
@@ -108,6 +113,7 @@ public class Climber extends Subsystem {
    */
   @Override
   public void updateLogic(double timestamp) {
+    strap_request_ = strap_voltage_request_;
     switch (io_.current_mode_) {
       case PRECLIMB:
         io_.deploying_start_time_ = 0;
@@ -141,9 +147,9 @@ public class Climber extends Subsystem {
         // Wait for transition
         break;
       case RETRACTED:
-        io_.strap_motor_target = Constants.ClimberConstants.STRAP_RETRACTED_POSITION;
         io_.arm_motor_target = 0;
         io_.prong_motor_target = Constants.ClimberConstants.PRONG_DEPLOY_SPEED;
+        strap_request_ = strap_position_request_.withPosition(io_.strap_motor_target);
         break;
       case DISABLED:
       default:
@@ -159,8 +165,7 @@ public class Climber extends Subsystem {
    */
   @Override
   public void writePeriodicOutputs(double timestamp) {
-    strap_motor_.setControl(
-        strap_controller_.withPosition(io_.arm_motor_target + io_.strap_motor_target_offset));
+    strap_motor_.setControl(strap_request_);
     prong_motor_.set(io_.prong_motor_target);
     arm_motor_.set(io_.arm_motor_target);
   }
@@ -196,9 +201,6 @@ public class Climber extends Subsystem {
       case DEPLOYED:
         io_.current_mode_ = ClimberMode.RETRACTED;
         break;
-      case RETRACTED:
-        io_.strap_motor_target_offset -= ClimberConstants.STRAP_SETPOINT_BUMP;
-        break;
       default:
         break;
     }
@@ -211,12 +213,15 @@ public class Climber extends Subsystem {
         Elevator.getInstance().setTarget(Target.STOW);
         Elastic.selectTab("Teleop");
         break;
-      case RETRACTED:
-        io_.strap_motor_target_offset -= ClimberConstants.STRAP_SETPOINT_BUMP;
-        break;
       default:
         DriverStation.reportError("Cannot return to previous stage", false);
         break;
+    }
+  }
+
+  public void climbSetpoint() {
+    if (io_.current_mode_ == ClimberMode.RETRACTED) {
+      io_.strap_motor_target += ClimberConstants.STRAP_SETPOINT_BUMP;
     }
   }
 

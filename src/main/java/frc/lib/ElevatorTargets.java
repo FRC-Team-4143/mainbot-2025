@@ -42,8 +42,8 @@ public class ElevatorTargets {
             Optional.empty())),
     CLIMB(
         new TargetData(
-            ElevatorConstants.ELEVATOR_HEIGHT_PIVOT_MIN + Units.inchesToMeters(0),
-            Rotation2d.fromDegrees(0),
+            ElevatorConstants.ELEVATOR_HEIGHT_PIVOT_SAFETY + Units.inchesToMeters(0),
+            Rotation2d.fromDegrees(30),
             ControlType.PIVOT,
             Optional.empty())),
     STOW(
@@ -84,7 +84,7 @@ public class ElevatorTargets {
             Optional.empty())),
     ALGAE_STOW(
         new TargetData(
-            ElevatorConstants.ELEVATOR_HEIGHT_PIVOT_MIN + Units.inchesToMeters(0),
+            ElevatorConstants.ELEVATOR_HEIGHT_PIVOT_SAFETY + Units.inchesToMeters(0),
             Rotation2d.fromDegrees(90),
             ControlType.PIVOT,
             Optional.empty()));

@@ -79,6 +79,7 @@ public abstract class OI {
     driver_controller_.leftBumper().onTrue(Claw.getInstance().toggleGamePieceCommand());
     // Increment Climb Sequence
     driver_controller_.start().onTrue(Commands.runOnce(() -> Climber.getInstance().nextStage()));
+    driver_controller_.start().whileTrue(Commands.run(() -> Climber.getInstance().climbSetpoint()));
     // Decrement Climb Sequence
     driver_controller_.back().onTrue(Commands.runOnce(() -> Climber.getInstance().backStage()));
 

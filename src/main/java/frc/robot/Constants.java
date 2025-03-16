@@ -221,13 +221,13 @@ public final class Constants {
     public static final InvertedValue STRAP_INVERSION = InvertedValue.Clockwise_Positive;
     public static final double RETRACTED_ROTATIONS = 30;
     public static final Slot0Configs STRAP_GAINS =
-        new Slot0Configs().withKP(0.00001).withKD(0.0).withKS(0.0).withKV(0.0).withKA(0.0);
+        new Slot0Configs().withKP(0.16).withKD(0.0).withKS(0.0).withKV(0.0).withKA(0.0);
     public static final double PRONG_DEPLOY_SPEED = 0.4;
     public static final double PRONG_HOLD_SPEED = -0.6;
     public static final double ARM_DEPLOY_SPEED = 0.75;
     public static final double ARM_HOLD_SPEED = 0.5;
-    public static final double STRAP_RETRACTED_POSITION = 65;
-    public static final double STRAP_SETPOINT_BUMP = (1.0 / STRAP_RETRACTED_POSITION);
+    public static final double STRAP_RETRACTED_POSITION = 90;
+    public static final double STRAP_SETPOINT_BUMP = (STRAP_RETRACTED_POSITION / 200.0);
     public static final double PRONG_PRESET_COUNT = 80;
     public static final double DEPLOYING_TIME = 1.2;
     public static final double PRONG_P = 0.008;
