@@ -9,7 +9,7 @@
             "MAX_DRIVE_SPEED": 5.0,
             "MAX_DRIVE_ANGULAR_RATE": 6.28,
             "STEER_MOTOR_REVERSED": true,
-            "DRIVE_GAINS_P": 0.75,
+            "DRIVE_GAINS_P": 0.30,
             "DRIVE_GAINS_I": 0,
             "DRIVE_GAINS_D": 0.0,
             "DRIVE_GAINS_S": 0.15,
@@ -80,8 +80,8 @@
         }
     },
     "imp" : {
-        "coral_offset": -4,
-        "algae_offset": -4
+        "coral_offset": -6.25,
+        "algae_offset": -6.25
     },
     "elevator": {
         "CONTROLLER_P": 1.0,
@@ -103,30 +103,19 @@
         "CONTROLLER_V": 9.2434,
         "CONTROLLER_A": 0.36146,
         "CONTROLLER_G": 0.27387,
-        "LENGTH_PIVOT_TO_FUNNEL":13,
+        "LENGTH_PIVOT_TO_FUNNEL":11.5,
         "DEPTH_CORAL_POCKET":10
     },
     "vision": {
         "camera0": {
             "NAME": "PC_Camera",
             "location": {
-                "X": -10,
-                "Y": -9,
-                "Z": 8,
+                "X": -7.5,
+                "Y": -10.25,
+                "Z": 7.5,
                 "ROLL": 0,
                 "PITCH": -14,
                 "YAW": 15
-            }
-        },
-        "camera1": {
-            "NAME": "OV9281-10",
-            "location": {
-                "X": 7.5,
-                "Y": -7,
-                "Z": 8.25,
-                "ROLL": 0,
-                "PITCH": 0,
-                "YAW": 0
             }
         }
     }
