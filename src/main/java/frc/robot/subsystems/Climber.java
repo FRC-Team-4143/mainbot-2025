@@ -18,6 +18,7 @@ import frc.lib.ElevatorTargets.Target;
 import frc.mw_lib.logging.Elastic;
 import frc.mw_lib.subsystem.Subsystem;
 import frc.robot.Constants;
+import frc.robot.Constants.ClimberConstants;
 import monologue.Annotations.Log;
 import monologue.Logged;
 
@@ -158,7 +159,8 @@ public class Climber extends Subsystem {
    */
   @Override
   public void writePeriodicOutputs(double timestamp) {
-    strap_motor_.setControl(strap_controller_.withPosition(io_.arm_motor_target + io_.strap_motor_target_offset));
+    strap_motor_.setControl(
+        strap_controller_.withPosition(io_.arm_motor_target + io_.strap_motor_target_offset));
     prong_motor_.set(io_.prong_motor_target);
     arm_motor_.set(io_.arm_motor_target);
   }
@@ -194,6 +196,9 @@ public class Climber extends Subsystem {
       case DEPLOYED:
         io_.current_mode_ = ClimberMode.RETRACTED;
         break;
+      case RETRACTED:
+        io_.strap_motor_target_offset -= ClimberConstants.STRAP_SETPOINT_BUMP;
+        break;
       default:
         break;
     }
@@ -206,8 +211,11 @@ public class Climber extends Subsystem {
         Elevator.getInstance().setTarget(Target.STOW);
         Elastic.selectTab("Teleop");
         break;
+      case RETRACTED:
+        io_.strap_motor_target_offset -= ClimberConstants.STRAP_SETPOINT_BUMP;
+        break;
       default:
-        DriverStation.reportError("NO", false);
+        DriverStation.reportError("Cannot return to previous stage", false);
         break;
     }
   }
