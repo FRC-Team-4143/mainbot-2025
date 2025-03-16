@@ -1,6 +1,7 @@
 package frc.mw_lib.util;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.node.ArrayNode;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation3d;
@@ -87,6 +88,23 @@ public class ConstantsLoader extends JSONReader {
 
   public List<String> getStringList(String... path_steps) {
     JsonNode current = walkTree(root_node_, path_steps);
+
+    List<String> elements = new ArrayList<>();
+    if (current.isArray()) {
+      ArrayNode array_node = (ArrayNode) current;
+      array_node
+          .elements()
+          .forEachRemaining(
+              (JsonNode node) -> {
+                elements.add(node.asText());
+              });
+    }
+
+    return elements;
+  }
+
+  protected List<String> getChildList(String... path_steps) {
+    JsonNode current = walkTree(root_node_, path_steps);
     return getChildren(current);
   }
 
@@ -95,7 +113,7 @@ public class ConstantsLoader extends JSONReader {
 
     JsonNode cameras_root = walkTree(root_node_, path_steps);
 
-    List<String> names = getStringList(path_steps);
+    List<String> names = getChildList(path_steps);
     for (String name : names) {
       JsonNode camera_root = walkTree(cameras_root, name);
 
