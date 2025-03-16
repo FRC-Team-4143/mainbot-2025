@@ -22,10 +22,6 @@ public class GameStateManager extends Subsystem {
   private StructPublisher<Pose2d> reef_target_publisher =
       NetworkTableInstance.getDefault().getStructTopic("ReefTarget", Pose2d.struct).publish();
 
-  Elevator elevator_;
-  PoseEstimator poseEstimator_;
-  SwerveDrivetrain drivetrain_;
-
   // Singleton pattern
   private static GameStateManager instance_ = null;
 
@@ -67,9 +63,6 @@ public class GameStateManager extends Subsystem {
 
   private GameStateManager() {
     io_ = new GameStateManagerPeriodicIo();
-    elevator_ = Elevator.getInstance();
-    poseEstimator_ = PoseEstimator.getInstance();
-    drivetrain_ = SwerveDrivetrain.getInstance();
   }
 
   /**
@@ -96,46 +89,44 @@ public class GameStateManager extends Subsystem {
   public void updateLogic(double timestamp) {
     switch (io_.robot_state_) {
       case TARGET_ACQUISITION:
-        io_.reef_target = reefPose(Column.CENTER);
+        io_.reef_target = reefPose(io_.target_column);
         if (io_.reef_target.isPresent()) {
-          drivetrain_.setTargetPose(io_.reef_target.get());
-          if (FieldRegions.REEF_ENTER.contains(poseEstimator_.getRobotPose())) {
+          SwerveDrivetrain.getInstance().setTargetPose(io_.reef_target.get());
+          if (FieldRegions.REEF_ENTER.contains(PoseEstimator.getInstance().getRobotPose())) {
             io_.robot_state_ = RobotState.APPROACHING_TARGET;
           }
         }
         break;
       case APPROACHING_TARGET:
         if (Util.epislonEquals(
-            poseEstimator_.getRobotPose().getRotation(),
+            PoseEstimator.getInstance().getRobotPose().getRotation(),
             io_.reef_target.get().getRotation(),
             Constants.GameStateManager
                 .REQUIRED_ROTATION_FOR_ELEVATOR)) { // move elevator once within rotation
           elevatorTargetSwitch();
         }
-        // drive towards final target
-        io_.reef_target = reefPose(io_.target_column);
-        drivetrain_.setTargetPose(io_.reef_target.get());
-        if (drivetrain_.atTractorBeamPose() && elevator_.isElevatorAndArmAtTarget()) {
+        if (SwerveDrivetrain.getInstance().atTractorBeamPose()
+            && Elevator.getInstance().isElevatorAndArmAtTarget()) {
           // Once at final target, hand off control
-          drivetrain_.restoreDefaultDriveMode();
+          SwerveDrivetrain.getInstance().restoreDefaultDriveMode();
           io_.robot_state_ = RobotState.SCORING;
         }
         break;
       case SCORING:
         // wait until you leave the exit Circle
-        if (!FieldRegions.REEF_EXIT.contains(poseEstimator_.getRobotPose())) {
+        if (!FieldRegions.REEF_EXIT.contains(PoseEstimator.getInstance().getRobotPose())) {
           io_.robot_state_ = RobotState.END;
         }
         break;
       case END:
         // clear saved vars and reset drive mode
-        drivetrain_.restoreDefaultDriveMode();
+        SwerveDrivetrain.getInstance().restoreDefaultDriveMode();
         if (Claw.getInstance().isCoralMode()) {
-          elevator_.setSpeedLimit(SpeedLimit.CORAL);
-          elevator_.setTarget(Target.STOW);
+          Elevator.getInstance().setSpeedLimit(SpeedLimit.CORAL);
+          Elevator.getInstance().setTarget(Target.STOW);
         } else {
-          elevator_.setSpeedLimit(SpeedLimit.ALGAE);
-          elevator_.setTarget(Target.ALGAE_STOW);
+          Elevator.getInstance().setSpeedLimit(SpeedLimit.ALGAE);
+          Elevator.getInstance().setTarget(Target.ALGAE_STOW);
         }
         io_.robot_state_ = RobotState.TELEOP_CONTROL;
         break;
@@ -174,8 +165,8 @@ public class GameStateManager extends Subsystem {
         "Subsystems/GameStateManager/Saved Target Level", io_.saved_scoring_target.toString());
     SmartDashboard.putBoolean(
         "Subsystems/GameStateManager/Ready to Score",
-        (drivetrain_.atTractorBeamPose()
-            && elevator_.isElevatorAndArmAtTarget()
+        (SwerveDrivetrain.getInstance().atTractorBeamPose()
+            && Elevator.getInstance().isElevatorAndArmAtTarget()
             && io_.robot_state_ == RobotState.SCORING));
     if (io_.reef_target.isPresent()) {
       reef_target_publisher.set(io_.reef_target.get());
@@ -231,10 +222,12 @@ public class GameStateManager extends Subsystem {
    */
   public Optional<Pose2d> reefPose(Column column) {
     for (int i = 0; i < FieldRegions.REEF_REGIONS.length; i++) {
-      if (FieldRegions.REEF_REGIONS[i].contains(poseEstimator_.getRobotPose())) {
+      if (FieldRegions.REEF_REGIONS[i].contains(PoseEstimator.getInstance().getRobotPose())) {
         if (column == Column.CENTER) {
           return Optional.of(
-              FieldRegions.REGION_POSE_TABLE.get(FieldRegions.REEF_REGIONS[i].getName()));
+              FieldRegions.REGION_POSE_TABLE
+                  .get(FieldRegions.REEF_REGIONS[i].getName())
+                  .transformBy(ScoringPoses.L1_CORAL_OFFSET));
         }
         if (column == Column.LEFT) {
           return Optional.of(
@@ -250,7 +243,7 @@ public class GameStateManager extends Subsystem {
         }
         if (column == Column.ALGAE) {
           io_.algae_level_high = ((i % 2) == 0); // this line prevents converting this method to use
-          // poseEstimator_.reefPose()
+          // PoseEstimator.getInstance().reefPose()
           return Optional.of(
               FieldRegions.REGION_POSE_TABLE
                   .get(FieldRegions.REEF_REGIONS[i].getName())
@@ -274,25 +267,28 @@ public class GameStateManager extends Subsystem {
 
   public void elevatorTargetSwitch() {
     switch (io_.scoring_target) {
+      case L1:
+        Elevator.getInstance().setTarget(Target.L1);
+        break;
       case L2:
-        elevator_.setTarget(Target.L2);
+        Elevator.getInstance().setTarget(Target.L2);
         break;
       case L3:
-        elevator_.setTarget(Target.L3);
+        Elevator.getInstance().setTarget(Target.L3);
         break;
       case L4:
-        elevator_.setTarget(Target.L4);
+        Elevator.getInstance().setTarget(Target.L4);
         break;
       case ALGAE:
         if (io_.algae_level_high) {
-          elevator_.setTarget(Target.ALGAE_HIGH);
+          Elevator.getInstance().setTarget(Target.ALGAE_HIGH);
         } else {
-          elevator_.setTarget(Target.ALGAE_LOW);
+          Elevator.getInstance().setTarget(Target.ALGAE_LOW);
         }
         break;
       case TURTLE:
       default:
-        elevator_.setTarget(Target.STOW);
+        Elevator.getInstance().setTarget(Target.STOW);
         break;
       case TELEOP_CONTROL:
         break;

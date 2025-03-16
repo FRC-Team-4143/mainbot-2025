@@ -28,6 +28,12 @@ public class ElevatorTargets {
             Rotation2d.fromDegrees(125),
             ControlType.EFFECTOR,
             ReefStagingAngle)),
+    L1(
+        new TargetData(
+            FieldConstants.ReefHeight.L1.HEIGHT + Units.inchesToMeters(6),
+            Rotation2d.fromDegrees(-1.027767),
+            ControlType.EFFECTOR,
+            ReefStagingAngle)),
     STATION(
         new TargetData(
             0.8468 + Units.inchesToMeters(3),
