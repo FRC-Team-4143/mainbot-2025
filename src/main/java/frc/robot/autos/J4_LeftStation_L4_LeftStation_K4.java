@@ -2,6 +2,7 @@ package frc.robot.autos;
 
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.mw_lib.auto.Auto;
+import frc.mw_lib.command.PriorityParallelCommandGroup;
 import frc.robot.commands.AutoCoralReefScore;
 import frc.robot.commands.CoralLoad;
 import frc.robot.subsystems.GameStateManager;
@@ -25,8 +26,9 @@ public class J4_LeftStation_L4_LeftStation_K4 extends Auto {
         new AutoCoralReefScore(),
 
         // Get game piece 2
-        this.getTrajectoryCmd("IJ to Left Station")
-            .alongWith(new CoralLoad().beforeStarting(new WaitCommand(0.5))),
+        new PriorityParallelCommandGroup(
+            this.getTrajectoryCmd("IJ to Left Station"),
+            new CoralLoad().beforeStarting(new WaitCommand(0.5))),
 
         // Score game piece 2
         GameStateManager.setScoringCommand(Column.LEFT, ReefScoringTarget.L4),
@@ -34,8 +36,9 @@ public class J4_LeftStation_L4_LeftStation_K4 extends Auto {
         new AutoCoralReefScore(),
 
         // Get game piece 3
-        this.getTrajectoryCmd("KL to Left Station")
-            .alongWith(new CoralLoad().beforeStarting(new WaitCommand(0.5))),
+        new PriorityParallelCommandGroup(
+            this.getTrajectoryCmd("KL to Left Station"),
+            new CoralLoad().beforeStarting(new WaitCommand(0.5))),
 
         // Score game piece 3
         GameStateManager.setScoringCommand(Column.RIGHT, ReefScoringTarget.L4),

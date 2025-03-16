@@ -5,9 +5,9 @@ import frc.lib.ElevatorTargets.Target;
 import frc.robot.OI;
 import frc.robot.subsystems.Claw;
 import frc.robot.subsystems.Climber;
+import frc.robot.subsystems.Climber.ClimberMode;
 import frc.robot.subsystems.Elevator;
 import frc.robot.subsystems.PoseEstimator;
-import frc.robot.subsystems.Climber.ClimberMode;
 
 public class SetDefaultStow extends Command {
   public SetDefaultStow() {
