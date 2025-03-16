@@ -235,6 +235,7 @@ public class Elevator extends Subsystem {
 
       if (this.isElevatorAndArmAtCurrentTarget() == true) {
         io_.intermediate_targets_.remove(0);
+        System.out.print("removed index 0");
       }
     } else {
       // normal final target loop
@@ -320,6 +321,7 @@ public class Elevator extends Subsystem {
     SmartDashboard.putNumber(
         "Subsystems/Arm/intermediate_targets_", io_.intermediate_targets_.size());
     SmartDashboard.putBoolean("isElevatorAndArmAtCurrentTarget", isArmAtCurrentTarget());
+    SmartDashboard.putBoolean("isElevatorAndArmAtFinalTarget", isElevatorAndArmAtFinalTarget());
     updateMechanism();
   }
 
@@ -450,17 +452,17 @@ public class Elevator extends Subsystem {
     }
   }
 
-  public void setTarget(Target target) {
-    io_.intermediate_targets_ = new ArrayList<>();
+  public void setTarget(Target new_target) {
+    Target old_target = io_.final_target_;
+    io_.intermediate_targets_ = new ArrayList<IntermediateTarget>(0);
+    io_.final_target_ = new_target;
 
-    if (io_.final_target_.getIntermediateExitTarget().isPresent()) {
-      io_.intermediate_targets_.add(io_.final_target_.getIntermediateExitTarget().get());
+    if (old_target.getIntermediateExitTarget().isPresent()) {
+      io_.intermediate_targets_.add(old_target.getIntermediateExitTarget().get());
     }
-    if (target.getIntermediateEnterTarget().isPresent()) {
-      io_.intermediate_targets_.add(target.getIntermediateEnterTarget().get());
+    if (new_target.getIntermediateEnterTarget().isPresent()) {
+      io_.intermediate_targets_.add(new_target.getIntermediateEnterTarget().get());
     }
-
-    io_.final_target_ = target;
   }
 
   public Target getTarget() {

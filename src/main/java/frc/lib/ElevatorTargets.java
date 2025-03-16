@@ -13,21 +13,21 @@ public class ElevatorTargets {
             FieldConstants.ReefHeight.L4.HEIGHT + Units.inchesToMeters(11),
             Rotation2d.fromDegrees(145.3),
             ControlType.EFFECTOR),
-        Optional.of(IntermediateTarget.L4_I),
+        Optional.empty(),
         Optional.empty()),
     L3(
         new TargetData(
             FieldConstants.ReefHeight.L3.HEIGHT + Units.inchesToMeters(8),
             Rotation2d.fromDegrees(125),
             ControlType.EFFECTOR),
-        Optional.of(IntermediateTarget.L3_I),
+        Optional.empty(),
         Optional.empty()),
     L2(
         new TargetData(
             FieldConstants.ReefHeight.L2.HEIGHT + Units.inchesToMeters(8),
             Rotation2d.fromDegrees(125),
             ControlType.EFFECTOR),
-        Optional.of(IntermediateTarget.L2_I),
+        Optional.empty(),
         Optional.empty()),
     STATION(
         new TargetData(
@@ -193,17 +193,17 @@ public class ElevatorTargets {
         new TargetData(
             FieldConstants.ReefHeight.L4.HEIGHT + Units.inchesToMeters(11),
             Rotation2d.fromDegrees(90),
-            ControlType.EFFECTOR)),
+            ControlType.PIVOT)),
     L3_I(
         new TargetData(
             FieldConstants.ReefHeight.L3.HEIGHT + Units.inchesToMeters(8),
             Rotation2d.fromDegrees(90),
-            ControlType.EFFECTOR)),
+            ControlType.PIVOT)),
     L2_I(
         new TargetData(
             FieldConstants.ReefHeight.L2.HEIGHT + Units.inchesToMeters(8),
             Rotation2d.fromDegrees(90),
-            ControlType.EFFECTOR));
+            ControlType.PIVOT));
 
     IntermediateTarget(TargetData td) {
       this.td = td;

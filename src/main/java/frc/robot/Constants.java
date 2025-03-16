@@ -22,8 +22,8 @@ import frc.mw_lib.swerve.SwerveModuleConstantsFactory;
 import frc.mw_lib.swerve.utility.ModuleType;
 import frc.mw_lib.util.CamConstants;
 import frc.mw_lib.util.ConstantsLoader;
-import java.util.List;
 import frc.mw_lib.util.TagLayouts;
+import java.util.List;
 
 /**
  * The Constants class provides a convenient place for teams to hold robot-wide numerical or boolean
