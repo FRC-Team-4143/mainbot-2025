@@ -186,8 +186,12 @@ public class Elevator extends Subsystem {
         Commands.runOnce(() -> resetManualOffsets()).ignoringDisable(true));
     // Sync Elevator and Arm Sensor to "Home" Position
     SmartDashboard.putData(
-        "Commands/Zero Elevator & Arm",
-        Commands.runOnce(() -> Elevator.getInstance().elevatorAndArmPosReset())
+        "Commands/Zero Elevator",
+        Commands.runOnce(() -> Elevator.getInstance().elevatorPosReset())
+            .ignoringDisable(true));
+    SmartDashboard.putData(
+        "Commands/Zero Arm",
+        Commands.runOnce(() -> Elevator.getInstance().armPosReset())
             .ignoringDisable(true));
     arm_motor_.setPosition(
         arm_encoder_.getAbsolutePosition().getValueAsDouble()
@@ -384,12 +388,6 @@ public class Elevator extends Subsystem {
     arm_motor_.setPosition(
         arm_encoder_.getAbsolutePosition().getValueAsDouble()
             - (MWPreferences.getInstance().getPreferenceDouble("ArmEncoderOffset", 0)));
-  }
-
-  /** Reset the elevator position to zero and the arm to home */
-  public void elevatorAndArmPosReset() {
-    elevatorPosReset();
-    armPosReset();
   }
 
   public void setOffset(OffsetType offset_type) {
