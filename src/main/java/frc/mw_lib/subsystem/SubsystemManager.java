@@ -90,7 +90,7 @@ public abstract class SubsystemManager {
     Monologue.setupMonologue(ios, "Robot", true, false);
     DriverStation.startDataLog(DataLogManager.getLog());
     GitLogger.logGitData();
-    GitLogger.putGitDataToDashboarad();
+    GitLogger.putGitDataToDashboard();
     log_init = true;
   }
 

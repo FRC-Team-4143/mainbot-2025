@@ -27,10 +27,11 @@ public abstract class GitLogger {
     dirty.append((BuildConstants.DIRTY >= 1));
   }
 
-  public static void putGitDataToDashboarad() {
+  public static void putGitDataToDashboard() {
     SmartDashboard.putString("GitData/Project Name", BuildConstants.MAVEN_NAME);
     SmartDashboard.putString("GitData/Build Branch", BuildConstants.GIT_BRANCH);
+    SmartDashboard.putString("GitData/Git SHA", BuildConstants.GIT_SHA.substring(0, 7));
     SmartDashboard.putString("GitData/Build Date", BuildConstants.BUILD_DATE);
-    SmartDashboard.putBoolean("GitData/Dirty Git", (BuildConstants.DIRTY >= 1));
+    SmartDashboard.putBoolean("GitData/Dirty Git", !(BuildConstants.DIRTY >= 1));
   }
 }
