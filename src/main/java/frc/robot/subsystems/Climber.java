@@ -184,7 +184,6 @@ public class Climber extends Subsystem {
       case DISABLED:
         prong_counter_.reset();
         io_.current_mode_ = ClimberMode.PRECLIMB;
-        Elevator.getInstance().setTarget(Target.CLIMB);
         Elastic.selectTab("Climb");
         break;
       case PRECLIMB:
@@ -212,6 +211,10 @@ public class Climber extends Subsystem {
         DriverStation.reportError("NO", false);
         break;
     }
+  }
+
+  public ClimberMode getMode() {
+    return io_.current_mode_;
   }
 
   public class ClimberPeriodicIo implements Logged {

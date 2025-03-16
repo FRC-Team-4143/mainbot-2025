@@ -4,8 +4,10 @@ import edu.wpi.first.wpilibj2.command.Command;
 import frc.lib.ElevatorTargets.Target;
 import frc.robot.OI;
 import frc.robot.subsystems.Claw;
+import frc.robot.subsystems.Climber;
 import frc.robot.subsystems.Elevator;
 import frc.robot.subsystems.PoseEstimator;
+import frc.robot.subsystems.Climber.ClimberMode;
 
 public class SetDefaultStow extends Command {
   public SetDefaultStow() {
@@ -20,18 +22,22 @@ public class SetDefaultStow extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    if (Claw.getInstance().isAlgaeMode()) {
-      Elevator.getInstance().setTarget(Target.ALGAE_STOW);
-    } else {
-      if (OI.use_vision.getAsBoolean()) {
-        if (PoseEstimator.getInstance().isStationZone()) {
-          Elevator.getInstance().setTarget(Target.STOW);
-        } else {
-          Elevator.getInstance().setTarget(Target.CORAL_STOW);
-        }
+    if (Climber.getInstance().getMode() == ClimberMode.DISABLED) {
+      if (Claw.getInstance().isAlgaeMode()) {
+        Elevator.getInstance().setTarget(Target.ALGAE_STOW);
       } else {
-        Elevator.getInstance().setTarget(Target.STOW);
+        if (OI.use_vision.getAsBoolean()) {
+          if (PoseEstimator.getInstance().isStationZone()) {
+            Elevator.getInstance().setTarget(Target.STOW);
+          } else {
+            Elevator.getInstance().setTarget(Target.CORAL_STOW);
+          }
+        } else {
+          Elevator.getInstance().setTarget(Target.STOW);
+        }
       }
+    } else {
+      Elevator.getInstance().setTarget(Target.CLIMB);
     }
   }
 
