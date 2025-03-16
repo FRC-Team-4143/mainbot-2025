@@ -514,7 +514,7 @@ public class Elevator extends Subsystem {
     @Log.File public double target_elevator_height_ = ElevatorConstants.ELEVATOR_HEIGHT_PIVOT_MIN;
     @Log.File public double current_arm_angle_ = 0;
     @Log.File public Target final_target_ = Target.STOW;
-    @Log.File public ArrayList<IntermediateTarget> intermediate_targets_;
+    @Log.File public ArrayList<IntermediateTarget> intermediate_targets_ = new ArrayList<>();
     @Log.File public Rotation2d target_arm_angle_ = Rotation2d.fromDegrees(-90);
     @Log.File public double elevator_master_rotations_ = 0;
     @Log.File public double elevator_follower_rotations_ = 0;
