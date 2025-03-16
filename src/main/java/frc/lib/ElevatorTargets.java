@@ -30,10 +30,10 @@ public class ElevatorTargets {
             ReefStagingAngle)),
     L1(
         new TargetData(
-            FieldConstants.ReefHeight.L1.HEIGHT + Units.inchesToMeters(6),
-            Rotation2d.fromDegrees(-1.027767),
+            0.506 + Units.inchesToMeters(0),
+            Rotation2d.fromDegrees(-60),
             ControlType.EFFECTOR,
-            ReefStagingAngle)),
+            Optional.empty())),
     STATION(
         new TargetData(
             0.8468 + Units.inchesToMeters(3),

@@ -225,9 +225,7 @@ public class GameStateManager extends Subsystem {
       if (FieldRegions.REEF_REGIONS[i].contains(PoseEstimator.getInstance().getRobotPose())) {
         if (column == Column.CENTER) {
           return Optional.of(
-              FieldRegions.REGION_POSE_TABLE
-                  .get(FieldRegions.REEF_REGIONS[i].getName())
-                  .transformBy(ScoringPoses.L1_CORAL_OFFSET));
+              FieldRegions.REGION_POSE_TABLE.get(FieldRegions.REEF_REGIONS[i].getName()));
         }
         if (column == Column.LEFT) {
           return Optional.of(
@@ -243,7 +241,6 @@ public class GameStateManager extends Subsystem {
         }
         if (column == Column.ALGAE) {
           io_.algae_level_high = ((i % 2) == 0); // this line prevents converting this method to use
-          // PoseEstimator.getInstance().reefPose()
           return Optional.of(
               FieldRegions.REGION_POSE_TABLE
                   .get(FieldRegions.REEF_REGIONS[i].getName())

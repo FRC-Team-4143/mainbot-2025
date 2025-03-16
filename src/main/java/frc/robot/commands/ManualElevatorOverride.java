@@ -59,7 +59,7 @@ public class ManualElevatorOverride extends Command {
     switch (level_) {
       case L1:
         Elevator.getInstance()
-            .setTarget(Claw.getInstance().isCoralMode() ? Target.STATION : Target.ALGAE_PROCESSOR);
+            .setTarget(Claw.getInstance().isCoralMode() ? Target.L1 : Target.ALGAE_PROCESSOR);
         break;
 
       case L2:
