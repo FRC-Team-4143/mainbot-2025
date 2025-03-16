@@ -144,7 +144,6 @@ public class Climber extends Subsystem {
         io_.arm_motor_target = 0;
         io_.prong_motor_target = Constants.ClimberConstants.PRONG_DEPLOY_SPEED;
         break;
-
       case DISABLED:
       default:
         // do nothing
@@ -159,7 +158,7 @@ public class Climber extends Subsystem {
    */
   @Override
   public void writePeriodicOutputs(double timestamp) {
-    strap_motor_.setControl(strap_controller_.withPosition(io_.arm_motor_target));
+    strap_motor_.setControl(strap_controller_.withPosition(io_.arm_motor_target + io_.strap_motor_target_offset));
     prong_motor_.set(io_.prong_motor_target);
     arm_motor_.set(io_.arm_motor_target);
   }
@@ -219,6 +218,7 @@ public class Climber extends Subsystem {
 
   public class ClimberPeriodicIo implements Logged {
     @Log.File public double strap_motor_target = 0;
+    @Log.File public double strap_motor_target_offset = 0;
     @Log.File public double prong_motor_target = 0;
     @Log.File public double arm_motor_target = 0;
     @Log.File public ClimberMode current_mode_ = ClimberMode.DISABLED;
