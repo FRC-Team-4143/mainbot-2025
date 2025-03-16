@@ -103,15 +103,15 @@
         "CONTROLLER_V": 9.2434,
         "CONTROLLER_A": 0.36146,
         "CONTROLLER_G": 0.27387,
-        "LENGTH_PIVOT_TO_FUNNEL":13,
+        "LENGTH_PIVOT_TO_FUNNEL":12,
         "DEPTH_CORAL_POCKET":10
     },
     "vision": {
         "camera0": {
             "NAME": "PC_Camera",
             "location": {
-                "X": -8.5,
-                "Y": -11.25,
+                "X": -7.5,
+                "Y": -10.25,
                 "Z": 7.5,
                 "ROLL": 0,
                 "PITCH": -14,
