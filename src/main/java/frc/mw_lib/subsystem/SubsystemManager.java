@@ -13,9 +13,7 @@ import monologue.Logged;
 import monologue.Monologue;
 
 public abstract class SubsystemManager {
-
-  // Supposedly 1 is a good starting point, but can increase if we have issues
-  private static final int START_THREAD_PRIORITY = 99;
+  private static final String subsystems_key_ = "subsystems";
 
   public class Contain implements Logged {
     @Log.File public ArrayList<Logged> subsystems_ios = new ArrayList<>();
@@ -25,7 +23,18 @@ public abstract class SubsystemManager {
   protected Notifier loopThread;
   protected boolean log_init = false;
   protected Contain ios;
-  protected List<String> enabled_systems_;
+
+  protected static List<String> enabled_systems_;
+
+  public static List<String> getEnabledSubsystems() {
+    if (enabled_systems_ == null) {
+      // Determine removable subsystems to load
+      enabled_systems_ = ConstantsLoader.getInstance().getStringList(subsystems_key_);
+      DataLogManager.log("Expecting subsystems: " + enabled_systems_.toString());
+    }
+
+    return enabled_systems_;
+  }
 
   public SubsystemManager() {
     // Initialize the subsystem list
@@ -36,9 +45,6 @@ public abstract class SubsystemManager {
     loopThread = new Notifier(this::doControlLoop);
 
     ios = new Contain();
-
-    enabled_systems_ = ConstantsLoader.getInstance().getStringList("subsytems");
-    DataLogManager.log("Expecting " + enabled_systems_.toString());
   }
 
   public void registerSubsystem(Subsystem system) {
