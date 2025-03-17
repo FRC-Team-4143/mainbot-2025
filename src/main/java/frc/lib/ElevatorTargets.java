@@ -87,7 +87,14 @@ public class ElevatorTargets {
             ElevatorConstants.ELEVATOR_HEIGHT_PIVOT_SAFETY + Units.inchesToMeters(0),
             Rotation2d.fromDegrees(90),
             ControlType.PIVOT,
-            Optional.empty()));
+            Optional.empty())),
+    L4_SAFETY ( 
+      new TargetData(
+            ElevatorConstants.ELEVATOR_HEIGHT_PIVOT_SAFETY + Units.inchesToMeters(0),
+            Rotation2d.fromDegrees(90),
+            ControlType.PIVOT,
+            Optional.of(Rotation2d.fromDegrees(0)))
+    );
 
     Target(TargetData td) {
       this.td = td;
