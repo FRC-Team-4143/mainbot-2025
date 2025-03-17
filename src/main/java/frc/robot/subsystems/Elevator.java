@@ -13,6 +13,8 @@ import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.FeedbackSensorSourceValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.ctre.phoenix6.signals.SensorDirectionValue;
+import edu.wpi.first.math.filter.Debouncer;
+import edu.wpi.first.math.filter.Debouncer.DebounceType;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Rotation3d;
@@ -24,7 +26,6 @@ import edu.wpi.first.wpilibj.DataLogManager;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Commands;
-import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.lib.ElevatorKinematics;
 import frc.lib.ElevatorTargets.Target;
 import frc.lib.FieldRegions;
@@ -62,13 +63,14 @@ public class Elevator extends Subsystem {
   private MotionMagicVoltage elevator_request_;
   private MotionMagicVoltage arm_request_;
   private BooleanSupplier elevator_at_minimum_;
-  private Trigger reset_elevator_trigger_;
   private DigitalInput elevator_limit_switch_;
   private CANcoder arm_encoder_;
   private CANcoderConfiguration arm_encoder_config_;
 
   // Control Behavior
   private ElevatorKinematics kinematics_;
+  private Debouncer arm_position_debouncer_;
+  private Debouncer elevator_position_debouncer_;
 
   // Mechanisms
   private StructArrayPublisher<Pose3d> stages_pub_;
@@ -156,13 +158,10 @@ public class Elevator extends Subsystem {
     // System Behavior Setup
     elevator_request_ = new MotionMagicVoltage(0);
     arm_request_ = new MotionMagicVoltage(0);
-
-    elevator_at_minimum_ = () -> isElevatorAtMinimum();
-    reset_elevator_trigger_ = new Trigger(elevator_at_minimum_);
+    elevator_position_debouncer_ = new Debouncer(0.1, DebounceType.kBoth);
+    arm_position_debouncer_ = new Debouncer(0.1, DebounceType.kBoth);
 
     kinematics_ = new ElevatorKinematics(ArmConstants.ARM_LENGTH, ArmConstants.ARM_WIDTH);
-
-    reset_elevator_trigger_.onTrue(Commands.runOnce(() -> elevatorPosReset()));
 
     // Mechanism Setup
     stages_pub_ =
@@ -323,10 +322,11 @@ public class Elevator extends Subsystem {
     if (io_.target_.getStagingArmAngle().isPresent() && isArmAtStagingAngle()) {
       return false;
     }
-    return Util.epislonEquals(
-        io_.current_arm_angle_,
-        io_.target_arm_angle_.getRadians(),
-        ArmConstants.ARM_TARGET_THRESHOLD);
+    return arm_position_debouncer_.calculate(
+        Util.epislonEquals(
+            io_.current_arm_angle_,
+            io_.target_arm_angle_.getRadians(),
+            ArmConstants.ARM_TARGET_THRESHOLD));
   }
 
   /**
@@ -346,10 +346,11 @@ public class Elevator extends Subsystem {
    * @return If the elevator is within the threshold of its target
    */
   public boolean isElevatorAtTarget() {
-    return Util.epislonEquals(
-        io_.current_elevator_height_,
-        io_.target_elevator_height_,
-        ElevatorConstants.ELEVATOR_TARGET_THRESHOLD);
+    return elevator_position_debouncer_.calculate(
+        Util.epislonEquals(
+            io_.current_elevator_height_,
+            io_.target_elevator_height_,
+            ElevatorConstants.ELEVATOR_TARGET_THRESHOLD));
   }
 
   /**
