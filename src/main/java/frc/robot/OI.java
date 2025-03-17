@@ -154,11 +154,13 @@ public abstract class OI {
     operator_controller_
         .start()
         .onTrue(
-            Commands.runOnce(() -> SmartDashboard.putBoolean("Vision/Use Vision Features", true)));
+            Commands.runOnce(() -> SmartDashboard.putBoolean("Vision/Use Vision Features", true))
+                .ignoringDisable(true));
     operator_controller_
         .back()
         .onTrue(
-            Commands.runOnce(() -> SmartDashboard.putBoolean("Vision/Use Vision Features", false)));
+            Commands.runOnce(() -> SmartDashboard.putBoolean("Vision/Use Vision Features", false))
+                .ignoringDisable(true));
   }
 
   /**
