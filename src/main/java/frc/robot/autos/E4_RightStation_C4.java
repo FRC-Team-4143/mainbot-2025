@@ -2,7 +2,6 @@ package frc.robot.autos;
 
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.mw_lib.auto.Auto;
-import frc.mw_lib.command.PriorityParallelCommandGroup;
 import frc.robot.commands.AutoCoralReefScore;
 import frc.robot.commands.CoralLoad;
 import frc.robot.subsystems.GameStateManager;
@@ -24,9 +23,8 @@ public class E4_RightStation_C4 extends Auto {
         new AutoCoralReefScore(),
 
         // Get game piece 2
-        new PriorityParallelCommandGroup(
-            this.getTrajectoryCmd("EF to Right Station"),
-            new CoralLoad().beforeStarting(new WaitCommand(0.5))),
+        this.getTrajectoryCmd("EF to Right Station")
+            .alongWith(new CoralLoad().beforeStarting(new WaitCommand(0.5))),
 
         // Score game piece 2
         GameStateManager.setScoringCommand(Column.LEFT, ReefScoringTarget.L4),
