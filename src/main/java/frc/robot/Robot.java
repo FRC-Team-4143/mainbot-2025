@@ -15,6 +15,8 @@ import frc.mw_lib.auto.AutoManager;
 import frc.mw_lib.logging.Elastic;
 import frc.robot.autos.E4_RightStation_C4;
 import frc.robot.autos.E4_RightStation_C4_RightStation_D4;
+import frc.robot.autos.H4_GH_Barge;
+import frc.robot.autos.H4_GH_Barge_IJ_Barge;
 import frc.robot.autos.J4_LeftStation_L4;
 import frc.robot.autos.J4_LeftStation_L4_LeftStation_K4;
 import frc.robot.subsystems.GameStateManager;
@@ -38,7 +40,9 @@ public class Robot extends TimedRobot {
             new J4_LeftStation_L4(),
             new J4_LeftStation_L4_LeftStation_K4(),
             new E4_RightStation_C4(),
-            new E4_RightStation_C4_RightStation_D4());
+            new E4_RightStation_C4_RightStation_D4(),
+            new H4_GH_Barge(),
+            new H4_GH_Barge_IJ_Barge());
   }
 
   @Override
@@ -93,13 +97,13 @@ public class Robot extends TimedRobot {
   @Override
   public void autonomousExit() {
     Elastic.selectTab("Teleop");
+    AutoManager.getInstance().removeDisplayedAuto();
   }
 
   @Override
   public void teleopInit() {
     SwerveDrivetrain.getInstance().restoreDefaultDriveMode();
     CommandScheduler.getInstance().cancelAll();
-    AutoManager.getInstance().removeDisplayedAuto();
     Elastic.selectTab("Teleop");
   }
 
