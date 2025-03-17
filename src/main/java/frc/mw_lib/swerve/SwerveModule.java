@@ -187,7 +187,6 @@ public class SwerveModule {
       case AnalogEncoder:
       default:
         talonConfigs.Feedback.SensorToMechanismRatio = constants.moduleType.steerRatio;
-        System.out.println(constants.moduleType.steerRatio);
         break;
     }
     // talonConfigs.Feedback.RotorToSensorRatio = constants.moduleType.steerRatio;
@@ -214,16 +213,6 @@ public class SwerveModule {
               + " failed config with error "
               + response.toString());
     }
-
-    // CRH: Removed for AnalogEncoders
-    // CANcoderConfiguration cancoderConfigs = new CANcoderConfiguration();
-    // cancoderConfigs.MagnetSensor.MagnetOffset = constants.CANcoderOffset;
-    // response = m_cancoder.getConfigurator().apply(cancoderConfigs);
-    // if (!response.isOK()) {
-    // System.out.println(
-    // "CANcoder ID " + m_cancoder.getDeviceID() + " failed config with error " +
-    // response.toString());
-    // }
 
     m_drivePosition = m_driveMotor.getPosition().clone();
     m_driveVelocity = m_driveMotor.getVelocity().clone();
@@ -548,7 +537,6 @@ public class SwerveModule {
     m_steerMotor.setPosition(0);
     m_angle_offset = m_analogEncoder.get(); // * 360.0;
     MWPreferences.getInstance().setPreference("Module" + m_encoder_id + "offset", m_angle_offset);
-    System.out.println("Set wheel offsets of " + m_encoder_id + " to " + m_angle_offset);
 
     resetToAbsolute();
   }
