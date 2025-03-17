@@ -74,9 +74,9 @@ public class Climber extends RemovableSubsystem {
 
       strap_motor_.getConfigurator().apply(Constants.ClimberConstants.STRAP_GAINS);
 
-    strap_position_request_ = new PositionVoltage(0.0);
-    strap_position_request_.withSlot(0);
-    strap_voltage_request_ = new VoltageOut(0);
+      strap_position_request_ = new PositionVoltage(0.0);
+      strap_position_request_.withSlot(0);
+      strap_voltage_request_ = new VoltageOut(0);
 
       strap_config_ = new TalonFXConfiguration();
       strap_config_.MotorOutput.Inverted = Constants.ClimberConstants.STRAP_INVERSION;
@@ -125,7 +125,8 @@ public class Climber extends RemovableSubsystem {
       case STAGING:
         prong_controller_.setSetpoint(Constants.ClimberConstants.PRONG_PRESET_COUNT);
         io_.prong_vcomp_ratio = 11.0 / RobotController.getBatteryVoltage(); // Tuned at 11.0v
-        io_.prong_motor_target = prong_controller_.calculate(io_.prong_count) * io_.prong_vcomp_ratio;
+        io_.prong_motor_target =
+            prong_controller_.calculate(io_.prong_count) * io_.prong_vcomp_ratio;
 
         if (io_.prong_count >= Constants.ClimberConstants.PRONG_PRESET_COUNT) {
           io_.current_mode_ = ClimberMode.PRESET;
