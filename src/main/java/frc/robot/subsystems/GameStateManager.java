@@ -19,8 +19,8 @@ import monologue.Logged;
 
 public class GameStateManager extends Subsystem {
 
-  private StructPublisher<Pose2d> reef_target_publisher =
-      NetworkTableInstance.getDefault().getStructTopic("ReefTarget", Pose2d.struct).publish();
+  private StructPublisher<Pose2d> reef_target_publisher = NetworkTableInstance.getDefault()
+      .getStructTopic("ReefTarget", Pose2d.struct).publish();
 
   // Singleton pattern
   private static GameStateManager instance_ = null;
@@ -66,23 +66,31 @@ public class GameStateManager extends Subsystem {
   }
 
   /**
-   * This function should be logic and code to fully reset your subsystem. This is called during
-   * initialization, and should handle I/O configuration and initializing data members.
+   * This function should be logic and code to fully reset your subsystem. This is
+   * called during
+   * initialization, and should handle I/O configuration and initializing data
+   * members.
    */
   @Override
-  public void reset() {}
+  public void reset() {
+  }
 
   /**
-   * Inside this function, all of the SENSORS should be read into variables stored in the PeriodicIO
-   * class defined below. There should be no calls to output to actuators, or any logic within this
+   * Inside this function, all of the SENSORS should be read into variables stored
+   * in the PeriodicIO
+   * class defined below. There should be no calls to output to actuators, or any
+   * logic within this
    * function.
    */
   @Override
-  public void readPeriodicInputs(double timestamp) {}
+  public void readPeriodicInputs(double timestamp) {
+  }
 
   /**
-   * Inside this function, all of the LOGIC should compute updates to output variables in the
-   * PeriodicIO class defined below. There should be no calls to read from sensors or write to
+   * Inside this function, all of the LOGIC should compute updates to output
+   * variables in the
+   * PeriodicIO class defined below. There should be no calls to read from sensors
+   * or write to
    * actuators in this function.
    */
   @Override
@@ -91,9 +99,13 @@ public class GameStateManager extends Subsystem {
       case TARGET_ACQUISITION:
         io_.reef_target = reefPose(io_.target_column);
         if (io_.reef_target.isPresent()) {
-          SwerveDrivetrain.getInstance().setTargetPose(io_.reef_target.get());
-          if (FieldRegions.REEF_ENTER.contains(PoseEstimator.getInstance().getRobotPose())) {
-            io_.robot_state_ = RobotState.APPROACHING_TARGET;
+          if (io_.scoring_target != ReefScoringTarget.L1) {
+            SwerveDrivetrain.getInstance().setTargetPose(io_.reef_target.get());
+            if (FieldRegions.REEF_ENTER.contains(PoseEstimator.getInstance().getRobotPose())) {
+              io_.robot_state_ = RobotState.APPROACHING_TARGET;
+            }
+          } else {
+            io_.robot_state_ = RobotState.SCORING; // if the target is L1 skip to scoring 
           }
         }
         break;
@@ -101,8 +113,7 @@ public class GameStateManager extends Subsystem {
         if (Util.epislonEquals(
             PoseEstimator.getInstance().getRobotPose().getRotation(),
             io_.reef_target.get().getRotation(),
-            Constants.GameStateManager
-                .REQUIRED_ROTATION_FOR_ELEVATOR)) { // move elevator once within rotation
+            Constants.GameStateManager.REQUIRED_ROTATION_FOR_ELEVATOR)) { // move elevator once within rotation
           elevatorTargetSwitch();
         }
         if (SwerveDrivetrain.getInstance().atTractorBeamPose()
@@ -116,6 +127,12 @@ public class GameStateManager extends Subsystem {
         // wait until you leave the exit Circle
         if (!FieldRegions.REEF_EXIT.contains(PoseEstimator.getInstance().getRobotPose())) {
           io_.robot_state_ = RobotState.END;
+        }
+        if (io_.scoring_target == ReefScoringTarget.L1) {
+          io_.reef_target = reefPose(io_.target_column); // refresh target incase reef face changes 
+          if (io_.reef_target.isPresent()) {
+            SwerveDrivetrain.getInstance().setTargetRotation(io_.reef_target.get().getRotation()); //anlign to reef face 
+          }
         }
         break;
       case END:
@@ -138,17 +155,23 @@ public class GameStateManager extends Subsystem {
   }
 
   /**
-   * Inside this function actuator OUTPUTS should be updated from data contained in the PeriodicIO
-   * class defined below. There should be little to no logic contained within this function, and no
+   * Inside this function actuator OUTPUTS should be updated from data contained
+   * in the PeriodicIO
+   * class defined below. There should be little to no logic contained within this
+   * function, and no
    * sensors should be read.
    */
   @Override
-  public void writePeriodicOutputs(double timestamp) {}
+  public void writePeriodicOutputs(double timestamp) {
+  }
 
   /**
-   * Inside this function telemetry should be output to smartdashboard. The data should be collected
-   * out of the PeriodicIO class instance defined below. There should be no sensor information read
-   * in this function nor any outputs made to actuators within this function. Only publish to
+   * Inside this function telemetry should be output to smartdashboard. The data
+   * should be collected
+   * out of the PeriodicIO class instance defined below. There should be no sensor
+   * information read
+   * in this function nor any outputs made to actuators within this function. Only
+   * publish to
    * smartdashboard here.
    */
   @Override
@@ -177,7 +200,7 @@ public class GameStateManager extends Subsystem {
 
   /**
    * @param target_score new target
-   * @param save weather or not to save the target
+   * @param save         weather or not to save the target
    */
   public void setScoringColum(Column col, boolean save) {
     io_.target_column = col;
@@ -188,7 +211,7 @@ public class GameStateManager extends Subsystem {
 
   /**
    * @param target_score new target
-   * @param save weather or not to save the target
+   * @param save         weather or not to save the target
    */
   public void setScoringTarget(ReefScoringTarget target, boolean save) {
     io_.scoring_target = target;
@@ -215,7 +238,8 @@ public class GameStateManager extends Subsystem {
   }
 
   /**
-   * Returns a target pose when robot is in an reef region If not in a region empty is returned.
+   * Returns a target pose when robot is in an reef region If not in a region
+   * empty is returned.
    * Also adjust to the provided column
    *
    * @return target pose
@@ -223,6 +247,12 @@ public class GameStateManager extends Subsystem {
   public Optional<Pose2d> reefPose(Column column) {
     for (int i = 0; i < FieldRegions.REEF_REGIONS.length; i++) {
       if (FieldRegions.REEF_REGIONS[i].contains(PoseEstimator.getInstance().getRobotPose())) {
+        if (io_.scoring_target == ReefScoringTarget.L1) {
+          return Optional.of(
+              FieldRegions.REGION_POSE_TABLE
+                  .get(FieldRegions.REEF_REGIONS[i].getName())
+                  .transformBy(ScoringPoses.L1_OFFSET));
+        }
         if (column == Column.CENTER) {
           return Optional.of(
               FieldRegions.REGION_POSE_TABLE.get(FieldRegions.REEF_REGIONS[i].getName()));
@@ -293,17 +323,25 @@ public class GameStateManager extends Subsystem {
   }
 
   /**
-   * Inside this function actuator OUTPUTS should be updated from data contained in the PeriodicIO
-   * class defined below. There should be little to no logic contained within this function, and no
+   * Inside this function actuator OUTPUTS should be updated from data contained
+   * in the PeriodicIO
+   * class defined below. There should be little to no logic contained within this
+   * function, and no
    * sensors should be read.
    */
   public class GameStateManagerPeriodicIo implements Logged {
-    @Log.File public ReefScoringTarget scoring_target = ReefScoringTarget.TURTLE;
-    @Log.File public ReefScoringTarget saved_scoring_target = ReefScoringTarget.L2;
-    @Log.File public RobotState robot_state_ = RobotState.TELEOP_CONTROL;
-    @Log.File public Optional<Pose2d> reef_target = Optional.empty();
-    @Log.File public Column target_column = Column.LEFT;
-    @Log.File public Column saved_target_column = Column.LEFT;
+    @Log.File
+    public ReefScoringTarget scoring_target = ReefScoringTarget.TURTLE;
+    @Log.File
+    public ReefScoringTarget saved_scoring_target = ReefScoringTarget.L2;
+    @Log.File
+    public RobotState robot_state_ = RobotState.TELEOP_CONTROL;
+    @Log.File
+    public Optional<Pose2d> reef_target = Optional.empty();
+    @Log.File
+    public Column target_column = Column.LEFT;
+    @Log.File
+    public Column saved_target_column = Column.LEFT;
 
     @Log.File
     public boolean algae_level_high = false; // false is low level and true is the higher level
