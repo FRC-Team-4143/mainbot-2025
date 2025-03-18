@@ -199,7 +199,9 @@ public final class Constants {
   public static final class ClawConstants {
     public static final int WHEEL_MOTOR_ID = 11;
     public static final double WHEEL_CORAL_SHOOT_SPEED = 0.3;
+    public static final double WHEEL_CORAL_BLAST_SPEED = 0.4;
     public static final double WHEEL_ALGAE_SHOOT_SPEED = 0.3;
+    public static final double WHEEL_ALGAE_BLAST_SPEED = 0.5;
     public static final double WHEEL_LOAD_SPEED = -0.3;
     public static final double ALGAE_IDLE_SPEED = 0.1;
     public static final double STATOR_CURRENT_LIMIT = 40;
@@ -294,7 +296,7 @@ public final class Constants {
     public static final double SENSOR_TO_MECHANISM_RATIO = (1.0 / ((16.0 / 64.0) / 20.0));
     public static final double ARM_FORWARD_LIMT = Units.radiansToRotations(Math.PI);
     public static final double ARM_REVERSE_LIMT =
-        Units.radiansToRotations(Units.degreesToRadians(-95));
+        Units.radiansToRotations(Units.degreesToRadians(-100));
     public static final Slot0Configs ARM_GAINS =
         new Slot0Configs()
             .withKP(LOADER.getDoubleValue("arm", "CONTROLLER_P"))

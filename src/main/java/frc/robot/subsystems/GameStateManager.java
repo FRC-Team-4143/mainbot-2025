@@ -98,6 +98,7 @@ public class GameStateManager extends Subsystem {
             }
           } else {
             io_.robot_state_ = RobotState.SCORING; // if the target is L1 skip to scoring
+            Claw.getInstance().enableBlastMode();
           }
         }
         break;
@@ -119,9 +120,8 @@ public class GameStateManager extends Subsystem {
       case SCORING:
         if (io_.scoring_target == ReefScoringTarget.L1) {
           elevatorTargetSwitch();
-        }
-        // wait until you leave the exit Circle
-        if (!FieldRegions.REEF_EXIT.contains(PoseEstimator.getInstance().getRobotPose())) {
+        } else if (!FieldRegions.REEF_EXIT.contains(PoseEstimator.getInstance().getRobotPose())) {
+          // wait until you leave the exit Circle
           io_.robot_state_ = RobotState.END;
         }
         break;
@@ -136,6 +136,7 @@ public class GameStateManager extends Subsystem {
           Elevator.getInstance().setTarget(Target.ALGAE_STOW);
         }
         io_.robot_state_ = RobotState.TELEOP_CONTROL;
+        Claw.getInstance().disableBlastMode();
         break;
       case TELEOP_CONTROL:
         // normal control
@@ -232,9 +233,7 @@ public class GameStateManager extends Subsystem {
       if (FieldRegions.REEF_REGIONS[i].contains(PoseEstimator.getInstance().getRobotPose())) {
         if (io_.scoring_target == ReefScoringTarget.L1) {
           return Optional.of(
-              FieldRegions.REGION_POSE_TABLE
-                  .get(FieldRegions.REEF_REGIONS[i].getName())
-                  .transformBy(ScoringPoses.L1_OFFSET));
+              FieldRegions.REGION_POSE_TABLE.get(FieldRegions.REEF_REGIONS[i].getName()));
         }
         if (column == Column.CENTER) {
           return Optional.of(

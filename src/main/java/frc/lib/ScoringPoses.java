@@ -14,9 +14,6 @@ public class ScoringPoses {
 
   private static final ConstantsLoader LOADER = ConstantsLoader.getInstance();
 
-  public static final Transform2d L1_OFFSET =
-      new Transform2d(new Translation2d(0, 0), Rotation2d.fromDegrees(0));
-
   // Offset to align robot bumpers with reef face
   public static final Transform2d REEF_FACE_OFFSET =
       new Transform2d(
