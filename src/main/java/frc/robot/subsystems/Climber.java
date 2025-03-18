@@ -149,7 +149,9 @@ public class Climber extends Subsystem {
       case RETRACTED:
         io_.arm_motor_target = 0;
         io_.prong_motor_target = Constants.ClimberConstants.PRONG_DEPLOY_SPEED;
-        strap_request_ = strap_position_request_.withPosition(io_.strap_motor_target);
+        strap_request_ =
+            strap_position_request_.withPosition(
+                io_.strap_motor_target + io_.strap_motor_target_offset);
         break;
       case DISABLED:
       default:
@@ -200,6 +202,10 @@ public class Climber extends Subsystem {
         break;
       case DEPLOYED:
         io_.current_mode_ = ClimberMode.RETRACTED;
+        io_.strap_motor_target = ClimberConstants.STRAP_RETRACTED_POSITION;
+      case RETRACTED:
+        io_.strap_motor_target = ClimberConstants.STRAP_RETRACTED_POSITION;
+        io_.strap_motor_target_offset += ClimberConstants.STRAP_SETPOINT_BUMP;
         break;
       default:
         break;
@@ -220,9 +226,7 @@ public class Climber extends Subsystem {
   }
 
   public void climbSetpoint() {
-    if (io_.current_mode_ == ClimberMode.RETRACTED) {
-      io_.strap_motor_target += ClimberConstants.STRAP_SETPOINT_BUMP;
-    }
+    io_.strap_motor_target += ClimberConstants.STRAP_SETPOINT_BUMP;
   }
 
   public ClimberMode getMode() {

@@ -11,13 +11,12 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.commands.AlignWithTarget;
+import frc.robot.commands.ElevatorL1Target;
 import frc.robot.commands.ElevatorL2Target;
 import frc.robot.commands.ElevatorL3Target;
 import frc.robot.commands.ElevatorL4Target;
 import frc.robot.commands.GamePieceEject;
 import frc.robot.commands.GamePieceLoad;
-import frc.robot.commands.ManualElevatorOverride;
-import frc.robot.commands.ManualElevatorOverride.Level;
 import frc.robot.subsystems.Claw;
 import frc.robot.subsystems.Climber;
 import frc.robot.subsystems.Elevator;
@@ -79,7 +78,6 @@ public abstract class OI {
     driver_controller_.leftBumper().onTrue(Claw.getInstance().toggleGamePieceCommand());
     // Increment Climb Sequence
     driver_controller_.start().onTrue(Commands.runOnce(() -> Climber.getInstance().nextStage()));
-    driver_controller_.start().whileTrue(Commands.run(() -> Climber.getInstance().climbSetpoint()));
     // Decrement Climb Sequence
     driver_controller_.back().onTrue(Commands.runOnce(() -> Climber.getInstance().backStage()));
 
@@ -118,7 +116,7 @@ public abstract class OI {
     // - Algae Mode (Manual) -> Processor
     // - Coral Mode (Manual) -> L1
     // - Any Mode   (Vision) -> Set GSM L1
-    operator_controller_.a().toggleOnTrue(new ManualElevatorOverride(Level.L1));
+    operator_controller_.a().toggleOnTrue(new ElevatorL1Target());
 
     // Set GSM Target Column Left
     operator_controller_
