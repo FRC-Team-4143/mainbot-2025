@@ -35,6 +35,7 @@ import frc.mw_lib.controls.TalonFXTuner;
 import frc.mw_lib.subsystem.Subsystem;
 import frc.mw_lib.util.MWPreferences;
 import frc.mw_lib.util.Util;
+import frc.robot.Constants;
 import frc.robot.Constants.ArmConstants;
 import frc.robot.Constants.ElevatorConstants;
 import frc.robot.OI;
@@ -85,7 +86,8 @@ public class Elevator extends Subsystem {
 
   public enum SpeedLimit {
     CORAL,
-    ALGAE
+    ALGAE,
+    SAFTEY
   }
 
   public enum OffsetType {
@@ -359,6 +361,13 @@ public class Elevator extends Subsystem {
   }
 
   /**
+   * @return If the arm is posibly over the reef
+   */
+  public boolean isArmInDangerZone() {
+    return io_.current_arm_angle_ > Constants.ArmConstants.DANGER_ARM_ANGLE;
+  }
+
+  /**
    * @return If the limit switch is pressed
    */
   public boolean isLimitSwitchPressed() {
@@ -410,11 +419,17 @@ public class Elevator extends Subsystem {
    *
    * @param target
    */
-  public void setTarget(Target target) {
-    io_.target_ = target;
-    if (target.getControlType() == ControlType.PIVOT) {
+  public void setTarget(Target new_target) {
+    io_.target_ = new_target;
+    if (new_target == Target.SAFETY) {
+      new_target.td.height_ =
+          io_.current_elevator_height_ + Constants.ElevatorConstants.ELEVATOR_SAFTEY_BUMP;
+      this.setSpeedLimit(SpeedLimit.SAFTEY);
+    }
+    io_.target_ = new_target;
+    if (new_target.getControlType() == ControlType.PIVOT) {
       io_.current_control_mode_ = ControlMode.PIVOT;
-    } else if (target.getControlType() == ControlType.EFFECTOR) {
+    } else if (new_target.getControlType() == ControlType.EFFECTOR) {
       io_.current_control_mode_ = ControlMode.END_EFFECTOR;
     }
   }
@@ -439,8 +454,12 @@ public class Elevator extends Subsystem {
     } else if (limit == SpeedLimit.ALGAE) {
       arm_config_.MotionMagic.MotionMagicCruiseVelocity = ArmConstants.ALGAE_ARM_CRUISE_VELOCITY;
       arm_config_.MotionMagic.MotionMagicAcceleration = ArmConstants.ALGAE_ARM_ACCELERATION;
+    } else if (limit == SpeedLimit.SAFTEY) {
+      arm_config_.MotionMagic.MotionMagicCruiseVelocity = ArmConstants.SAFTEY_ARM_CRUISE_VELOCITY;
+      arm_config_.MotionMagic.MotionMagicAcceleration = ArmConstants.SAFTEY_ARM_ACCELERATION;
     }
     arm_motor_.getConfigurator().apply(arm_config_);
+    io_.current_speed_limit = limit;
   }
 
   /**
@@ -465,6 +484,10 @@ public class Elevator extends Subsystem {
     return FieldRegions.ALGAE_REGIONS[0].contains(PoseEstimator.getInstance().getRobotPose());
   }
 
+  public SpeedLimit getCurrSpeedLimit() {
+    return io_.current_speed_limit;
+  }
+
   public class ElevatorPeriodicIo implements Logged {
     // IO container for all variables
     @Log.File public ControlMode current_control_mode_ = ControlMode.PIVOT;
@@ -476,6 +499,7 @@ public class Elevator extends Subsystem {
     @Log.File public double elevator_master_rotations_ = 0;
     @Log.File public double elevator_follower_rotations_ = 0;
     @Log.File public TargetData target_data_ = target_.getLoggingObject();
+    @Log.File public SpeedLimit current_speed_limit;
   }
 
   /** Get logging object from subsystem */

@@ -200,7 +200,7 @@ public final class Constants {
     public static final int WHEEL_MOTOR_ID = 11;
     public static final double WHEEL_CORAL_SHOOT_SPEED = 0.3;
     public static final double WHEEL_CORAL_BLAST_SPEED = 0.4;
-    public static final double WHEEL_ALGAE_SHOOT_SPEED = 0.3;
+    public static final double WHEEL_ALGAE_SHOOT_SPEED = 0.5;
     public static final double WHEEL_ALGAE_BLAST_SPEED = 0.5;
     public static final double WHEEL_LOAD_SPEED = -0.3;
     public static final double ALGAE_IDLE_SPEED = 0.1;
@@ -275,6 +275,7 @@ public final class Constants {
             .withKA(LOADER.getDoubleValue("elevator", "CONTROLLER_A"))
             .withKG(LOADER.getDoubleValue("elevator", "CONTROLLER_G"))
             .withGravityType(GravityTypeValue.Elevator_Static);
+    public static final double ELEVATOR_SAFTEY_BUMP = Units.inchesToMeters(2);
   }
 
   public class ArmConstants {
@@ -288,6 +289,9 @@ public final class Constants {
     public static final double CORAL_ARM_ACCELERATION = 1.75;
     public static final double ALGAE_ARM_CRUISE_VELOCITY = 4;
     public static final double ALGAE_ARM_ACCELERATION = 0.65;
+    public static final double SAFTEY_ARM_CRUISE_VELOCITY = 2;
+    public static final double SAFTEY_ARM_ACCELERATION = 0.30;
+    public static final double DANGER_ARM_ANGLE = Units.degreesToRadians(95);
     public static final double ARM_LENGTH =
         Units.inchesToMeters(LOADER.getDoubleValue("arm", "LENGTH_PIVOT_TO_FUNNEL"));
     public static final double ARM_WIDTH =

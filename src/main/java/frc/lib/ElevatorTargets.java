@@ -87,6 +87,14 @@ public class ElevatorTargets {
             ElevatorConstants.ELEVATOR_HEIGHT_PIVOT_SAFETY + Units.inchesToMeters(0),
             Rotation2d.fromDegrees(90),
             ControlType.PIVOT,
+            Optional.empty())),
+    SAFETY(
+        // This target is more so for loging then poses, the elevators setTarget method will set
+        // specific targets if set to SAFTEY
+        new TargetData(
+            ElevatorConstants.ELEVATOR_HEIGHT_PIVOT_SAFETY + Units.inchesToMeters(0),
+            Rotation2d.fromDegrees(90),
+            ControlType.PIVOT,
             Optional.empty()));
 
     Target(TargetData td) {
@@ -176,6 +184,6 @@ public class ElevatorTargets {
       return td;
     }
 
-    private TargetData td;
+    public TargetData td;
   }
 }
