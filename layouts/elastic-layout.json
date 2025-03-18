@@ -291,19 +291,6 @@
             }
           },
           {
-            "title": "Zero Elevator & Arm",
-            "x": 1152.0,
-            "y": 640.0,
-            "width": 256.0,
-            "height": 128.0,
-            "type": "Command",
-            "properties": {
-              "topic": "/SmartDashboard/Commands/Zero Elevator & Arm",
-              "period": 0.06,
-              "show_type": false
-            }
-          },
-          {
             "title": "FMSInfo",
             "x": 0.0,
             "y": 640.0,
@@ -313,6 +300,19 @@
             "properties": {
               "topic": "/FMSInfo",
               "period": 0.06
+            }
+          },
+          {
+            "title": "Zero Elevator",
+            "x": 1152.0,
+            "y": 640.0,
+            "width": 256.0,
+            "height": 128.0,
+            "type": "Command",
+            "properties": {
+              "topic": "/SmartDashboard/Commands/Zero Elevator",
+              "period": 0.06,
+              "show_type": false
             }
           }
         ]
@@ -721,6 +721,19 @@
               "time_display_mode": "Minutes and Seconds",
               "red_start_time": 15,
               "yellow_start_time": 30
+            }
+          },
+          {
+            "title": "Reset Arm & Elevator Manual Offsets",
+            "x": 1152.0,
+            "y": 512.0,
+            "width": 384.0,
+            "height": 128.0,
+            "type": "Command",
+            "properties": {
+              "topic": "/SmartDashboard/Commands/Reset Arm & Elevator Manual Offsets",
+              "period": 0.06,
+              "show_type": false
             }
           }
         ]
@@ -1789,19 +1802,6 @@
             },
             "children": [
               {
-                "title": "Zero Elevator & Arm",
-                "x": 128.0,
-                "y": 640.0,
-                "width": 256.0,
-                "height": 128.0,
-                "type": "Command",
-                "properties": {
-                  "topic": "/SmartDashboard/Commands/Zero Elevator & Arm",
-                  "period": 0.06,
-                  "show_type": false
-                }
-              },
-              {
                 "title": "Reset Arm & Elevator Manual Offsets",
                 "x": 256.0,
                 "y": 768.0,
@@ -1897,6 +1897,32 @@
               "topic": "/SmartDashboard/Config/RobotName",
               "period": 0.06,
               "data_type": "string"
+            }
+          },
+          {
+            "title": "Zero Arm",
+            "x": 384.0,
+            "y": 512.0,
+            "width": 256.0,
+            "height": 128.0,
+            "type": "Command",
+            "properties": {
+              "topic": "/SmartDashboard/Commands/Zero Arm",
+              "period": 0.06,
+              "show_type": true
+            }
+          },
+          {
+            "title": "Zero Elevator",
+            "x": 384.0,
+            "y": 640.0,
+            "width": 256.0,
+            "height": 128.0,
+            "type": "Command",
+            "properties": {
+              "topic": "/SmartDashboard/Commands/Zero Elevator",
+              "period": 0.06,
+              "show_type": true
             }
           }
         ]

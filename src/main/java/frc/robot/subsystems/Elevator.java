@@ -422,7 +422,8 @@ public class Elevator extends Subsystem {
   public void setTarget(Target new_target) {
     io_.target_ = new_target;
     if (new_target == Target.SAFETY) {
-      new_target.td.height_ = io_.current_elevator_height_;
+      new_target.td.height_ =
+          io_.current_elevator_height_ + Constants.ElevatorConstants.ELEVATOR_SAFTEY_BUMP;
       this.setSpeedLimit(SpeedLimit.SAFTEY);
     }
     io_.target_ = new_target;
@@ -458,6 +459,7 @@ public class Elevator extends Subsystem {
       arm_config_.MotionMagic.MotionMagicAcceleration = ArmConstants.SAFTEY_ARM_ACCELERATION;
     }
     arm_motor_.getConfigurator().apply(arm_config_);
+    io_.current_speed_limit = limit;
   }
 
   /**
@@ -482,6 +484,10 @@ public class Elevator extends Subsystem {
     return FieldRegions.ALGAE_REGIONS[0].contains(PoseEstimator.getInstance().getRobotPose());
   }
 
+  public SpeedLimit getCurrSpeedLimit() {
+    return io_.current_speed_limit;
+  }
+
   public class ElevatorPeriodicIo implements Logged {
     // IO container for all variables
     @Log.File public ControlMode current_control_mode_ = ControlMode.PIVOT;
@@ -493,6 +499,7 @@ public class Elevator extends Subsystem {
     @Log.File public double elevator_master_rotations_ = 0;
     @Log.File public double elevator_follower_rotations_ = 0;
     @Log.File public TargetData target_data_ = target_.getLoggingObject();
+    @Log.File public SpeedLimit current_speed_limit;
   }
 
   /** Get logging object from subsystem */

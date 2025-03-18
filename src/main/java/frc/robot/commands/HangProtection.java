@@ -13,12 +13,12 @@ public class HangProtection extends Command {
 
   private boolean was_unsafe;
   private boolean has_hit_saftey = false;
+  private SpeedLimit savedSpeed;
 
   /** Creates a new CoralEject. */
   public HangProtection() {
     addRequirements(Elevator.getInstance());
     setName(this.getClass().getSimpleName());
-    // TODO: Still need some way to prevent other cmds interrupting this one
   }
 
   // Called when the command is initially scheduled.
@@ -26,6 +26,7 @@ public class HangProtection extends Command {
   public void initialize() {
     was_unsafe = Elevator.getInstance().isArmInDangerZone();
     has_hit_saftey = false;
+    savedSpeed = Elevator.getInstance().getCurrSpeedLimit();
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -43,6 +44,7 @@ public class HangProtection extends Command {
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
+    Elevator.getInstance().setSpeedLimit(savedSpeed);
     // default cmd will set stow
   }
 
