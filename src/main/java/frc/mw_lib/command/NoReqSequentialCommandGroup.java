@@ -35,7 +35,7 @@ public class NoReqSequentialCommandGroup extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    if (sequence.get(index).isFinished()) {
+    if (!sequence.get(index).isScheduled()) {
       index++;
       CommandScheduler.getInstance().schedule(sequence.get(index));
     }
@@ -43,15 +43,11 @@ public class NoReqSequentialCommandGroup extends Command {
 
   // Called once the command ends or is interrupted.
   @Override
-  public void end(boolean interrupted) {
-    for (Command command : sequence) {
-      CommandScheduler.getInstance().cancel(command);
-    }
-  }
+  public void end(boolean interrupted) {}
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return index == (sequence.size() - 1) && sequence.get(sequence.size() - 1).isFinished();
+    return index == (sequence.size() - 1) && !sequence.get(sequence.size() - 1).isScheduled();
   }
 }
