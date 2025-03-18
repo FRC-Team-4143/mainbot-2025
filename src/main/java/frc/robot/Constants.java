@@ -47,7 +47,7 @@ public final class Constants {
     // The standard deviations of our vision estimated poses, which affect
     // correction rate
     // (Fake values. Experiment and determine estimation noise on an actual robot.)
-    public static final Matrix<N3, N1> SINGLE_TAG_STD_DEVS = VecBuilder.fill(4, 4, 8);
+    public static final Matrix<N3, N1> SINGLE_TAG_STD_DEVS = VecBuilder.fill(2.0, 2.0, 4);
     public static final Matrix<N3, N1> MULTI_TAG_STD_DEVS = VecBuilder.fill(0.5, 0.5, 1);
   }
 
@@ -199,7 +199,9 @@ public final class Constants {
   public static final class ClawConstants {
     public static final int WHEEL_MOTOR_ID = 11;
     public static final double WHEEL_CORAL_SHOOT_SPEED = 0.3;
+    public static final double WHEEL_CORAL_BLAST_SPEED = 0.4;
     public static final double WHEEL_ALGAE_SHOOT_SPEED = 0.3;
+    public static final double WHEEL_ALGAE_BLAST_SPEED = 0.5;
     public static final double WHEEL_LOAD_SPEED = -0.3;
     public static final double ALGAE_IDLE_SPEED = 0.1;
     public static final double STATOR_CURRENT_LIMIT = 40;
@@ -219,15 +221,14 @@ public final class Constants {
     public static final int ARM_ID = 0;
     public static final int PRONG_COUNTER_ID = 0;
     public static final InvertedValue STRAP_INVERSION = InvertedValue.Clockwise_Positive;
-    public static final double RETRACTED_ROTATIONS = 30;
     public static final Slot0Configs STRAP_GAINS =
         new Slot0Configs().withKP(0.16).withKD(0.0).withKS(0.0).withKV(0.0).withKA(0.0);
     public static final double PRONG_DEPLOY_SPEED = 0.4;
     public static final double PRONG_HOLD_SPEED = -0.6;
     public static final double ARM_DEPLOY_SPEED = 0.75;
     public static final double ARM_HOLD_SPEED = 0.5;
-    public static final double STRAP_RETRACTED_POSITION = 90;
-    public static final double STRAP_SETPOINT_BUMP = (STRAP_RETRACTED_POSITION / 200.0);
+    public static final double STRAP_RETRACTED_POSITION = 85;
+    public static final double STRAP_SETPOINT_BUMP = (STRAP_RETRACTED_POSITION / 25.0);
     public static final double PRONG_PRESET_COUNT = 80;
     public static final double DEPLOYING_TIME = 1.2;
     public static final double PRONG_P = 0.008;
@@ -287,6 +288,9 @@ public final class Constants {
     public static final double CORAL_ARM_ACCELERATION = 1.75;
     public static final double ALGAE_ARM_CRUISE_VELOCITY = 4;
     public static final double ALGAE_ARM_ACCELERATION = 0.65;
+    public static final double SAFTEY_ARM_CRUISE_VELOCITY = 2;
+    public static final double SAFTEY_ARM_ACCELERATION = 0.30;
+    public static final double DANGER_ARM_ANGLE = Units.degreesToRadians(95);
     public static final double ARM_LENGTH =
         Units.inchesToMeters(LOADER.getDoubleValue("arm", "LENGTH_PIVOT_TO_FUNNEL"));
     public static final double ARM_WIDTH =
@@ -295,7 +299,7 @@ public final class Constants {
     public static final double SENSOR_TO_MECHANISM_RATIO = (1.0 / ((16.0 / 64.0) / 20.0));
     public static final double ARM_FORWARD_LIMT = Units.radiansToRotations(Math.PI);
     public static final double ARM_REVERSE_LIMT =
-        Units.radiansToRotations(Units.degreesToRadians(-95));
+        Units.radiansToRotations(Units.degreesToRadians(-100));
     public static final Slot0Configs ARM_GAINS =
         new Slot0Configs()
             .withKP(LOADER.getDoubleValue("arm", "CONTROLLER_P"))

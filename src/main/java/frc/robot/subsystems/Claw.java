@@ -27,7 +27,8 @@ public class Claw extends Subsystem {
   public enum ClawMode {
     SHOOT,
     LOAD,
-    IDLE
+    IDLE,
+    BLAST
   }
 
   public enum GamePiece {
@@ -94,6 +95,9 @@ public class Claw extends Subsystem {
   public void updateLogic(double timestamp) {
     if (io_.game_piece_ == GamePiece.CORAL) {
       switch (io_.claw_mode_) {
+        case BLAST:
+          io_.wheel_output_ = ClawConstants.WHEEL_CORAL_BLAST_SPEED;
+          break;
         case SHOOT:
           io_.wheel_output_ = ClawConstants.WHEEL_CORAL_SHOOT_SPEED;
           break;
@@ -107,6 +111,9 @@ public class Claw extends Subsystem {
       }
     } else {
       switch (io_.claw_mode_) {
+        case BLAST:
+          io_.wheel_output_ = -ClawConstants.WHEEL_ALGAE_BLAST_SPEED;
+          break;
         case SHOOT:
           io_.wheel_output_ = -ClawConstants.WHEEL_ALGAE_SHOOT_SPEED;
           break;
@@ -156,7 +163,19 @@ public class Claw extends Subsystem {
    * @param claw_mode the new mode to be set
    */
   public void setClawMode(ClawMode claw_mode) {
-    io_.claw_mode_ = claw_mode;
+    if (io_.enable_blast_ && claw_mode == ClawMode.SHOOT) {
+      io_.claw_mode_ = ClawMode.BLAST;
+    } else {
+      io_.claw_mode_ = claw_mode;
+    }
+  }
+
+  public void enableBlastMode() {
+    io_.enable_blast_ = true;
+  }
+
+  public void disableBlastMode() {
+    io_.enable_blast_ = false;
   }
 
   public void setGamePiece(GamePiece gamePiece) {
@@ -202,6 +221,7 @@ public class Claw extends Subsystem {
 
   public class ClawPeriodicIo implements Logged {
     @Log.File public ClawMode claw_mode_ = ClawMode.IDLE;
+    @Log.File public boolean enable_blast_ = false;
     @Log.File public GamePiece game_piece_ = GamePiece.CORAL;
     @Log.File public double wheel_output_ = 0;
     @Log.File public double current_output_ = 0;

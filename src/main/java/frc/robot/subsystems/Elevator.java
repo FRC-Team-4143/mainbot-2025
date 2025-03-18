@@ -37,9 +37,9 @@ import frc.mw_lib.util.MWPreferences;
 import frc.mw_lib.util.Util;
 import frc.robot.Constants.ArmConstants;
 import frc.robot.Constants.ElevatorConstants;
+import frc.robot.Constants;
 import frc.robot.OI;
 import frc.robot.commands.SetDefaultStow;
-import java.util.function.BooleanSupplier;
 import monologue.Annotations.Log;
 import monologue.Logged;
 
@@ -62,7 +62,6 @@ public class Elevator extends Subsystem {
   private TalonFXConfiguration arm_config_;
   private MotionMagicVoltage elevator_request_;
   private MotionMagicVoltage arm_request_;
-  private BooleanSupplier elevator_at_minimum_;
   private DigitalInput elevator_limit_switch_;
   private CANcoder arm_encoder_;
   private CANcoderConfiguration arm_encoder_config_;
@@ -87,7 +86,8 @@ public class Elevator extends Subsystem {
 
   public enum SpeedLimit {
     CORAL,
-    ALGAE
+    ALGAE,
+    SAFTEY
   }
 
   public enum OffsetType {
@@ -361,6 +361,13 @@ public class Elevator extends Subsystem {
   }
 
   /**
+   * @return If the arm is posibly over the reef
+   */
+  public boolean isArmInDangerZone() {
+    return io_.current_arm_angle_ > Constants.ArmConstants.DANGER_ARM_ANGLE;
+  }
+
+  /**
    * @return If the limit switch is pressed
    */
   public boolean isLimitSwitchPressed() {
@@ -407,11 +414,21 @@ public class Elevator extends Subsystem {
     }
   }
 
-  public void setTarget(Target target) {
-    io_.target_ = target;
-    if (target.getControlType() == ControlType.PIVOT) {
+  /**
+   * Sets the target for arm and elevator Only sets if climber is disabled
+   *
+   * @param target
+   */
+  public void setTarget(Target new_target) {
+    io_.target_ = new_target;
+    if (new_target == Target.SAFETY) {
+      new_target.td.height_ = io_.current_elevator_height_;
+      this.setSpeedLimit(SpeedLimit.SAFTEY);
+    } 
+    io_.target_ = new_target;
+    if (new_target.getControlType() == ControlType.PIVOT) {
       io_.current_control_mode_ = ControlMode.PIVOT;
-    } else if (target.getControlType() == ControlType.EFFECTOR) {
+    } else if (new_target.getControlType() == ControlType.EFFECTOR) {
       io_.current_control_mode_ = ControlMode.END_EFFECTOR;
     }
   }
@@ -436,6 +453,9 @@ public class Elevator extends Subsystem {
     } else if (limit == SpeedLimit.ALGAE) {
       arm_config_.MotionMagic.MotionMagicCruiseVelocity = ArmConstants.ALGAE_ARM_CRUISE_VELOCITY;
       arm_config_.MotionMagic.MotionMagicAcceleration = ArmConstants.ALGAE_ARM_ACCELERATION;
+    } else if (limit == SpeedLimit.SAFTEY) {
+      arm_config_.MotionMagic.MotionMagicCruiseVelocity = ArmConstants.SAFTEY_ARM_CRUISE_VELOCITY;
+      arm_config_.MotionMagic.MotionMagicAcceleration = ArmConstants.SAFTEY_ARM_ACCELERATION;
     }
     arm_motor_.getConfigurator().apply(arm_config_);
   }
