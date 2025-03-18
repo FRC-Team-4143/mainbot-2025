@@ -6,7 +6,6 @@ package frc.mw_lib.command;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
-
 import java.util.ArrayList;
 
 public class NoReqSequentialCommandGroup extends Command {
@@ -20,9 +19,9 @@ public class NoReqSequentialCommandGroup extends Command {
     }
   }
 
-  public NoReqSequentialCommandGroup(){}
+  public NoReqSequentialCommandGroup() {}
 
-  public void addCommands(Command... commands){
+  public void addCommands(Command... commands) {
     for (Command command : commands) {
       sequence.add(command);
     }
@@ -37,7 +36,7 @@ public class NoReqSequentialCommandGroup extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    if(sequence.get(index).isFinished()){
+    if (sequence.get(index).isFinished()) {
       index++;
       CommandScheduler.getInstance().schedule(sequence.get(index));
     }
@@ -45,8 +44,7 @@ public class NoReqSequentialCommandGroup extends Command {
 
   // Called once the command ends or is interrupted.
   @Override
-  public void end(boolean interrupted) {
-  }
+  public void end(boolean interrupted) {}
 
   // Returns true when the command should end.
   @Override

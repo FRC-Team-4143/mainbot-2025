@@ -129,7 +129,9 @@ public abstract class OI {
     // - Algae Mode (Manual) -> Processor
     // - Coral Mode (Manual) -> L1
     // - Any Mode   (Vision) -> Set GSM L1
-    operator_controller_.a().toggleOnTrue(new ElevatorL1Target().unless(Climber.getInstance()::lockOutControl));
+    operator_controller_
+        .a()
+        .toggleOnTrue(new ElevatorL1Target().unless(Climber.getInstance()::lockOutControl));
 
     // Set GSM Target Column Left
     operator_controller_
