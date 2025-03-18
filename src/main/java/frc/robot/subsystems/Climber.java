@@ -16,7 +16,6 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.motorcontrol.Spark;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import frc.lib.ElevatorTargets.Target;
 import frc.mw_lib.logging.Elastic;
 import frc.mw_lib.subsystem.Subsystem;
 import frc.robot.Constants;
@@ -192,6 +191,7 @@ public class Climber extends Subsystem {
       case DISABLED:
         prong_counter_.reset();
         io_.current_mode_ = ClimberMode.PRECLIMB;
+        // The elevators default cmd will set to climb
         Elastic.selectTab("Climb");
         break;
       case PRECLIMB:
@@ -216,11 +216,11 @@ public class Climber extends Subsystem {
     switch (io_.current_mode_) {
       case PRECLIMB:
         io_.current_mode_ = ClimberMode.DISABLED;
-        Elevator.getInstance().setTarget(Target.STOW);
+        // The elevators default cmd will set to stow
         Elastic.selectTab("Teleop");
         break;
       default:
-        DriverStation.reportError("Cannot return to previous stage", false);
+        DriverStation.reportError("Can no longer return to previous stage", false);
         break;
     }
   }
@@ -231,6 +231,10 @@ public class Climber extends Subsystem {
 
   public ClimberMode getMode() {
     return io_.current_mode_;
+  }
+
+  public boolean lockOutControl() {
+    return io_.current_mode_ != ClimberMode.DISABLED;
   }
 
   public class ClimberPeriodicIo implements Logged {
