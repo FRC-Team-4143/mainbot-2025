@@ -85,7 +85,8 @@ public class Elevator extends Subsystem {
 
   public enum SpeedLimit {
     CORAL,
-    ALGAE
+    ALGAE,
+    SAFTEY
   }
 
   public enum OffsetType {
@@ -359,6 +360,15 @@ public class Elevator extends Subsystem {
   }
 
   /**
+   * @return If the arm and elvator are in a danger zone of l4 
+   */
+  public boolean isInL4DangerZone() {
+    boolean to_high = io_.current_elevator_height_ > 2.5;
+    boolean arm_over = io_.current_arm_angle_ > 1.5;
+    return to_high && arm_over;
+  }
+
+  /**
    * @return If the limit switch is pressed
    */
   public boolean isLimitSwitchPressed() {
@@ -439,6 +449,9 @@ public class Elevator extends Subsystem {
     } else if (limit == SpeedLimit.ALGAE) {
       arm_config_.MotionMagic.MotionMagicCruiseVelocity = ArmConstants.ALGAE_ARM_CRUISE_VELOCITY;
       arm_config_.MotionMagic.MotionMagicAcceleration = ArmConstants.ALGAE_ARM_ACCELERATION;
+    } else if (limit == SpeedLimit.SAFTEY) {
+      arm_config_.MotionMagic.MotionMagicCruiseVelocity = ArmConstants.SAFTEY_ARM_CRUISE_VELOCITY;
+      arm_config_.MotionMagic.MotionMagicAcceleration = ArmConstants.SAFTEY_ARM_ACCELERATION;
     }
     arm_motor_.getConfigurator().apply(arm_config_);
   }

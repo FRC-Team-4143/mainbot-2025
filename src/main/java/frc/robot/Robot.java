@@ -19,6 +19,7 @@ import frc.robot.autos.H4_GH_Barge;
 import frc.robot.autos.H4_GH_Barge_IJ_Barge;
 import frc.robot.autos.J4_LeftStation_L4;
 import frc.robot.autos.J4_LeftStation_L4_LeftStation_K4;
+import frc.robot.commands.HangProtection;
 import frc.robot.subsystems.GameStateManager;
 import frc.robot.subsystems.GameStateManager.RobotState;
 import frc.robot.subsystems.SwerveDrivetrain;
@@ -103,6 +104,7 @@ public class Robot extends TimedRobot {
   public void teleopInit() {
     SwerveDrivetrain.getInstance().restoreDefaultDriveMode();
     CommandScheduler.getInstance().cancelAll();
+    CommandScheduler.getInstance().schedule(new HangProtection());
     Elastic.selectTab("Teleop");
   }
 

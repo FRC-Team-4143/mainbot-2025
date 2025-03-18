@@ -288,6 +288,8 @@ public final class Constants {
     public static final double CORAL_ARM_ACCELERATION = 1.75;
     public static final double ALGAE_ARM_CRUISE_VELOCITY = 4;
     public static final double ALGAE_ARM_ACCELERATION = 0.65;
+    public static final double SAFTEY_ARM_CRUISE_VELOCITY = 2;
+    public static final double SAFTEY_ARM_ACCELERATION = 0.30;
     public static final double ARM_LENGTH =
         Units.inchesToMeters(LOADER.getDoubleValue("arm", "LENGTH_PIVOT_TO_FUNNEL"));
     public static final double ARM_WIDTH =
