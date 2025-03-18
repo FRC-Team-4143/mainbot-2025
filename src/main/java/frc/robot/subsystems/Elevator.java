@@ -37,6 +37,7 @@ import frc.mw_lib.util.MWPreferences;
 import frc.mw_lib.util.Util;
 import frc.robot.Constants.ArmConstants;
 import frc.robot.Constants.ElevatorConstants;
+import frc.robot.Constants;
 import frc.robot.OI;
 import frc.robot.commands.SetDefaultStow;
 import monologue.Annotations.Log;
@@ -360,12 +361,10 @@ public class Elevator extends Subsystem {
   }
 
   /**
-   * @return If the arm and elvator are in a danger zone of l4 
+   * @return If the arm is posibly over the reef
    */
-  public boolean isInL4DangerZone() {
-    boolean to_high = io_.current_elevator_height_ > 2.5;
-    boolean arm_over = io_.current_arm_angle_ > 1.5;
-    return to_high && arm_over;
+  public boolean isArmInDangerZone() {
+    return io_.current_arm_angle_ > Constants.ArmConstants.DANGER_ARM_ANGLE;
   }
 
   /**
@@ -420,11 +419,16 @@ public class Elevator extends Subsystem {
    *
    * @param target
    */
-  public void setTarget(Target target) {
-    io_.target_ = target;
-    if (target.getControlType() == ControlType.PIVOT) {
+  public void setTarget(Target new_target) {
+    io_.target_ = new_target;
+    if (new_target == Target.SAFETY) {
+      new_target.td.height_ = io_.current_elevator_height_;
+      this.setSpeedLimit(SpeedLimit.SAFTEY);
+    } 
+    io_.target_ = new_target;
+    if (new_target.getControlType() == ControlType.PIVOT) {
       io_.current_control_mode_ = ControlMode.PIVOT;
-    } else if (target.getControlType() == ControlType.EFFECTOR) {
+    } else if (new_target.getControlType() == ControlType.EFFECTOR) {
       io_.current_control_mode_ = ControlMode.END_EFFECTOR;
     }
   }

@@ -12,19 +12,19 @@ import frc.robot.subsystems.Elevator.SpeedLimit;
 public class HangProtection extends Command {
 
   private boolean was_unsafe;
-  private boolean has_hit_saftey = false; 
+  private boolean has_hit_saftey = false;
 
   /** Creates a new CoralEject. */
   public HangProtection() {
     addRequirements(Elevator.getInstance());
     setName(this.getClass().getSimpleName());
-    //TODO: Still need some way to prevent other cmds interrupting this one
+    // TODO: Still need some way to prevent other cmds interrupting this one
   }
 
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    was_unsafe = Elevator.getInstance().isInL4DangerZone();
+    was_unsafe = Elevator.getInstance().isArmInDangerZone();
     has_hit_saftey = false;
   }
 
@@ -33,7 +33,7 @@ public class HangProtection extends Command {
   public void execute() {
     if (was_unsafe) {
       Elevator.getInstance().setSpeedLimit(SpeedLimit.SAFTEY);
-      Elevator.getInstance().setTarget(Target.L4_SAFETY);
+      Elevator.getInstance().setTarget(Target.SAFETY);
       if (Elevator.getInstance().isElevatorAndArmAtTarget()) {
         has_hit_saftey = true;
       }
@@ -43,7 +43,7 @@ public class HangProtection extends Command {
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    //default cmd will set stow
+    // default cmd will set stow
   }
 
   // Returns true when the command should end.
@@ -51,10 +51,8 @@ public class HangProtection extends Command {
   public boolean isFinished() {
     if (was_unsafe == false) {
       return true;
-    } else {
-      if (has_hit_saftey) {
-        return true;
-      }
+    } else if (has_hit_saftey) {
+      return true;
     }
     return false;
   }
