@@ -35,9 +35,9 @@ import frc.mw_lib.controls.TalonFXTuner;
 import frc.mw_lib.subsystem.Subsystem;
 import frc.mw_lib.util.MWPreferences;
 import frc.mw_lib.util.Util;
+import frc.robot.Constants;
 import frc.robot.Constants.ArmConstants;
 import frc.robot.Constants.ElevatorConstants;
-import frc.robot.Constants;
 import frc.robot.OI;
 import frc.robot.commands.SetDefaultStow;
 import monologue.Annotations.Log;
@@ -424,7 +424,7 @@ public class Elevator extends Subsystem {
     if (new_target == Target.SAFETY) {
       new_target.td.height_ = io_.current_elevator_height_;
       this.setSpeedLimit(SpeedLimit.SAFTEY);
-    } 
+    }
     io_.target_ = new_target;
     if (new_target.getControlType() == ControlType.PIVOT) {
       io_.current_control_mode_ = ControlMode.PIVOT;
