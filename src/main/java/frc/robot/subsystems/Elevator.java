@@ -39,7 +39,6 @@ import frc.robot.Constants.ArmConstants;
 import frc.robot.Constants.ElevatorConstants;
 import frc.robot.OI;
 import frc.robot.commands.SetDefaultStow;
-import java.util.function.BooleanSupplier;
 import monologue.Annotations.Log;
 import monologue.Logged;
 
@@ -62,7 +61,6 @@ public class Elevator extends Subsystem {
   private TalonFXConfiguration arm_config_;
   private MotionMagicVoltage elevator_request_;
   private MotionMagicVoltage arm_request_;
-  private BooleanSupplier elevator_at_minimum_;
   private DigitalInput elevator_limit_switch_;
   private CANcoder arm_encoder_;
   private CANcoderConfiguration arm_encoder_config_;
@@ -407,6 +405,11 @@ public class Elevator extends Subsystem {
     }
   }
 
+  /**
+   * Sets the target for arm and elevator Only sets if climber is disabled
+   *
+   * @param target
+   */
   public void setTarget(Target target) {
     io_.target_ = target;
     if (target.getControlType() == ControlType.PIVOT) {

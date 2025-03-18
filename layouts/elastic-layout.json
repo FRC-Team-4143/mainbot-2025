@@ -266,8 +266,8 @@
           },
           {
             "title": "Current Arm Angle",
-            "x": 1408.0,
-            "y": 0.0,
+            "x": 896.0,
+            "y": 512.0,
             "width": 256.0,
             "height": 128.0,
             "type": "Large Text Display",
@@ -279,8 +279,8 @@
           },
           {
             "title": "Pivot Inches Off Zero",
-            "x": 1408.0,
-            "y": 128.0,
+            "x": 896.0,
+            "y": 640.0,
             "width": 256.0,
             "height": 128.0,
             "type": "Large Text Display",
@@ -292,8 +292,8 @@
           },
           {
             "title": "Zero Elevator & Arm",
-            "x": 1408.0,
-            "y": 256.0,
+            "x": 1152.0,
+            "y": 640.0,
             "width": 256.0,
             "height": 128.0,
             "type": "Command",
@@ -305,8 +305,8 @@
           },
           {
             "title": "FMSInfo",
-            "x": 640.0,
-            "y": 512.0,
+            "x": 0.0,
+            "y": 640.0,
             "width": 640.0,
             "height": 128.0,
             "type": "FMSInfo",
@@ -327,7 +327,7 @@
             "x": 1536.0,
             "y": 0.0,
             "width": 384.0,
-            "height": 640.0,
+            "height": 768.0,
             "type": "List Layout",
             "properties": {
               "label_position": "TOP"
@@ -370,6 +370,23 @@
                   "topic": "/SmartDashboard/Subsystems/GameStateManager/Robot State",
                   "period": 0.06,
                   "data_type": "string"
+                }
+              },
+              {
+                "title": "Ready to Score",
+                "x": 0.0,
+                "y": 0.0,
+                "width": 128.0,
+                "height": 128.0,
+                "type": "Boolean Box",
+                "properties": {
+                  "topic": "/SmartDashboard/Subsystems/GameStateManager/Ready to Score",
+                  "period": 0.06,
+                  "data_type": "boolean",
+                  "true_color": 4283215696,
+                  "false_color": 4294198070,
+                  "true_icon": "None",
+                  "false_icon": "None"
                 }
               },
               {
@@ -452,9 +469,9 @@
           },
           {
             "title": "Has Coral",
-            "x": 512.0,
+            "x": 1152.0,
             "y": 512.0,
-            "width": 256.0,
+            "width": 384.0,
             "height": 128.0,
             "type": "Boolean Box",
             "properties": {
@@ -469,43 +486,13 @@
           },
           {
             "title": "Has Algae",
-            "x": 512.0,
+            "x": 1152.0,
             "y": 640.0,
-            "width": 256.0,
+            "width": 384.0,
             "height": 128.0,
             "type": "Boolean Box",
             "properties": {
               "topic": "/SmartDashboard/Subsystems/Claw/Has Algae",
-              "period": 0.06,
-              "data_type": "boolean",
-              "true_color": 4283215696,
-              "false_color": 4294198070,
-              "true_icon": "None",
-              "false_icon": "None"
-            }
-          },
-          {
-            "title": "Game Piece Mode",
-            "x": 768.0,
-            "y": 512.0,
-            "width": 384.0,
-            "height": 256.0,
-            "type": "Single Color View",
-            "properties": {
-              "topic": "/SmartDashboard/Subsystems/Claw/Game Piece Mode",
-              "period": 0.06,
-              "data_type": "string"
-            }
-          },
-          {
-            "title": "Ready to Score",
-            "x": 1152.0,
-            "y": 512.0,
-            "width": 384.0,
-            "height": 256.0,
-            "type": "Boolean Box",
-            "properties": {
-              "topic": "/SmartDashboard/Subsystems/GameStateManager/Ready to Score",
               "period": 0.06,
               "data_type": "boolean",
               "true_color": 4283215696,
@@ -518,7 +505,7 @@
       }
     },
     {
-      "name": "Teleop",
+      "name": "Telop",
       "grid_layout": {
         "layouts": [
           {
@@ -526,7 +513,7 @@
             "x": 1536.0,
             "y": 0.0,
             "width": 384.0,
-            "height": 640.0,
+            "height": 768.0,
             "type": "List Layout",
             "properties": {
               "label_position": "TOP"
@@ -572,6 +559,23 @@
                 }
               },
               {
+                "title": "Ready to Score",
+                "x": 0.0,
+                "y": 0.0,
+                "width": 128.0,
+                "height": 128.0,
+                "type": "Boolean Box",
+                "properties": {
+                  "topic": "/SmartDashboard/Subsystems/GameStateManager/Ready to Score",
+                  "period": 0.06,
+                  "data_type": "boolean",
+                  "true_color": 4283215696,
+                  "false_color": 4294198070,
+                  "true_icon": "None",
+                  "false_icon": "None"
+                }
+              },
+              {
                 "title": "Target Colum",
                 "x": 0.0,
                 "y": 0.0,
@@ -603,7 +607,7 @@
             "title": "List Layout",
             "x": 1152.0,
             "y": 256.0,
-            "width": 384.0,
+            "width": 256.0,
             "height": 256.0,
             "type": "List Layout",
             "properties": {
@@ -642,7 +646,7 @@
             "title": "List Layout",
             "x": 1152.0,
             "y": 0.0,
-            "width": 384.0,
+            "width": 256.0,
             "height": 256.0,
             "type": "List Layout",
             "properties": {
@@ -718,49 +722,6 @@
               "red_start_time": 15,
               "yellow_start_time": 30
             }
-          },
-          {
-            "title": "Game Piece Mode",
-            "x": 512.0,
-            "y": 512.0,
-            "width": 512.0,
-            "height": 256.0,
-            "type": "Single Color View",
-            "properties": {
-              "topic": "/SmartDashboard/Subsystems/Claw/Game Piece Mode",
-              "period": 0.06,
-              "data_type": "string"
-            }
-          },
-          {
-            "title": "Ready to Score",
-            "x": 1024.0,
-            "y": 512.0,
-            "width": 512.0,
-            "height": 256.0,
-            "type": "Boolean Box",
-            "properties": {
-              "topic": "/SmartDashboard/Subsystems/GameStateManager/Ready to Score",
-              "period": 0.06,
-              "data_type": "boolean",
-              "true_color": 4283215696,
-              "false_color": 4294198070,
-              "true_icon": "None",
-              "false_icon": "None"
-            }
-          },
-          {
-            "title": "Reset Arm & Elevator Manual Offsets",
-            "x": 1536.0,
-            "y": 640.0,
-            "width": 384.0,
-            "height": 128.0,
-            "type": "Command",
-            "properties": {
-              "topic": "/SmartDashboard/Commands/Reset Arm & Elevator Manual Offsets",
-              "period": 0.06,
-              "show_type": false
-            }
           }
         ]
       }
@@ -773,7 +734,7 @@
             "title": "Climber",
             "x": 1152.0,
             "y": 0.0,
-            "width": 384.0,
+            "width": 256.0,
             "height": 640.0,
             "type": "List Layout",
             "properties": {
@@ -850,6 +811,19 @@
         ],
         "containers": [
           {
+            "title": "PC_Camera",
+            "x": 0.0,
+            "y": 0.0,
+            "width": 1152.0,
+            "height": 512.0,
+            "type": "Camera Stream",
+            "properties": {
+              "topic": "/CameraPublisher/PC_Camera",
+              "period": 0.06,
+              "rotation_turns": 0
+            }
+          },
+          {
             "title": "Match Time",
             "x": 0.0,
             "y": 512.0,
@@ -863,32 +837,6 @@
               "time_display_mode": "Minutes and Seconds",
               "red_start_time": 15,
               "yellow_start_time": 30
-            }
-          },
-          {
-            "title": "photonvision_Port_1181_Input_MJPEG_Server",
-            "x": 0.0,
-            "y": 0.0,
-            "width": 1152.0,
-            "height": 512.0,
-            "type": "Camera Stream",
-            "properties": {
-              "topic": "/CameraPublisher/photonvision_Port_1181_Input_MJPEG_Server",
-              "period": 0.06,
-              "rotation_turns": 0
-            }
-          },
-          {
-            "title": "current_mode_",
-            "x": 512.0,
-            "y": 512.0,
-            "width": 640.0,
-            "height": 128.0,
-            "type": "Large Text Display",
-            "properties": {
-              "topic": "/SmartDashboard/Subsystems/Climber/current_mode_",
-              "period": 0.06,
-              "data_type": "string"
             }
           }
         ]
@@ -2197,20 +2145,6 @@
               "topic": "/SmartDashboard/Commands/Seed Field Centric",
               "period": 0.06,
               "show_type": false
-            }
-          },
-          {
-            "title": "Overview",
-            "x": 640.0,
-            "y": 0.0,
-            "width": 512.0,
-            "height": 512.0,
-            "type": "SwerveDrive",
-            "properties": {
-              "topic": "/SmartDashboard/Subsystems/Swerve/Overview",
-              "period": 0.06,
-              "show_robot_rotation": true,
-              "rotation_unit": "Radians"
             }
           }
         ]
