@@ -96,7 +96,6 @@ public class Robot extends TimedRobot {
 
   @Override
   public void autonomousExit() {
-    Elastic.selectTab("Teleop");
     AutoManager.getInstance().removeDisplayedAuto();
   }
 

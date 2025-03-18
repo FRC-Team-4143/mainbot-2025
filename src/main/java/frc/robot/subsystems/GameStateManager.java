@@ -91,9 +91,13 @@ public class GameStateManager extends Subsystem {
       case TARGET_ACQUISITION:
         io_.reef_target = reefPose(io_.target_column);
         if (io_.reef_target.isPresent()) {
-          SwerveDrivetrain.getInstance().setTargetPose(io_.reef_target.get());
-          if (FieldRegions.REEF_ENTER.contains(PoseEstimator.getInstance().getRobotPose())) {
-            io_.robot_state_ = RobotState.APPROACHING_TARGET;
+          if (io_.scoring_target != ReefScoringTarget.L1) {
+            SwerveDrivetrain.getInstance().setTargetPose(io_.reef_target.get());
+            if (FieldRegions.REEF_ENTER.contains(PoseEstimator.getInstance().getRobotPose())) {
+              io_.robot_state_ = RobotState.APPROACHING_TARGET;
+            }
+          } else {
+            io_.robot_state_ = RobotState.SCORING; // if the target is L1 skip to scoring
           }
         }
         break;
@@ -113,6 +117,9 @@ public class GameStateManager extends Subsystem {
         }
         break;
       case SCORING:
+        if (io_.scoring_target == ReefScoringTarget.L1) {
+          elevatorTargetSwitch();
+        }
         // wait until you leave the exit Circle
         if (!FieldRegions.REEF_EXIT.contains(PoseEstimator.getInstance().getRobotPose())) {
           io_.robot_state_ = RobotState.END;
@@ -223,6 +230,12 @@ public class GameStateManager extends Subsystem {
   public Optional<Pose2d> reefPose(Column column) {
     for (int i = 0; i < FieldRegions.REEF_REGIONS.length; i++) {
       if (FieldRegions.REEF_REGIONS[i].contains(PoseEstimator.getInstance().getRobotPose())) {
+        if (io_.scoring_target == ReefScoringTarget.L1) {
+          return Optional.of(
+              FieldRegions.REGION_POSE_TABLE
+                  .get(FieldRegions.REEF_REGIONS[i].getName())
+                  .transformBy(ScoringPoses.L1_OFFSET));
+        }
         if (column == Column.CENTER) {
           return Optional.of(
               FieldRegions.REGION_POSE_TABLE.get(FieldRegions.REEF_REGIONS[i].getName()));
