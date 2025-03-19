@@ -43,6 +43,6 @@ public class NoReqConditionalCommand extends Command {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return selected_command.isFinished();
+    return !CommandScheduler.getInstance().isScheduled(selected_command);
   }
 }
