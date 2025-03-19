@@ -104,7 +104,7 @@ public final class Constants {
     public static final double MAX_TRACTOR_BEAM_VELOCITY_SPEED = MAX_DRIVE_SPEED * 0.35;
     public static final double MAX_TRACTOR_BEAM_OMEGA_SPEED = MAX_DRIVE_ANGULAR_RATE * 0.6;
     public static final double TRACTOR_BEAM_ROTATION_THRESHOLD = Units.degreesToRadians(2);
-    public static final double TRACTOR_BEAM_TARGET_DISTANCE = Units.inchesToMeters(1);
+    public static final double TRACTOR_BEAM_TARGET_DISTANCE = Units.inchesToMeters(4);
 
     private static final SwerveModuleConstantsFactory ConstantCreator =
         new SwerveModuleConstantsFactory()
