@@ -211,7 +211,7 @@ public class GameStateManager extends Subsystem {
   }
 
   public static Command setScoringCommand(Column col, ReefScoringTarget target) {
-    return Commands.runOnce(() -> getInstance().setScoringObj(col, target, false));
+    return Commands.runOnce(() -> getInstance().setScoringObj(col, target, true));
   }
 
   public ReefScoringTarget getSavedScoringTarget() {
