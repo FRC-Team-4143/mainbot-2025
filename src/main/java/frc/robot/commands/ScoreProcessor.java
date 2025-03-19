@@ -6,7 +6,7 @@ package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.lib.ElevatorTargets.Target;
-import frc.lib.ScoringPoses;
+import frc.lib.FieldRegions;
 import frc.mw_lib.geometry.Region;
 import frc.robot.subsystems.Claw;
 import frc.robot.subsystems.Claw.GamePiece;
@@ -14,7 +14,6 @@ import frc.robot.subsystems.Elevator;
 import frc.robot.subsystems.Elevator.SpeedLimit;
 import frc.robot.subsystems.PoseEstimator;
 import frc.robot.subsystems.SwerveDrivetrain;
-import frc.robot.subsystems.SwerveDrivetrain.DriveMode;
 import java.util.Optional;
 
 public class ScoreProcessor extends Command {
@@ -38,12 +37,9 @@ public class ScoreProcessor extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    current_region = PoseEstimator.getInstance().algaeRegion();
-    if (current_region.isPresent() && current_region.get().getName() == "Processor") {
-      SwerveDrivetrain.getInstance().setTightRope(ScoringPoses.PROCESSOR_TIGHT_ROPE);
+    if (FieldRegions.PROCESSOR_REGION.contains(PoseEstimator.getInstance().getRobotPose())) {
       Elevator.getInstance().setTarget(Target.ALGAE_PROCESSOR);
     } else {
-      SwerveDrivetrain.getInstance().setDriveMode(DriveMode.FIELD_CENTRIC);
       Elevator.getInstance().setTarget(Target.ALGAE_STOW);
     }
   }
@@ -52,7 +48,6 @@ public class ScoreProcessor extends Command {
   @Override
   public void end(boolean interrupted) {
     Elevator.getInstance().setTarget(Target.ALGAE_STOW);
-    SwerveDrivetrain.getInstance().setDriveMode(DriveMode.FIELD_CENTRIC);
     Claw.getInstance().disableBlastMode();
   }
 
