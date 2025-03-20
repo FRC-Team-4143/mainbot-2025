@@ -226,11 +226,7 @@ public class FieldRegions {
   public static void flipRegions() {
     for (Region region : ALL_REGIONS) {
       region.allianceFlip();
-    }
-    ScoringPoses.RIGHT_CORAL_STATION_POSE =
-        AllianceFlipUtil.apply(ScoringPoses.RIGHT_CORAL_STATION_POSE);
-    ScoringPoses.LEFT_CORAL_STATION_POSE =
-        AllianceFlipUtil.apply(ScoringPoses.LEFT_CORAL_STATION_POSE);
+    } 
     ScoringPoses.REEF_FACE_0_POSE = AllianceFlipUtil.apply(ScoringPoses.REEF_FACE_0_POSE);
     ScoringPoses.REEF_FACE_1_POSE = AllianceFlipUtil.apply(ScoringPoses.REEF_FACE_1_POSE);
     ScoringPoses.REEF_FACE_2_POSE = AllianceFlipUtil.apply(ScoringPoses.REEF_FACE_2_POSE);
