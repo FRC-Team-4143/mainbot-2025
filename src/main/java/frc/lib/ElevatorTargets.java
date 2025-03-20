@@ -60,7 +60,7 @@ public class ElevatorTargets {
             Optional.empty())),
     ALGAE_LOW(
         new TargetData(
-            0.9702231159054557 + Units.inchesToMeters(0),
+            0.9702231159054557 - Units.inchesToMeters(2),
             Rotation2d.fromDegrees(149),
             ControlType.EFFECTOR,
             Optional.empty())),
