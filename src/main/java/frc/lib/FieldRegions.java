@@ -226,7 +226,7 @@ public class FieldRegions {
   public static void flipRegions() {
     for (Region region : ALL_REGIONS) {
       region.allianceFlip();
-    } 
+    }
     ScoringPoses.REEF_FACE_0_POSE = AllianceFlipUtil.apply(ScoringPoses.REEF_FACE_0_POSE);
     ScoringPoses.REEF_FACE_1_POSE = AllianceFlipUtil.apply(ScoringPoses.REEF_FACE_1_POSE);
     ScoringPoses.REEF_FACE_2_POSE = AllianceFlipUtil.apply(ScoringPoses.REEF_FACE_2_POSE);
