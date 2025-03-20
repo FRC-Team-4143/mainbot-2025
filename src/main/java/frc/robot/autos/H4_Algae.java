@@ -1,10 +1,8 @@
 package frc.robot.autos;
 
-import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.mw_lib.auto.Auto;
 import frc.robot.commands.AutoAlgaeReefPickup;
 import frc.robot.commands.AutoCoralReefScore;
-import frc.robot.commands.AutoScoreBarge;
 import frc.robot.subsystems.GameStateManager;
 import frc.robot.subsystems.GameStateManager.Column;
 import frc.robot.subsystems.GameStateManager.ReefScoringTarget;
