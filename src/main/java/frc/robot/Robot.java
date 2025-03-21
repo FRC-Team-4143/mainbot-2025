@@ -14,6 +14,8 @@ import frc.lib.FieldRegions;
 import frc.mw_lib.auto.Auto;
 import frc.mw_lib.auto.AutoManager;
 import frc.mw_lib.logging.Elastic;
+import frc.robot.autos.Bump_E4_RightStation_C4_RightStation_D4;
+import frc.robot.autos.Bump_J4_LeftStation_L4_LeftStation_K4;
 import frc.robot.autos.E4_RightStation_C4;
 import frc.robot.autos.E4_RightStation_C4_RightStation_D4;
 import frc.robot.autos.H4_Algae;
@@ -44,7 +46,9 @@ public class Robot extends TimedRobot {
             new E4_RightStation_C4_RightStation_D4(),
             // new H4_GH_Barge(),
             // new H4_GH_Barge_IJ_Barge()
-            new H4_Algae());
+            new H4_Algae(),
+            new Bump_E4_RightStation_C4_RightStation_D4(),
+            new Bump_J4_LeftStation_L4_LeftStation_K4());
   }
 
   @Override
