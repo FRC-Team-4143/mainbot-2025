@@ -232,8 +232,8 @@ public final class Constants {
     public static final double STRAP_SETPOINT_BUMP = (STRAP_RETRACTED_POSITION / 25.0);
     public static final double PRONG_PRESET_COUNT = 17;
     public static final double DEPLOYING_TIME = 1.2;
-    public static final double PRONG_P = 0.016;
-    public static final double PRONG_D = 0.001;
+    public static final double PRONG_P = 0.045;
+    public static final double PRONG_D = 0.002;
   }
 
   public class ElevatorConstants {

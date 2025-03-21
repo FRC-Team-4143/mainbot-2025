@@ -11,6 +11,7 @@ import com.ctre.phoenix6.controls.VoltageOut;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.wpilibj.CounterBase.EncodingType;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.RobotController;
@@ -81,7 +82,11 @@ public class Climber extends Subsystem {
     strap_config_.MotorOutput.NeutralMode = NeutralModeValue.Brake;
 
     prong_counter_ =
-        new Encoder(Constants.ClimberConstants.PRONG_ID_A, Constants.ClimberConstants.PRONG_ID_B);
+        new Encoder(
+            Constants.ClimberConstants.PRONG_ID_A,
+            Constants.ClimberConstants.PRONG_ID_B,
+            false,
+            EncodingType.k2X);
     prong_controller_ =
         new PIDController(
             Constants.ClimberConstants.PRONG_P, 0, Constants.ClimberConstants.PRONG_D);
