@@ -194,7 +194,7 @@ public class Climber extends RemovableSubsystem {
     SmartDashboard.putNumber("Subsystems/Climber/prong_motor_target", io_.prong_target);
     SmartDashboard.putNumber("Subsystems/Climber/arm_motor_target", io_.arm_motor_target);
     SmartDashboard.putString("Subsystems/Climber/current_mode_", io_.current_mode_.toString());
-    SmartDashboard.putNumber("Subsystems/Climber/prong_count", io_.prong_count);
+    SmartDashboard.putNumber("Subsystems/Climber/prong_count", io_.current_prong);
   }
 
   public void nextStage() {
