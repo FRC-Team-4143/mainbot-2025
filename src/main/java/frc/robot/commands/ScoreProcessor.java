@@ -31,7 +31,7 @@ public class ScoreProcessor extends Command {
   public void initialize() {
     Claw.getInstance().setGamePiece(GamePiece.ALGAE);
     Elevator.getInstance().setSpeedLimit(SpeedLimit.ALGAE);
-    Claw.getInstance().enableBlastMode();
+    // Claw.getInstance().enableBlastMode();
   }
 
   // Called every time the scheduler runs while the command is scheduled.

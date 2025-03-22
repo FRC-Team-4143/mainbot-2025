@@ -113,59 +113,81 @@ public abstract class OI {
     // - Any Mode   (Vision) -> Set GSM L4
     operator_controller_
         .y()
-        .toggleOnTrue(new ElevatorL4Target().unless(Climber.getInstance()::lockOutControl));
+        .toggleOnTrue(
+            new ElevatorL4Target()
+                .unless(Climber.getInstance()::lockOutControl)
+                .ignoringDisable(true));
     // Set L3 Target:
     // - Algae Mode (Manual) -> Algae High
     // - Coral Mode (Manual) -> L3
     // - Any Mode   (Vision) -> Set GSM L3
     operator_controller_
         .b()
-        .toggleOnTrue(new ElevatorL3Target().unless(Climber.getInstance()::lockOutControl));
+        .toggleOnTrue(
+            new ElevatorL3Target()
+                .unless(Climber.getInstance()::lockOutControl)
+                .ignoringDisable(true));
     // Set L2 Target:
     // - Algae Mode (Manual) -> Algae Low
     // - Coral Mode (Manual) -> L2
     // - Any Mode   (Vision) -> Set GSM L2
     operator_controller_
         .x()
-        .toggleOnTrue(new ElevatorL2Target().unless(Climber.getInstance()::lockOutControl));
+        .toggleOnTrue(
+            new ElevatorL2Target()
+                .unless(Climber.getInstance()::lockOutControl)
+                .ignoringDisable(true));
     // Set L1 Target:
     // - Algae Mode (Manual) -> Processor
     // - Coral Mode (Manual) -> L1
     // - Any Mode   (Vision) -> Set GSM L1
     operator_controller_
         .a()
-        .toggleOnTrue(new ElevatorL1Target().unless(Climber.getInstance()::lockOutControl));
+        .toggleOnTrue(
+            new ElevatorL1Target()
+                .unless(Climber.getInstance()::lockOutControl)
+                .ignoringDisable(true));
 
     // Set GSM Target Column Left
     operator_controller_
         .leftBumper()
         .onTrue(
             Commands.runOnce(
-                () -> GameStateManager.getInstance().setScoringColum(Column.LEFT, true)));
+                    () -> GameStateManager.getInstance().setScoringColum(Column.LEFT, true))
+                .ignoringDisable(true));
 
     // Set GSM Target Column Right
     operator_controller_
         .rightBumper()
         .onTrue(
             Commands.runOnce(
-                () -> GameStateManager.getInstance().setScoringColum(Column.RIGHT, true)));
+                    () -> GameStateManager.getInstance().setScoringColum(Column.RIGHT, true))
+                .ignoringDisable(true));
 
     // Manual Adjust Elevator Setpoint Up
     operator_controller_
         .povUp()
-        .onTrue(Commands.runOnce(() -> Elevator.getInstance().setOffset(OffsetType.ELEVATOR_UP)));
+        .onTrue(
+            Commands.runOnce(() -> Elevator.getInstance().setOffset(OffsetType.ELEVATOR_UP))
+                .ignoringDisable(true));
     // Manual Adjust Elevator Setpoint Down
     operator_controller_
         .povDown()
-        .onTrue(Commands.runOnce(() -> Elevator.getInstance().setOffset(OffsetType.ELEVATOR_DOWN)));
+        .onTrue(
+            Commands.runOnce(() -> Elevator.getInstance().setOffset(OffsetType.ELEVATOR_DOWN))
+                .ignoringDisable(true));
     // Manual Adjust Arm Setpoint Counter Clockwise
     operator_controller_
         .povLeft()
-        .onTrue(Commands.runOnce(() -> Elevator.getInstance().setOffset(OffsetType.ARM_CCW)));
+        .onTrue(
+            Commands.runOnce(() -> Elevator.getInstance().setOffset(OffsetType.ARM_CCW))
+                .ignoringDisable(true));
     // Manual Adjust Arm Setpoint Clockwise
     operator_controller_
         .povRight()
-        .onTrue(Commands.runOnce(() -> Elevator.getInstance().setOffset(OffsetType.ARM_CW)));
+        .onTrue(
+            Commands.runOnce(() -> Elevator.getInstance().setOffset(OffsetType.ARM_CW))
+                .ignoringDisable(true));
 
     operator_controller_
         .start()

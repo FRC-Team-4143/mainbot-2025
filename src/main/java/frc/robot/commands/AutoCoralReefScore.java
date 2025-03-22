@@ -8,6 +8,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
+import frc.mw_lib.util.ConstantsLoader;
 import frc.robot.subsystems.Claw;
 import frc.robot.subsystems.Elevator;
 import frc.robot.subsystems.GameStateManager;
@@ -24,7 +25,11 @@ public class AutoCoralReefScore extends SequentialCommandGroup {
     // addCommands(new FooCommand(), new BarCommand());
     addCommands(
         new GetToReefTarget(),
-        new CoralEject().withTimeout(0.5).beforeStarting(new WaitCommand(0.2)),
+        new CoralEject()
+            .withTimeout(0.5)
+            .beforeStarting(
+                new WaitCommand(
+                    ConstantsLoader.getInstance().getDoubleValue("auto", "SCORING_DELAY"))),
         Commands.runOnce(() -> GameStateManager.getInstance().setRobotState(RobotState.END)));
 
     setName(this.getClass().getSimpleName());

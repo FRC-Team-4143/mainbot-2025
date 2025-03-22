@@ -11,8 +11,9 @@ import com.ctre.phoenix6.controls.VoltageOut;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import edu.wpi.first.math.controller.PIDController;
-import edu.wpi.first.wpilibj.Counter;
+import edu.wpi.first.wpilibj.CounterBase.EncodingType;
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.motorcontrol.Spark;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -31,7 +32,7 @@ public class Climber extends RemovableSubsystem {
   private VoltageOut strap_voltage_request_;
   private TalonFXConfiguration strap_config_;
 
-  private Counter prong_counter_;
+  private Encoder prong_counter_;
   private PIDController prong_controller_;
   private Spark prong_motor_;
 
@@ -81,7 +82,12 @@ public class Climber extends RemovableSubsystem {
       strap_config_.MotorOutput.Inverted = Constants.ClimberConstants.STRAP_INVERSION;
       strap_config_.MotorOutput.NeutralMode = NeutralModeValue.Brake;
 
-      prong_counter_ = new Counter(Constants.ClimberConstants.PRONG_COUNTER_ID);
+      prong_counter_ =
+          new Encoder(
+              Constants.ClimberConstants.PRONG_ID_A,
+              Constants.ClimberConstants.PRONG_ID_B,
+              false,
+              EncodingType.k2X);
       prong_controller_ =
           new PIDController(
               Constants.ClimberConstants.PRONG_P, 0, Constants.ClimberConstants.PRONG_D);
@@ -106,7 +112,7 @@ public class Climber extends RemovableSubsystem {
    */
   @Override
   public void readPeriodicInputs(double timestamp) {
-    io_.prong_count = prong_counter_.get();
+    io_.current_prong = prong_counter_.get();
   }
 
   /**
@@ -122,21 +128,21 @@ public class Climber extends RemovableSubsystem {
         io_.deploying_start_time_ = 0;
         break;
       case STAGING:
-        prong_controller_.setSetpoint(Constants.ClimberConstants.PRONG_PRESET_COUNT);
-        io_.prong_vcomp_ratio = 11.0 / RobotController.getBatteryVoltage(); // Tuned at 11.0v
-        io_.prong_motor_target =
-            prong_controller_.calculate(io_.prong_count) * io_.prong_vcomp_ratio;
+        io_.prong_target = Constants.ClimberConstants.PRONG_PRESET_COUNT;
+        prong_controller_.setSetpoint(io_.prong_target);
+        double vcomp = 11.0 / RobotController.getBatteryVoltage(); // Tuned at 11.0v
+        io_.prong_motor_demand = prong_controller_.calculate(io_.current_prong) * vcomp;
 
-        if (io_.prong_count >= Constants.ClimberConstants.PRONG_PRESET_COUNT) {
+        if (io_.current_prong >= Constants.ClimberConstants.PRONG_PRESET_COUNT) {
           io_.current_mode_ = ClimberMode.PRESET;
         }
         break;
       case PRESET:
-        io_.prong_motor_target = Constants.ClimberConstants.PRONG_HOLD_SPEED;
+        io_.prong_motor_demand = Constants.ClimberConstants.PRONG_HOLD_SPEED;
         // wait
         break;
       case DEPLOYING:
-        io_.prong_motor_target = Constants.ClimberConstants.PRONG_DEPLOY_SPEED;
+        io_.prong_motor_demand = Constants.ClimberConstants.PRONG_DEPLOY_SPEED;
         io_.arm_motor_target = Constants.ClimberConstants.ARM_DEPLOY_SPEED;
         if (io_.deploying_start_time_ == 0) {
           io_.deploying_start_time_ = timestamp;
@@ -147,12 +153,12 @@ public class Climber extends RemovableSubsystem {
         break;
       case DEPLOYED:
         io_.arm_motor_target = Constants.ClimberConstants.ARM_HOLD_SPEED;
-        io_.prong_motor_target = Constants.ClimberConstants.PRONG_DEPLOY_SPEED;
+        io_.prong_motor_demand = Constants.ClimberConstants.PRONG_DEPLOY_SPEED;
         // Wait for transition
         break;
       case RETRACTED:
         io_.arm_motor_target = 0;
-        io_.prong_motor_target = Constants.ClimberConstants.PRONG_DEPLOY_SPEED;
+        io_.prong_motor_demand = Constants.ClimberConstants.PRONG_DEPLOY_SPEED;
         strap_request_ =
             strap_position_request_.withPosition(
                 io_.strap_motor_target + io_.strap_motor_target_offset);
@@ -172,7 +178,7 @@ public class Climber extends RemovableSubsystem {
   @Override
   public void writePeriodicOutputs(double timestamp) {
     strap_motor_.setControl(strap_request_);
-    prong_motor_.set(io_.prong_motor_target);
+    prong_motor_.set(io_.prong_motor_demand);
     arm_motor_.set(io_.arm_motor_target);
   }
 
@@ -185,7 +191,7 @@ public class Climber extends RemovableSubsystem {
   @Override
   public void outputTelemetry(double timestamp) {
     SmartDashboard.putNumber("Subsystems/Climber/strap_motor_target", io_.strap_motor_target);
-    SmartDashboard.putNumber("Subsystems/Climber/prong_motor_target", io_.prong_motor_target);
+    SmartDashboard.putNumber("Subsystems/Climber/prong_motor_target", io_.prong_target);
     SmartDashboard.putNumber("Subsystems/Climber/arm_motor_target", io_.arm_motor_target);
     SmartDashboard.putString("Subsystems/Climber/current_mode_", io_.current_mode_.toString());
     SmartDashboard.putNumber("Subsystems/Climber/prong_count", io_.prong_count);
@@ -244,9 +250,9 @@ public class Climber extends RemovableSubsystem {
   public class ClimberPeriodicIo implements Logged {
     @Log.File public double strap_motor_target = 0;
     @Log.File public double strap_motor_target_offset = 0;
-    @Log.File public double prong_motor_target = 0;
-    @Log.File public double prong_count = 0;
-    @Log.File public double prong_vcomp_ratio = 0;
+    @Log.File public double prong_motor_demand = 0;
+    @Log.File public double current_prong = 0;
+    @Log.File public double prong_target = 0;
     @Log.File public double arm_motor_target = 0;
     @Log.File public ClimberMode current_mode_ = ClimberMode.DISABLED;
     @Log.File public double deploying_start_time_ = 0;

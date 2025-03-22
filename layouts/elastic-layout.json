@@ -266,8 +266,8 @@
           },
           {
             "title": "Current Arm Angle",
-            "x": 896.0,
-            "y": 512.0,
+            "x": 1408.0,
+            "y": 0.0,
             "width": 256.0,
             "height": 128.0,
             "type": "Large Text Display",
@@ -279,8 +279,8 @@
           },
           {
             "title": "Pivot Inches Off Zero",
-            "x": 896.0,
-            "y": 640.0,
+            "x": 1408.0,
+            "y": 256.0,
             "width": 256.0,
             "height": 128.0,
             "type": "Large Text Display",
@@ -292,8 +292,8 @@
           },
           {
             "title": "FMSInfo",
-            "x": 0.0,
-            "y": 640.0,
+            "x": 768.0,
+            "y": 512.0,
             "width": 640.0,
             "height": 128.0,
             "type": "FMSInfo",
@@ -304,8 +304,8 @@
           },
           {
             "title": "Zero Elevator",
-            "x": 1152.0,
-            "y": 640.0,
+            "x": 1408.0,
+            "y": 384.0,
             "width": 256.0,
             "height": 128.0,
             "type": "Command",
@@ -327,7 +327,7 @@
             "x": 1536.0,
             "y": 0.0,
             "width": 384.0,
-            "height": 768.0,
+            "height": 640.0,
             "type": "List Layout",
             "properties": {
               "label_position": "TOP"
@@ -370,23 +370,6 @@
                   "topic": "/SmartDashboard/Subsystems/GameStateManager/Robot State",
                   "period": 0.06,
                   "data_type": "string"
-                }
-              },
-              {
-                "title": "Ready to Score",
-                "x": 0.0,
-                "y": 0.0,
-                "width": 128.0,
-                "height": 128.0,
-                "type": "Boolean Box",
-                "properties": {
-                  "topic": "/SmartDashboard/Subsystems/GameStateManager/Ready to Score",
-                  "period": 0.06,
-                  "data_type": "boolean",
-                  "true_color": 4283215696,
-                  "false_color": 4294198070,
-                  "true_icon": "None",
-                  "false_icon": "None"
                 }
               },
               {
@@ -456,7 +439,7 @@
             "x": 0.0,
             "y": 512.0,
             "width": 512.0,
-            "height": 256.0,
+            "height": 128.0,
             "type": "Match Time",
             "properties": {
               "topic": "/SmartDashboard/Match Time",
@@ -486,13 +469,30 @@
           },
           {
             "title": "Has Algae",
-            "x": 1152.0,
-            "y": 640.0,
-            "width": 384.0,
+            "x": 896.0,
+            "y": 512.0,
+            "width": 256.0,
             "height": 128.0,
             "type": "Boolean Box",
             "properties": {
               "topic": "/SmartDashboard/Subsystems/Claw/Has Algae",
+              "period": 0.06,
+              "data_type": "boolean",
+              "true_color": 4283215696,
+              "false_color": 4294198070,
+              "true_icon": "None",
+              "false_icon": "None"
+            }
+          },
+          {
+            "title": "Ready to Score",
+            "x": 512.0,
+            "y": 512.0,
+            "width": 384.0,
+            "height": 128.0,
+            "type": "Boolean Box",
+            "properties": {
+              "topic": "/SmartDashboard/Subsystems/GameStateManager/Ready to Score",
               "period": 0.06,
               "data_type": "boolean",
               "true_color": 4283215696,
@@ -513,7 +513,7 @@
             "x": 1536.0,
             "y": 0.0,
             "width": 384.0,
-            "height": 768.0,
+            "height": 640.0,
             "type": "List Layout",
             "properties": {
               "label_position": "TOP"
@@ -556,23 +556,6 @@
                   "topic": "/SmartDashboard/Subsystems/GameStateManager/Robot State",
                   "period": 0.06,
                   "data_type": "string"
-                }
-              },
-              {
-                "title": "Ready to Score",
-                "x": 0.0,
-                "y": 0.0,
-                "width": 128.0,
-                "height": 128.0,
-                "type": "Boolean Box",
-                "properties": {
-                  "topic": "/SmartDashboard/Subsystems/GameStateManager/Ready to Score",
-                  "period": 0.06,
-                  "data_type": "boolean",
-                  "true_color": 4283215696,
-                  "false_color": 4294198070,
-                  "true_icon": "None",
-                  "false_icon": "None"
                 }
               },
               {
@@ -712,7 +695,7 @@
             "x": 0.0,
             "y": 512.0,
             "width": 512.0,
-            "height": 256.0,
+            "height": 128.0,
             "type": "Match Time",
             "properties": {
               "topic": "/SmartDashboard/Match Time",
@@ -725,7 +708,7 @@
           },
           {
             "title": "Reset Arm & Elevator Manual Offsets",
-            "x": 1152.0,
+            "x": 768.0,
             "y": 512.0,
             "width": 384.0,
             "height": 128.0,
@@ -734,6 +717,23 @@
               "topic": "/SmartDashboard/Commands/Reset Arm & Elevator Manual Offsets",
               "period": 0.06,
               "show_type": false
+            }
+          },
+          {
+            "title": "Ready to Score",
+            "x": 1152.0,
+            "y": 512.0,
+            "width": 384.0,
+            "height": 128.0,
+            "type": "Boolean Box",
+            "properties": {
+              "topic": "/SmartDashboard/Subsystems/GameStateManager/Ready to Score",
+              "period": 0.06,
+              "data_type": "boolean",
+              "true_color": 4283215696,
+              "false_color": 4294198070,
+              "true_icon": "None",
+              "false_icon": "None"
             }
           }
         ]
@@ -747,7 +747,7 @@
             "title": "Climber",
             "x": 1152.0,
             "y": 0.0,
-            "width": 256.0,
+            "width": 384.0,
             "height": 640.0,
             "type": "List Layout",
             "properties": {
@@ -841,7 +841,7 @@
             "x": 0.0,
             "y": 512.0,
             "width": 512.0,
-            "height": 256.0,
+            "height": 128.0,
             "type": "Match Time",
             "properties": {
               "topic": "/SmartDashboard/Match Time",

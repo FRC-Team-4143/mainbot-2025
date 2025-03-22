@@ -120,5 +120,8 @@
                 "YAW": 15
             }
         }
+    },
+    "auto": {
+        "SCORING_DELAY": 0.3 
     }
 }
