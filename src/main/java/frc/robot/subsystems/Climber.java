@@ -17,13 +17,13 @@ import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.motorcontrol.Spark;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.mw_lib.logging.Elastic;
-import frc.mw_lib.subsystem.Subsystem;
+import frc.mw_lib.subsystem.RemovableSubsystem;
 import frc.robot.Constants;
 import frc.robot.Constants.ClimberConstants;
 import monologue.Annotations.Log;
 import monologue.Logged;
 
-public class Climber extends Subsystem {
+public class Climber extends RemovableSubsystem {
 
   private TalonFX strap_motor_;
   private ControlRequest strap_request_;
@@ -64,28 +64,30 @@ public class Climber extends Subsystem {
     // Create io object first in subsystem configuration
     io_ = new ClimberPeriodicIo();
 
-    strap_motor_ = new TalonFX(Constants.ClimberConstants.STRAP_ID);
-    prong_motor_ = new Spark(Constants.ClimberConstants.PRONG_ID);
-    prong_motor_.setInverted(true);
-    arm_motor_ = new Spark(Constants.ClimberConstants.ARM_ID);
-    arm_motor_.setInverted(true);
+    if (isEnabled()) {
+      strap_motor_ = new TalonFX(Constants.ClimberConstants.STRAP_ID);
+      prong_motor_ = new Spark(Constants.ClimberConstants.PRONG_ID);
+      prong_motor_.setInverted(true);
+      arm_motor_ = new Spark(Constants.ClimberConstants.ARM_ID);
+      arm_motor_.setInverted(true);
 
-    strap_motor_.getConfigurator().apply(Constants.ClimberConstants.STRAP_GAINS);
+      strap_motor_.getConfigurator().apply(Constants.ClimberConstants.STRAP_GAINS);
 
-    strap_position_request_ = new PositionVoltage(0.0);
-    strap_position_request_.withSlot(0);
-    strap_voltage_request_ = new VoltageOut(0);
+      strap_position_request_ = new PositionVoltage(0.0);
+      strap_position_request_.withSlot(0);
+      strap_voltage_request_ = new VoltageOut(0);
 
-    strap_config_ = new TalonFXConfiguration();
-    strap_config_.MotorOutput.Inverted = Constants.ClimberConstants.STRAP_INVERSION;
-    strap_config_.MotorOutput.NeutralMode = NeutralModeValue.Brake;
+      strap_config_ = new TalonFXConfiguration();
+      strap_config_.MotorOutput.Inverted = Constants.ClimberConstants.STRAP_INVERSION;
+      strap_config_.MotorOutput.NeutralMode = NeutralModeValue.Brake;
 
-    prong_counter_ = new Counter(Constants.ClimberConstants.PRONG_COUNTER_ID);
-    prong_controller_ =
-        new PIDController(
-            Constants.ClimberConstants.PRONG_P, 0, Constants.ClimberConstants.PRONG_D);
+      prong_counter_ = new Counter(Constants.ClimberConstants.PRONG_COUNTER_ID);
+      prong_controller_ =
+          new PIDController(
+              Constants.ClimberConstants.PRONG_P, 0, Constants.ClimberConstants.PRONG_D);
 
-    reset();
+      reset();
+    }
   }
 
   /**
@@ -103,7 +105,9 @@ public class Climber extends Subsystem {
    * function.
    */
   @Override
-  public void readPeriodicInputs(double timestamp) {}
+  public void readPeriodicInputs(double timestamp) {
+    io_.prong_count = prong_counter_.get();
+  }
 
   /**
    * Inside this function, all of the LOGIC should compute updates to output variables in the
@@ -119,10 +123,11 @@ public class Climber extends Subsystem {
         break;
       case STAGING:
         prong_controller_.setSetpoint(Constants.ClimberConstants.PRONG_PRESET_COUNT);
-        double vcomp = 11.0 / RobotController.getBatteryVoltage(); // Tuned at 11.0v
-        io_.prong_motor_target = prong_controller_.calculate(prong_counter_.get()) * vcomp;
+        io_.prong_vcomp_ratio = 11.0 / RobotController.getBatteryVoltage(); // Tuned at 11.0v
+        io_.prong_motor_target =
+            prong_controller_.calculate(io_.prong_count) * io_.prong_vcomp_ratio;
 
-        if (prong_counter_.get() >= Constants.ClimberConstants.PRONG_PRESET_COUNT) {
+        if (io_.prong_count >= Constants.ClimberConstants.PRONG_PRESET_COUNT) {
           io_.current_mode_ = ClimberMode.PRESET;
         }
         break;
@@ -154,7 +159,7 @@ public class Climber extends Subsystem {
         break;
       case DISABLED:
       default:
-        // do nothing
+        prong_counter_.reset();
         break;
     }
   }
@@ -183,13 +188,12 @@ public class Climber extends Subsystem {
     SmartDashboard.putNumber("Subsystems/Climber/prong_motor_target", io_.prong_motor_target);
     SmartDashboard.putNumber("Subsystems/Climber/arm_motor_target", io_.arm_motor_target);
     SmartDashboard.putString("Subsystems/Climber/current_mode_", io_.current_mode_.toString());
-    SmartDashboard.putNumber("Subsystems/Climber/prong_count", prong_counter_.get());
+    SmartDashboard.putNumber("Subsystems/Climber/prong_count", io_.prong_count);
   }
 
   public void nextStage() {
     switch (io_.current_mode_) {
       case DISABLED:
-        prong_counter_.reset();
         io_.current_mode_ = ClimberMode.PRECLIMB;
         // The elevators default cmd will set to climb
         Elastic.selectTab("Climb");
@@ -241,6 +245,8 @@ public class Climber extends Subsystem {
     @Log.File public double strap_motor_target = 0;
     @Log.File public double strap_motor_target_offset = 0;
     @Log.File public double prong_motor_target = 0;
+    @Log.File public double prong_count = 0;
+    @Log.File public double prong_vcomp_ratio = 0;
     @Log.File public double arm_motor_target = 0;
     @Log.File public ClimberMode current_mode_ = ClimberMode.DISABLED;
     @Log.File public double deploying_start_time_ = 0;

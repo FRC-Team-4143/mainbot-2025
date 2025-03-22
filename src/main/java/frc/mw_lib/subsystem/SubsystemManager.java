@@ -5,15 +5,15 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Notifier;
 import edu.wpi.first.wpilibj.Timer;
 import frc.mw_lib.logging.GitLogger;
+import frc.mw_lib.util.ConstantsLoader;
 import java.util.ArrayList;
+import java.util.List;
 import monologue.Annotations.Log;
 import monologue.Logged;
 import monologue.Monologue;
 
 public abstract class SubsystemManager {
-
-  // Supposedly 1 is a good starting point, but can increase if we have issues
-  private static final int START_THREAD_PRIORITY = 99;
+  private static final String subsystems_key_ = "subsystems";
 
   public class Contain implements Logged {
     @Log.File public ArrayList<Logged> subsystems_ios = new ArrayList<>();
@@ -24,6 +24,18 @@ public abstract class SubsystemManager {
   protected boolean log_init = false;
   protected Contain ios;
 
+  protected static List<String> enabled_systems_;
+
+  public static List<String> getEnabledSubsystems() {
+    if (enabled_systems_ == null) {
+      // Determine removable subsystems to load
+      enabled_systems_ = ConstantsLoader.getInstance().getStringList(subsystems_key_);
+      DataLogManager.log("Expecting subsystems: " + enabled_systems_.toString());
+    }
+
+    return enabled_systems_;
+  }
+
   public SubsystemManager() {
     // Initialize the subsystem list
     subsystems = new ArrayList<>();
@@ -33,13 +45,15 @@ public abstract class SubsystemManager {
     loopThread = new Notifier(this::doControlLoop);
 
     ios = new Contain();
-
-    // Logger
   }
 
   public void registerSubsystem(Subsystem system) {
-    subsystems.add(system);
-    ios.subsystems_ios.add(system.getLoggingObject());
+    if (system instanceof RemovableSubsystem && !((RemovableSubsystem) system).isEnabled()) {
+      DataLogManager.log("Registered disabled subsystem: " + system.getClass().getSimpleName());
+    } else {
+      subsystems.add(system);
+      ios.subsystems_ios.add(system.getLoggingObject());
+    }
   }
 
   private void doControlLoop() {
