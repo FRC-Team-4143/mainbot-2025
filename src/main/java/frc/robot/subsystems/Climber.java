@@ -16,7 +16,6 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.motorcontrol.Spark;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import frc.lib.ElevatorTargets.Target;
 import frc.mw_lib.logging.Elastic;
 import frc.mw_lib.subsystem.RemovableSubsystem;
 import frc.robot.Constants;
@@ -154,7 +153,9 @@ public class Climber extends RemovableSubsystem {
       case RETRACTED:
         io_.arm_motor_target = 0;
         io_.prong_motor_target = Constants.ClimberConstants.PRONG_DEPLOY_SPEED;
-        strap_request_ = strap_position_request_.withPosition(io_.strap_motor_target);
+        strap_request_ =
+            strap_position_request_.withPosition(
+                io_.strap_motor_target + io_.strap_motor_target_offset);
         break;
       case DISABLED:
       default:
@@ -194,6 +195,7 @@ public class Climber extends RemovableSubsystem {
     switch (io_.current_mode_) {
       case DISABLED:
         io_.current_mode_ = ClimberMode.PRECLIMB;
+        // The elevators default cmd will set to climb
         Elastic.selectTab("Climb");
         break;
       case PRECLIMB:
@@ -204,6 +206,10 @@ public class Climber extends RemovableSubsystem {
         break;
       case DEPLOYED:
         io_.current_mode_ = ClimberMode.RETRACTED;
+        io_.strap_motor_target = ClimberConstants.STRAP_RETRACTED_POSITION;
+      case RETRACTED:
+        io_.strap_motor_target = ClimberConstants.STRAP_RETRACTED_POSITION;
+        io_.strap_motor_target_offset += ClimberConstants.STRAP_SETPOINT_BUMP;
         break;
       default:
         break;
@@ -214,23 +220,25 @@ public class Climber extends RemovableSubsystem {
     switch (io_.current_mode_) {
       case PRECLIMB:
         io_.current_mode_ = ClimberMode.DISABLED;
-        Elevator.getInstance().setTarget(Target.STOW);
+        // The elevators default cmd will set to stow
         Elastic.selectTab("Teleop");
         break;
       default:
-        DriverStation.reportError("Cannot return to previous stage", false);
+        DriverStation.reportError("Can no longer return to previous stage", false);
         break;
     }
   }
 
   public void climbSetpoint() {
-    if (io_.current_mode_ == ClimberMode.RETRACTED) {
-      io_.strap_motor_target += ClimberConstants.STRAP_SETPOINT_BUMP;
-    }
+    io_.strap_motor_target += ClimberConstants.STRAP_SETPOINT_BUMP;
   }
 
   public ClimberMode getMode() {
     return io_.current_mode_;
+  }
+
+  public boolean lockOutControl() {
+    return io_.current_mode_ != ClimberMode.DISABLED;
   }
 
   public class ClimberPeriodicIo implements Logged {

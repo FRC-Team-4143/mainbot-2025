@@ -219,7 +219,31 @@ public class FieldRegions {
     for (Region region : ALL_REGIONS) {
       region.constructRegion();
     }
+    populateTable();
+  }
 
+  /** Rotates all regions about the field center. */
+  public static void flipRegions() {
+    for (Region region : ALL_REGIONS) {
+      region.allianceFlip();
+    }
+    ScoringPoses.RIGHT_CORAL_STATION_POSE =
+        AllianceFlipUtil.apply(ScoringPoses.RIGHT_CORAL_STATION_POSE);
+    ScoringPoses.LEFT_CORAL_STATION_POSE =
+        AllianceFlipUtil.apply(ScoringPoses.LEFT_CORAL_STATION_POSE);
+    ScoringPoses.REEF_FACE_0_POSE = AllianceFlipUtil.apply(ScoringPoses.REEF_FACE_0_POSE);
+    ScoringPoses.REEF_FACE_1_POSE = AllianceFlipUtil.apply(ScoringPoses.REEF_FACE_1_POSE);
+    ScoringPoses.REEF_FACE_2_POSE = AllianceFlipUtil.apply(ScoringPoses.REEF_FACE_2_POSE);
+    ScoringPoses.REEF_FACE_3_POSE = AllianceFlipUtil.apply(ScoringPoses.REEF_FACE_3_POSE);
+    ScoringPoses.REEF_FACE_4_POSE = AllianceFlipUtil.apply(ScoringPoses.REEF_FACE_4_POSE);
+    ScoringPoses.REEF_FACE_5_POSE = AllianceFlipUtil.apply(ScoringPoses.REEF_FACE_5_POSE);
+    ScoringPoses.BARGE_TIGHT_ROPE.allianceFlip();
+    ScoringPoses.PROCESSOR_TIGHT_ROPE.allianceFlip();
+
+    populateTable();
+  }
+
+  private static void populateTable() {
     REGION_POSE_TABLE.put(
         RIGHT_CORAL_STATION_REGION.getName(), ScoringPoses.RIGHT_CORAL_STATION_POSE);
     REGION_POSE_TABLE.put(
@@ -230,34 +254,5 @@ public class FieldRegions {
     REGION_POSE_TABLE.put(REEF_FACE3_REGION.getName(), ScoringPoses.REEF_FACE_3_POSE);
     REGION_POSE_TABLE.put(REEF_FACE4_REGION.getName(), ScoringPoses.REEF_FACE_4_POSE);
     REGION_POSE_TABLE.put(REEF_FACE5_REGION.getName(), ScoringPoses.REEF_FACE_5_POSE);
-  }
-
-  /** Rotates all regions about the field center. */
-  public static void flipRegions() {
-    for (Region region : ALL_REGIONS) {
-      region.allianceFlip();
-    }
-
-    REGION_POSE_TABLE.replace(
-        RIGHT_CORAL_STATION_REGION.getName(),
-        AllianceFlipUtil.apply(ScoringPoses.RIGHT_CORAL_STATION_POSE));
-    REGION_POSE_TABLE.replace(
-        LEFT_CORAL_STATION_REGION.getName(),
-        AllianceFlipUtil.apply(ScoringPoses.LEFT_CORAL_STATION_POSE));
-    REGION_POSE_TABLE.replace(
-        REEF_FACE0_REGION.getName(), AllianceFlipUtil.apply(ScoringPoses.REEF_FACE_0_POSE));
-    REGION_POSE_TABLE.replace(
-        REEF_FACE1_REGION.getName(), AllianceFlipUtil.apply(ScoringPoses.REEF_FACE_1_POSE));
-    REGION_POSE_TABLE.replace(
-        REEF_FACE2_REGION.getName(), AllianceFlipUtil.apply(ScoringPoses.REEF_FACE_2_POSE));
-    REGION_POSE_TABLE.replace(
-        REEF_FACE3_REGION.getName(), AllianceFlipUtil.apply(ScoringPoses.REEF_FACE_3_POSE));
-    REGION_POSE_TABLE.replace(
-        REEF_FACE4_REGION.getName(), AllianceFlipUtil.apply(ScoringPoses.REEF_FACE_4_POSE));
-    REGION_POSE_TABLE.replace(
-        REEF_FACE5_REGION.getName(), AllianceFlipUtil.apply(ScoringPoses.REEF_FACE_5_POSE));
-
-    ScoringPoses.BARGE_TIGHT_ROPE.allianceFlip();
-    ScoringPoses.PROCESSOR_TIGHT_ROPE.allianceFlip();
   }
 }

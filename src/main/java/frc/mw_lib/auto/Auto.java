@@ -5,13 +5,13 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.lib.AllianceFlipUtil;
+import frc.mw_lib.command.NoReqSequentialCommandGroup;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 
-public class Auto extends SequentialCommandGroup {
+public class Auto extends NoReqSequentialCommandGroup {
 
   private ArrayList<Pose2d[]> trajectory_list_ = new ArrayList<>();
   protected LinkedHashMap<String, Trajectory<?>> trajectories = new LinkedHashMap<>();

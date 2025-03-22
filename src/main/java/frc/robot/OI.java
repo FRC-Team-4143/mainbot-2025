@@ -11,13 +11,12 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.commands.AlignWithTarget;
+import frc.robot.commands.ElevatorL1Target;
 import frc.robot.commands.ElevatorL2Target;
 import frc.robot.commands.ElevatorL3Target;
 import frc.robot.commands.ElevatorL4Target;
 import frc.robot.commands.GamePieceEject;
 import frc.robot.commands.GamePieceLoad;
-import frc.robot.commands.ManualElevatorOverride;
-import frc.robot.commands.ManualElevatorOverride.Level;
 import frc.robot.subsystems.Claw;
 import frc.robot.subsystems.Climber;
 import frc.robot.subsystems.Elevator;
@@ -70,22 +69,26 @@ public abstract class OI {
      */
 
     // Driver Load
-    driver_controller_.rightBumper().whileTrue(new GamePieceLoad());
+    driver_controller_
+        .rightBumper()
+        .whileTrue(new GamePieceLoad().unless(Climber.getInstance()::lockOutControl));
     // Driver Score
-    driver_controller_.rightTrigger().whileTrue(new GamePieceEject());
+    driver_controller_
+        .rightTrigger()
+        .whileTrue(new GamePieceEject().unless(Climber.getInstance()::lockOutControl));
     // Robot Align
-    driver_controller_.leftTrigger().whileTrue(new AlignWithTarget().onlyIf(use_vision));
+    driver_controller_
+        .leftTrigger()
+        .whileTrue(
+            new AlignWithTarget().onlyIf(use_vision).unless(Climber.getInstance()::lockOutControl));
     // Toggle Game Piece
     driver_controller_.leftBumper().onTrue(Claw.getInstance().toggleGamePieceCommand());
 
     if (Climber.getInstance().isEnabled()) {
-      // Increment Climb Sequence
-      driver_controller_.start().onTrue(Commands.runOnce(() -> Climber.getInstance().nextStage()));
-      driver_controller_
-          .start()
-          .whileTrue(Commands.run(() -> Climber.getInstance().climbSetpoint()));
-      // Decrement Climb Sequence
-      driver_controller_.back().onTrue(Commands.runOnce(() -> Climber.getInstance().backStage()));
+        // Increment Climb Sequence
+        driver_controller_.start().onTrue(Commands.runOnce(() -> Climber.getInstance().nextStage()));
+        // Decrement Climb Sequence
+        driver_controller_.back().onTrue(Commands.runOnce(() -> Climber.getInstance().backStage()));
     }
 
     // Swap Between Robot Centric and Field Centric
@@ -108,22 +111,30 @@ public abstract class OI {
     // - Algae Mode (Manual) -> Barge
     // - Coral Mode (Manual) -> L4
     // - Any Mode   (Vision) -> Set GSM L4
-    operator_controller_.y().toggleOnTrue(new ElevatorL4Target());
+    operator_controller_
+        .y()
+        .toggleOnTrue(new ElevatorL4Target().unless(Climber.getInstance()::lockOutControl));
     // Set L3 Target:
     // - Algae Mode (Manual) -> Algae High
     // - Coral Mode (Manual) -> L3
     // - Any Mode   (Vision) -> Set GSM L3
-    operator_controller_.b().toggleOnTrue(new ElevatorL3Target());
+    operator_controller_
+        .b()
+        .toggleOnTrue(new ElevatorL3Target().unless(Climber.getInstance()::lockOutControl));
     // Set L2 Target:
     // - Algae Mode (Manual) -> Algae Low
     // - Coral Mode (Manual) -> L2
     // - Any Mode   (Vision) -> Set GSM L2
-    operator_controller_.x().toggleOnTrue(new ElevatorL2Target());
+    operator_controller_
+        .x()
+        .toggleOnTrue(new ElevatorL2Target().unless(Climber.getInstance()::lockOutControl));
     // Set L1 Target:
     // - Algae Mode (Manual) -> Processor
     // - Coral Mode (Manual) -> L1
     // - Any Mode   (Vision) -> Set GSM L1
-    operator_controller_.a().toggleOnTrue(new ManualElevatorOverride(Level.L1));
+    operator_controller_
+        .a()
+        .toggleOnTrue(new ElevatorL1Target().unless(Climber.getInstance()::lockOutControl));
 
     // Set GSM Target Column Left
     operator_controller_

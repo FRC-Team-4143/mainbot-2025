@@ -192,13 +192,6 @@ public class SwerveDrivetrain extends Subsystem {
     SmartDashboard.putData("Tuning/Swerve/Y Pose Controller", y_pose_controller_);
     SmartDashboard.putData("Tuning/Swerve/Heading Pose Controller", heading_pose_controller_);
 
-    SmartDashboard.putNumber(
-        "Subsystems/Swerve/TractorBeamRotationThreshold",
-        Constants.DrivetrainConstants.TRACTOR_BEAM_ROTATION_THRESHOLD);
-    SmartDashboard.putNumber(
-        "Subsystems/Swerve/TractorBeamDistanceThreshold",
-        Constants.DrivetrainConstants.TRACTOR_BEAM_TARGET_DISTANCE);
-
     // NT Publishers
     requested_state_pub_ =
         NetworkTableInstance.getDefault()
@@ -653,12 +646,8 @@ public class SwerveDrivetrain extends Subsystem {
     return Util.epislonEquals(
         io_.current_pose_,
         io_.target_pose_,
-        SmartDashboard.getNumber(
-            "Subsystems/Swerve/TractorBeamRotationThreshold",
-            Constants.DrivetrainConstants.TRACTOR_BEAM_ROTATION_THRESHOLD),
-        SmartDashboard.getNumber(
-            "Subsystems/Swerve/TractorBeamDistanceThreshold",
-            Constants.DrivetrainConstants.TRACTOR_BEAM_TARGET_DISTANCE));
+        DrivetrainConstants.TRACTOR_BEAM_ROTATION_THRESHOLD,
+        DrivetrainConstants.TRACTOR_BEAM_TARGET_DISTANCE);
   }
 
   /**
