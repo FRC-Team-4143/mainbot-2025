@@ -26,11 +26,9 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.lib.ElevatorKinematics;
-import frc.lib.ElevatorTargets.IntermediateTarget;
 import frc.lib.ElevatorTargets.Target;
 import frc.lib.FieldRegions;
 import frc.lib.TargetData;
-import frc.lib.TargetData.ControlType;
 import frc.mw_lib.controls.TalonFXTuner;
 import frc.mw_lib.subsystem.Subsystem;
 import frc.mw_lib.util.MWPreferences;
@@ -63,7 +61,6 @@ public class Elevator extends Subsystem {
   private TalonFXConfiguration arm_config_;
   private MotionMagicVoltage elevator_request_;
   private MotionMagicVoltage arm_request_;
-  private BooleanSupplier elevator_at_minimum_;
   private Trigger reset_elevator_trigger_;
   private DigitalInput elevator_limit_switch_;
   private CANcoder arm_encoder_;
@@ -78,12 +75,6 @@ public class Elevator extends Subsystem {
 
   TalonFXTuner elevator_tuner_;
   TalonFXTuner arm_tuner_;
-
-  // Enums for Elevator/Arm
-  public enum ControlMode {
-    END_EFFECTOR,
-    PIVOT
-  }
 
   public enum SpeedLimit {
     CORAL,
@@ -113,15 +104,19 @@ public class Elevator extends Subsystem {
     // Elevator Config
     elevator_config_ = new TalonFXConfiguration();
     elevator_config_.Slot0 = ElevatorConstants.ELEVATOR_GAINS;
-    elevator_config_.MotionMagic.MotionMagicCruiseVelocity = ElevatorConstants.ELEVATOR_CRUISE_VELOCITY;
+    elevator_config_.MotionMagic.MotionMagicCruiseVelocity =
+        ElevatorConstants.ELEVATOR_CRUISE_VELOCITY;
     elevator_config_.MotionMagic.MotionMagicAcceleration = ElevatorConstants.ELEVATOR_ACCEL;
     elevator_config_.MotionMagic.MotionMagicExpo_kA = ElevatorConstants.ELEVATOR_EXPO_KA;
     elevator_config_.MotorOutput.NeutralMode = NeutralModeValue.Brake;
     elevator_config_.SoftwareLimitSwitch.ForwardSoftLimitEnable = false;
-    elevator_config_.SoftwareLimitSwitch.ForwardSoftLimitThreshold = ElevatorConstants.ELEVATOR_HEIGHT_PIVOT_MAX;
+    elevator_config_.SoftwareLimitSwitch.ForwardSoftLimitThreshold =
+        ElevatorConstants.ELEVATOR_HEIGHT_PIVOT_MAX;
     elevator_config_.SoftwareLimitSwitch.ReverseSoftLimitEnable = false;
-    elevator_config_.SoftwareLimitSwitch.ReverseSoftLimitThreshold = ElevatorConstants.ELEVATOR_HEIGHT_PIVOT_MIN;
-    elevator_config_.CurrentLimits.StatorCurrentLimit = ElevatorConstants.ELEVATOR_STATOR_CURRENT_LIMIT;
+    elevator_config_.SoftwareLimitSwitch.ReverseSoftLimitThreshold =
+        ElevatorConstants.ELEVATOR_HEIGHT_PIVOT_MIN;
+    elevator_config_.CurrentLimits.StatorCurrentLimit =
+        ElevatorConstants.ELEVATOR_STATOR_CURRENT_LIMIT;
     elevator_config_.CurrentLimits.StatorCurrentLimitEnable = true;
 
     elevator_config_.MotorOutput.Inverted = ElevatorConstants.ELEVATOR_MASTER_INVERSION;
@@ -146,7 +141,8 @@ public class Elevator extends Subsystem {
 
     // Arm Encoder Config
     arm_encoder_config_ = new CANcoderConfiguration();
-    arm_encoder_config_.MagnetSensor.SensorDirection = SensorDirectionValue.CounterClockwise_Positive;
+    arm_encoder_config_.MagnetSensor.SensorDirection =
+        SensorDirectionValue.CounterClockwise_Positive;
     arm_encoder_config_.MagnetSensor.AbsoluteSensorDiscontinuityPoint = 1;
     arm_encoder_.getConfigurator().apply(arm_encoder_config_);
 
@@ -154,7 +150,7 @@ public class Elevator extends Subsystem {
     elevator_request_ = new MotionMagicVoltage(0);
     arm_request_ = new MotionMagicVoltage(0);
 
-    elevator_at_minimum_ = () -> isElevatorAtMinimum();
+    BooleanSupplier elevator_at_minimum_ = () -> isElevatorAtMinimum();
     reset_elevator_trigger_ = new Trigger(elevator_at_minimum_);
 
     kinematics_ = new ElevatorKinematics(ArmConstants.ARM_LENGTH, ArmConstants.ARM_WIDTH);
@@ -162,13 +158,16 @@ public class Elevator extends Subsystem {
     reset_elevator_trigger_.onTrue(Commands.runOnce(() -> elevatorPosReset()));
 
     // Mechanism Setup
-    stages_pub_ = NetworkTableInstance.getDefault()
-        .getStructArrayTopic("Components/Elevator/Stages", Pose3d.struct)
-        .publish();
-    arm_pub_ = NetworkTableInstance.getDefault().getStructTopic("Components/Arm", Pose3d.struct).publish();
+    stages_pub_ =
+        NetworkTableInstance.getDefault()
+            .getStructArrayTopic("Components/Elevator/Stages", Pose3d.struct)
+            .publish();
+    arm_pub_ =
+        NetworkTableInstance.getDefault().getStructTopic("Components/Arm", Pose3d.struct).publish();
 
     // System Tuning
-    elevator_tuner_ = new TalonFXTuner(elevator_master_, new TalonFX[] { elevator_follower_ }, "Elevator", this);
+    elevator_tuner_ =
+        new TalonFXTuner(elevator_master_, new TalonFX[] {elevator_follower_}, "Elevator", this);
     // bindTuner(elevator_tuner_, 5, 10);
 
     arm_tuner_ = new TalonFXTuner(arm_motor_, "Arm", this);
@@ -199,8 +198,9 @@ public class Elevator extends Subsystem {
   public void readPeriodicInputs(double timestamp) {
     io_.elevator_follower_rotations_ = elevator_follower_.getPosition().getValue().in(Rotations);
     io_.elevator_master_rotations_ = elevator_master_.getPosition().getValue().in(Rotations);
-    io_.current_elevator_height_ = ((io_.elevator_master_rotations_) * ElevatorConstants.ELEVATOR_ROTATIONS_TO_METERS)
-        + ElevatorConstants.ELEVATOR_HEIGHT_PIVOT_MIN;
+    io_.current_elevator_height_ =
+        ((io_.elevator_master_rotations_) * ElevatorConstants.ELEVATOR_ROTATIONS_TO_METERS)
+            + ElevatorConstants.ELEVATOR_HEIGHT_PIVOT_MIN;
     io_.current_arm_angle_ = arm_motor_.getPosition().getValue().in(Radians);
   }
 
@@ -208,40 +208,32 @@ public class Elevator extends Subsystem {
   @Override
   public synchronized void updateLogic(double timestamp) {
     if (io_.intermediate_targets_.size() > 0) {
-      if (io_.intermediate_targets_.get(0).getControlType() == ControlType.PIVOT) {
-        io_.current_control_mode_ = ControlMode.PIVOT;
-      } else if (io_.intermediate_targets_.get(0).getControlType() == ControlType.EFFECTOR) {
-        io_.current_control_mode_ = ControlMode.END_EFFECTOR;
-      }
-
-      io_.target_arm_angle_ = io_.intermediate_targets_.get(0).getAngle();
+      TargetData intermediate = io_.intermediate_targets_.get(0);
+      io_.current_control_mode_ = intermediate.getControlType();
+      io_.target_arm_angle_ = intermediate.getAngle();
       switch (io_.current_control_mode_) {
-        case END_EFFECTOR:
-          io_.target_elevator_height_ = kinematics_.desiredElevatorZ(
-              io_.intermediate_targets_.get(0).getHeight(), io_.target_arm_angle_);
+        case EFFECTOR:
+          io_.target_elevator_height_ =
+              kinematics_.desiredElevatorZ(
+                  io_.intermediate_targets_.get(0).getHeight(), io_.target_arm_angle_);
           break;
         case PIVOT:
           io_.target_elevator_height_ = io_.intermediate_targets_.get(0).getHeight();
           break;
       }
 
+      // If we achieved the itermediate, pop it off and go to the next
       if (this.isElevatorAndArmAtCurrentTarget() == true) {
         io_.intermediate_targets_.remove(0);
-        System.out.print("removed index 0");
       }
     } else {
       // normal final target loop
-      if (io_.final_target_.getControlType() == ControlType.PIVOT) {
-        io_.current_control_mode_ = ControlMode.PIVOT;
-      } else if (io_.final_target_.getControlType() == ControlType.EFFECTOR) {
-        io_.current_control_mode_ = ControlMode.END_EFFECTOR;
-      }
-
+      io_.current_control_mode_ = io_.final_target_.getControlType();
       io_.target_arm_angle_ = io_.final_target_.getAngle();
       switch (io_.current_control_mode_) {
-        case END_EFFECTOR:
-          io_.target_elevator_height_ = kinematics_.desiredElevatorZ(io_.final_target_.getHeight(),
-              io_.target_arm_angle_);
+        case EFFECTOR:
+          io_.target_elevator_height_ =
+              kinematics_.desiredElevatorZ(io_.final_target_.getHeight(), io_.target_arm_angle_);
           break;
         case PIVOT:
           io_.target_elevator_height_ = io_.final_target_.getHeight();
@@ -323,14 +315,14 @@ public class Elevator extends Subsystem {
   public void updateMechanism() {
     stages_pub_.set(
         new Pose3d[] {
-            new Pose3d(),
-            new Pose3d(
-                0,
-                0,
-                (io_.current_elevator_height_ - ElevatorConstants.ELEVATOR_HEIGHT_PIVOT_MIN) / 2
-                    + ElevatorConstants.ELEVATOR_HEIGHT_PIVOT_MIN,
-                new Rotation3d()),
-            new Pose3d(0, 0, io_.current_elevator_height_, new Rotation3d())
+          new Pose3d(),
+          new Pose3d(
+              0,
+              0,
+              (io_.current_elevator_height_ - ElevatorConstants.ELEVATOR_HEIGHT_PIVOT_MIN) / 2
+                  + ElevatorConstants.ELEVATOR_HEIGHT_PIVOT_MIN,
+              new Rotation3d()),
+          new Pose3d(0, 0, io_.current_elevator_height_, new Rotation3d())
         });
     arm_pub_.set(
         new Pose3d(
@@ -450,14 +442,15 @@ public class Elevator extends Subsystem {
   public void setTarget(Target new_target) {
     Target old_target = io_.final_target_;
     io_.final_target_ = new_target;
+    io_.target_data_ = new_target.getLoggingObject();
 
     if (new_target != old_target) {
-      io_.intermediate_targets_ = new ArrayList<IntermediateTarget>(0);
-      if (old_target.getIntermediateExitTarget().isPresent()) {
-        io_.intermediate_targets_.add(old_target.getIntermediateExitTarget().get());
+      io_.intermediate_targets_.clear();
+      if (old_target.getExitTarget().isPresent()) {
+        io_.intermediate_targets_.add(old_target.getExitTarget().get());
       }
-      if (new_target.getIntermediateEnterTarget().isPresent()) {
-        io_.intermediate_targets_.add(new_target.getIntermediateEnterTarget().get());
+      if (new_target.getEnterTarget().isPresent()) {
+        io_.intermediate_targets_.add(new_target.getEnterTarget().get());
       }
     }
   }
@@ -487,8 +480,7 @@ public class Elevator extends Subsystem {
   }
 
   /**
-   * @return If the elevator is within the threshold of zero and the limit switch
-   *         is pressed
+   * @return If the elevator is within the threshold of zero and the limit switch is pressed
    */
   public boolean isElevatorAtMinimum() {
     return isLimitSwitchPressed() && isElevatorNearLimitSwitch();
@@ -511,26 +503,16 @@ public class Elevator extends Subsystem {
 
   public class ElevatorPeriodicIo implements Logged {
     // IO container for all variables
-    @Log.File
-    public ControlMode current_control_mode_ = ControlMode.PIVOT;
-    @Log.File
-    public double current_elevator_height_ = 0;
-    @Log.File
-    public double target_elevator_height_ = ElevatorConstants.ELEVATOR_HEIGHT_PIVOT_MIN;
-    @Log.File
-    public double current_arm_angle_ = 0;
-    @Log.File
-    public Target final_target_ = Target.STOW;
-    @Log.File
-    public ArrayList<IntermediateTarget> intermediate_targets_ = new ArrayList<>();
-    @Log.File
-    public Rotation2d target_arm_angle_ = Rotation2d.fromDegrees(-90);
-    @Log.File
-    public double elevator_master_rotations_ = 0;
-    @Log.File
-    public double elevator_follower_rotations_ = 0;
-    @Log.File
-    public TargetData target_data_ = final_target_.getLoggingObject();
+    @Log.File public TargetData.ControlType current_control_mode_ = TargetData.ControlType.PIVOT;
+    @Log.File public double current_elevator_height_ = 0;
+    @Log.File public double target_elevator_height_ = ElevatorConstants.ELEVATOR_HEIGHT_PIVOT_MIN;
+    @Log.File public double current_arm_angle_ = 0;
+    @Log.File public Target final_target_ = Target.STOW;
+    @Log.File public ArrayList<TargetData> intermediate_targets_ = new ArrayList<>();
+    @Log.File public Rotation2d target_arm_angle_ = Rotation2d.fromDegrees(-90);
+    @Log.File public double elevator_master_rotations_ = 0;
+    @Log.File public double elevator_follower_rotations_ = 0;
+    @Log.File public TargetData target_data_ = final_target_.getLoggingObject();
   }
 
   /** Get logging object from subsystem */
