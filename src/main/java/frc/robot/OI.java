@@ -85,10 +85,10 @@ public abstract class OI {
     driver_controller_.leftBumper().onTrue(Claw.getInstance().toggleGamePieceCommand());
 
     if (Climber.getInstance().isEnabled()) {
-        // Increment Climb Sequence
-        driver_controller_.start().onTrue(Commands.runOnce(() -> Climber.getInstance().nextStage()));
-        // Decrement Climb Sequence
-        driver_controller_.back().onTrue(Commands.runOnce(() -> Climber.getInstance().backStage()));
+      // Increment Climb Sequence
+      driver_controller_.start().onTrue(Commands.runOnce(() -> Climber.getInstance().nextStage()));
+      // Decrement Climb Sequence
+      driver_controller_.back().onTrue(Commands.runOnce(() -> Climber.getInstance().backStage()));
     }
 
     // Swap Between Robot Centric and Field Centric

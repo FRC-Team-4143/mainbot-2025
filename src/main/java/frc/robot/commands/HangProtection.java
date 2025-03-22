@@ -5,7 +5,7 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.lib.ElevatorTargets.Target;
+import frc.lib.ElevatorTargets.TargetType;
 import frc.robot.subsystems.Elevator;
 import frc.robot.subsystems.Elevator.SpeedLimit;
 
@@ -34,7 +34,7 @@ public class HangProtection extends Command {
   public void execute() {
     if (was_unsafe) {
       Elevator.getInstance().setSpeedLimit(SpeedLimit.SAFTEY);
-      Elevator.getInstance().setTarget(Target.SAFETY);
+      Elevator.getInstance().setTarget(TargetType.SAFETY);
       if (Elevator.getInstance().isElevatorAndArmAtTarget()) {
         has_hit_saftey = true;
       }

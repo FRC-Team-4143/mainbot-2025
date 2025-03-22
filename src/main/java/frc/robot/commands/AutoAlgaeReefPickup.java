@@ -5,7 +5,7 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.lib.ElevatorTargets.Target;
+import frc.lib.ElevatorTargets.TargetType;
 import frc.lib.FieldRegions;
 import frc.robot.subsystems.Claw;
 import frc.robot.subsystems.Claw.ClawMode;
@@ -50,10 +50,10 @@ public class AutoAlgaeReefPickup extends Command {
     for (int i = 0; i < FieldRegions.REEF_REGIONS.length; i++) {
       if (FieldRegions.REEF_REGIONS[i].contains(PoseEstimator.getInstance().getRobotPose())) {
         if ((i % 2) == 0) {
-          Elevator.getInstance().setTarget(Target.ALGAE_HIGH);
+          Elevator.getInstance().setTarget(TargetType.ALGAE_HIGH);
           break;
         } else {
-          Elevator.getInstance().setTarget(Target.ALGAE_LOW);
+          Elevator.getInstance().setTarget(TargetType.ALGAE_LOW);
           break;
         }
       }

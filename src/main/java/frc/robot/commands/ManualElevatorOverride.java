@@ -5,7 +5,7 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.lib.ElevatorTargets.Target;
+import frc.lib.ElevatorTargets.TargetType;
 import frc.robot.subsystems.Claw;
 import frc.robot.subsystems.Claw.GamePiece;
 import frc.robot.subsystems.Elevator;
@@ -40,7 +40,7 @@ public class ManualElevatorOverride extends Command {
       Elevator.getInstance().setSpeedLimit(SpeedLimit.CORAL);
     } else {
       Elevator.getInstance().setSpeedLimit(SpeedLimit.ALGAE);
-      Elevator.getInstance().setTarget(Target.ALGAE_PROCESSOR);
+      Elevator.getInstance().setTarget(TargetType.ALGAE_PROCESSOR);
     }
   }
 
@@ -52,29 +52,30 @@ public class ManualElevatorOverride extends Command {
         Elevator.getInstance().setSpeedLimit(SpeedLimit.CORAL);
       } else {
         Elevator.getInstance().setSpeedLimit(SpeedLimit.ALGAE);
-        Elevator.getInstance().setTarget(Target.ALGAE_PROCESSOR);
+        Elevator.getInstance().setTarget(TargetType.ALGAE_PROCESSOR);
       }
     }
 
     switch (level_) {
       case L1:
         Elevator.getInstance()
-            .setTarget(Claw.getInstance().isCoralMode() ? Target.L1 : Target.ALGAE_PROCESSOR);
+            .setTarget(
+                Claw.getInstance().isCoralMode() ? TargetType.L1 : TargetType.ALGAE_PROCESSOR);
         break;
 
       case L2:
         Elevator.getInstance()
-            .setTarget(Claw.getInstance().isCoralMode() ? Target.L2 : Target.ALGAE_LOW);
+            .setTarget(Claw.getInstance().isCoralMode() ? TargetType.L2 : TargetType.ALGAE_LOW);
         break;
 
       case L3:
         Elevator.getInstance()
-            .setTarget(Claw.getInstance().isCoralMode() ? Target.L3 : Target.ALGAE_HIGH);
+            .setTarget(Claw.getInstance().isCoralMode() ? TargetType.L3 : TargetType.ALGAE_HIGH);
         break;
 
       case L4:
         Elevator.getInstance()
-            .setTarget(Claw.getInstance().isCoralMode() ? Target.L4 : Target.BARGE);
+            .setTarget(Claw.getInstance().isCoralMode() ? TargetType.L4 : TargetType.BARGE);
         break;
       default:
         // hello :)
@@ -85,9 +86,9 @@ public class ManualElevatorOverride extends Command {
   @Override
   public void end(boolean interrupted) {
     if (Claw.getInstance().isCoralMode()) {
-      Elevator.getInstance().setTarget(Target.STOW);
+      Elevator.getInstance().setTarget(TargetType.STOW);
     } else {
-      Elevator.getInstance().setTarget(Target.ALGAE_STOW);
+      Elevator.getInstance().setTarget(TargetType.ALGAE_STOW);
     }
   }
 

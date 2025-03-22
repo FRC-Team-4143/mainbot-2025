@@ -4,7 +4,7 @@
 
 package frc.robot.commands;
 
-import frc.lib.ElevatorTargets.Target;
+import frc.lib.ElevatorTargets.TargetType;
 import frc.lib.FieldRegions;
 import frc.lib.ScoringPoses;
 import frc.mw_lib.command.LazyCommand;
@@ -33,7 +33,7 @@ public class CoralStation extends LazyCommand {
   @Override
   public void initialize() {
     Elevator.getInstance().setSpeedLimit(SpeedLimit.CORAL);
-    Elevator.getInstance().setTarget(Target.STATION);
+    Elevator.getInstance().setTarget(TargetType.STATION);
     Claw.getInstance().setGamePiece(GamePiece.CORAL);
     Claw.getInstance().setClawMode(ClawMode.LOAD);
     this.timerReset();
@@ -72,7 +72,7 @@ public class CoralStation extends LazyCommand {
     SwerveDrivetrain.getInstance().restoreDefaultDriveMode();
     SwerveDrivetrain.getInstance().setActiveSpeed(SpeedPresets.MAX_SPEED);
     Claw.getInstance().setClawMode(ClawMode.IDLE);
-    Elevator.getInstance().setTarget(Target.STOW);
+    Elevator.getInstance().setTarget(TargetType.STOW);
   }
 
   // Returns true when the command should end.

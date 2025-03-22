@@ -1,7 +1,7 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.lib.ElevatorTargets.Target;
+import frc.lib.ElevatorTargets.TargetType;
 import frc.lib.FieldRegions;
 import frc.robot.OI;
 import frc.robot.subsystems.Claw;
@@ -27,23 +27,23 @@ public class SetDefaultStow extends Command {
       if (Claw.getInstance().isAlgaeMode()) {
         if (FieldRegions.PROCESSOR_DEAD_REGION.contains(
             PoseEstimator.getInstance().getRobotPose())) {
-          Elevator.getInstance().setTarget(Target.STOW);
+          Elevator.getInstance().setTarget(TargetType.STOW);
         } else {
-          Elevator.getInstance().setTarget(Target.ALGAE_STOW);
+          Elevator.getInstance().setTarget(TargetType.ALGAE_STOW);
         }
       } else {
         if (OI.use_vision.getAsBoolean()) {
           if (PoseEstimator.getInstance().isStationZone()) {
-            Elevator.getInstance().setTarget(Target.STOW);
+            Elevator.getInstance().setTarget(TargetType.STOW);
           } else {
-            Elevator.getInstance().setTarget(Target.CORAL_STOW);
+            Elevator.getInstance().setTarget(TargetType.CORAL_STOW);
           }
         } else {
-          Elevator.getInstance().setTarget(Target.STOW);
+          Elevator.getInstance().setTarget(TargetType.STOW);
         }
       }
     } else {
-      Elevator.getInstance().setTarget(Target.CLIMB);
+      Elevator.getInstance().setTarget(TargetType.CLIMB);
     }
   }
 

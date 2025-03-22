@@ -6,7 +6,7 @@ import edu.wpi.first.networktables.StructPublisher;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
-import frc.lib.ElevatorTargets.Target;
+import frc.lib.ElevatorTargets.TargetType;
 import frc.lib.FieldRegions;
 import frc.lib.ScoringPoses;
 import frc.mw_lib.subsystem.Subsystem;
@@ -130,10 +130,10 @@ public class GameStateManager extends Subsystem {
         SwerveDrivetrain.getInstance().restoreDefaultDriveMode();
         if (Claw.getInstance().isCoralMode()) {
           Elevator.getInstance().setSpeedLimit(SpeedLimit.CORAL);
-          Elevator.getInstance().setTarget(Target.STOW);
+          Elevator.getInstance().setTarget(TargetType.STOW);
         } else {
           Elevator.getInstance().setSpeedLimit(SpeedLimit.ALGAE);
-          Elevator.getInstance().setTarget(Target.ALGAE_STOW);
+          Elevator.getInstance().setTarget(TargetType.ALGAE_STOW);
         }
         io_.robot_state_ = RobotState.TELEOP_CONTROL;
         Claw.getInstance().disableBlastMode();
@@ -277,27 +277,27 @@ public class GameStateManager extends Subsystem {
   public void elevatorTargetSwitch() {
     switch (io_.scoring_target) {
       case L1:
-        Elevator.getInstance().setTarget(Target.L1);
+        Elevator.getInstance().setTarget(TargetType.L1);
         break;
       case L2:
-        Elevator.getInstance().setTarget(Target.L2);
+        Elevator.getInstance().setTarget(TargetType.L2);
         break;
       case L3:
-        Elevator.getInstance().setTarget(Target.L3);
+        Elevator.getInstance().setTarget(TargetType.L3);
         break;
       case L4:
-        Elevator.getInstance().setTarget(Target.L4);
+        Elevator.getInstance().setTarget(TargetType.L4);
         break;
       case ALGAE:
         if (io_.algae_level_high) {
-          Elevator.getInstance().setTarget(Target.ALGAE_HIGH);
+          Elevator.getInstance().setTarget(TargetType.ALGAE_HIGH);
         } else {
-          Elevator.getInstance().setTarget(Target.ALGAE_LOW);
+          Elevator.getInstance().setTarget(TargetType.ALGAE_LOW);
         }
         break;
       case TURTLE:
       default:
-        Elevator.getInstance().setTarget(Target.STOW);
+        Elevator.getInstance().setTarget(TargetType.STOW);
         break;
       case TELEOP_CONTROL:
         break;

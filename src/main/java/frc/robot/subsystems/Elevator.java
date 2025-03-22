@@ -27,7 +27,7 @@ import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Commands;
 import frc.lib.ElevatorKinematics;
-import frc.lib.ElevatorTargets.Target;
+import frc.lib.ElevatorTargets.TargetType;
 import frc.lib.FieldRegions;
 import frc.lib.TargetData;
 import frc.lib.TargetData.ControlType;
@@ -40,6 +40,7 @@ import frc.robot.Constants.ArmConstants;
 import frc.robot.Constants.ElevatorConstants;
 import frc.robot.OI;
 import frc.robot.commands.SetDefaultStow;
+import java.util.ArrayList;
 import monologue.Annotations.Log;
 import monologue.Logged;
 
@@ -79,11 +80,6 @@ public class Elevator extends Subsystem {
   TalonFXTuner arm_tuner_;
 
   // Enums for Elevator/Arm
-  public enum ControlMode {
-    END_EFFECTOR,
-    PIVOT
-  }
-
   public enum SpeedLimit {
     CORAL,
     ALGAE,
@@ -213,23 +209,27 @@ public class Elevator extends Subsystem {
 
   /** Computes updated outputs for the actuators */
   public void updateLogic(double timestamp) {
-    if (io_.target_.getStagingArmAngle().isPresent()) {
-      if (isElevatorAtTarget()) {
-        io_.target_arm_angle_ = io_.target_.getAngle();
-      } else {
-        io_.target_arm_angle_ = io_.target_.getStagingArmAngle().get();
-      }
-    } else {
-      io_.target_arm_angle_ = io_.target_.getAngle();
+    TargetData pending_target = io_.target_type_.getTarget();
+
+    // If we have pending intermediate targets run them first
+    if (io_.intermediate_targets_.size() > 0) {
+      pending_target = io_.intermediate_targets_.get(0);
     }
+
+    io_.target_arm_angle_ = pending_target.getAngle();
     switch (io_.current_control_mode_) {
-      case END_EFFECTOR:
+      case EFFECTOR:
         io_.target_elevator_height_ =
-            kinematics_.desiredElevatorZ(io_.target_.getHeight(), io_.target_arm_angle_);
+            kinematics_.desiredElevatorZ(pending_target.getHeight(), io_.target_arm_angle_);
         break;
       case PIVOT:
-        io_.target_elevator_height_ = io_.target_.getHeight();
+        io_.target_elevator_height_ = pending_target.getHeight();
         break;
+    }
+
+    // Determine if we are ready to move on with another intermediate
+    if (systemAtTarget(pending_target)) {
+      io_.intermediate_targets_.remove(0);
     }
 
     if (io_.target_elevator_height_ < ElevatorConstants.ELEVATOR_HEIGHT_PIVOT_MIN) {
@@ -264,11 +264,13 @@ public class Elevator extends Subsystem {
 
   /** Outputs all logging information to the SmartDashboard */
   public void outputTelemetry(double timestamp) {
+    TargetData current_target = io_.target_type_.getTarget();
+
     SmartDashboard.putString(
         "Subsystems/Elevator/Control Mode", io_.current_control_mode_.toString());
     SmartDashboard.putNumber("Subsystems/Elevator/Target Height", io_.target_elevator_height_);
     SmartDashboard.putNumber("Subsystems/Elevator/Current Height", io_.current_elevator_height_);
-    SmartDashboard.putNumber("Subsystems/Elevator/Manual Offset", io_.target_.getHeightOffset());
+    SmartDashboard.putNumber("Subsystems/Elevator/Manual Offset", current_target.getHeightOffset());
     SmartDashboard.putNumber(
         "Subsystems/Elevator/Inches Off Zero",
         Units.metersToInches(
@@ -281,7 +283,7 @@ public class Elevator extends Subsystem {
     SmartDashboard.putString("Subsystems/Arm/Control Mode", io_.current_control_mode_.toString());
     SmartDashboard.putNumber(
         "Subsystems/Arm/Current Angle", Units.radiansToDegrees(io_.current_arm_angle_));
-    SmartDashboard.putNumber("Subsystems/Arm/Target Angle", io_.target_arm_angle_.getRadians());
+    SmartDashboard.putNumber("Subsystems/Arm/Target Angle", current_target.getAngle().getRadians());
     SmartDashboard.putNumber(
         "Subsystems/Arm/Current Height",
         kinematics_.effectorZ(io_.current_elevator_height_, io_.current_arm_angle_));
@@ -291,7 +293,7 @@ public class Elevator extends Subsystem {
         "Subsystems/Arm/Absolute Encoder",
         arm_encoder_.getAbsolutePosition().getValue().in(Rotations));
     SmartDashboard.putNumber(
-        "Subsystems/Arm/Manual Offset", io_.target_.getAngleOffset().getRadians());
+        "Subsystems/Arm/Manual Offset", current_target.getAngleOffset().getDegrees());
     updateMechanism();
   }
 
@@ -315,37 +317,56 @@ public class Elevator extends Subsystem {
             new Rotation3d(0, io_.current_arm_angle_, 0)));
   }
 
-  /**
-   * @return If the arm is within the threshold of its target
-   */
-  public boolean isArmAtTarget() {
-    if (io_.target_.getStagingArmAngle().isPresent() && isArmAtStagingAngle()) {
-      return false;
-    }
+  private boolean armAtTarget(TargetData target) {
     return arm_position_debouncer_.calculate(
         Util.epislonEquals(
             io_.current_arm_angle_,
-            io_.target_arm_angle_.getRadians(),
+            target.getAngle().getRadians(),
             ArmConstants.ARM_TARGET_THRESHOLD));
+  }
+
+  private boolean elevatorAtTarget(TargetData target) {
+    return elevator_position_debouncer_.calculate(
+        Util.epislonEquals(
+            io_.current_elevator_height_,
+            target.getHeight(),
+            ElevatorConstants.ELEVATOR_TARGET_THRESHOLD));
+  }
+
+  private boolean systemAtTarget(TargetData target) {
+    return elevatorAtTarget(target) && armAtTarget(target);
   }
 
   /**
    * @return If the arm is within the threshold of its target
    */
-  public boolean isArmAtStagingAngle() {
-    if (io_.target_.getStagingArmAngle().isPresent()) {
-      return Util.epislonEquals(
-          io_.current_arm_angle_,
-          io_.target_.getStagingArmAngle().get().getRadians(),
-          ArmConstants.ARM_TARGET_THRESHOLD);
+  public boolean isArmAtTarget() {
+    if (io_.intermediate_targets_.size() > 0) {
+      return false;
     }
-    return false;
+    return armAtTarget(io_.target_type_.getTarget());
   }
+
+  /**
+   * @return If the arm is within the threshold of its target
+   */
+  // public boolean isArmAtStagingAngle() {
+  // if (io_.target_.getStagingArmAngle().isPresent()) {
+  // return Util.epislonEquals(
+  // io_.current_arm_angle_,
+  // io_.target_.getStagingArmAngle().get().getRadians(),
+  // ArmConstants.ARM_TARGET_THRESHOLD);
+  // }
+  // return false;
+  // }
 
   /**
    * @return If the elevator is within the threshold of its target
    */
   public boolean isElevatorAtTarget() {
+    if (io_.intermediate_targets_.size() > 0) {
+      return false;
+    }
     return elevator_position_debouncer_.calculate(
         Util.epislonEquals(
             io_.current_elevator_height_,
@@ -399,17 +420,17 @@ public class Elevator extends Subsystem {
   public void setOffset(OffsetType offset_type) {
     switch (offset_type) {
       case ELEVATOR_UP:
-        io_.target_.offsetHeight(0.0254);
+        io_.target_type_.offsetHeight(0.0254);
         break;
       case ELEVATOR_DOWN:
-        io_.target_.offsetHeight(-0.0254);
+        io_.target_type_.offsetHeight(-0.0254);
         break;
       case ARM_CCW:
-        io_.target_.offsetAngle(Rotation2d.fromDegrees(-1));
+        io_.target_type_.offsetAngle(Rotation2d.fromDegrees(-1));
         break;
       case ARM_CW:
       default:
-        io_.target_.offsetAngle(Rotation2d.fromDegrees(1));
+        io_.target_type_.offsetAngle(Rotation2d.fromDegrees(1));
         break;
     }
   }
@@ -419,32 +440,33 @@ public class Elevator extends Subsystem {
    *
    * @param target
    */
-  public void setTarget(Target new_target) {
-    io_.target_ = new_target;
-    if (new_target == Target.SAFETY) {
-      new_target.td.height_ =
-          io_.current_elevator_height_ + Constants.ElevatorConstants.ELEVATOR_SAFTEY_BUMP;
-      this.setSpeedLimit(SpeedLimit.SAFTEY);
+  public void setTarget(TargetType new_target) {
+    TargetType old_target = io_.target_type_;
+    io_.target_type_ = new_target;
+
+    // TODO (CJT) figure out how to handle the safety target
+
+    // Handle intermediate targets if they exist
+    io_.intermediate_targets_.clear();
+    if (old_target.getExitTarget().isPresent()) {
+      io_.intermediate_targets_.add(old_target.getExitTarget().get());
     }
-    io_.target_ = new_target;
-    if (new_target.getControlType() == ControlType.PIVOT) {
-      io_.current_control_mode_ = ControlMode.PIVOT;
-    } else if (new_target.getControlType() == ControlType.EFFECTOR) {
-      io_.current_control_mode_ = ControlMode.END_EFFECTOR;
+    if (new_target.getEnterTarget().isPresent()) {
+      io_.intermediate_targets_.add(new_target.getEnterTarget().get());
     }
   }
 
-  public Target getTarget() {
-    return io_.target_;
+  public TargetType getTarget() {
+    return io_.target_type_;
   }
 
   public void resetManualOffsets() {
-    io_.target_.resetAngleOffset();
-    io_.target_.resetHeightOffset();
+    io_.target_type_.resetAngleOffset();
+    io_.target_type_.resetHeightOffset();
   }
 
   public void stowElevator() {
-    setTarget(Target.STOW);
+    setTarget(TargetType.STOW);
   }
 
   public void setSpeedLimit(SpeedLimit limit) {
@@ -490,15 +512,16 @@ public class Elevator extends Subsystem {
 
   public class ElevatorPeriodicIo implements Logged {
     // IO container for all variables
-    @Log.File public ControlMode current_control_mode_ = ControlMode.PIVOT;
+    @Log.File public ControlType current_control_mode_ = ControlType.PIVOT;
     @Log.File public double current_elevator_height_ = 0;
     @Log.File public double target_elevator_height_ = ElevatorConstants.ELEVATOR_HEIGHT_PIVOT_MIN;
     @Log.File public double current_arm_angle_ = 0;
-    @Log.File public Target target_ = Target.STOW;
-    @Log.File public Rotation2d target_arm_angle_ = Rotation2d.fromDegrees(-90);
+    @Log.File public Rotation2d target_arm_angle_ = TargetType.STOW.getTarget().getAngle();
+    @Log.File public TargetType target_type_ = TargetType.STOW;
+    @Log.File public ArrayList<TargetData> intermediate_targets_ = new ArrayList<>();
     @Log.File public double elevator_master_rotations_ = 0;
     @Log.File public double elevator_follower_rotations_ = 0;
-    @Log.File public TargetData target_data_ = target_.getLoggingObject();
+    // @Log.File public TargetData target_data_ = target_.getLoggingObject();
     @Log.File public SpeedLimit current_speed_limit;
   }
 

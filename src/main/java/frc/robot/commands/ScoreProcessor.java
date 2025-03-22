@@ -5,7 +5,7 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.lib.ElevatorTargets.Target;
+import frc.lib.ElevatorTargets.TargetType;
 import frc.lib.FieldRegions;
 import frc.mw_lib.geometry.Region;
 import frc.robot.subsystems.Claw;
@@ -38,16 +38,16 @@ public class ScoreProcessor extends Command {
   @Override
   public void execute() {
     if (FieldRegions.PROCESSOR_REGION.contains(PoseEstimator.getInstance().getRobotPose())) {
-      Elevator.getInstance().setTarget(Target.ALGAE_PROCESSOR);
+      Elevator.getInstance().setTarget(TargetType.ALGAE_PROCESSOR);
     } else {
-      Elevator.getInstance().setTarget(Target.ALGAE_STOW);
+      Elevator.getInstance().setTarget(TargetType.ALGAE_STOW);
     }
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    Elevator.getInstance().setTarget(Target.ALGAE_STOW);
+    Elevator.getInstance().setTarget(TargetType.ALGAE_STOW);
     Claw.getInstance().disableBlastMode();
   }
 

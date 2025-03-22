@@ -5,7 +5,7 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.lib.ElevatorTargets.Target;
+import frc.lib.ElevatorTargets.TargetType;
 import frc.lib.FieldRegions;
 import frc.mw_lib.geometry.Region;
 import frc.robot.subsystems.Claw;
@@ -46,16 +46,16 @@ public class ScoreBarge extends Command {
   @Override
   public void execute() {
     if (FieldRegions.BARGE_ENTER.contains(poseEstimator_.getRobotPose())) {
-      elevator_.setTarget(Target.BARGE);
+      elevator_.setTarget(TargetType.BARGE);
     } else {
-      elevator_.setTarget(Target.ALGAE_STOW);
+      elevator_.setTarget(TargetType.ALGAE_STOW);
     }
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    elevator_.setTarget(Target.ALGAE_STOW);
+    elevator_.setTarget(TargetType.ALGAE_STOW);
   }
 
   // Returns true when the command should end.
