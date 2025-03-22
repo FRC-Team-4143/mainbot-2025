@@ -18,13 +18,13 @@ import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.motorcontrol.Spark;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.mw_lib.logging.Elastic;
-import frc.mw_lib.subsystem.Subsystem;
+import frc.mw_lib.subsystem.RemovableSubsystem;
 import frc.robot.Constants;
 import frc.robot.Constants.ClimberConstants;
 import monologue.Annotations.Log;
 import monologue.Logged;
 
-public class Climber extends Subsystem {
+public class Climber extends RemovableSubsystem {
 
   private TalonFX strap_motor_;
   private ControlRequest strap_request_;
@@ -65,33 +65,35 @@ public class Climber extends Subsystem {
     // Create io object first in subsystem configuration
     io_ = new ClimberPeriodicIo();
 
-    strap_motor_ = new TalonFX(Constants.ClimberConstants.STRAP_ID);
-    prong_motor_ = new Spark(Constants.ClimberConstants.PRONG_ID);
-    prong_motor_.setInverted(true);
-    arm_motor_ = new Spark(Constants.ClimberConstants.ARM_ID);
-    arm_motor_.setInverted(true);
+    if (isEnabled()) {
+      strap_motor_ = new TalonFX(Constants.ClimberConstants.STRAP_ID);
+      prong_motor_ = new Spark(Constants.ClimberConstants.PRONG_ID);
+      prong_motor_.setInverted(true);
+      arm_motor_ = new Spark(Constants.ClimberConstants.ARM_ID);
+      arm_motor_.setInverted(true);
 
-    strap_motor_.getConfigurator().apply(Constants.ClimberConstants.STRAP_GAINS);
+      strap_motor_.getConfigurator().apply(Constants.ClimberConstants.STRAP_GAINS);
 
-    strap_position_request_ = new PositionVoltage(0.0);
-    strap_position_request_.withSlot(0);
-    strap_voltage_request_ = new VoltageOut(0);
+      strap_position_request_ = new PositionVoltage(0.0);
+      strap_position_request_.withSlot(0);
+      strap_voltage_request_ = new VoltageOut(0);
 
-    strap_config_ = new TalonFXConfiguration();
-    strap_config_.MotorOutput.Inverted = Constants.ClimberConstants.STRAP_INVERSION;
-    strap_config_.MotorOutput.NeutralMode = NeutralModeValue.Brake;
+      strap_config_ = new TalonFXConfiguration();
+      strap_config_.MotorOutput.Inverted = Constants.ClimberConstants.STRAP_INVERSION;
+      strap_config_.MotorOutput.NeutralMode = NeutralModeValue.Brake;
 
-    prong_counter_ =
-        new Encoder(
-            Constants.ClimberConstants.PRONG_ID_A,
-            Constants.ClimberConstants.PRONG_ID_B,
-            false,
-            EncodingType.k2X);
-    prong_controller_ =
-        new PIDController(
-            Constants.ClimberConstants.PRONG_P, 0, Constants.ClimberConstants.PRONG_D);
+      prong_counter_ =
+          new Encoder(
+              Constants.ClimberConstants.PRONG_ID_A,
+              Constants.ClimberConstants.PRONG_ID_B,
+              false,
+              EncodingType.k2X);
+      prong_controller_ =
+          new PIDController(
+              Constants.ClimberConstants.PRONG_P, 0, Constants.ClimberConstants.PRONG_D);
 
-    reset();
+      reset();
+    }
   }
 
   /**
@@ -163,7 +165,7 @@ public class Climber extends Subsystem {
         break;
       case DISABLED:
       default:
-        // do nothing
+        prong_counter_.reset();
         break;
     }
   }
@@ -192,13 +194,12 @@ public class Climber extends Subsystem {
     SmartDashboard.putNumber("Subsystems/Climber/prong_motor_target", io_.prong_target);
     SmartDashboard.putNumber("Subsystems/Climber/arm_motor_target", io_.arm_motor_target);
     SmartDashboard.putString("Subsystems/Climber/current_mode_", io_.current_mode_.toString());
-    SmartDashboard.putNumber("Subsystems/Climber/prong_count", prong_counter_.get());
+    SmartDashboard.putNumber("Subsystems/Climber/prong_count", io_.prong_count);
   }
 
   public void nextStage() {
     switch (io_.current_mode_) {
       case DISABLED:
-        prong_counter_.reset();
         io_.current_mode_ = ClimberMode.PRECLIMB;
         // The elevators default cmd will set to climb
         Elastic.selectTab("Climb");
