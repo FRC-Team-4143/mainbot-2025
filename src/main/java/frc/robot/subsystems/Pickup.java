@@ -6,6 +6,7 @@ package frc.robot.subsystems;
 
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.MotionMagicVoltage;
+import com.ctre.phoenix6.controls.PositionVoltage;
 import com.ctre.phoenix6.controls.VoltageOut;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.NeutralModeValue;
@@ -24,12 +25,12 @@ public class Pickup extends Subsystem {
   private TalonFX pivot_motor_;
 
   private TalonFXConfiguration config_;
-  private MotionMagicVoltage pivot_request_;
+  private PositionVoltage pivot_request_;
   private TalonFXTuner pivot_tuner_;
 
   private TimeOfFlight tof_;
 
-  enum PickupMode {
+  public enum PickupMode {
     RETRACTED,
     INTAKE,
     FLUSH_OUT
@@ -63,10 +64,10 @@ public class Pickup extends Subsystem {
     intake_motor_.getConfigurator().apply(config_);
     pivot_motor_.getConfigurator().apply(config_);
 
-    pivot_request_ = new MotionMagicVoltage(0);
+    pivot_request_ = new PositionVoltage(0);
 
-    pivot_tuner_ = new TalonFXTuner(pivot_motor_, "Pivot", this);
-    bindTuner(pivot_tuner_, 5, 10);
+    // pivot_tuner_ = new TalonFXTuner(pivot_motor_, "Pivot", this);
+    // bindTuner(pivot_tuner_, 5, 10);
 
     // Call reset last in subsystem configuration
     reset();
@@ -137,8 +138,8 @@ public class Pickup extends Subsystem {
   @Override
   public void outputTelemetry(double timestamp) {
     SmartDashboard.putString("Subsystems/Pickup/current_mode_", io_.current_mode_.toString());
-    SmartDashboard.putNumber("Subsystems/Pickup/current_intake_speed_", io_.current_intake_speed_);
     SmartDashboard.putNumber("Subsystems/Pickup/current_pivot_angle", io_.current_pivot_angle);
+    SmartDashboard.putBoolean("Subsystems/Pickup/has_coral", io_.has_coral);
   }
 
   /**
@@ -148,6 +149,15 @@ public class Pickup extends Subsystem {
    */
   public void setPickupMode(PickupMode target_mode) {
     io_.current_mode_ = target_mode;
+  }
+
+  /** */
+  public void togglePickupMode() {
+    if (io_.current_mode_ == PickupMode.INTAKE) {
+      io_.current_mode_ = PickupMode.RETRACTED;
+    } else if (io_.current_mode_ == PickupMode.RETRACTED) {
+      io_.current_mode_ = PickupMode.INTAKE;
+    }
   }
 
   /**
