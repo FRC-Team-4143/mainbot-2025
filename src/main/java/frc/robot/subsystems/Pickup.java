@@ -166,7 +166,6 @@ public class Pickup extends Subsystem {
   public void setPivotPosition(double value) {
     pivot_motor_.setPosition(value);
   }
-
   public class PickupPeriodicIo implements Logged {
     @Log.File public PickupMode current_mode_ = PickupMode.DEPLOYED;
     @Log.File public double target_intake_speed_ = 0;
