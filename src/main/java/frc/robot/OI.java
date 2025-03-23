@@ -15,14 +15,14 @@ import frc.robot.commands.ElevatorL1Target;
 import frc.robot.commands.ElevatorL2Target;
 import frc.robot.commands.ElevatorL3Target;
 import frc.robot.commands.ElevatorL4Target;
+import frc.robot.commands.GMSTargetLeft;
+import frc.robot.commands.GMSTargetRight;
 import frc.robot.commands.GamePieceEject;
 import frc.robot.commands.GamePieceLoad;
 import frc.robot.subsystems.Claw;
 import frc.robot.subsystems.Climber;
 import frc.robot.subsystems.Elevator;
 import frc.robot.subsystems.Elevator.OffsetType;
-import frc.robot.subsystems.GameStateManager;
-import frc.robot.subsystems.GameStateManager.Column;
 import frc.robot.subsystems.PoseEstimator;
 import frc.robot.subsystems.SwerveDrivetrain;
 import frc.robot.subsystems.SwerveDrivetrain.DriveMode;
@@ -152,16 +152,16 @@ public abstract class OI {
     operator_controller_
         .leftBumper()
         .onTrue(
-            Commands.runOnce(
-                    () -> GameStateManager.getInstance().setScoringColum(Column.LEFT, true))
+            new GMSTargetLeft()
+                .unless(Climber.getInstance()::lockOutControl)
                 .ignoringDisable(true));
 
     // Set GSM Target Column Right
     operator_controller_
         .rightBumper()
         .onTrue(
-            Commands.runOnce(
-                    () -> GameStateManager.getInstance().setScoringColum(Column.RIGHT, true))
+            new GMSTargetRight()
+                .unless(Climber.getInstance()::lockOutControl)
                 .ignoringDisable(true));
 
     // Manual Adjust Elevator Setpoint Up
