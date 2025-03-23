@@ -319,11 +319,11 @@ public final class Constants {
     public static final int INTAKE_ID = 41;
     public static final int PIVOT_ID = 40;
     public static final double TIME_OF_FLIGHT_DIST = 20;
-    public static final double PIVOT_DEPLOYED_ANGLE = 0.5;
-    public static final double PIVOT_RETRACTED_ANGLE = 0.0;
-    public static final double INTAKE_IN_SPEED = 0.5;
-    public static final double INTAKE_OUT_SPEED = 0.5;
-    public static final Slot0Configs PICKUP_GAINS = new Slot0Configs();
+    public static final double PIVOT_DEPLOYED_ANGLE = 0;
+    public static final double PIVOT_RETRACTED_ANGLE = -20;
+    public static final double INTAKE_IN_SPEED = 0.50;
+    public static final double INTAKE_OUT_SPEED = -0.50;
+    public static final Slot0Configs PICKUP_GAINS = new Slot0Configs().withKP(0.05);
   }
 
   public class GameStateManager {
