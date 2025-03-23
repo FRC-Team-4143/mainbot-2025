@@ -444,8 +444,6 @@ public class Elevator extends Subsystem {
     TargetType old_target = io_.target_type_;
     io_.target_type_ = new_target;
 
-    // TODO (CJT) figure out how to handle the safety target
-
     // Handle intermediate targets if they exist
     io_.intermediate_targets_.clear();
     if (old_target.getExitTarget().isPresent()) {
@@ -454,6 +452,19 @@ public class Elevator extends Subsystem {
     if (new_target.getEnterTarget().isPresent()) {
       io_.intermediate_targets_.add(new_target.getEnterTarget().get());
     }
+  }
+
+  public void addSafetyIntermediate() {
+    io_.intermediate_targets_.add(
+        0,
+        new TargetData(
+            io_.current_elevator_height_ + Units.inchesToMeters(2),
+            Rotation2d.fromDegrees(90),
+            ControlType.PIVOT));
+  }
+
+  public int getNumIntermediates() {
+    return io_.intermediate_targets_.size();
   }
 
   public TargetType getTarget() {
