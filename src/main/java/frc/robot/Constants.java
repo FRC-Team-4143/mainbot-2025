@@ -314,6 +314,21 @@ public final class Constants {
             .withGravityType(GravityTypeValue.Arm_Cosine);
   }
 
+  public static final class Pickup {
+    public static final int INDEXER_ID = 42;
+    public static final int INTAKE_ID = 41;
+    public static final int PIVOT_ID = 40;
+
+    public static final double PIVOT_DEPLOYED_ANGLE = 0.5;
+    public static final double PIVOT_RETRACTED_ANGLE = 0.5;
+    public static final double INDEXER_IN_SPEED = 0.5;
+    public static final double INDEXER_OUT_SPEED = 0.5;
+    public static final double INTAKE_IN_SPEED = 0.5;
+    public static final double INTAKE_OUT_SPEED = 0.5;
+
+    public static final Slot0Configs PICKUP_GAINS = new Slot0Configs();
+  }
+
   public class GameStateManager {
     public static final double REQUIRED_ROTATION_FOR_ELEVATOR = Units.degreesToRadians(45);
   }
