@@ -9,6 +9,7 @@ import com.ctre.phoenix6.controls.MotionMagicVoltage;
 import com.ctre.phoenix6.controls.VoltageOut;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.NeutralModeValue;
+import com.playingwithfusion.TimeOfFlight;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.mw_lib.controls.TalonFXTuner;
 import frc.mw_lib.subsystem.Subsystem;
@@ -25,6 +26,8 @@ public class Pickup extends Subsystem {
   private TalonFXConfiguration config_;
   private MotionMagicVoltage pivot_request_;
   private TalonFXTuner pivot_tuner_;
+
+  private TimeOfFlight tof_;
 
   enum PickupMode {
     RETRACTED,
@@ -51,6 +54,7 @@ public class Pickup extends Subsystem {
 
     intake_motor_ = new TalonFX(Constants.Pickup.INTAKE_ID);
     pivot_motor_ = new TalonFX(Constants.Pickup.PIVOT_ID);
+    tof_ = new TimeOfFlight(Constants.Pickup.TIME_OF_FLIGHT_ID);
 
     config_ = new TalonFXConfiguration();
     config_.MotorOutput.NeutralMode = NeutralModeValue.Brake;
@@ -82,8 +86,9 @@ public class Pickup extends Subsystem {
    */
   @Override
   public void readPeriodicInputs(double timestamp) {
-    io_.current_intake_speed_ = intake_motor_.get();
+    io_.current_tof_dist = tof_.getRange();
     io_.current_pivot_angle = pivot_motor_.getPosition().getValueAsDouble();
+    io_.has_coral = io_.current_tof_dist < Constants.Pickup.TIME_OF_FLIGHT_DIST;
   }
 
   /**
@@ -170,12 +175,11 @@ public class Pickup extends Subsystem {
 
   public class PickupPeriodicIo implements Logged {
     @Log.File public PickupMode current_mode_ = PickupMode.RETRACTED;
-    @Log.File public double current_indexer_speed_ = 0;
-    @Log.File public double current_intake_speed_ = 0;
-    @Log.File public double target_indexer_speed_ = 0;
     @Log.File public double target_intake_speed_ = 0;
     @Log.File public double current_pivot_angle = 0;
     @Log.File public double target_pivot_angle = 0;
+    @Log.File public double current_tof_dist = 0;
+    @Log.File public boolean has_coral = false;
   }
 
   @Override
