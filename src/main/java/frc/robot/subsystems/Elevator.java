@@ -13,8 +13,6 @@ import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.FeedbackSensorSourceValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.ctre.phoenix6.signals.SensorDirectionValue;
-import edu.wpi.first.math.filter.Debouncer;
-import edu.wpi.first.math.filter.Debouncer.DebounceType;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Rotation3d;
@@ -69,8 +67,6 @@ public class Elevator extends Subsystem {
 
   // Control Behavior
   private ElevatorKinematics kinematics_;
-  private Debouncer arm_position_debouncer_;
-  private Debouncer elevator_position_debouncer_;
 
   // Mechanisms
   private StructArrayPublisher<Pose3d> stages_pub_;
@@ -154,8 +150,6 @@ public class Elevator extends Subsystem {
     // System Behavior Setup
     elevator_request_ = new MotionMagicVoltage(0);
     arm_request_ = new MotionMagicVoltage(0);
-    elevator_position_debouncer_ = new Debouncer(0.1, DebounceType.kBoth);
-    arm_position_debouncer_ = new Debouncer(0.1, DebounceType.kBoth);
 
     kinematics_ = new ElevatorKinematics(ArmConstants.ARM_LENGTH, ArmConstants.ARM_WIDTH);
 
@@ -228,7 +222,7 @@ public class Elevator extends Subsystem {
     }
 
     // Determine if we are ready to move on with another intermediate
-    if (systemAtTarget(pending_target)) {
+    if (systemAtTarget(pending_target) && io_.intermediate_targets_.size() > 0) {
       io_.intermediate_targets_.remove(0);
     }
 
@@ -294,6 +288,8 @@ public class Elevator extends Subsystem {
         arm_encoder_.getAbsolutePosition().getValue().in(Rotations));
     SmartDashboard.putNumber(
         "Subsystems/Arm/Manual Offset", current_target.getAngleOffset().getDegrees());
+    SmartDashboard.putNumber(
+        "Subsystems/Elevator/Intermediate Count", io_.intermediate_targets_.size());
     updateMechanism();
   }
 
@@ -318,19 +314,15 @@ public class Elevator extends Subsystem {
   }
 
   private boolean armAtTarget(TargetData target) {
-    return arm_position_debouncer_.calculate(
-        Util.epislonEquals(
-            io_.current_arm_angle_,
-            target.getAngle().getRadians(),
-            ArmConstants.ARM_TARGET_THRESHOLD));
+    return Util.epislonEquals(
+        io_.current_arm_angle_, target.getAngle().getRadians(), ArmConstants.ARM_TARGET_THRESHOLD);
   }
 
   private boolean elevatorAtTarget(TargetData target) {
-    return elevator_position_debouncer_.calculate(
-        Util.epislonEquals(
-            io_.current_elevator_height_,
-            target.getHeight(),
-            ElevatorConstants.ELEVATOR_TARGET_THRESHOLD));
+    return Util.epislonEquals(
+        io_.current_elevator_height_,
+        target.getHeight(),
+        ElevatorConstants.ELEVATOR_TARGET_THRESHOLD);
   }
 
   private boolean systemAtTarget(TargetData target) {
@@ -348,30 +340,13 @@ public class Elevator extends Subsystem {
   }
 
   /**
-   * @return If the arm is within the threshold of its target
-   */
-  // public boolean isArmAtStagingAngle() {
-  // if (io_.target_.getStagingArmAngle().isPresent()) {
-  // return Util.epislonEquals(
-  // io_.current_arm_angle_,
-  // io_.target_.getStagingArmAngle().get().getRadians(),
-  // ArmConstants.ARM_TARGET_THRESHOLD);
-  // }
-  // return false;
-  // }
-
-  /**
    * @return If the elevator is within the threshold of its target
    */
   public boolean isElevatorAtTarget() {
     if (io_.intermediate_targets_.size() > 0) {
       return false;
     }
-    return elevator_position_debouncer_.calculate(
-        Util.epislonEquals(
-            io_.current_elevator_height_,
-            io_.target_elevator_height_,
-            ElevatorConstants.ELEVATOR_TARGET_THRESHOLD));
+    return elevatorAtTarget(io_.target_type_.getTarget());
   }
 
   /**
@@ -441,6 +416,9 @@ public class Elevator extends Subsystem {
    * @param target
    */
   public void setTarget(TargetType new_target) {
+    if (new_target == io_.target_type_) {
+      return;
+    }
     TargetType old_target = io_.target_type_;
     io_.target_type_ = new_target;
 

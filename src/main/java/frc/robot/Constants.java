@@ -241,7 +241,7 @@ public final class Constants {
     public static final int ELEVATOR_MASTER_ID = 21;
     public static final int ELEVATOR_FOLLOWER_ID = 22;
     public static final int ELEVATOR_LIMIT_SWITCH_PORT_NUMBER = 4;
-    public static final double ELEVATOR_TARGET_THRESHOLD = 0.25; // In m
+    public static final double ELEVATOR_TARGET_THRESHOLD = Units.inchesToMeters(1); // In m
     public static final InvertedValue ELEVATOR_MASTER_INVERSION =
         InvertedValue.CounterClockwise_Positive;
     public static final InvertedValue ELEVATOR_FOLLOWER_INVERSION =
@@ -301,7 +301,7 @@ public final class Constants {
     public static final double SENSOR_TO_MECHANISM_RATIO = (1.0 / ((16.0 / 64.0) / 20.0));
     public static final double ARM_FORWARD_LIMT = Units.radiansToRotations(Math.PI);
     public static final double ARM_REVERSE_LIMT =
-        Units.radiansToRotations(Units.degreesToRadians(-100));
+        Units.radiansToRotations(Units.degreesToRadians(-130));
     public static final Slot0Configs ARM_GAINS =
         new Slot0Configs()
             .withKP(LOADER.getDoubleValue("arm", "CONTROLLER_P"))
