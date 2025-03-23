@@ -24,6 +24,7 @@ import frc.robot.subsystems.Elevator;
 import frc.robot.subsystems.Elevator.OffsetType;
 import frc.robot.subsystems.GameStateManager;
 import frc.robot.subsystems.GameStateManager.Column;
+import frc.robot.subsystems.Pickup;
 import frc.robot.subsystems.PoseEstimator;
 import frc.robot.subsystems.SwerveDrivetrain;
 import frc.robot.subsystems.SwerveDrivetrain.DriveMode;
@@ -111,7 +112,7 @@ public abstract class OI {
     // Set L4 Target:
     // - Algae Mode (Manual) -> Barge
     // - Coral Mode (Manual) -> L4
-    // - Any Mode   (Vision) -> Set GSM L4
+    // - Any Mode (Vision) -> Set GSM L4
     operator_controller_
         .y()
         .toggleOnTrue(
@@ -121,7 +122,7 @@ public abstract class OI {
     // Set L3 Target:
     // - Algae Mode (Manual) -> Algae High
     // - Coral Mode (Manual) -> L3
-    // - Any Mode   (Vision) -> Set GSM L3
+    // - Any Mode (Vision) -> Set GSM L3
     operator_controller_
         .b()
         .toggleOnTrue(
@@ -131,7 +132,7 @@ public abstract class OI {
     // Set L2 Target:
     // - Algae Mode (Manual) -> Algae Low
     // - Coral Mode (Manual) -> L2
-    // - Any Mode   (Vision) -> Set GSM L2
+    // - Any Mode (Vision) -> Set GSM L2
     operator_controller_
         .x()
         .toggleOnTrue(
@@ -141,7 +142,7 @@ public abstract class OI {
     // Set L1 Target:
     // - Algae Mode (Manual) -> Processor
     // - Coral Mode (Manual) -> L1
-    // - Any Mode   (Vision) -> Set GSM L1
+    // - Any Mode (Vision) -> Set GSM L1
     operator_controller_
         .a()
         .toggleOnTrue(
@@ -171,6 +172,7 @@ public abstract class OI {
         .onTrue(
             Commands.runOnce(() -> Elevator.getInstance().setOffset(OffsetType.ELEVATOR_UP))
                 .ignoringDisable(true));
+    driver_controller_.a().onTrue(Commands.runOnce(() -> Pickup.getInstance().togglePickupMode()));
     // Manual Adjust Elevator Setpoint Down
     operator_controller_
         .povDown()
