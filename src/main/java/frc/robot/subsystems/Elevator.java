@@ -69,8 +69,6 @@ public class Elevator extends Subsystem {
 
   // Control Behavior
   private ElevatorKinematics kinematics_;
-  // private Debouncer arm_position_debouncer_;
-  // private Debouncer elevator_position_debouncer_;
 
   // Mechanisms
   private StructArrayPublisher<Pose3d> stages_pub_;
@@ -154,8 +152,6 @@ public class Elevator extends Subsystem {
     // System Behavior Setup
     elevator_request_ = new MotionMagicVoltage(0);
     arm_request_ = new MotionMagicVoltage(0);
-    // elevator_position_debouncer_ = new Debouncer(0.1, DebounceType.kRising);
-    // arm_position_debouncer_ = new Debouncer(0.1, DebounceType.kRising);
 
     kinematics_ = new ElevatorKinematics(ArmConstants.ARM_LENGTH, ArmConstants.ARM_WIDTH);
 
@@ -320,19 +316,15 @@ public class Elevator extends Subsystem {
   }
 
   private boolean armAtTarget(TargetData target) {
-    return // arm_position_debouncer_.calculate(
-    Util.epislonEquals(
-        io_.current_arm_angle_,
-        target.getAngle().getRadians(),
-        ArmConstants.ARM_TARGET_THRESHOLD); // );
+    return Util.epislonEquals(
+        io_.current_arm_angle_, target.getAngle().getRadians(), ArmConstants.ARM_TARGET_THRESHOLD);
   }
 
   private boolean elevatorAtTarget(TargetData target) {
-    return // elevator_position_debouncer_.calculate(
-    Util.epislonEquals(
+    return Util.epislonEquals(
         io_.current_elevator_height_,
         target.getHeight(),
-        ElevatorConstants.ELEVATOR_TARGET_THRESHOLD); // );
+        ElevatorConstants.ELEVATOR_TARGET_THRESHOLD);
   }
 
   private boolean systemAtTarget(TargetData target) {
@@ -348,19 +340,6 @@ public class Elevator extends Subsystem {
     }
     return armAtTarget(io_.target_type_.getTarget());
   }
-
-  /**
-   * @return If the arm is within the threshold of its target
-   */
-  // public boolean isArmAtStagingAngle() {
-  // if (io_.target_.getStagingArmAngle().isPresent()) {
-  // return Util.epislonEquals(
-  // io_.current_arm_angle_,
-  // io_.target_.getStagingArmAngle().get().getRadians(),
-  // ArmConstants.ARM_TARGET_THRESHOLD);
-  // }
-  // return false;
-  // }
 
   /**
    * @return If the elevator is within the threshold of its target
