@@ -10,6 +10,7 @@ import frc.robot.OI;
 import frc.robot.commands.ManualElevatorOverride.Level;
 import frc.robot.subsystems.GameStateManager;
 import frc.robot.subsystems.GameStateManager.ReefScoringTarget;
+import frc.robot.subsystems.GameStateManager.RobotState;
 
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
 public class ElevatorL4Target extends NoReqConditionalCommand {
@@ -18,7 +19,12 @@ public class ElevatorL4Target extends NoReqConditionalCommand {
     // Use addRequirements() here to declare subsystem dependencies.
     super(
         Commands.runOnce(
-            () -> GameStateManager.getInstance().setScoringTarget(ReefScoringTarget.L4, true)),
+            () -> {
+              GameStateManager.getInstance().setScoringTarget(ReefScoringTarget.L4, true);
+              if (GameStateManager.getInstance().getRobotState() != RobotState.TELEOP_CONTROL) {
+                GameStateManager.getInstance().setRobotState(RobotState.APPROACHING_TARGET);
+              }
+            }),
         new ManualElevatorOverride(Level.L4),
         OI.use_vision);
     setName(this.getClass().getSimpleName());
