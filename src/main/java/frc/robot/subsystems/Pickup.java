@@ -19,7 +19,6 @@ import monologue.Logged;
 
 public class Pickup extends Subsystem {
 
-  private TalonFX indexer_motor_;
   private TalonFX intake_motor_;
   private TalonFX pivot_motor_;
 
@@ -50,15 +49,13 @@ public class Pickup extends Subsystem {
     // Create io object first in subsystem configuration
     io_ = new PickupPeriodicIo();
 
-    indexer_motor_ = new TalonFX(Constants.Pickup.INDEXER_ID);
-    intake_motor_ = new TalonFX(Constants.Pickup.INDEXER_ID);
+    intake_motor_ = new TalonFX(Constants.Pickup.INTAKE_ID);
     pivot_motor_ = new TalonFX(Constants.Pickup.PIVOT_ID);
 
     config_ = new TalonFXConfiguration();
     config_.MotorOutput.NeutralMode = NeutralModeValue.Brake;
     config_.Slot0 = Constants.Pickup.PICKUP_GAINS;
 
-    indexer_motor_.getConfigurator().apply(config_);
     intake_motor_.getConfigurator().apply(config_);
     pivot_motor_.getConfigurator().apply(config_);
 
@@ -85,7 +82,6 @@ public class Pickup extends Subsystem {
    */
   @Override
   public void readPeriodicInputs(double timestamp) {
-    io_.current_indexer_speed_ = indexer_motor_.get();
     io_.current_intake_speed_ = intake_motor_.get();
     io_.current_pivot_angle = pivot_motor_.getPosition().getValueAsDouble();
   }
@@ -99,22 +95,18 @@ public class Pickup extends Subsystem {
   public void updateLogic(double timestamp) {
     switch (io_.current_mode_) {
       case INTAKE:
-        io_.target_indexer_speed_ = Constants.Pickup.INDEXER_IN_SPEED;
         io_.target_intake_speed_ = Constants.Pickup.INTAKE_IN_SPEED;
         io_.target_pivot_angle = Constants.Pickup.PIVOT_DEPLOYED_ANGLE;
         break;
       case RETRACTED:
-        io_.target_indexer_speed_ = 0;
         io_.target_intake_speed_ = 0;
         io_.target_pivot_angle = Constants.Pickup.PIVOT_RETRACTED_ANGLE;
         break;
       case FLUSH_OUT:
-        io_.target_indexer_speed_ = Constants.Pickup.INDEXER_OUT_SPEED;
         io_.target_intake_speed_ = Constants.Pickup.INTAKE_OUT_SPEED;
         io_.target_pivot_angle = Constants.Pickup.PIVOT_DEPLOYED_ANGLE;
         break;
       default:
-        io_.target_indexer_speed_ = 0;
         io_.target_intake_speed_ = 0;
         break;
     }
@@ -127,7 +119,6 @@ public class Pickup extends Subsystem {
    */
   @Override
   public void writePeriodicOutputs(double timestamp) {
-    indexer_motor_.set(io_.target_indexer_speed_);
     intake_motor_.set(io_.target_intake_speed_);
     pivot_motor_.setControl(pivot_request_.withPosition(io_.target_pivot_angle));
   }
@@ -141,8 +132,6 @@ public class Pickup extends Subsystem {
   @Override
   public void outputTelemetry(double timestamp) {
     SmartDashboard.putString("Subsystems/Pickup/current_mode_", io_.current_mode_.toString());
-    SmartDashboard.putNumber(
-        "Subsystems/Pickup/current_indexer_speed_", io_.current_indexer_speed_);
     SmartDashboard.putNumber("Subsystems/Pickup/current_intake_speed_", io_.current_intake_speed_);
     SmartDashboard.putNumber("Subsystems/Pickup/current_pivot_angle", io_.current_pivot_angle);
   }
