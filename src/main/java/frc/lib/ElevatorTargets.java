@@ -21,7 +21,7 @@ public class ElevatorTargets {
 
   private static final TargetData L2_INT =
       new TargetData(
-          FieldConstants.ReefHeight.L2.HEIGHT + Units.inchesToMeters(8),
+          ElevatorConstants.ELEVATOR_HEIGHT_PIVOT_SAFETY + Units.inchesToMeters(12),
           Rotation2d.fromDegrees(90),
           ControlType.PIVOT);
 
@@ -34,15 +34,21 @@ public class ElevatorTargets {
   // TODO (CJT) set this to a sane value
   private static final TargetData STOW_ENTER =
       new TargetData(
-          ElevatorConstants.ELEVATOR_HEIGHT_PIVOT_SAFETY + Units.inchesToMeters(0),
+          ElevatorConstants.ELEVATOR_HEIGHT_PIVOT_SAFETY + Units.inchesToMeters(12),
           Rotation2d.fromDegrees(-120),
           ControlType.PIVOT);
 
   // TODO (CJT) set this to a sane value
   private static final TargetData STOW_EXIT =
       new TargetData(
-          ElevatorConstants.ELEVATOR_HEIGHT_PIVOT_SAFETY + Units.inchesToMeters(0),
+          ElevatorConstants.ELEVATOR_HEIGHT_PIVOT_SAFETY + Units.inchesToMeters(12),
           Rotation2d.fromDegrees(-120),
+          ControlType.PIVOT);
+
+  private static final TargetData ALGAE_STOW_ENTER =
+      new TargetData(
+          ElevatorConstants.ELEVATOR_HEIGHT_PIVOT_SAFETY + Units.inchesToMeters(12),
+          Rotation2d.fromDegrees(90),
           ControlType.PIVOT);
 
   public enum TargetType {
@@ -139,7 +145,7 @@ public class ElevatorTargets {
             ElevatorConstants.ELEVATOR_HEIGHT_PIVOT_MIN + Units.inchesToMeters(0),
             Rotation2d.fromDegrees(90),
             ControlType.PIVOT),
-        Optional.empty(),
+        Optional.of(ALGAE_STOW_ENTER),
         Optional.empty());
 
     TargetType(TargetData target, Optional<TargetData> enter_tgt, Optional<TargetData> exit_tgt) {
