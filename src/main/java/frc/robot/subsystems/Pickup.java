@@ -1,0 +1,196 @@
+// Copyright (c) FIRST and other WPILib contributors.
+// Open Source Software; you can modify and/or share it under the terms of
+// the WPILib BSD license file in the root directory of this project.
+
+package frc.robot.subsystems;
+
+import com.ctre.phoenix6.configs.TalonFXConfiguration;
+import com.ctre.phoenix6.controls.MotionMagicVoltage;
+import com.ctre.phoenix6.controls.VoltageOut;
+import com.ctre.phoenix6.hardware.TalonFX;
+import com.ctre.phoenix6.signals.NeutralModeValue;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import frc.mw_lib.controls.TalonFXTuner;
+import frc.mw_lib.subsystem.Subsystem;
+import frc.robot.Constants;
+import frc.robot.OI;
+import monologue.Annotations.Log;
+import monologue.Logged;
+
+public class Pickup extends Subsystem {
+
+  private TalonFX indexer_motor_;
+  private TalonFX intake_motor_;
+  private TalonFX pivot_motor_;
+
+  private TalonFXConfiguration config_;
+  private MotionMagicVoltage pivot_request_;
+  private TalonFXTuner pivot_tuner_;
+
+  enum PickupMode {
+    RETRACTED,
+    INTAKE,
+    FLUSH_OUT
+  }
+
+  // Singleton pattern
+  private static Pickup pickup_instance_ = null;
+
+  public static Pickup getInstance() {
+    if (pickup_instance_ == null) {
+      pickup_instance_ = new Pickup();
+    }
+    return pickup_instance_;
+  }
+
+  /** Class Members */
+  private PickupPeriodicIo io_;
+
+  private Pickup() {
+    // Create io object first in subsystem configuration
+    io_ = new PickupPeriodicIo();
+
+    indexer_motor_ = new TalonFX(Constants.Pickup.INDEXER_ID);
+    intake_motor_ = new TalonFX(Constants.Pickup.INDEXER_ID);
+    pivot_motor_ = new TalonFX(Constants.Pickup.PIVOT_ID);
+
+    config_ = new TalonFXConfiguration();
+    config_.MotorOutput.NeutralMode = NeutralModeValue.Brake;
+    config_.Slot0 = Constants.Pickup.PICKUP_GAINS;
+
+    indexer_motor_.getConfigurator().apply(config_);
+    intake_motor_.getConfigurator().apply(config_);
+    pivot_motor_.getConfigurator().apply(config_);
+
+    pivot_request_ = new MotionMagicVoltage(0);
+
+    pivot_tuner_ = new TalonFXTuner(pivot_motor_, "Pivot", this);
+    bindTuner(pivot_tuner_, 5, 10);
+
+    // Call reset last in subsystem configuration
+    reset();
+  }
+
+  /**
+   * This function should be logic and code to fully reset your subsystem. This is called during
+   * initialization, and should handle I/O configuration and initializing data members.
+   */
+  @Override
+  public void reset() {}
+
+  /**
+   * Inside this function, all of the SENSORS should be read into variables stored in the PeriodicIO
+   * class defined below. There should be no calls to output to actuators, or any logic within this
+   * function.
+   */
+  @Override
+  public void readPeriodicInputs(double timestamp) {
+    io_.current_indexer_speed_ = indexer_motor_.get();
+    io_.current_intake_speed_ = intake_motor_.get();
+    io_.current_pivot_angle = pivot_motor_.getPosition().getValueAsDouble();
+  }
+
+  /**
+   * Inside this function, all of the LOGIC should compute updates to output variables in the
+   * PeriodicIO class defined below. There should be no calls to read from sensors or write to
+   * actuators in this function.
+   */
+  @Override
+  public void updateLogic(double timestamp) {
+    switch (io_.current_mode_) {
+      case INTAKE:
+        io_.target_indexer_speed_ = Constants.Pickup.INDEXER_IN_SPEED;
+        io_.target_intake_speed_ = Constants.Pickup.INTAKE_IN_SPEED;
+        io_.target_pivot_angle = Constants.Pickup.PIVOT_DEPLOYED_ANGLE;
+        break;
+      case RETRACTED:
+        io_.target_indexer_speed_ = 0;
+        io_.target_intake_speed_ = 0;
+        io_.target_pivot_angle = Constants.Pickup.PIVOT_RETRACTED_ANGLE;
+        break;
+      case FLUSH_OUT:
+        io_.target_indexer_speed_ = Constants.Pickup.INDEXER_OUT_SPEED;
+        io_.target_intake_speed_ = Constants.Pickup.INTAKE_OUT_SPEED;
+        io_.target_pivot_angle = Constants.Pickup.PIVOT_DEPLOYED_ANGLE;
+        break;
+      default:
+        io_.target_indexer_speed_ = 0;
+        io_.target_intake_speed_ = 0;
+        break;
+    }
+  }
+
+  /**
+   * Inside this function actuator OUTPUTS should be updated from data contained in the PeriodicIO
+   * class defined below. There should be little to no logic contained within this function, and no
+   * sensors should be read.
+   */
+  @Override
+  public void writePeriodicOutputs(double timestamp) {
+    indexer_motor_.set(io_.target_indexer_speed_);
+    intake_motor_.set(io_.target_intake_speed_);
+    pivot_motor_.setControl(pivot_request_.withPosition(io_.target_pivot_angle));
+  }
+
+  /**
+   * Inside this function telemetry should be output to smartdashboard. The data should be collected
+   * out of the PeriodicIO class instance defined below. There should be no sensor information read
+   * in this function nor any outputs made to actuators within this function. Only publish to
+   * smartdashboard here.
+   */
+  @Override
+  public void outputTelemetry(double timestamp) {
+    SmartDashboard.putString("Subsystems/Pickup/current_mode_", io_.current_mode_.toString());
+    SmartDashboard.putNumber(
+        "Subsystems/Pickup/current_indexer_speed_", io_.current_indexer_speed_);
+    SmartDashboard.putNumber("Subsystems/Pickup/current_intake_speed_", io_.current_intake_speed_);
+    SmartDashboard.putNumber("Subsystems/Pickup/current_pivot_angle", io_.current_pivot_angle);
+  }
+
+  /**
+   * Sets the current mode of the Pickup
+   *
+   * @param target_mode new mode that is being set
+   */
+  public void setPickupMode(PickupMode target_mode) {
+    io_.current_mode_ = target_mode;
+  }
+
+  /**
+   * @return the current mode of the Pickup
+   */
+  public PickupMode getPickupMode() {
+    return io_.current_mode_;
+  }
+
+  /** Resets to the zero position of the pivot motor */
+  public void resetPivotPosition() {
+    pivot_motor_.setPosition(0);
+  }
+
+  public void bindTuner(TalonFXTuner tuner, double pos1, double pos2) {
+    tuner.bindSetpoint(new MotionMagicVoltage(pos1), OI.getDriverJoystickAButtonTrigger());
+    tuner.bindSetpoint(new MotionMagicVoltage(pos2), OI.getDriverJoystickYButtonTrigger());
+    tuner.bindSetpoint(new VoltageOut(-1), OI.getDriverJoystickXButtonTrigger());
+    tuner.bindSetpoint(new VoltageOut(1), OI.getDriverJoystickBButtonTrigger());
+    tuner.bindDynamicForward(OI.getOperatorJoystickAButtonTrigger());
+    tuner.bindDynamicReverse(OI.getOperatorJoystickBButtonTrigger());
+    tuner.bindQuasistaticForward(OI.getOperatorJoystickXButtonTrigger());
+    tuner.bindQuasistaticReverse(OI.getOperatorJoystickYButtonTrigger());
+  }
+
+  public class PickupPeriodicIo implements Logged {
+    @Log.File public PickupMode current_mode_ = PickupMode.RETRACTED;
+    @Log.File public double current_indexer_speed_ = 0;
+    @Log.File public double current_intake_speed_ = 0;
+    @Log.File public double target_indexer_speed_ = 0;
+    @Log.File public double target_intake_speed_ = 0;
+    @Log.File public double current_pivot_angle = 0;
+    @Log.File public double target_pivot_angle = 0;
+  }
+
+  @Override
+  public Logged getLoggingObject() {
+    return io_;
+  }
+}
