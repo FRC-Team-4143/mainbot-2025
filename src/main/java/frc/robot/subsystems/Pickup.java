@@ -167,7 +167,8 @@ public class Pickup extends Subsystem {
   }
 
   public boolean isAtTarget() {
-    return Util.epislonEquals(io_.current_pivot_angle, io_.target_pivot_angle, Constants.PickupConstatns.PIVOT_THRESHOLD);
+    return Util.epislonEquals(
+        io_.current_pivot_angle, io_.target_pivot_angle, Constants.PickupConstatns.PIVOT_THRESHOLD);
   }
 
   /**
