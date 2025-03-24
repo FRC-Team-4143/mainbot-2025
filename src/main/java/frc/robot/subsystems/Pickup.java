@@ -33,7 +33,8 @@ public class Pickup extends Subsystem {
   public enum PickupMode {
     RETRACTED,
     INTAKE,
-    FLUSH_OUT
+    FLUSH_OUT,
+    DEPLOYED
   }
 
   // Singleton pattern
@@ -53,13 +54,13 @@ public class Pickup extends Subsystem {
     // Create io object first in subsystem configuration
     io_ = new PickupPeriodicIo();
 
-    intake_motor_ = new TalonFX(Constants.Pickup.INTAKE_ID);
-    pivot_motor_ = new TalonFX(Constants.Pickup.PIVOT_ID);
-    tof_ = new TimeOfFlight(Constants.Pickup.TIME_OF_FLIGHT_ID);
+    intake_motor_ = new TalonFX(Constants.PickupConstatns.INTAKE_ID);
+    pivot_motor_ = new TalonFX(Constants.PickupConstatns.PIVOT_ID);
+    tof_ = new TimeOfFlight(Constants.PickupConstatns.TIME_OF_FLIGHT_ID);
 
     config_ = new TalonFXConfiguration();
     config_.MotorOutput.NeutralMode = NeutralModeValue.Brake;
-    config_.Slot0 = Constants.Pickup.PICKUP_GAINS;
+    config_.Slot0 = Constants.PickupConstatns.PICKUP_GAINS;
 
     intake_motor_.getConfigurator().apply(config_);
     pivot_motor_.getConfigurator().apply(config_);
@@ -89,7 +90,7 @@ public class Pickup extends Subsystem {
   public void readPeriodicInputs(double timestamp) {
     io_.current_tof_dist = tof_.getRange();
     io_.current_pivot_angle = pivot_motor_.getPosition().getValueAsDouble();
-    io_.has_coral = io_.current_tof_dist < Constants.Pickup.TIME_OF_FLIGHT_DIST;
+    io_.has_coral = io_.current_tof_dist < Constants.PickupConstatns.TIME_OF_FLIGHT_DIST;
   }
 
   /**
@@ -101,16 +102,21 @@ public class Pickup extends Subsystem {
   public void updateLogic(double timestamp) {
     switch (io_.current_mode_) {
       case INTAKE:
-        io_.target_intake_speed_ = Constants.Pickup.INTAKE_IN_SPEED;
-        io_.target_pivot_angle = Constants.Pickup.PIVOT_DEPLOYED_ANGLE;
+        io_.target_intake_speed_ = Constants.PickupConstatns.INTAKE_IN_SPEED;
+        io_.target_pivot_angle = Constants.PickupConstatns.PIVOT_DEPLOYED_ANGLE;
+        break;
+      case DEPLOYED:
+        io_.target_intake_speed_ = 0;
+        io_.target_pivot_angle = Constants.PickupConstatns.PIVOT_DEPLOYED_ANGLE;
         break;
       case RETRACTED:
         io_.target_intake_speed_ = 0;
-        io_.target_pivot_angle = Constants.Pickup.PIVOT_RETRACTED_ANGLE;
+        io_.target_pivot_angle = Constants.PickupConstatns.PIVOT_RETRACTED_ANGLE * 0.75;
         break;
+
       case FLUSH_OUT:
-        io_.target_intake_speed_ = Constants.Pickup.INTAKE_OUT_SPEED;
-        io_.target_pivot_angle = Constants.Pickup.PIVOT_DEPLOYED_ANGLE;
+        io_.target_intake_speed_ = Constants.PickupConstatns.INTAKE_OUT_SPEED;
+        io_.target_pivot_angle = Constants.PickupConstatns.PIVOT_DEPLOYED_ANGLE;
         break;
       default:
         io_.target_intake_speed_ = 0;
@@ -183,8 +189,12 @@ public class Pickup extends Subsystem {
     tuner.bindQuasistaticReverse(OI.getOperatorJoystickYButtonTrigger());
   }
 
+  public boolean hasCoral() {
+    return io_.has_coral;
+  }
+
   public class PickupPeriodicIo implements Logged {
-    @Log.File public PickupMode current_mode_ = PickupMode.RETRACTED;
+    @Log.File public PickupMode current_mode_ = PickupMode.DEPLOYED;
     @Log.File public double target_intake_speed_ = 0;
     @Log.File public double current_pivot_angle = 0;
     @Log.File public double target_pivot_angle = 0;

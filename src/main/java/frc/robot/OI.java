@@ -18,6 +18,7 @@ import frc.robot.commands.ElevatorL4Target;
 import frc.robot.commands.GamePieceEject;
 import frc.robot.commands.GamePieceLoad;
 import frc.robot.commands.OverrideLoad;
+import frc.robot.commands.IntakeFeed;
 import frc.robot.subsystems.Claw;
 import frc.robot.subsystems.Climber;
 import frc.robot.subsystems.Elevator;
@@ -25,6 +26,7 @@ import frc.robot.subsystems.Elevator.OffsetType;
 import frc.robot.subsystems.GameStateManager;
 import frc.robot.subsystems.GameStateManager.Column;
 import frc.robot.subsystems.Pickup;
+import frc.robot.subsystems.Pickup.PickupMode;
 import frc.robot.subsystems.PoseEstimator;
 import frc.robot.subsystems.SwerveDrivetrain;
 import frc.robot.subsystems.SwerveDrivetrain.DriveMode;
@@ -62,7 +64,7 @@ public abstract class OI {
     SmartDashboard.putData(
         "Commands/Disturb Pose",
         Commands.runOnce(() -> PoseEstimator.getInstance().disturbPose()).ignoringDisable(true));
-    SmartDashboard.putBoolean("Vision/Use Vision Features", true);
+    SmartDashboard.putBoolean("Vision/Use Vision Features", false);
 
     /*
      *
@@ -159,12 +161,12 @@ public abstract class OI {
                 .ignoringDisable(true));
 
     // Set GSM Target Column Right
-    operator_controller_
-        .rightBumper()
-        .onTrue(
-            Commands.runOnce(
-                    () -> GameStateManager.getInstance().setScoringColum(Column.RIGHT, true))
-                .ignoringDisable(true));
+    // operator_controller_
+    // .rightBumper()
+    // .onTrue(
+    // Commands.runOnce(
+    // () -> GameStateManager.getInstance().setScoringColum(Column.RIGHT, true))
+    // .ignoringDisable(true));
 
     // Manual Adjust Elevator Setpoint Up
     operator_controller_
@@ -172,7 +174,16 @@ public abstract class OI {
         .onTrue(
             Commands.runOnce(() -> Elevator.getInstance().setOffset(OffsetType.ELEVATOR_UP))
                 .ignoringDisable(true));
-    driver_controller_.a().onTrue(Commands.runOnce(() -> Pickup.getInstance().togglePickupMode()));
+    driver_controller_.rightBumper().whileTrue(new IntakeFeed());
+    driver_controller_
+        .b()
+        .whileTrue(
+            Commands.startEnd(
+                () -> Pickup.getInstance().setPickupMode(PickupMode.FLUSH_OUT),
+                () -> Pickup.getInstance().setPickupMode(PickupMode.DEPLOYED)));
+    driver_controller_
+        .x()
+        .onTrue(Commands.runOnce(() -> Pickup.getInstance().setPickupMode(PickupMode.RETRACTED)));
     // Manual Adjust Elevator Setpoint Down
     operator_controller_
         .povDown()
