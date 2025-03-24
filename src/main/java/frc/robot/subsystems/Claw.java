@@ -219,7 +219,7 @@ public class Claw extends Subsystem {
                 > ClawConstants.CORAL_CURRENT_THRESHOLD);
   }
 
-  public ClawMode getClawMode(){
+  public ClawMode getClawMode() {
     return io_.claw_mode_;
   }
 

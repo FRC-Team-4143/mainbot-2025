@@ -189,10 +189,8 @@ public abstract class OI {
         .onTrue(
             Commands.runOnce(() -> Elevator.getInstance().setOffset(OffsetType.ARM_CW))
                 .ignoringDisable(true));
-    //Manual Override for loading
-    operator_controller_
-        .leftTrigger()
-        .whileTrue(new OverrideLoad(false));
+    // Manual Override for loading
+    operator_controller_.leftTrigger().whileTrue(new OverrideLoad());
 
     operator_controller_
         .start()
