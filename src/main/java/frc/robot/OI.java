@@ -17,6 +17,7 @@ import frc.robot.commands.ElevatorL3Target;
 import frc.robot.commands.ElevatorL4Target;
 import frc.robot.commands.GamePieceEject;
 import frc.robot.commands.GamePieceLoad;
+import frc.robot.commands.OverrideLoad;
 import frc.robot.subsystems.Claw;
 import frc.robot.subsystems.Climber;
 import frc.robot.subsystems.Elevator;
@@ -188,6 +189,10 @@ public abstract class OI {
         .onTrue(
             Commands.runOnce(() -> Elevator.getInstance().setOffset(OffsetType.ARM_CW))
                 .ignoringDisable(true));
+    //Manual Override for loading
+    operator_controller_
+        .leftTrigger()
+        .whileTrue(new OverrideLoad(false));
 
     operator_controller_
         .start()
