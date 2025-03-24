@@ -321,13 +321,14 @@ public final class Constants {
     public static final double TIME_OF_FLIGHT_DIST = 127;
     public static final double PIVOT_DEPLOYED_ANGLE = 0;
     public static final double PIVOT_RETRACTED_ANGLE = -20;
+    public static final double PIVOT_THRESHOLD = 0.5;
     public static final double INTAKE_IN_SPEED = 0.50;
     public static final double INTAKE_OUT_SPEED = -0.50;
     public static final Slot0Configs PICKUP_GAINS =
         new Slot0Configs().withKP(0.5).withKI(0.00).withKD(0.00);
   }
 
-  public class GameStateManager {
+  public class GameStateManagerConstatns {
     public static final double REQUIRED_ROTATION_FOR_ELEVATOR = Units.degreesToRadians(45);
   }
 }

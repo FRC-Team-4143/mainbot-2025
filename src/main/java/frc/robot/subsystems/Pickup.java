@@ -14,6 +14,7 @@ import com.playingwithfusion.TimeOfFlight;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.mw_lib.controls.TalonFXTuner;
 import frc.mw_lib.subsystem.Subsystem;
+import frc.mw_lib.util.Util;
 import frc.robot.Constants;
 import frc.robot.OI;
 import monologue.Annotations.Log;
@@ -113,7 +114,6 @@ public class Pickup extends Subsystem {
         io_.target_intake_speed_ = 0;
         io_.target_pivot_angle = Constants.PickupConstatns.PIVOT_RETRACTED_ANGLE * 0.75;
         break;
-
       case FLUSH_OUT:
         io_.target_intake_speed_ = Constants.PickupConstatns.INTAKE_OUT_SPEED;
         io_.target_pivot_angle = Constants.PickupConstatns.PIVOT_DEPLOYED_ANGLE;
@@ -164,6 +164,10 @@ public class Pickup extends Subsystem {
     } else if (io_.current_mode_ == PickupMode.RETRACTED) {
       io_.current_mode_ = PickupMode.INTAKE;
     }
+  }
+
+  public boolean isAtTarget() {
+    return Util.epislonEquals(io_.current_pivot_angle, io_.target_pivot_angle, Constants.PickupConstatns.PIVOT_THRESHOLD);
   }
 
   /**
