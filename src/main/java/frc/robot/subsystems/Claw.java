@@ -219,6 +219,10 @@ public class Claw extends Subsystem {
                 > ClawConstants.CORAL_CURRENT_THRESHOLD);
   }
 
+  public ClawMode getClawMode() {
+    return io_.claw_mode_;
+  }
+
   public class ClawPeriodicIo implements Logged {
     @Log.File public ClawMode claw_mode_ = ClawMode.IDLE;
     @Log.File public boolean enable_blast_ = false;
