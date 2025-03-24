@@ -315,7 +315,11 @@ public class SwerveDrivetrain extends Subsystem {
 
   @Override
   public synchronized void updateLogic(double timestamp) {
-    request_parameters_.currentPose = io_.current_pose_;
+    if (OI.use_vision.getAsBoolean() == true) {
+      request_parameters_.currentPose = io_.current_pose_;
+    } else {
+      request_parameters_.currentPose = new Pose2d(0, 0, io_.robot_yaw_);
+    }
     switch (io_.drive_mode_) {
       case ROBOT_CENTRIC:
         {
