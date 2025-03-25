@@ -21,6 +21,7 @@ import frc.mw_lib.logging.Elastic;
 import frc.mw_lib.subsystem.RemovableSubsystem;
 import frc.robot.Constants;
 import frc.robot.Constants.ClimberConstants;
+import frc.robot.subsystems.Pickup.PickupMode;
 import monologue.Annotations.Log;
 import monologue.Logged;
 
@@ -126,6 +127,7 @@ public class Climber extends RemovableSubsystem {
     switch (io_.current_mode_) {
       case PRECLIMB:
         io_.deploying_start_time_ = 0;
+        Pickup.getInstance().setPickupMode(PickupMode.DEPLOYED);
         break;
       case STAGING:
         io_.prong_target = Constants.ClimberConstants.PRONG_PRESET_COUNT;
@@ -205,7 +207,10 @@ public class Climber extends RemovableSubsystem {
         Elastic.selectTab("Climb");
         break;
       case PRECLIMB:
-        io_.current_mode_ = ClimberMode.STAGING;
+        if (Pickup.getInstance().isAtTarget()
+            && Elevator.getInstance().isElevatorAndArmAtTarget()) {
+          io_.current_mode_ = ClimberMode.STAGING;
+        }
         break;
       case PRESET:
         io_.current_mode_ = ClimberMode.DEPLOYING;

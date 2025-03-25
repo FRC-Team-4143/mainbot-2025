@@ -31,15 +31,21 @@ public class ElevatorTargets {
           Rotation2d.fromDegrees(90),
           ControlType.PIVOT);
 
-  private static final TargetData STOW_ENTER =
+  public static TargetData CURRENT_STOW_INT =
       new TargetData(
           ElevatorConstants.ELEVATOR_HEIGHT_PIVOT_SAFETY + Units.inchesToMeters(12),
           Rotation2d.fromDegrees(-120),
           ControlType.PIVOT);
 
-  private static final TargetData STOW_EXIT =
+  public static final TargetData HIGH_STOW_INT =
       new TargetData(
           ElevatorConstants.ELEVATOR_HEIGHT_PIVOT_SAFETY + Units.inchesToMeters(12),
+          Rotation2d.fromDegrees(-120),
+          ControlType.PIVOT);
+
+  public static final TargetData LOW_STOW_INT =
+      new TargetData(
+          ElevatorConstants.ELEVATOR_HEIGHT_PIVOT_SAFETY + Units.inchesToMeters(6),
           Rotation2d.fromDegrees(-120),
           ControlType.PIVOT);
 
@@ -105,8 +111,8 @@ public class ElevatorTargets {
             ElevatorConstants.ELEVATOR_HEIGHT_PIVOT_SAFETY + Units.inchesToMeters(0),
             Rotation2d.fromDegrees(-120),
             ControlType.PIVOT),
-        Optional.of(STOW_ENTER),
-        Optional.of(STOW_EXIT)),
+        Optional.of(CURRENT_STOW_INT),
+        Optional.of(CURRENT_STOW_INT)),
     CORAL_STOW(
         new TargetData(
             ElevatorConstants.ELEVATOR_HEIGHT_PIVOT_SAFETY + Units.inchesToMeters(0),

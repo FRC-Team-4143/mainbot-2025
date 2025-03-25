@@ -25,6 +25,7 @@ import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Commands;
 import frc.lib.ElevatorKinematics;
+import frc.lib.ElevatorTargets;
 import frc.lib.ElevatorTargets.TargetType;
 import frc.lib.FieldRegions;
 import frc.lib.TargetData;
@@ -38,6 +39,7 @@ import frc.robot.Constants.ArmConstants;
 import frc.robot.Constants.ElevatorConstants;
 import frc.robot.OI;
 import frc.robot.commands.SetDefaultStow;
+import frc.robot.subsystems.Pickup.PickupMode;
 import java.util.ArrayList;
 import monologue.Annotations.Log;
 import monologue.Logged;
@@ -203,6 +205,8 @@ public class Elevator extends Subsystem {
 
   /** Computes updated outputs for the actuators */
   public void updateLogic(double timestamp) {
+    setStowSaftey();
+
     TargetData pending_target = io_.target_type_.getTarget();
 
     // If we have pending intermediate targets run them first
@@ -223,7 +227,14 @@ public class Elevator extends Subsystem {
 
     // Determine if we are ready to move on with another intermediate
     if (systemAtTarget(pending_target) && io_.intermediate_targets_.size() > 0) {
-      io_.intermediate_targets_.remove(0);
+      if (io_.target_type_ == TargetType.STATION) {
+        if (Pickup.getInstance().isAtTarget()
+            && Pickup.getInstance().getPickupMode() == PickupMode.STATION) {
+          io_.intermediate_targets_.remove(0);
+        }
+      } else {
+        io_.intermediate_targets_.remove(0);
+      }
     }
 
     if (io_.target_elevator_height_ < ElevatorConstants.ELEVATOR_HEIGHT_PIVOT_MIN) {
@@ -410,6 +421,30 @@ public class Elevator extends Subsystem {
     }
   }
 
+  public void setStowSaftey() {
+    if (Pickup.getInstance().isAtTarget()) {
+      switch (Pickup.getInstance().getPickupMode()) {
+        case DEPLOYED:
+          ElevatorTargets.CURRENT_STOW_INT = ElevatorTargets.LOW_STOW_INT;
+          break;
+        case INTAKE:
+          ElevatorTargets.CURRENT_STOW_INT = ElevatorTargets.LOW_STOW_INT;
+          break;
+        case RETRACTED:
+          ElevatorTargets.CURRENT_STOW_INT = ElevatorTargets.HIGH_STOW_INT;
+          break;
+        case STATION:
+          ElevatorTargets.CURRENT_STOW_INT = ElevatorTargets.HIGH_STOW_INT;
+          break;
+        default:
+          ElevatorTargets.CURRENT_STOW_INT = ElevatorTargets.HIGH_STOW_INT;
+          break;
+      }
+    } else {
+      ElevatorTargets.CURRENT_STOW_INT = ElevatorTargets.HIGH_STOW_INT;
+    }
+  }
+
   /**
    * Sets the target for arm and elevator Only sets if climber is disabled
    *
@@ -419,6 +454,7 @@ public class Elevator extends Subsystem {
     if (new_target == io_.target_type_) {
       return;
     }
+
     TargetType old_target = io_.target_type_;
     io_.target_type_ = new_target;
 

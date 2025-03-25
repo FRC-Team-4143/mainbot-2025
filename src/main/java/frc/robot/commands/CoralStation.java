@@ -13,6 +13,8 @@ import frc.robot.subsystems.Claw.ClawMode;
 import frc.robot.subsystems.Claw.GamePiece;
 import frc.robot.subsystems.Elevator;
 import frc.robot.subsystems.Elevator.SpeedLimit;
+import frc.robot.subsystems.Pickup;
+import frc.robot.subsystems.Pickup.PickupMode;
 import frc.robot.subsystems.PoseEstimator;
 import frc.robot.subsystems.SwerveDrivetrain;
 import frc.robot.subsystems.SwerveDrivetrain.SpeedPresets;
@@ -33,7 +35,6 @@ public class CoralStation extends LazyCommand {
   @Override
   public void initialize() {
     Elevator.getInstance().setSpeedLimit(SpeedLimit.CORAL);
-    Elevator.getInstance().setTarget(TargetType.STATION);
     Claw.getInstance().setGamePiece(GamePiece.CORAL);
     Claw.getInstance().setClawMode(ClawMode.LOAD);
     this.timerReset();
@@ -42,6 +43,8 @@ public class CoralStation extends LazyCommand {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
+    Elevator.getInstance().setTarget(TargetType.STATION);
+    Pickup.getInstance().setPickupMode(PickupMode.STATION);
     if (FieldRegions.LEFT_CORAL_STATION_REGION.contains(
         PoseEstimator.getInstance().getRobotPose())) {
       SwerveDrivetrain.getInstance()
