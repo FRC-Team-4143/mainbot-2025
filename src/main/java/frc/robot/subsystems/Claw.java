@@ -73,15 +73,20 @@ public class Claw extends Subsystem {
   }
 
   /**
-   * This function should be logic and code to fully reset your subsystem. This is called during
-   * initialization, and should handle I/O configuration and initializing data members.
+   * This function should be logic and code to fully reset your subsystem. This is
+   * called during
+   * initialization, and should handle I/O configuration and initializing data
+   * members.
    */
   @Override
-  public void reset() {}
+  public void reset() {
+  }
 
   /**
-   * Inside this function, all of the SENSORS should be read into variables stored in the PeriodicIO
-   * class defined below. There should be no calls to output to actuators, or any logic within this
+   * Inside this function, all of the SENSORS should be read into variables stored
+   * in the PeriodicIO
+   * class defined below. There should be no calls to output to actuators, or any
+   * logic within this
    * function.
    */
   @Override
@@ -92,8 +97,10 @@ public class Claw extends Subsystem {
   }
 
   /**
-   * Inside this function, all of the LOGIC should compute updates to output variables in the
-   * PeriodicIO class defined below. There should be no calls to read from sensors or write to
+   * Inside this function, all of the LOGIC should compute updates to output
+   * variables in the
+   * PeriodicIO class defined below. There should be no calls to read from sensors
+   * or write to
    * actuators in this function.
    */
   @Override
@@ -134,8 +141,10 @@ public class Claw extends Subsystem {
   }
 
   /**
-   * Inside this function actuator OUTPUTS should be updated from data contained in the PeriodicIO
-   * class defined below. There should be little to no logic contained within this function, and no
+   * Inside this function actuator OUTPUTS should be updated from data contained
+   * in the PeriodicIO
+   * class defined below. There should be little to no logic contained within this
+   * function, and no
    * sensors should be read.
    */
   @Override
@@ -144,9 +153,12 @@ public class Claw extends Subsystem {
   }
 
   /**
-   * Inside this function telemetry should be output to smartdashboard. The data should be collected
-   * out of the PeriodicIO class instance defined below. There should be no sensor information read
-   * in this function nor any outputs made to actuators within this function. Only publish to
+   * Inside this function telemetry should be output to smartdashboard. The data
+   * should be collected
+   * out of the PeriodicIO class instance defined below. There should be no sensor
+   * information read
+   * in this function nor any outputs made to actuators within this function. Only
+   * publish to
    * smartdashboard here.
    */
   @Override
@@ -227,8 +239,7 @@ public class Claw extends Subsystem {
   public boolean isCoralAtHardStop() {
     return coral_debouncer_.calculate(
         isCoralMode()
-            && wheel_motor_.getSupplyCurrent().getValueAsDouble()
-                > ClawConstants.CORAL_CURRENT_THRESHOLD);
+            && wheel_motor_.getSupplyCurrent().getValueAsDouble() > ClawConstants.CORAL_CURRENT_THRESHOLD);
   }
 
   public ClawMode getClawMode() {
@@ -240,13 +251,20 @@ public class Claw extends Subsystem {
   }
 
   public class ClawPeriodicIo implements Logged {
-    @Log.File public double tof_distance = 0;
-    @Log.File public ClawMode claw_mode_ = ClawMode.IDLE;
-    @Log.File public boolean enable_blast_ = false;
-    @Log.File public GamePiece game_piece_ = GamePiece.CORAL;
-    @Log.File public double wheel_output_ = 0;
-    @Log.File public double current_output_ = 0;
-    @Log.File public boolean coral_present_ = false;
+    @Log.File
+    public double tof_distance = 0;
+    @Log.File
+    public ClawMode claw_mode_ = ClawMode.IDLE;
+    @Log.File
+    public boolean enable_blast_ = false;
+    @Log.File
+    public GamePiece game_piece_ = GamePiece.CORAL;
+    @Log.File
+    public double wheel_output_ = 0;
+    @Log.File
+    public double current_output_ = 0;
+    @Log.File
+    public boolean coral_present_ = false;
   }
 
   @Override

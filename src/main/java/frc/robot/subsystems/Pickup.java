@@ -4,69 +4,72 @@
 
 package frc.robot.subsystems;
 
+import static edu.wpi.first.units.Units.Amps;
+
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
-import com.ctre.phoenix6.controls.PositionVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.NeutralModeValue;
+import com.playingwithfusion.TimeOfFlight;
+import edu.wpi.first.math.filter.Debouncer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.Command;
 import frc.mw_lib.subsystem.Subsystem;
 import frc.mw_lib.util.Util;
 import frc.robot.Constants;
-import frc.robot.commands.SetDefaultPickup;
+import frc.robot.Constants.ClawConstants;
 import monologue.Annotations.Log;
 import monologue.Logged;
 
-public class Pickup extends Subsystem {
+public class Claw extends Subsystem {
 
-  private TalonFX intake_motor_;
-  private TalonFX pivot_motor_;
+  private TalonFX wheel_motor_;
+  private TalonFXConfiguration wheel_config_;
+  private TimeOfFlight tof_;
 
-  private TalonFXConfiguration config_;
-  private PositionVoltage pivot_request_;
+  public enum ClawMode {
+    SHOOT,
+    LOAD,
+    IDLE,
+    BLAST
+  }
 
-  public enum PickupMode {
-    INTAKE,
-    FLUSH_OUT,
-    STATION,
-    DEPLOYED
+  public enum GamePiece {
+    CORAL,
+    ALGAE
   }
 
   // Singleton pattern
-  private static Pickup pickup_instance_ = null;
+  private static Claw claw_instance_ = null;
 
-  public static Pickup getInstance() {
-    if (pickup_instance_ == null) {
-      pickup_instance_ = new Pickup();
+  private Debouncer coral_debouncer_ = new Debouncer(0.30, Debouncer.DebounceType.kBoth);
+  private Debouncer algae_debouncer_ = new Debouncer(0.25, Debouncer.DebounceType.kFalling);
+
+  public static Claw getInstance() {
+    if (claw_instance_ == null) {
+      claw_instance_ = new Claw();
     }
-    return pickup_instance_;
+    return claw_instance_;
   }
 
   /** Class Members */
-  private PickupPeriodicIo io_;
+  private ClawPeriodicIo io_;
 
-  private Pickup() {
+  private Claw() {
     // Create io object first in subsystem configuration
-    io_ = new PickupPeriodicIo();
+    io_ = new ClawPeriodicIo();
 
-    intake_motor_ = new TalonFX(Constants.PickupConstatns.INTAKE_ID);
-    pivot_motor_ = new TalonFX(Constants.PickupConstatns.PIVOT_ID);
+    tof_ = new TimeOfFlight(3);
+    wheel_motor_ = new TalonFX(ClawConstants.WHEEL_MOTOR_ID);
+    wheel_config_ = new TalonFXConfiguration();
+    wheel_config_.CurrentLimits.StatorCurrentLimit = ClawConstants.STATOR_CURRENT_LIMIT;
+    wheel_config_.CurrentLimits.StatorCurrentLimitEnable = true;
+    wheel_config_.MotorOutput.NeutralMode = NeutralModeValue.Brake;
+    wheel_config_.MotorOutput.Inverted = ClawConstants.WHEEL_MOTOR_INVERTED;
 
-    config_ = new TalonFXConfiguration();
-    config_.MotorOutput.NeutralMode = NeutralModeValue.Brake;
-    config_.Slot0 = Constants.PickupConstatns.PICKUP_GAINS;
+    wheel_motor_.getConfigurator().apply(wheel_config_);
 
-    intake_motor_.getConfigurator().apply(config_);
-    pivot_motor_.getConfigurator().apply(config_);
-
-    pivot_request_ = new PositionVoltage(0);
-
-    SmartDashboard.putData(
-        "Subsystems/Pickup/Zero Ground",
-        Commands.runOnce(() -> setPivotPosition(Constants.PickupConstatns.PIVOT_DEPLOYED_ANGLE)));
-    SmartDashboard.putData(
-        "Subsystems/Pickup/Zero Station",
-        Commands.runOnce(() -> setPivotPosition(Constants.PickupConstatns.PIVOT_STATION_ANGLE)));
+    // Call reset last in subsystem configuration
+    reset();
   }
 
   /**
@@ -77,7 +80,6 @@ public class Pickup extends Subsystem {
    */
   @Override
   public void reset() {
-    setDefaultCommand(new SetDefaultPickup());
   }
 
   /**
@@ -89,7 +91,9 @@ public class Pickup extends Subsystem {
    */
   @Override
   public void readPeriodicInputs(double timestamp) {
-    io_.current_pivot_angle = pivot_motor_.getPosition().getValueAsDouble();
+    io_.tof_distance = tof_.getRange();
+    io_.coral_present_ = io_.tof_distance < Constants.ClawConstants.TIME_OF_FLIGHT_DIST;
+    io_.current_output_ = wheel_motor_.getSupplyCurrent().getValue().in(Amps);
   }
 
   /**
@@ -101,26 +105,38 @@ public class Pickup extends Subsystem {
    */
   @Override
   public void updateLogic(double timestamp) {
-    switch (io_.current_mode_) {
-      case INTAKE:
-        io_.target_intake_speed_ = Constants.PickupConstatns.INTAKE_IN_SPEED;
-        io_.target_pivot_angle = Constants.PickupConstatns.PIVOT_DEPLOYED_ANGLE;
-        break;
-      case DEPLOYED:
-        io_.target_intake_speed_ = 0;
-        io_.target_pivot_angle = Constants.PickupConstatns.PIVOT_DEPLOYED_ANGLE;
-        break;
-      case FLUSH_OUT:
-        io_.target_intake_speed_ = Constants.PickupConstatns.INTAKE_OUT_SPEED;
-        io_.target_pivot_angle = Constants.PickupConstatns.PIVOT_DEPLOYED_ANGLE;
-        break;
-      case STATION:
-        io_.target_intake_speed_ = 0;
-        io_.target_pivot_angle = Constants.PickupConstatns.PIVOT_STATION_ANGLE;
-        break;
-      default:
-        io_.target_intake_speed_ = 0;
-        break;
+    if (io_.game_piece_ == GamePiece.CORAL) {
+      switch (io_.claw_mode_) {
+        case BLAST:
+          io_.wheel_output_ = ClawConstants.WHEEL_CORAL_BLAST_SPEED;
+          break;
+        case SHOOT:
+          io_.wheel_output_ = ClawConstants.WHEEL_CORAL_SHOOT_SPEED;
+          break;
+        case LOAD:
+          io_.wheel_output_ = ClawConstants.CORAL_LOAD_SPEED;
+          break;
+        case IDLE:
+        default:
+          io_.wheel_output_ = 0;
+          break;
+      }
+    } else {
+      switch (io_.claw_mode_) {
+        case BLAST:
+          io_.wheel_output_ = -ClawConstants.WHEEL_ALGAE_BLAST_SPEED;
+          break;
+        case SHOOT:
+          io_.wheel_output_ = -ClawConstants.WHEEL_ALGAE_SHOOT_SPEED;
+          break;
+        case LOAD:
+          io_.wheel_output_ = -ClawConstants.ALGAE_LOAD_SPEED;
+          break;
+        case IDLE:
+        default:
+          io_.wheel_output_ = ClawConstants.ALGAE_IDLE_SPEED;
+          break;
+      }
     }
   }
 
@@ -133,8 +149,7 @@ public class Pickup extends Subsystem {
    */
   @Override
   public void writePeriodicOutputs(double timestamp) {
-    intake_motor_.set(io_.target_intake_speed_);
-    pivot_motor_.setControl(pivot_request_.withPosition(io_.target_pivot_angle));
+    wheel_motor_.set(io_.wheel_output_);
   }
 
   /**
@@ -148,45 +163,108 @@ public class Pickup extends Subsystem {
    */
   @Override
   public void outputTelemetry(double timestamp) {
-    SmartDashboard.putString("Subsystems/Pickup/current_mode_", io_.current_mode_.toString());
-    SmartDashboard.putNumber("Subsystems/Pickup/current_pivot_angle", io_.current_pivot_angle);
+    SmartDashboard.putNumber("Subsystems/Claw/Tof_Distance", io_.tof_distance);
+    SmartDashboard.putBoolean("Subsystems/Claw/Sees_Coral", io_.coral_present_);
+    SmartDashboard.putString("Subsystems/Claw/Mode", io_.claw_mode_.toString());
+    SmartDashboard.putNumber("Subsystems/Claw/Current_Output", io_.current_output_);
+    SmartDashboard.putBoolean("Subsystems/Claw/Has Algae", hasAlgae());
+    SmartDashboard.putBoolean("Subsystems/Claw/Has Coral", hasCoral());
+    SmartDashboard.putBoolean("Subsystems/Claw/CoralPresent", isCoralPresent());
+    SmartDashboard.putString(
+        "Subsystems/Claw/Game Piece Mode",
+        (io_.game_piece_ == GamePiece.CORAL)
+            ? Constants.ClawConstants.CORAL_COLOR
+            : Constants.ClawConstants.ALGAE_COLOR);
   }
 
   /**
-   * Sets the current mode of the Pickup
+   * Set the mode of the claw
    *
-   * @param target_mode new mode that is being set
+   * @param claw_mode the new mode to be set
    */
-  public void setPickupMode(PickupMode target_mode) {
-    io_.current_mode_ = target_mode;
+  public void setClawMode(ClawMode claw_mode) {
+    if (io_.enable_blast_ && claw_mode == ClawMode.SHOOT) {
+      io_.claw_mode_ = ClawMode.BLAST;
+    } else {
+      io_.claw_mode_ = claw_mode;
+    }
   }
 
-  public boolean isAtTarget() {
-    return Util.epislonEquals(
-        io_.current_pivot_angle, io_.target_pivot_angle, Constants.PickupConstatns.PIVOT_THRESHOLD);
+  public void enableBlastMode() {
+    io_.enable_blast_ = true;
   }
 
-  /**
-   * @return the current mode of the Pickup
-   */
-  public PickupMode getPickupMode() {
-    return io_.current_mode_;
+  public void disableBlastMode() {
+    io_.enable_blast_ = false;
   }
 
-  /** Resets to the zero position of the pivot motor */
-  public void setPivotPosition(double value) {
-    pivot_motor_.setPosition(value);
+  public void setGamePiece(GamePiece gamePiece) {
+    io_.game_piece_ = gamePiece;
   }
 
-  public class PickupPeriodicIo implements Logged {
+  public GamePiece getGamePieceMode() {
+    return io_.game_piece_;
+  }
+
+  public Command toggleGamePieceCommand() {
+    return this.runOnce(
+        () -> {
+          if (io_.game_piece_ == GamePiece.CORAL) {
+            setGamePiece(GamePiece.ALGAE);
+          } else {
+            setGamePiece(GamePiece.CORAL);
+          }
+        });
+  }
+
+  public boolean isCoralMode() {
+    return io_.game_piece_ == GamePiece.CORAL;
+  }
+
+  public boolean isAlgaeMode() {
+    return io_.game_piece_ == GamePiece.ALGAE;
+  }
+
+  public boolean hasAlgae() {
+    return algae_debouncer_.calculate(
+        isAlgaeMode()
+            && wheel_motor_.getSupplyCurrent().getValueAsDouble() > 0
+            && Util.epislonEquals(wheel_motor_.getVelocity().getValueAsDouble(), 0, 2.5));
+  }
+
+  public boolean isCoralPresent() {
+    return io_.coral_present_;
+  }
+
+  public boolean isCoralAtHardStop() {
+    return coral_debouncer_.calculate(
+        isCoralMode()
+            && wheel_motor_.getSupplyCurrent().getValueAsDouble() > ClawConstants.CORAL_CURRENT_THRESHOLD);
+  }
+
+  public ClawMode getClawMode() {
+    return io_.claw_mode_;
+  }
+
+  public boolean hasCoral() {
+    return isCoralPresent() && isCoralAtHardStop();
+  }
+
+  public class ClawPeriodicIo implements Logged {
     @Log.File
-    public PickupMode current_mode_ = PickupMode.DEPLOYED;
+    public double tof_distance = 0;
     @Log.File
-    public double target_intake_speed_ = 0;
+    public ClawMode claw_mode_ = ClawMode.IDLE;
     @Log.File
-    public double current_pivot_angle = 0;
+    public boolean enable_blast_ = false;
     @Log.File
-    public double target_pivot_angle = 0;
+    public GamePiece game_piece_ = GamePiece.CORAL;
+    @Log.File
+    public double wheel_output_ = 0;
+    @Log.File
+    public double current_output_ = 0;
+    @Log.File
+    public boolean coral_present_ = false;
   }
 
   @Override
