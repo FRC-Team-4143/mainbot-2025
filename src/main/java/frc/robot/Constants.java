@@ -57,10 +57,17 @@ public final class Constants {
 
         public class DrivetrainConstants {
 
+                <<<<<<<HEAD
                 // Can bus names for each of the swerve modules
                 public static final String[] MODULE_CANBUS_NAME = {
                                 "CANivore", "CANivore", "CANivore", "CANivore"
-                };
+                };=======
+                // Can bus names for each of the swerve modules
+                public static final String[] MODULE_CANBUS_NAME = {
+                                "CANivore", "CANivore", "CANivore", "CANivore"
+                };>>>>>>>
+
+        d31e34e (Nathan's random changes)
 
                 // Can bus ID for the pigeon
                 public static final int PIGEON2_ID = 0;
