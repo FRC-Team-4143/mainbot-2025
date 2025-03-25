@@ -5,17 +5,14 @@
 package frc.robot.subsystems;
 
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
-import com.ctre.phoenix6.controls.MotionMagicVoltage;
 import com.ctre.phoenix6.controls.PositionVoltage;
-import com.ctre.phoenix6.controls.VoltageOut;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import frc.mw_lib.controls.TalonFXTuner;
 import frc.mw_lib.subsystem.Subsystem;
 import frc.mw_lib.util.Util;
 import frc.robot.Constants;
-import frc.robot.OI;
+import frc.robot.commands.SetDefaultPickup;
 import monologue.Annotations.Log;
 import monologue.Logged;
 
@@ -26,12 +23,12 @@ public class Pickup extends Subsystem {
 
   private TalonFXConfiguration config_;
   private PositionVoltage pivot_request_;
-  private TalonFXTuner pivot_tuner_;
 
   public enum PickupMode {
     RETRACTED,
     INTAKE,
     FLUSH_OUT,
+    STATION,
     DEPLOYED
   }
 
@@ -64,23 +61,26 @@ public class Pickup extends Subsystem {
 
     pivot_request_ = new PositionVoltage(0);
 
-    // pivot_tuner_ = new TalonFXTuner(pivot_motor_, "Pivot", this);
-    // bindTuner(pivot_tuner_, 5, 10);
-
     // Call reset last in subsystem configuration
     reset();
   }
 
   /**
-   * This function should be logic and code to fully reset your subsystem. This is called during
-   * initialization, and should handle I/O configuration and initializing data members.
+   * This function should be logic and code to fully reset your subsystem. This is
+   * called during
+   * initialization, and should handle I/O configuration and initializing data
+   * members.
    */
   @Override
-  public void reset() {}
+  public void reset() {
+    setDefaultCommand(new SetDefaultPickup());
+  }
 
   /**
-   * Inside this function, all of the SENSORS should be read into variables stored in the PeriodicIO
-   * class defined below. There should be no calls to output to actuators, or any logic within this
+   * Inside this function, all of the SENSORS should be read into variables stored
+   * in the PeriodicIO
+   * class defined below. There should be no calls to output to actuators, or any
+   * logic within this
    * function.
    */
   @Override
@@ -89,8 +89,10 @@ public class Pickup extends Subsystem {
   }
 
   /**
-   * Inside this function, all of the LOGIC should compute updates to output variables in the
-   * PeriodicIO class defined below. There should be no calls to read from sensors or write to
+   * Inside this function, all of the LOGIC should compute updates to output
+   * variables in the
+   * PeriodicIO class defined below. There should be no calls to read from sensors
+   * or write to
    * actuators in this function.
    */
   @Override
@@ -112,6 +114,10 @@ public class Pickup extends Subsystem {
         io_.target_intake_speed_ = Constants.PickupConstatns.INTAKE_OUT_SPEED;
         io_.target_pivot_angle = Constants.PickupConstatns.PIVOT_DEPLOYED_ANGLE;
         break;
+      case STATION:
+        io_.target_intake_speed_ = 0;
+        io_.target_pivot_angle = Constants.PickupConstatns.PIVOT_STATION_ANGLE;
+        break;
       default:
         io_.target_intake_speed_ = 0;
         break;
@@ -119,8 +125,10 @@ public class Pickup extends Subsystem {
   }
 
   /**
-   * Inside this function actuator OUTPUTS should be updated from data contained in the PeriodicIO
-   * class defined below. There should be little to no logic contained within this function, and no
+   * Inside this function actuator OUTPUTS should be updated from data contained
+   * in the PeriodicIO
+   * class defined below. There should be little to no logic contained within this
+   * function, and no
    * sensors should be read.
    */
   @Override
@@ -130,9 +138,12 @@ public class Pickup extends Subsystem {
   }
 
   /**
-   * Inside this function telemetry should be output to smartdashboard. The data should be collected
-   * out of the PeriodicIO class instance defined below. There should be no sensor information read
-   * in this function nor any outputs made to actuators within this function. Only publish to
+   * Inside this function telemetry should be output to smartdashboard. The data
+   * should be collected
+   * out of the PeriodicIO class instance defined below. There should be no sensor
+   * information read
+   * in this function nor any outputs made to actuators within this function. Only
+   * publish to
    * smartdashboard here.
    */
   @Override
@@ -148,15 +159,6 @@ public class Pickup extends Subsystem {
    */
   public void setPickupMode(PickupMode target_mode) {
     io_.current_mode_ = target_mode;
-  }
-
-  /** */
-  public void togglePickupMode() {
-    if (io_.current_mode_ == PickupMode.INTAKE) {
-      io_.current_mode_ = PickupMode.RETRACTED;
-    } else if (io_.current_mode_ == PickupMode.RETRACTED) {
-      io_.current_mode_ = PickupMode.INTAKE;
-    }
   }
 
   public boolean isAtTarget() {
@@ -176,22 +178,15 @@ public class Pickup extends Subsystem {
     pivot_motor_.setPosition(0);
   }
 
-  public void bindTuner(TalonFXTuner tuner, double pos1, double pos2) {
-    tuner.bindSetpoint(new MotionMagicVoltage(pos1), OI.getDriverJoystickAButtonTrigger());
-    tuner.bindSetpoint(new MotionMagicVoltage(pos2), OI.getDriverJoystickYButtonTrigger());
-    tuner.bindSetpoint(new VoltageOut(-1), OI.getDriverJoystickXButtonTrigger());
-    tuner.bindSetpoint(new VoltageOut(1), OI.getDriverJoystickBButtonTrigger());
-    tuner.bindDynamicForward(OI.getOperatorJoystickAButtonTrigger());
-    tuner.bindDynamicReverse(OI.getOperatorJoystickBButtonTrigger());
-    tuner.bindQuasistaticForward(OI.getOperatorJoystickXButtonTrigger());
-    tuner.bindQuasistaticReverse(OI.getOperatorJoystickYButtonTrigger());
-  }
-
   public class PickupPeriodicIo implements Logged {
-    @Log.File public PickupMode current_mode_ = PickupMode.DEPLOYED;
-    @Log.File public double target_intake_speed_ = 0;
-    @Log.File public double current_pivot_angle = 0;
-    @Log.File public double target_pivot_angle = 0;
+    @Log.File
+    public PickupMode current_mode_ = PickupMode.DEPLOYED;
+    @Log.File
+    public double target_intake_speed_ = 0;
+    @Log.File
+    public double current_pivot_angle = 0;
+    @Log.File
+    public double target_pivot_angle = 0;
   }
 
   @Override
