@@ -25,6 +25,8 @@ public class IntakeHandoff extends Command {
     elevator_ = Elevator.getInstance();
     claw_ = Claw.getInstance();
     addRequirements(pickup_);
+    addRequirements(claw_);
+    addRequirements(elevator_);
     setName(this.getClass().getSimpleName());
   }
 
