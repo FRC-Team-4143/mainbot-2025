@@ -130,7 +130,7 @@ public class GameStateManager extends Subsystem {
         SwerveDrivetrain.getInstance().restoreDefaultDriveMode();
         if (Claw.getInstance().isCoralMode()) {
           Elevator.getInstance().setSpeedLimit(SpeedLimit.CORAL);
-          Elevator.getInstance().setTarget(TargetType.STOW);
+          Elevator.getInstance().setTarget(TargetType.CORAL_INTAKE);
         } else {
           Elevator.getInstance().setSpeedLimit(SpeedLimit.ALGAE);
           Elevator.getInstance().setTarget(TargetType.ALGAE_STOW);
@@ -297,7 +297,7 @@ public class GameStateManager extends Subsystem {
         break;
       case TURTLE:
       default:
-        Elevator.getInstance().setTarget(TargetType.STOW);
+        Elevator.getInstance().setTarget(TargetType.CORAL_INTAKE);
         break;
       case TELEOP_CONTROL:
         break;

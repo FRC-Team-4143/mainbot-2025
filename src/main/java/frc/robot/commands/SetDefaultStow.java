@@ -27,19 +27,19 @@ public class SetDefaultStow extends Command {
       if (Claw.getInstance().isAlgaeMode()) {
         if (FieldRegions.PROCESSOR_DEAD_REGION.contains(
             PoseEstimator.getInstance().getRobotPose())) {
-          Elevator.getInstance().setTarget(TargetType.STOW);
+          Elevator.getInstance().setTarget(TargetType.CORAL_INTAKE);
         } else {
           Elevator.getInstance().setTarget(TargetType.ALGAE_STOW);
         }
       } else {
         if (OI.use_vision.getAsBoolean()) {
           if (PoseEstimator.getInstance().isStationZone()) {
-            Elevator.getInstance().setTarget(TargetType.STOW);
+            Elevator.getInstance().setTarget(TargetType.CORAL_INTAKE);
           } else {
             Elevator.getInstance().setTarget(TargetType.CORAL_STOW);
           }
         } else {
-          Elevator.getInstance().setTarget(TargetType.STOW);
+          Elevator.getInstance().setTarget(TargetType.CORAL_INTAKE);
         }
       }
     } else {

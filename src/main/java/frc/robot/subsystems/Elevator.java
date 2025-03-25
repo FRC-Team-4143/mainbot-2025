@@ -455,7 +455,7 @@ public class Elevator extends Subsystem {
   }
 
   public void stowElevator() {
-    setTarget(TargetType.STOW);
+    setTarget(TargetType.CORAL_INTAKE);
   }
 
   public void setSpeedLimit(SpeedLimit limit) {
@@ -505,8 +505,8 @@ public class Elevator extends Subsystem {
     @Log.File public double current_elevator_height_ = 0;
     @Log.File public double target_elevator_height_ = ElevatorConstants.ELEVATOR_HEIGHT_PIVOT_MIN;
     @Log.File public double current_arm_angle_ = 0;
-    @Log.File public Rotation2d target_arm_angle_ = TargetType.STOW.getTarget().getAngle();
-    @Log.File public TargetType target_type_ = TargetType.STOW;
+    @Log.File public Rotation2d target_arm_angle_ = TargetType.CORAL_INTAKE.getTarget().getAngle();
+    @Log.File public TargetType target_type_ = TargetType.CORAL_INTAKE;
     @Log.File public ArrayList<TargetData> intermediate_targets_ = new ArrayList<>();
     @Log.File public double elevator_master_rotations_ = 0;
     @Log.File public double elevator_follower_rotations_ = 0;
