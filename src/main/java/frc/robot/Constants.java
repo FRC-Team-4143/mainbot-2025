@@ -54,7 +54,9 @@ public final class Constants {
   public class DrivetrainConstants {
 
     // Can bus names for each of the swerve modules
-    public static final String[] MODULE_CANBUS_NAME = {"rio", "rio", "rio", "rio"};
+    public static final String[] MODULE_CANBUS_NAME = {
+      "CANivore", "CANivore", "CANivore", "CANivore"
+    };
 
     // Can bus ID for the pigeon
     public static final int PIGEON2_ID = 0;
@@ -197,7 +199,7 @@ public final class Constants {
   }
 
   public static final class ClawConstants {
-    public static final double TIME_OF_FLIGHT_DIST = 127;
+    public static final double TIME_OF_FLIGHT_DIST = 50;
     public static final int WHEEL_MOTOR_ID = 11;
     public static final double WHEEL_CORAL_SHOOT_SPEED = 0.3;
     public static final double WHEEL_CORAL_BLAST_SPEED = 0.6;

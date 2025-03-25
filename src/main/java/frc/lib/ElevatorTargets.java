@@ -55,6 +55,12 @@ public class ElevatorTargets {
           Rotation2d.fromDegrees(90),
           ControlType.PIVOT);
 
+  private static final TargetData CORAL_STOW_ENTER =
+      new TargetData(
+          ElevatorConstants.ELEVATOR_HEIGHT_PIVOT_SAFETY + Units.inchesToMeters(12),
+          Rotation2d.fromDegrees(90),
+          ControlType.PIVOT);
+
   public enum TargetType {
     SAFETY(
         new TargetData(
@@ -108,17 +114,17 @@ public class ElevatorTargets {
         Optional.empty()),
     CORAL_INTAKE(
         new TargetData(
-            ElevatorConstants.ELEVATOR_HEIGHT_PIVOT_SAFETY + Units.inchesToMeters(0),
-            Rotation2d.fromDegrees(-120),
+            0.7891225351316538 + Units.inchesToMeters(1),
+            Rotation2d.fromDegrees(-112),
             ControlType.PIVOT),
         Optional.of(CURRENT_STOW_INT),
         Optional.of(CURRENT_STOW_INT)),
     CORAL_STOW(
         new TargetData(
-            ElevatorConstants.ELEVATOR_HEIGHT_PIVOT_SAFETY + Units.inchesToMeters(0),
+            ElevatorConstants.ELEVATOR_HEIGHT_PIVOT_MIN,
             Rotation2d.fromDegrees(90),
             ControlType.PIVOT),
-        Optional.empty(),
+        Optional.of(CORAL_STOW_ENTER),
         Optional.empty()),
     ALGAE_LOW(
         new TargetData(

@@ -60,9 +60,6 @@ public class Pickup extends Subsystem {
     pivot_motor_.getConfigurator().apply(config_);
 
     pivot_request_ = new PositionVoltage(0);
-
-    // Call reset last in subsystem configuration
-    reset();
   }
 
   /**
