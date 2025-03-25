@@ -66,10 +66,8 @@ public class Pickup extends Subsystem {
   }
 
   /**
-   * This function should be logic and code to fully reset your subsystem. This is
-   * called during
-   * initialization, and should handle I/O configuration and initializing data
-   * members.
+   * This function should be logic and code to fully reset your subsystem. This is called during
+   * initialization, and should handle I/O configuration and initializing data members.
    */
   @Override
   public void reset() {
@@ -77,10 +75,8 @@ public class Pickup extends Subsystem {
   }
 
   /**
-   * Inside this function, all of the SENSORS should be read into variables stored
-   * in the PeriodicIO
-   * class defined below. There should be no calls to output to actuators, or any
-   * logic within this
+   * Inside this function, all of the SENSORS should be read into variables stored in the PeriodicIO
+   * class defined below. There should be no calls to output to actuators, or any logic within this
    * function.
    */
   @Override
@@ -89,10 +85,8 @@ public class Pickup extends Subsystem {
   }
 
   /**
-   * Inside this function, all of the LOGIC should compute updates to output
-   * variables in the
-   * PeriodicIO class defined below. There should be no calls to read from sensors
-   * or write to
+   * Inside this function, all of the LOGIC should compute updates to output variables in the
+   * PeriodicIO class defined below. There should be no calls to read from sensors or write to
    * actuators in this function.
    */
   @Override
@@ -125,10 +119,8 @@ public class Pickup extends Subsystem {
   }
 
   /**
-   * Inside this function actuator OUTPUTS should be updated from data contained
-   * in the PeriodicIO
-   * class defined below. There should be little to no logic contained within this
-   * function, and no
+   * Inside this function actuator OUTPUTS should be updated from data contained in the PeriodicIO
+   * class defined below. There should be little to no logic contained within this function, and no
    * sensors should be read.
    */
   @Override
@@ -138,12 +130,9 @@ public class Pickup extends Subsystem {
   }
 
   /**
-   * Inside this function telemetry should be output to smartdashboard. The data
-   * should be collected
-   * out of the PeriodicIO class instance defined below. There should be no sensor
-   * information read
-   * in this function nor any outputs made to actuators within this function. Only
-   * publish to
+   * Inside this function telemetry should be output to smartdashboard. The data should be collected
+   * out of the PeriodicIO class instance defined below. There should be no sensor information read
+   * in this function nor any outputs made to actuators within this function. Only publish to
    * smartdashboard here.
    */
   @Override
@@ -179,14 +168,10 @@ public class Pickup extends Subsystem {
   }
 
   public class PickupPeriodicIo implements Logged {
-    @Log.File
-    public PickupMode current_mode_ = PickupMode.DEPLOYED;
-    @Log.File
-    public double target_intake_speed_ = 0;
-    @Log.File
-    public double current_pivot_angle = 0;
-    @Log.File
-    public double target_pivot_angle = 0;
+    @Log.File public PickupMode current_mode_ = PickupMode.DEPLOYED;
+    @Log.File public double target_intake_speed_ = 0;
+    @Log.File public double current_pivot_angle = 0;
+    @Log.File public double target_pivot_angle = 0;
   }
 
   @Override

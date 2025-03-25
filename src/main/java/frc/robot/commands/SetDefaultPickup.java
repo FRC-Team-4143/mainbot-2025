@@ -4,11 +4,11 @@ import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.OI;
 import frc.robot.OI.IntakePreference;
 import frc.robot.subsystems.Claw;
+import frc.robot.subsystems.Claw.GamePiece;
 import frc.robot.subsystems.Climber;
 import frc.robot.subsystems.Climber.ClimberMode;
-import frc.robot.subsystems.Pickup.PickupMode;
 import frc.robot.subsystems.Pickup;
-import frc.robot.subsystems.Claw.GamePiece;
+import frc.robot.subsystems.Pickup.PickupMode;
 
 public class SetDefaultPickup extends Command {
   public SetDefaultPickup() {
@@ -18,8 +18,7 @@ public class SetDefaultPickup extends Command {
 
   // Called when the command is initially scheduled.
   @Override
-  public void initialize() {
-  }
+  public void initialize() {}
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
@@ -42,8 +41,7 @@ public class SetDefaultPickup extends Command {
 
   // Called once the command ends or is interrupted.
   @Override
-  public void end(boolean interrupted) {
-  }
+  public void end(boolean interrupted) {}
 
   // Returns true when the command should end.
   @Override

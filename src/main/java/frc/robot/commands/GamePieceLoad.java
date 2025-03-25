@@ -12,10 +12,7 @@ public class GamePieceLoad extends NoReqConditionalCommand {
   /** Creates a new ElevatorL4Target. */
   public GamePieceLoad() {
     // Use addRequirements() here to declare subsystem dependencies.
-    super(
-        new CoralIntake(),
-        new AlgaeLoad(),
-        Claw.getInstance()::isCoralMode);
+    super(new CoralIntake(), new AlgaeLoad(), Claw.getInstance()::isCoralMode);
     setName(this.getClass().getSimpleName());
   }
 }
