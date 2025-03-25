@@ -18,7 +18,7 @@ import frc.robot.commands.ElevatorL4Target;
 import frc.robot.commands.GamePieceEject;
 import frc.robot.commands.GamePieceLoad;
 import frc.robot.commands.OverrideLoad;
-import frc.robot.commands.IntakeFeed;
+import frc.robot.commands.IntakeHandoff;
 import frc.robot.subsystems.Claw;
 import frc.robot.subsystems.Climber;
 import frc.robot.subsystems.Elevator;
@@ -174,7 +174,7 @@ public abstract class OI {
         .onTrue(
             Commands.runOnce(() -> Elevator.getInstance().setOffset(OffsetType.ELEVATOR_UP))
                 .ignoringDisable(true));
-    driver_controller_.rightBumper().whileTrue(new IntakeFeed());
+    driver_controller_.rightBumper().whileTrue(new IntakeHandoff());
     driver_controller_
         .b()
         .whileTrue(

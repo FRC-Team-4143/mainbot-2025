@@ -10,7 +10,6 @@ import com.ctre.phoenix6.controls.PositionVoltage;
 import com.ctre.phoenix6.controls.VoltageOut;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.NeutralModeValue;
-import com.playingwithfusion.TimeOfFlight;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.mw_lib.controls.TalonFXTuner;
 import frc.mw_lib.subsystem.Subsystem;
@@ -28,8 +27,6 @@ public class Pickup extends Subsystem {
   private TalonFXConfiguration config_;
   private PositionVoltage pivot_request_;
   private TalonFXTuner pivot_tuner_;
-
-  private TimeOfFlight tof_;
 
   public enum PickupMode {
     RETRACTED,
@@ -57,7 +54,6 @@ public class Pickup extends Subsystem {
 
     intake_motor_ = new TalonFX(Constants.PickupConstatns.INTAKE_ID);
     pivot_motor_ = new TalonFX(Constants.PickupConstatns.PIVOT_ID);
-    tof_ = new TimeOfFlight(Constants.PickupConstatns.TIME_OF_FLIGHT_ID);
 
     config_ = new TalonFXConfiguration();
     config_.MotorOutput.NeutralMode = NeutralModeValue.Brake;
@@ -89,9 +85,7 @@ public class Pickup extends Subsystem {
    */
   @Override
   public void readPeriodicInputs(double timestamp) {
-    io_.current_tof_dist = tof_.getRange();
     io_.current_pivot_angle = pivot_motor_.getPosition().getValueAsDouble();
-    io_.has_coral = io_.current_tof_dist < Constants.PickupConstatns.TIME_OF_FLIGHT_DIST;
   }
 
   /**
@@ -145,7 +139,6 @@ public class Pickup extends Subsystem {
   public void outputTelemetry(double timestamp) {
     SmartDashboard.putString("Subsystems/Pickup/current_mode_", io_.current_mode_.toString());
     SmartDashboard.putNumber("Subsystems/Pickup/current_pivot_angle", io_.current_pivot_angle);
-    SmartDashboard.putBoolean("Subsystems/Pickup/has_coral", io_.has_coral);
   }
 
   /**
@@ -194,17 +187,11 @@ public class Pickup extends Subsystem {
     tuner.bindQuasistaticReverse(OI.getOperatorJoystickYButtonTrigger());
   }
 
-  public boolean hasCoral() {
-    return io_.has_coral;
-  }
-
   public class PickupPeriodicIo implements Logged {
     @Log.File public PickupMode current_mode_ = PickupMode.DEPLOYED;
     @Log.File public double target_intake_speed_ = 0;
     @Log.File public double current_pivot_angle = 0;
     @Log.File public double target_pivot_angle = 0;
-    @Log.File public double current_tof_dist = 0;
-    @Log.File public boolean has_coral = false;
   }
 
   @Override

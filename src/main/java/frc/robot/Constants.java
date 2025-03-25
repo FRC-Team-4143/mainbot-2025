@@ -197,6 +197,7 @@ public final class Constants {
   }
 
   public static final class ClawConstants {
+    public static final double TIME_OF_FLIGHT_DIST = 127;
     public static final int WHEEL_MOTOR_ID = 11;
     public static final double WHEEL_CORAL_SHOOT_SPEED = 0.3;
     public static final double WHEEL_CORAL_BLAST_SPEED = 0.6;
@@ -318,7 +319,6 @@ public final class Constants {
     public static final int TIME_OF_FLIGHT_ID = 3;
     public static final int INTAKE_ID = 41;
     public static final int PIVOT_ID = 40;
-    public static final double TIME_OF_FLIGHT_DIST = 127;
     public static final double PIVOT_DEPLOYED_ANGLE = 0;
     public static final double PIVOT_RETRACTED_ANGLE = -20;
     public static final double PIVOT_THRESHOLD = 0.5;

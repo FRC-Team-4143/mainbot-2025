@@ -41,7 +41,7 @@ public class CoralLoad extends LazyCommand {
   @Override
   public void end(boolean interrupted) {
     Claw.getInstance().setClawMode(ClawMode.IDLE);
-    Elevator.getInstance().setTarget(TargetType.STOW);
+    Elevator.getInstance().setTarget(TargetType.CORAL_INTAKE);
   }
 
   // unique to lazy command and serves the same purpose as "isFinished()" {*THE
