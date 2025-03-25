@@ -96,7 +96,7 @@
         "CONTROLLER_G": 0.43,
         "HEIGHT_PIVOT_MIN": 28.5,
         "HEIGHT_PIVOT_MAX": 80.75,
-        "ELEVATOR_GEAR_RATIO":4
+        "ELEVATOR_GEAR_RATIO":5
     },
     "arm": {
         "CONTROLLER_P": 40.0,
@@ -110,17 +110,7 @@
         "DEPTH_CORAL_POCKET":10
     },
     "vision": {
-        "camera0": {
-            "NAME": "PC_Camera",
-            "location": {
-                "X": -6.149,
-                "Y": -11.127,
-                "Z": 8.563,
-                "ROLL": 0,
-                "PITCH": -9.656,
-                "YAW": 15
-            }
-        }
+
     }
     ,
     "auto": {

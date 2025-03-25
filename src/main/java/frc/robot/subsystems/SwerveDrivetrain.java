@@ -709,7 +709,7 @@ public class SwerveDrivetrain extends Subsystem {
     @Log.File public Pose2d target_pose_ = new Pose2d();
 
     @Log.File
-    public TightRope tight_rope_ = new TightRope(new Pose2d(), new Pose2d(), "Defalut drivetrain");
+    public TightRope tight_rope_ = new TightRope(new Pose2d(), new Pose2d(), "Defalut Drivetrain");
 
     @Log.File
     public SwerveSample target_sample_ = new SwerveSample(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, null, null);
