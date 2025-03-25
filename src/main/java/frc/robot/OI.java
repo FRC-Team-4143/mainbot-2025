@@ -181,14 +181,8 @@ public abstract class OI {
                 .ignoringDisable(true));
     driver_controller_.rightBumper().whileTrue(new IntakeHandoff());
     driver_controller_
-        .b()
-        .whileTrue(
-            Commands.startEnd(
-                () -> Pickup.getInstance().setPickupMode(PickupMode.FLUSH_OUT),
-                () -> Pickup.getInstance().setPickupMode(PickupMode.DEPLOYED)));
-    driver_controller_
-        .x()
-        .onTrue(Commands.runOnce(() -> Pickup.getInstance().setPickupMode(PickupMode.RETRACTED)));
+        .a()
+        .onTrue(Commands.runOnce(() -> toggleIntakePreference()));
     // Manual Adjust Elevator Setpoint Down
     operator_controller_
         .povDown()
