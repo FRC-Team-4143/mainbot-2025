@@ -99,10 +99,10 @@ public class Elevator extends Subsystem {
 
     // Hardware
     elevator_limit_switch_ = new DigitalInput(ElevatorConstants.ELEVATOR_LIMIT_SWITCH_PORT_NUMBER);
-    elevator_master_ = new TalonFX(ElevatorConstants.ELEVATOR_MASTER_ID, "CANivore");
-    elevator_follower_ = new TalonFX(ElevatorConstants.ELEVATOR_FOLLOWER_ID, "CANivore");
-    arm_motor_ = new TalonFX(ArmConstants.ARM_MOTOR_ID, "CANivore");
-    arm_encoder_ = new CANcoder(ArmConstants.ARM_ENCODER_ID, "CANivore");
+    elevator_master_ = new TalonFX(ElevatorConstants.ELEVATOR_MASTER_ID);
+    elevator_follower_ = new TalonFX(ElevatorConstants.ELEVATOR_FOLLOWER_ID);
+    arm_motor_ = new TalonFX(ArmConstants.ARM_MOTOR_ID);
+    arm_encoder_ = new CANcoder(ArmConstants.ARM_ENCODER_ID);
 
     // Elevator Config
     elevator_config_ = new TalonFXConfiguration();
@@ -288,7 +288,7 @@ public class Elevator extends Subsystem {
     SmartDashboard.putString("Subsystems/Arm/Control Mode", io_.current_control_mode_.toString());
     SmartDashboard.putNumber(
         "Subsystems/Arm/Current Angle", Units.radiansToDegrees(io_.current_arm_angle_));
-    SmartDashboard.putNumber("Subsystems/Arm/Target Angle", current_target.getAngle().getRadians());
+    SmartDashboard.putNumber("Subsystems/Arm/Target Angle", current_target.getAngle().getDegrees());
     SmartDashboard.putNumber(
         "Subsystems/Arm/Current Height",
         kinematics_.effectorZ(io_.current_elevator_height_, io_.current_arm_angle_));
@@ -301,6 +301,7 @@ public class Elevator extends Subsystem {
         "Subsystems/Arm/Manual Offset", current_target.getAngleOffset().getDegrees());
     SmartDashboard.putNumber(
         "Subsystems/Elevator/Intermediate Count", io_.intermediate_targets_.size());
+    SmartDashboard.putString("Subsystems/Elevator/Target", io_.target_type_.toString());
     updateMechanism();
   }
 

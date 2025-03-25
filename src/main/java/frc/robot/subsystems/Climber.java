@@ -67,7 +67,7 @@ public class Climber extends RemovableSubsystem {
     io_ = new ClimberPeriodicIo();
 
     if (isEnabled()) {
-      strap_motor_ = new TalonFX(Constants.ClimberConstants.STRAP_ID);
+      strap_motor_ = new TalonFX(Constants.ClimberConstants.STRAP_ID, "CANivore");
       prong_motor_ = new Spark(Constants.ClimberConstants.PRONG_ID);
       prong_motor_.setInverted(true);
       arm_motor_ = new Spark(Constants.ClimberConstants.ARM_ID);

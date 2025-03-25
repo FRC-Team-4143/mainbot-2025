@@ -35,7 +35,7 @@ public class SetDefaultStow extends Command {
         }
       } else {
         // Coral
-        if (Claw.getInstance().hasCoral()) {
+        if (Claw.getInstance().isCoralPresent()) {
           // Have Coral
           Elevator.getInstance().setTarget(TargetType.CORAL_STOW);
         } else {
