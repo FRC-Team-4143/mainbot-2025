@@ -12,7 +12,8 @@ import frc.robot.OI;
 public class CoralIntake extends NoReqConditionalCommand {
 
   public CoralIntake() {
-    super(new ConditionalCommand(new CoralStation(), new CoralLoad(), OI.use_vision),
+    super(
+        new ConditionalCommand(new CoralStation(), new CoralLoad(), OI.use_vision),
         new IntakeHandoff(),
         OI::preferStationIntake);
     setName(this.getClass().getSimpleName());

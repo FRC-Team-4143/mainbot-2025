@@ -42,6 +42,12 @@ public abstract class OI {
   private static Trigger driver_pov_active_ = new Trigger(pov_is_present_);
   public static BooleanSupplier use_vision =
       () -> SmartDashboard.getBoolean("Vision/Use Vision Features", true);
+  public static IntakePreference intake_preference = IntakePreference.GROUND;
+
+  public enum IntakePreference {
+    STATION,
+    GROUND
+  }
 
   public static void configureBindings() {
     SmartDashboard.putData("CommandScheduler", CommandScheduler.getInstance());
@@ -160,12 +166,12 @@ public abstract class OI {
                 .ignoringDisable(true));
 
     // Set GSM Target Column Right
-    // operator_controller_
-    // .rightBumper()
-    // .onTrue(
-    // Commands.runOnce(
-    // () -> GameStateManager.getInstance().setScoringColum(Column.RIGHT, true))
-    // .ignoringDisable(true));
+    operator_controller_
+        .rightBumper()
+        .onTrue(
+            Commands.runOnce(
+                    () -> GameStateManager.getInstance().setScoringColum(Column.RIGHT, true))
+                .ignoringDisable(true));
 
     // Manual Adjust Elevator Setpoint Up
     operator_controller_
@@ -173,7 +179,9 @@ public abstract class OI {
         .onTrue(
             Commands.runOnce(() -> Elevator.getInstance().setOffset(OffsetType.ELEVATOR_UP))
                 .ignoringDisable(true));
-    driver_controller_.rightBumper().whileTrue(new IntakeFeed());
+
+    
+
     driver_controller_
         .b()
         .whileTrue(
@@ -201,6 +209,7 @@ public abstract class OI {
         .onTrue(
             Commands.runOnce(() -> Elevator.getInstance().setOffset(OffsetType.ARM_CW))
                 .ignoringDisable(true));
+                
     // Manual Override for loading
     operator_controller_.leftTrigger().whileTrue(new OverrideLoad());
 
@@ -224,6 +233,18 @@ public abstract class OI {
     double output = val * val;
     output = Math.copySign(output, val);
     return val;
+  }
+
+  public static void toggleIntakePreference() {
+    if (intake_preference == IntakePreference.GROUND) {
+      intake_preference = IntakePreference.STATION;
+    } else {
+      intake_preference = IntakePreference.GROUND;
+    }
+  }
+
+  public static boolean preferStationIntake() {
+    return intake_preference == IntakePreference.STATION;
   }
 
   /**
