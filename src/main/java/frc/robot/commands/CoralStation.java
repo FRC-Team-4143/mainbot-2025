@@ -72,7 +72,7 @@ public class CoralStation extends LazyCommand {
     SwerveDrivetrain.getInstance().restoreDefaultDriveMode();
     SwerveDrivetrain.getInstance().setActiveSpeed(SpeedPresets.MAX_SPEED);
     Claw.getInstance().setClawMode(ClawMode.IDLE);
-    Elevator.getInstance().setTarget(TargetType.STOW);
+    Elevator.getInstance().setTarget(TargetType.CORAL_INTAKE);
   }
 
   // Returns true when the command should end.

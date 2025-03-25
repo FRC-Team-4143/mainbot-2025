@@ -9,6 +9,7 @@ import static edu.wpi.first.units.Units.Amps;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.NeutralModeValue;
+import com.playingwithfusion.TimeOfFlight;
 import edu.wpi.first.math.filter.Debouncer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -23,6 +24,7 @@ public class Claw extends Subsystem {
 
   private TalonFX wheel_motor_;
   private TalonFXConfiguration wheel_config_;
+  private TimeOfFlight tof_;
 
   public enum ClawMode {
     SHOOT,
@@ -56,6 +58,7 @@ public class Claw extends Subsystem {
     // Create io object first in subsystem configuration
     io_ = new ClawPeriodicIo();
 
+    tof_ = new TimeOfFlight(3);
     wheel_motor_ = new TalonFX(ClawConstants.WHEEL_MOTOR_ID, "CANivore");
     wheel_config_ = new TalonFXConfiguration();
     wheel_config_.CurrentLimits.StatorCurrentLimit = ClawConstants.STATOR_CURRENT_LIMIT;
@@ -83,6 +86,8 @@ public class Claw extends Subsystem {
    */
   @Override
   public void readPeriodicInputs(double timestamp) {
+    io_.tof_distance = tof_.getRange();
+    io_.Sees_Coral = io_.tof_distance < Constants.ClawConstants.TIME_OF_FLIGHT_DIST;
     io_.current_output_ = wheel_motor_.getSupplyCurrent().getValue().in(Amps);
   }
 
@@ -146,10 +151,12 @@ public class Claw extends Subsystem {
    */
   @Override
   public void outputTelemetry(double timestamp) {
+    SmartDashboard.putNumber("Subsystems/Claw/Tof_Distance", io_.tof_distance);
+    SmartDashboard.putBoolean("Subsystems/Claw/Sees_Coral", io_.Sees_Coral);
     SmartDashboard.putString("Subsystems/Claw/Mode", io_.claw_mode_.toString());
     SmartDashboard.putNumber("Subsystems/Claw/Current_Output", io_.current_output_);
     SmartDashboard.putBoolean("Subsystems/Claw/Has Algae", hasAlgae());
-    SmartDashboard.putBoolean("Subsystems/Claw/Has Coral (On True)", hasCoral());
+    SmartDashboard.putBoolean("Subsystems/Claw/Has Coral (On True)", seesCoral());
     SmartDashboard.putString(
         "Subsystems/Claw/Game Piece Mode",
         (io_.game_piece_ == GamePiece.CORAL)
@@ -212,19 +219,29 @@ public class Claw extends Subsystem {
             && Util.epislonEquals(wheel_motor_.getVelocity().getValueAsDouble(), 0, 2.5));
   }
 
-  public boolean hasCoral() {
+  public boolean seesCoral() {
+    return io_.Sees_Coral;
+  }
+
+  public boolean isCoralAtHadStop() {
     return coral_debouncer_.calculate(
         isCoralMode()
             && wheel_motor_.getSupplyCurrent().getValueAsDouble()
                 > ClawConstants.CORAL_CURRENT_THRESHOLD);
   }
 
+  public boolean hasCoral() {
+    return seesCoral() && isCoralAtHadStop();
+  }
+
   public class ClawPeriodicIo implements Logged {
+    @Log.File public double tof_distance = 0;
     @Log.File public ClawMode claw_mode_ = ClawMode.IDLE;
     @Log.File public boolean enable_blast_ = false;
     @Log.File public GamePiece game_piece_ = GamePiece.CORAL;
     @Log.File public double wheel_output_ = 0;
     @Log.File public double current_output_ = 0;
+    @Log.File public boolean Sees_Coral = false;
   }
 
   @Override

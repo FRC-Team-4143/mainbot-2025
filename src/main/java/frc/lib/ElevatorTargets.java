@@ -31,14 +31,12 @@ public class ElevatorTargets {
           Rotation2d.fromDegrees(90),
           ControlType.PIVOT);
 
-  // TODO (CJT) set this to a sane value
   private static final TargetData STOW_ENTER =
       new TargetData(
           ElevatorConstants.ELEVATOR_HEIGHT_PIVOT_SAFETY + Units.inchesToMeters(12),
           Rotation2d.fromDegrees(-120),
           ControlType.PIVOT);
 
-  // TODO (CJT) set this to a sane value
   private static final TargetData STOW_EXIT =
       new TargetData(
           ElevatorConstants.ELEVATOR_HEIGHT_PIVOT_SAFETY + Units.inchesToMeters(12),
@@ -102,7 +100,7 @@ public class ElevatorTargets {
             ControlType.PIVOT),
         Optional.empty(),
         Optional.empty()),
-    STOW(
+    CORAL_INTAKE(
         new TargetData(
             ElevatorConstants.ELEVATOR_HEIGHT_PIVOT_SAFETY + Units.inchesToMeters(0),
             Rotation2d.fromDegrees(-120),
