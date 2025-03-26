@@ -10,8 +10,8 @@ import frc.robot.subsystems.Claw;
 import frc.robot.subsystems.Claw.ClawMode;
 import frc.robot.subsystems.Claw.GamePiece;
 import frc.robot.subsystems.Elevator;
-import frc.robot.subsystems.Pickup;
 import frc.robot.subsystems.Elevator.SpeedLimit;
+import frc.robot.subsystems.Pickup;
 import frc.robot.subsystems.Pickup.PickupMode;
 
 public class CoralLoad extends LazyCommand {

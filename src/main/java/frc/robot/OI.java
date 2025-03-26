@@ -24,8 +24,6 @@ import frc.robot.subsystems.Elevator;
 import frc.robot.subsystems.Elevator.OffsetType;
 import frc.robot.subsystems.GameStateManager;
 import frc.robot.subsystems.GameStateManager.Column;
-import frc.robot.subsystems.Pickup;
-import frc.robot.subsystems.Pickup.PickupMode;
 import frc.robot.subsystems.PoseEstimator;
 import frc.robot.subsystems.SwerveDrivetrain;
 import frc.robot.subsystems.SwerveDrivetrain.DriveMode;
@@ -180,11 +178,7 @@ public abstract class OI {
             Commands.runOnce(() -> Elevator.getInstance().setOffset(OffsetType.ELEVATOR_UP))
                 .ignoringDisable(true));
 
-    
-
-    driver_controller_
-        .a()
-        .onTrue(Commands.runOnce(() -> toggleIntakePreference()));
+    driver_controller_.a().onTrue(Commands.runOnce(() -> toggleIntakePreference()));
     // Manual Adjust Elevator Setpoint Down
     operator_controller_
         .povDown()
@@ -203,7 +197,7 @@ public abstract class OI {
         .onTrue(
             Commands.runOnce(() -> Elevator.getInstance().setOffset(OffsetType.ARM_CW))
                 .ignoringDisable(true));
-                
+
     // Manual Override for loading
     operator_controller_.leftTrigger().whileTrue(new OverrideLoad());
 
