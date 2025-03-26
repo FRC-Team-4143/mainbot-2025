@@ -10,12 +10,9 @@ import frc.robot.subsystems.GameStateManager.ReefScoringTarget;
 public class H4_Algae extends Auto {
 
   public H4_Algae() {
-    // this.setName(getClass().getSimpleName());
-
     // Register the paths first
     this.loadTrajectory("Mid Start to GH");
     this.loadTrajectory("GH to GH");
-    this.loadTrajectory("GH to Barge");
 
     this.addCommands(
         // Score game Piece 1
@@ -26,8 +23,9 @@ public class H4_Algae extends Auto {
         // Get game piece 2
         this.getTrajectoryCmd("GH to GH"),
         new AutoAlgaeReefPickup(),
-
-        // Score game piece 2
-        this.getTrajectoryCmd("GH to Barge"));
+        
+        // back up
+        this.getTrajectoryCmd("GH to GH"));
+        
   }
 }
