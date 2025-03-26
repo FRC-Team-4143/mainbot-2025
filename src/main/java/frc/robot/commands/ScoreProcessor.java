@@ -12,6 +12,8 @@ import frc.robot.subsystems.Claw;
 import frc.robot.subsystems.Claw.GamePiece;
 import frc.robot.subsystems.Elevator;
 import frc.robot.subsystems.Elevator.SpeedLimit;
+import frc.robot.subsystems.Pickup;
+import frc.robot.subsystems.Pickup.PickupMode;
 import frc.robot.subsystems.PoseEstimator;
 import frc.robot.subsystems.SwerveDrivetrain;
 import java.util.Optional;
@@ -31,6 +33,7 @@ public class ScoreProcessor extends Command {
   public void initialize() {
     Claw.getInstance().setGamePiece(GamePiece.ALGAE);
     Elevator.getInstance().setSpeedLimit(SpeedLimit.ALGAE);
+    Pickup.getInstance().setPickupMode(PickupMode.INTAKE);
     // Claw.getInstance().enableBlastMode();
   }
 

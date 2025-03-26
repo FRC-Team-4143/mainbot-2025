@@ -91,14 +91,9 @@ public class GameStateManager extends Subsystem {
       case TARGET_ACQUISITION:
         io_.reef_target = reefPose(io_.target_column);
         if (io_.reef_target.isPresent()) {
-          if (io_.scoring_target != ReefScoringTarget.L1) {
-            SwerveDrivetrain.getInstance().setTargetPose(io_.reef_target.get());
-            if (FieldRegions.REEF_ENTER.contains(PoseEstimator.getInstance().getRobotPose())) {
-              io_.robot_state_ = RobotState.APPROACHING_TARGET;
-            }
-          } else {
-            io_.robot_state_ = RobotState.SCORING; // if the target is L1 skip to scoring
-            Claw.getInstance().enableBlastMode();
+          SwerveDrivetrain.getInstance().setTargetPose(io_.reef_target.get());
+          if (FieldRegions.REEF_ENTER.contains(PoseEstimator.getInstance().getRobotPose())) {
+            io_.robot_state_ = RobotState.APPROACHING_TARGET;
           }
         }
         break;
@@ -118,9 +113,7 @@ public class GameStateManager extends Subsystem {
         }
         break;
       case SCORING:
-        if (io_.scoring_target == ReefScoringTarget.L1) {
-          elevatorTargetSwitch();
-        } else if (!FieldRegions.REEF_EXIT.contains(PoseEstimator.getInstance().getRobotPose())) {
+        if (!FieldRegions.REEF_EXIT.contains(PoseEstimator.getInstance().getRobotPose())) {
           // wait until you leave the exit Circle
           io_.robot_state_ = RobotState.END;
         }
@@ -130,10 +123,8 @@ public class GameStateManager extends Subsystem {
         SwerveDrivetrain.getInstance().restoreDefaultDriveMode();
         if (Claw.getInstance().isCoralMode()) {
           Elevator.getInstance().setSpeedLimit(SpeedLimit.CORAL);
-          Elevator.getInstance().setTarget(TargetType.CORAL_INTAKE);
         } else {
           Elevator.getInstance().setSpeedLimit(SpeedLimit.ALGAE);
-          Elevator.getInstance().setTarget(TargetType.ALGAE_STOW);
         }
         io_.robot_state_ = RobotState.TELEOP_CONTROL;
         Claw.getInstance().disableBlastMode();
@@ -233,7 +224,10 @@ public class GameStateManager extends Subsystem {
       if (FieldRegions.REEF_REGIONS[i].contains(PoseEstimator.getInstance().getRobotPose())) {
         if (io_.scoring_target == ReefScoringTarget.L1) {
           return Optional.of(
-              FieldRegions.REGION_POSE_TABLE.get(FieldRegions.REEF_REGIONS[i].getName()));
+              FieldRegions.REGION_POSE_TABLE
+                  .get(FieldRegions.REEF_REGIONS[i].getName())
+                  .transformBy(ScoringPoses.ALGAE_ALIGN_OFFSET));
+          // TODO: Make Coral Align Offset
         }
         if (column == Column.CENTER) {
           return Optional.of(
@@ -295,11 +289,9 @@ public class GameStateManager extends Subsystem {
           Elevator.getInstance().setTarget(TargetType.ALGAE_LOW);
         }
         break;
+      case TELEOP_CONTROL:
       case TURTLE:
       default:
-        Elevator.getInstance().setTarget(TargetType.CORAL_INTAKE);
-        break;
-      case TELEOP_CONTROL:
         break;
     }
   }

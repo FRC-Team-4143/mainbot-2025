@@ -9,6 +9,7 @@ import com.ctre.phoenix6.controls.PositionVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj2.command.Commands;
 import frc.mw_lib.subsystem.Subsystem;
 import frc.mw_lib.util.Util;
 import frc.robot.Constants;
@@ -60,6 +61,8 @@ public class Pickup extends Subsystem {
     pivot_motor_.getConfigurator().apply(config_);
 
     pivot_request_ = new PositionVoltage(0);
+
+    SmartDashboard.putData("Zero Intake Pivot", Commands.runOnce(() -> resetPivotPosition()));
   }
 
   /**

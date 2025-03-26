@@ -11,55 +11,71 @@ public class ElevatorTargets {
       new TargetData(
           FieldConstants.ReefHeight.L4.HEIGHT + Units.inchesToMeters(11),
           Rotation2d.fromDegrees(90),
-          ControlType.PIVOT);
+          ControlType.EFFECTOR,
+          "L4_INT");
 
   private static final TargetData L3_INT =
       new TargetData(
           FieldConstants.ReefHeight.L3.HEIGHT + Units.inchesToMeters(8),
           Rotation2d.fromDegrees(90),
-          ControlType.PIVOT);
+          ControlType.EFFECTOR,
+          "L3_INT");
 
   private static final TargetData L2_INT =
       new TargetData(
-          ElevatorConstants.ELEVATOR_HEIGHT_PIVOT_SAFETY + Units.inchesToMeters(12),
+          FieldConstants.ReefHeight.L2.HEIGHT + Units.inchesToMeters(13),
           Rotation2d.fromDegrees(90),
-          ControlType.PIVOT);
+          ControlType.EFFECTOR,
+          "L2_INT");
 
   private static final TargetData L1_INT =
       new TargetData(
           FieldConstants.ReefHeight.L1.HEIGHT + Units.inchesToMeters(8),
           Rotation2d.fromDegrees(90),
-          ControlType.PIVOT);
+          ControlType.EFFECTOR,
+          "L1_INT");
+
+  private static final TargetData CLIMB_INT =
+      new TargetData(
+          ElevatorConstants.ELEVATOR_HEIGHT_PIVOT_MIN + Units.inchesToMeters(12),
+          Rotation2d.fromDegrees(0),
+          ControlType.PIVOT,
+          "CLIMB_INT");
 
   public static TargetData CURRENT_STOW_INT =
       new TargetData(
           ElevatorConstants.ELEVATOR_HEIGHT_PIVOT_SAFETY + Units.inchesToMeters(12),
           Rotation2d.fromDegrees(-120),
-          ControlType.PIVOT);
+          ControlType.PIVOT,
+          "CURRENT_STOW_INT");
 
   public static final TargetData HIGH_STOW_INT =
       new TargetData(
           ElevatorConstants.ELEVATOR_HEIGHT_PIVOT_SAFETY + Units.inchesToMeters(12),
           Rotation2d.fromDegrees(-120),
-          ControlType.PIVOT);
+          ControlType.PIVOT,
+          "HIGH_STOW_INT");
 
   public static final TargetData LOW_STOW_INT =
       new TargetData(
           ElevatorConstants.ELEVATOR_HEIGHT_PIVOT_SAFETY + Units.inchesToMeters(6),
           Rotation2d.fromDegrees(-120),
-          ControlType.PIVOT);
+          ControlType.PIVOT,
+          "LOW_STOW_INT");
 
   private static final TargetData ALGAE_STOW_ENTER =
       new TargetData(
           ElevatorConstants.ELEVATOR_HEIGHT_PIVOT_SAFETY + Units.inchesToMeters(12),
           Rotation2d.fromDegrees(90),
-          ControlType.PIVOT);
+          ControlType.PIVOT,
+          "ALGAE_STOW_ENTER");
 
   private static final TargetData CORAL_STOW_ENTER =
       new TargetData(
           ElevatorConstants.ELEVATOR_HEIGHT_PIVOT_SAFETY + Units.inchesToMeters(12),
           Rotation2d.fromDegrees(90),
-          ControlType.PIVOT);
+          ControlType.PIVOT,
+          "CORAL_STOW_ENTER");
 
   public enum TargetType {
     SAFETY(
@@ -67,94 +83,112 @@ public class ElevatorTargets {
             ElevatorConstants
                 .ELEVATOR_HEIGHT_PIVOT_SAFETY, // height is ignored for this special target
             Rotation2d.fromDegrees(90),
-            ControlType.PIVOT),
+            ControlType.PIVOT,
+            "SAFETY"),
         Optional.empty(),
         Optional.empty()),
     L4(
         new TargetData(
             FieldConstants.ReefHeight.L4.HEIGHT + Units.inchesToMeters(11),
             Rotation2d.fromDegrees(145.3),
-            ControlType.EFFECTOR),
+            ControlType.EFFECTOR,
+            "L4"),
         Optional.of(L4_INT),
         Optional.empty()),
     L3(
         new TargetData(
             FieldConstants.ReefHeight.L3.HEIGHT + Units.inchesToMeters(8),
             Rotation2d.fromDegrees(125),
-            ControlType.EFFECTOR),
+            ControlType.EFFECTOR,
+            "L3"),
         Optional.of(L3_INT),
         Optional.empty()),
     L2(
         new TargetData(
             FieldConstants.ReefHeight.L2.HEIGHT + Units.inchesToMeters(8),
             Rotation2d.fromDegrees(125),
-            ControlType.EFFECTOR),
+            ControlType.EFFECTOR,
+            "L2"),
         Optional.of(L2_INT),
         Optional.empty()),
     L1(
         new TargetData(
             FieldConstants.ReefHeight.L2.HEIGHT + Units.inchesToMeters(8),
             Rotation2d.fromDegrees(125),
-            ControlType.EFFECTOR),
+            ControlType.EFFECTOR,
+            "L1"),
         Optional.of(L1_INT),
         Optional.empty()),
     STATION(
         new TargetData(
-            0.8468 + Units.inchesToMeters(4),
+            0.8468 + Units.inchesToMeters(2),
             Rotation2d.fromRadians(-1.027767),
-            ControlType.EFFECTOR),
+            ControlType.EFFECTOR,
+            "STATION"),
         Optional.empty(),
         Optional.empty()),
     CLIMB(
         new TargetData(
             ElevatorConstants.ELEVATOR_HEIGHT_PIVOT_MIN + Units.inchesToMeters(0),
             Rotation2d.fromDegrees(0),
-            ControlType.PIVOT),
-        Optional.empty(),
+            ControlType.PIVOT,
+            "CLIMB"),
+        Optional.of(CLIMB_INT),
         Optional.empty()),
     CORAL_INTAKE(
         new TargetData(
             0.7891225351316538 + Units.inchesToMeters(1),
-            Rotation2d.fromDegrees(-112),
-            ControlType.PIVOT),
+            Rotation2d.fromDegrees(-115),
+            ControlType.PIVOT,
+            "CORAL_INTAKE"),
         Optional.of(CURRENT_STOW_INT),
         Optional.of(CURRENT_STOW_INT)),
     CORAL_STOW(
         new TargetData(
             ElevatorConstants.ELEVATOR_HEIGHT_PIVOT_MIN,
             Rotation2d.fromDegrees(90),
-            ControlType.PIVOT),
+            ControlType.PIVOT,
+            "CORAL_STOW"),
         Optional.of(CORAL_STOW_ENTER),
         Optional.empty()),
     ALGAE_LOW(
         new TargetData(
             0.9702231159054557 + Units.inchesToMeters(0),
             Rotation2d.fromDegrees(149),
-            ControlType.EFFECTOR),
+            ControlType.EFFECTOR,
+            "ALGAE_LOW"),
         Optional.empty(),
         Optional.empty()),
     ALGAE_HIGH(
         new TargetData(
             1.2535345791562702 + Units.inchesToMeters(0),
             Rotation2d.fromDegrees(130.79),
-            ControlType.EFFECTOR),
+            ControlType.EFFECTOR,
+            "ALGAE_HIGH"),
         Optional.empty(),
         Optional.empty()),
     ALGAE_PROCESSOR(
         new TargetData(
-            0.6381 + Units.inchesToMeters(0), Rotation2d.fromDegrees(-55), ControlType.EFFECTOR),
+            FieldConstants.ReefHeight.L3.HEIGHT,
+            Rotation2d.fromDegrees(-55),
+            ControlType.EFFECTOR,
+            "ALGAE_PROCESSOR"),
         Optional.empty(),
         Optional.empty()),
     BARGE(
         new TargetData(
-            2.159 + Units.inchesToMeters(0), Rotation2d.fromDegrees(90), ControlType.EFFECTOR),
+            2.159 + Units.inchesToMeters(0),
+            Rotation2d.fromDegrees(90),
+            ControlType.EFFECTOR,
+            "BARGE"),
         Optional.empty(),
         Optional.empty()),
     ALGAE_STOW(
         new TargetData(
             ElevatorConstants.ELEVATOR_HEIGHT_PIVOT_MIN + Units.inchesToMeters(0),
             Rotation2d.fromDegrees(90),
-            ControlType.PIVOT),
+            ControlType.PIVOT,
+            "ALGAE_STOW"),
         Optional.of(ALGAE_STOW_ENTER),
         Optional.empty());
 

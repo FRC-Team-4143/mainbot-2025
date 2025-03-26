@@ -107,7 +107,7 @@ public class Claw extends Subsystem {
           io_.wheel_output_ = ClawConstants.WHEEL_CORAL_SHOOT_SPEED;
           break;
         case LOAD:
-          io_.wheel_output_ = ClawConstants.WHEEL_LOAD_SPEED;
+          io_.wheel_output_ = ClawConstants.CORAL_LOAD_SPEED;
           break;
         case IDLE:
         default:
@@ -123,7 +123,7 @@ public class Claw extends Subsystem {
           io_.wheel_output_ = -ClawConstants.WHEEL_ALGAE_SHOOT_SPEED;
           break;
         case LOAD:
-          io_.wheel_output_ = -ClawConstants.WHEEL_LOAD_SPEED;
+          io_.wheel_output_ = -ClawConstants.ALGAE_LOAD_SPEED;
           break;
         case IDLE:
         default:
@@ -234,7 +234,7 @@ public class Claw extends Subsystem {
   public ClawMode getClawMode() {
     return io_.claw_mode_;
   }
-  
+
   public boolean hasCoral() {
     return isCoralPresent() && isCoralAtHardStop();
   }
