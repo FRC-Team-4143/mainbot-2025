@@ -323,7 +323,6 @@ public final class Constants {
     public static final int INTAKE_ID = 41;
     public static final int PIVOT_ID = 40;
     public static final double PIVOT_DEPLOYED_ANGLE = 0;
-    public static final double PIVOT_RETRACTED_ANGLE = -23;
     public static final double PIVOT_STATION_ANGLE = -23;
     public static final double PIVOT_THRESHOLD = 0.5;
     public static final double INTAKE_IN_SPEED = 0.50;

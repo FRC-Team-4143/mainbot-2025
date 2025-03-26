@@ -26,7 +26,6 @@ public class Pickup extends Subsystem {
   private PositionVoltage pivot_request_;
 
   public enum PickupMode {
-    RETRACTED,
     INTAKE,
     FLUSH_OUT,
     STATION,
@@ -62,7 +61,12 @@ public class Pickup extends Subsystem {
 
     pivot_request_ = new PositionVoltage(0);
 
-    SmartDashboard.putData("Zero Intake Pivot", Commands.runOnce(() -> resetPivotPosition()));
+    SmartDashboard.putData(
+        "Subsystems/Pickup/Zero Ground",
+        Commands.runOnce(() -> setPivotPosition(Constants.PickupConstatns.PIVOT_DEPLOYED_ANGLE)));
+    SmartDashboard.putData(
+        "Subsystems/Pickup/Zero Station",
+        Commands.runOnce(() -> setPivotPosition(Constants.PickupConstatns.PIVOT_STATION_ANGLE)));
   }
 
   /**
@@ -99,10 +103,6 @@ public class Pickup extends Subsystem {
       case DEPLOYED:
         io_.target_intake_speed_ = 0;
         io_.target_pivot_angle = Constants.PickupConstatns.PIVOT_DEPLOYED_ANGLE;
-        break;
-      case RETRACTED:
-        io_.target_intake_speed_ = 0;
-        io_.target_pivot_angle = Constants.PickupConstatns.PIVOT_RETRACTED_ANGLE * 0.75;
         break;
       case FLUSH_OUT:
         io_.target_intake_speed_ = Constants.PickupConstatns.INTAKE_OUT_SPEED;
@@ -163,8 +163,8 @@ public class Pickup extends Subsystem {
   }
 
   /** Resets to the zero position of the pivot motor */
-  public void resetPivotPosition() {
-    pivot_motor_.setPosition(0);
+  public void setPivotPosition(double value) {
+    pivot_motor_.setPosition(value);
   }
 
   public class PickupPeriodicIo implements Logged {

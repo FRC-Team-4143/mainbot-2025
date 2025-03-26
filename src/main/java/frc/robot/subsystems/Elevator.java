@@ -439,9 +439,6 @@ public class Elevator extends Subsystem {
         case INTAKE:
           ElevatorTargets.CURRENT_STOW_INT = ElevatorTargets.LOW_STOW_INT;
           break;
-        case RETRACTED:
-          ElevatorTargets.CURRENT_STOW_INT = ElevatorTargets.HIGH_STOW_INT;
-          break;
         case STATION:
           ElevatorTargets.CURRENT_STOW_INT = ElevatorTargets.HIGH_STOW_INT;
           break;
