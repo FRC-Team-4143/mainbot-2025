@@ -207,26 +207,26 @@ public class Elevator extends Subsystem {
   public void updateLogic(double timestamp) {
     setStowSaftey();
 
-    TargetData pending_target = io_.target_type_.getTarget();
+    io_.pending_target = io_.target_type_.getTarget();
 
     // If we have pending intermediate targets run them first
     if (io_.intermediate_targets_.size() > 0) {
-      pending_target = io_.intermediate_targets_.get(0);
+      io_.pending_target = io_.intermediate_targets_.get(0);
     }
 
-    io_.target_arm_angle_ = pending_target.getAngle();
-    switch (io_.current_control_mode_) {
+    io_.target_arm_angle_ = io_.pending_target.getAngle();
+    switch (io_.pending_target.getControlType()) {
       case EFFECTOR:
         io_.target_elevator_height_ =
-            kinematics_.desiredElevatorZ(pending_target.getHeight(), io_.target_arm_angle_);
+            kinematics_.desiredElevatorZ(io_.pending_target.getHeight(), io_.target_arm_angle_);
         break;
       case PIVOT:
-        io_.target_elevator_height_ = pending_target.getHeight();
+        io_.target_elevator_height_ = io_.pending_target.getHeight();
         break;
     }
 
     // Determine if we are ready to move on with another intermediate
-    if (systemAtTarget(pending_target) && io_.intermediate_targets_.size() > 0) {
+    if (systemAtTarget(io_.pending_target) && io_.intermediate_targets_.size() > 0) {
       if (io_.target_type_ == TargetType.STATION) {
         if (Pickup.getInstance().isAtTarget()
             && Pickup.getInstance().getPickupMode() == PickupMode.STATION) {
@@ -302,6 +302,7 @@ public class Elevator extends Subsystem {
     SmartDashboard.putNumber(
         "Subsystems/Elevator/Intermediate Count", io_.intermediate_targets_.size());
     SmartDashboard.putString("Subsystems/Elevator/Target", io_.target_type_.toString());
+    SmartDashboard.putString("Subsystems/Elevator/Pending Target", io_.pending_target.toString());
     updateMechanism();
   }
 
@@ -331,10 +332,17 @@ public class Elevator extends Subsystem {
   }
 
   private boolean elevatorAtTarget(TargetData target) {
+    double height = 0;
+    switch (target.getControlType()) {
+      case EFFECTOR:
+        height = kinematics_.desiredElevatorZ(target.getHeight(), target.getAngle());
+        break;
+      case PIVOT:
+        height = target.getHeight();
+        break;
+    }
     return Util.epislonEquals(
-        io_.current_elevator_height_,
-        target.getHeight(),
-        ElevatorConstants.ELEVATOR_TARGET_THRESHOLD);
+        io_.current_elevator_height_, height, ElevatorConstants.ELEVATOR_TARGET_THRESHOLD);
   }
 
   private boolean systemAtTarget(TargetData target) {
@@ -475,7 +483,8 @@ public class Elevator extends Subsystem {
         new TargetData(
             io_.current_elevator_height_ + Units.inchesToMeters(2),
             Rotation2d.fromDegrees(90),
-            ControlType.PIVOT));
+            ControlType.PIVOT,
+            "Buffer Saftey"));
   }
 
   public int getNumIntermediates() {
@@ -547,6 +556,7 @@ public class Elevator extends Subsystem {
     @Log.File public ArrayList<TargetData> intermediate_targets_ = new ArrayList<>();
     @Log.File public double elevator_master_rotations_ = 0;
     @Log.File public double elevator_follower_rotations_ = 0;
+    @Log.File public TargetData pending_target = new TargetData();
     // @Log.File public TargetData target_data_ = target_.getLoggingObject();
     @Log.File public SpeedLimit current_speed_limit;
   }

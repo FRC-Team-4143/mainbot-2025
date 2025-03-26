@@ -205,7 +205,8 @@ public final class Constants {
     public static final double WHEEL_CORAL_BLAST_SPEED = 0.6;
     public static final double WHEEL_ALGAE_SHOOT_SPEED = 0.5;
     public static final double WHEEL_ALGAE_BLAST_SPEED = 0.5;
-    public static final double WHEEL_LOAD_SPEED = -0.3;
+    public static final double CORAL_LOAD_SPEED = -0.5;
+    public static final double ALGAE_LOAD_SPEED = -0.3;
     public static final double ALGAE_IDLE_SPEED = 0.1;
     public static final double STATOR_CURRENT_LIMIT = 40;
     public static final String CORAL_COLOR = new Color(255, 255, 255).toHexString();
@@ -221,8 +222,8 @@ public final class Constants {
   public class ClimberConstants {
     public static final int STRAP_ID = 31;
     public static final int PRONG_ID = 1;
-    public static final int PRONG_ID_A = 0;
-    public static final int PRONG_ID_B = 2;
+    public static final int PRONG_ID_A = 8;
+    public static final int PRONG_ID_B = 9;
     public static final int ARM_ID = 0;
     public static final InvertedValue STRAP_INVERSION = InvertedValue.Clockwise_Positive;
     public static final Slot0Configs STRAP_GAINS =
@@ -322,8 +323,8 @@ public final class Constants {
     public static final int INTAKE_ID = 41;
     public static final int PIVOT_ID = 40;
     public static final double PIVOT_DEPLOYED_ANGLE = 0;
-    public static final double PIVOT_RETRACTED_ANGLE = -20;
-    public static final double PIVOT_STATION_ANGLE = -15;
+    public static final double PIVOT_RETRACTED_ANGLE = -23;
+    public static final double PIVOT_STATION_ANGLE = -23;
     public static final double PIVOT_THRESHOLD = 0.5;
     public static final double INTAKE_IN_SPEED = 0.50;
     public static final double INTAKE_OUT_SPEED = -0.50;
