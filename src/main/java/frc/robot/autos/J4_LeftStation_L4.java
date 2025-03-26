@@ -11,8 +11,6 @@ import frc.robot.subsystems.GameStateManager.ReefScoringTarget;
 public class J4_LeftStation_L4 extends Auto {
 
   public J4_LeftStation_L4() {
-    // this.setName(getClass().getSimpleName());
-
     // Register the paths first
     this.loadTrajectory("Left Start to IJ");
     this.loadTrajectory("IJ to Left Station");
