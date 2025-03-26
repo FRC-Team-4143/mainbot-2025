@@ -45,22 +45,7 @@ public class Robot extends TimedRobot {
     FieldRegions.makeRegions();
 
     AutoManager.getInstance()
-        .registerAutos(
-            new J4_LeftStation_L4(),
-            new J4_LeftStation_L4_LeftStation_K4(),
-            new E4_RightStation_C4(),
-            new E4_RightStation_C4_RightStation_D4(),
-            // new H4_GH_Barge(),
-            // new H4_GH_Barge_IJ_Barge()
-            new H4_Algae(),
-            new Bump_E4_RightStation_C4_RightStation_D4(),
-            new Bump_J4_LeftStation_L4_LeftStation_K4(),
-            new Bump_E4_RightIcecream_C4_MiddleIcecream_D4(),
-            new Bump_E4_RightIcecream_C4_RightStationGround_D4(),
-            new Bump_E4_RightStationGround_C4_RightStationGround_D4(),
-            new Bump_J4_LeftIcecream_L4_LeftStationGround_D4(),
-            new Bump_J4_LeftIcecream_L4_MiddleIcecream_D4(),
-            new Bump_J4_LeftStationGround_L4_LeftStationGround_D4());
+        .registerAutos();
   }
 
   @Override
