@@ -23,9 +23,8 @@ public class H4_Algae extends Auto {
         // Get game piece 2
         this.getTrajectoryCmd("GH to GH"),
         new AutoAlgaeReefPickup(),
-        
+
         // back up
         this.getTrajectoryCmd("GH to GH"));
-        
   }
 }
