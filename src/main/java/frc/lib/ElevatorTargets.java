@@ -121,7 +121,7 @@ public class ElevatorTargets {
         Optional.empty()),
     STATION(
         new TargetData(
-            0.8468 + Units.inchesToMeters(2),
+            0.8468 + Units.inchesToMeters(0),
             Rotation2d.fromRadians(-1.027767),
             ControlType.EFFECTOR,
             "STATION"),
