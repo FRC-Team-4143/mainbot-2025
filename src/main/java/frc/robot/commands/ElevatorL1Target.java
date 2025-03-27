@@ -8,8 +8,10 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import frc.mw_lib.command.NoReqConditionalCommand;
 import frc.robot.OI;
 import frc.robot.commands.ManualElevatorOverride.Level;
+import frc.robot.subsystems.Claw;
 import frc.robot.subsystems.GameStateManager;
 import frc.robot.subsystems.GameStateManager.ReefScoringTarget;
+import frc.robot.subsystems.GameStateManager.RobotState;
 
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
 public class ElevatorL1Target extends NoReqConditionalCommand {
@@ -18,7 +20,13 @@ public class ElevatorL1Target extends NoReqConditionalCommand {
     // Use addRequirements() here to declare subsystem dependencies.
     super(
         Commands.runOnce(
-            () -> GameStateManager.getInstance().setScoringTarget(ReefScoringTarget.L1, true)),
+            () -> {
+              GameStateManager.getInstance().setScoringTarget(ReefScoringTarget.L1, true);
+              if (GameStateManager.getInstance().getRobotState() != RobotState.TELEOP_CONTROL
+                  && Claw.getInstance().isCoralMode()) {
+                GameStateManager.getInstance().setRobotState(RobotState.APPROACHING_TARGET);
+              }
+            }),
         new ManualElevatorOverride(Level.L1),
         OI.use_vision);
     setName(this.getClass().getSimpleName());
