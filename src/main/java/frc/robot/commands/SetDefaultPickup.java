@@ -11,43 +11,41 @@ import frc.robot.subsystems.Pickup;
 import frc.robot.subsystems.Pickup.PickupMode;
 
 public class SetDefaultPickup extends Command {
-    public SetDefaultPickup() {
-        addRequirements(Pickup.getInstance());
-        setName(this.getClass().getSimpleName());
-    }
+  public SetDefaultPickup() {
+    addRequirements(Pickup.getInstance());
+    setName(this.getClass().getSimpleName());
+  }
 
-    // Called when the command is initially scheduled.
-    @Override
-    public void initialize() {
-    }
+  // Called when the command is initially scheduled.
+  @Override
+  public void initialize() {}
 
-    // Called every time the scheduler runs while the command is scheduled.
-    @Override
-    public void execute() {
-        if (Climber.getInstance().getMode() == ClimberMode.DISABLED) {
-            if (Claw.getInstance().getGamePieceMode() == GamePiece.ALGAE) {
-                Pickup.getInstance().setPickupMode(PickupMode.DEPLOYED);
-            } else {
-                if (OI.intake_preference == IntakePreference.GROUND) {
-                    Pickup.getInstance().setPickupMode(PickupMode.DEPLOYED);
-                } else {
-                    Pickup.getInstance().setPickupMode(PickupMode.STATION);
-                }
-            }
+  // Called every time the scheduler runs while the command is scheduled.
+  @Override
+  public void execute() {
+    if (Climber.getInstance().getMode() == ClimberMode.DISABLED) {
+      if (Claw.getInstance().getGamePieceMode() == GamePiece.ALGAE) {
+        Pickup.getInstance().setPickupMode(PickupMode.DEPLOYED);
+      } else {
+        if (OI.intake_preference == IntakePreference.GROUND) {
+          Pickup.getInstance().setPickupMode(PickupMode.DEPLOYED);
         } else {
-            // Climb
-            Pickup.getInstance().setPickupMode(PickupMode.DEPLOYED);
+          Pickup.getInstance().setPickupMode(PickupMode.STATION);
         }
+      }
+    } else {
+      // Climb
+      Pickup.getInstance().setPickupMode(PickupMode.DEPLOYED);
     }
+  }
 
-    // Called once the command ends or is interrupted.
-    @Override
-    public void end(boolean interrupted) {
-    }
+  // Called once the command ends or is interrupted.
+  @Override
+  public void end(boolean interrupted) {}
 
-    // Returns true when the command should end.
-    @Override
-    public boolean isFinished() {
-        return false;
-    }
+  // Returns true when the command should end.
+  @Override
+  public boolean isFinished() {
+    return false;
+  }
 }
