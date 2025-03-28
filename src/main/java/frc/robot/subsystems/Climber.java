@@ -155,12 +155,12 @@ public class Climber extends RemovableSubsystem {
         break;
       case DEPLOYED:
         io_.arm_motor_target = Constants.ClimberConstants.ARM_HOLD_SPEED;
-        io_.prong_motor_demand = Constants.ClimberConstants.PRONG_DEPLOY_SPEED;
+        io_.prong_motor_demand = Constants.ClimberConstants.PRONG_DEPLOY_SPEED / 2;
         // Wait for transition
         break;
       case RETRACTED:
         io_.arm_motor_target = 0;
-        io_.prong_motor_demand = Constants.ClimberConstants.PRONG_DEPLOY_SPEED;
+        io_.prong_motor_demand = 0;
         strap_request_ =
             strap_position_request_.withPosition(
                 io_.strap_motor_target + io_.strap_motor_target_offset);

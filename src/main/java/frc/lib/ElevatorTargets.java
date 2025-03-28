@@ -14,6 +14,13 @@ public class ElevatorTargets {
           ControlType.EFFECTOR,
           "L4_INT");
 
+  private static final TargetData STATION_INT =
+      new TargetData(
+          0.8468 + Units.inchesToMeters(5),
+          Rotation2d.fromRadians(-1.027767),
+          ControlType.EFFECTOR,
+          "STATION_INT");
+
   private static final TargetData L3_INT =
       new TargetData(
           FieldConstants.ReefHeight.L3.HEIGHT + Units.inchesToMeters(8),
@@ -23,7 +30,7 @@ public class ElevatorTargets {
 
   private static final TargetData L2_INT =
       new TargetData(
-          FieldConstants.ReefHeight.L2.HEIGHT + Units.inchesToMeters(13),
+          FieldConstants.ReefHeight.L2.HEIGHT + Units.inchesToMeters(15),
           Rotation2d.fromDegrees(90),
           ControlType.EFFECTOR,
           "L2_INT");
@@ -121,11 +128,11 @@ public class ElevatorTargets {
         Optional.empty()),
     STATION(
         new TargetData(
-            0.8468 + Units.inchesToMeters(2),
+            0.8468 + Units.inchesToMeters(0),
             Rotation2d.fromRadians(-1.027767),
             ControlType.EFFECTOR,
             "STATION"),
-        Optional.empty(),
+        Optional.of(STATION_INT),
         Optional.empty()),
     CLIMB(
         new TargetData(

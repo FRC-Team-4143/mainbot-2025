@@ -52,7 +52,6 @@ public final class Constants {
   }
 
   public class DrivetrainConstants {
-
     // Can bus names for each of the swerve modules
     public static final String[] MODULE_CANBUS_NAME = {
       "CANivore", "CANivore", "CANivore", "CANivore"
@@ -224,14 +223,14 @@ public final class Constants {
     public static final int PRONG_ID = 1;
     public static final int PRONG_ID_A = 8;
     public static final int PRONG_ID_B = 9;
-    public static final int ARM_ID = 0;
+    public static final int ARM_ID = 2;
     public static final InvertedValue STRAP_INVERSION = InvertedValue.Clockwise_Positive;
     public static final Slot0Configs STRAP_GAINS =
         new Slot0Configs().withKP(0.16).withKD(0.0).withKS(0.0).withKV(0.0).withKA(0.0);
     public static final double PRONG_DEPLOY_SPEED = 0.4;
-    public static final double PRONG_HOLD_SPEED = -0.6;
-    public static final double ARM_DEPLOY_SPEED = 0.75;
-    public static final double ARM_HOLD_SPEED = 0.5;
+    public static final double PRONG_HOLD_SPEED = -0.4;
+    public static final double ARM_DEPLOY_SPEED = 0.8;
+    public static final double ARM_HOLD_SPEED = 0.8;
     public static final double STRAP_RETRACTED_POSITION = 85;
     public static final double STRAP_SETPOINT_BUMP = (STRAP_RETRACTED_POSITION / 25.0);
     public static final double PRONG_PRESET_COUNT = 17;
@@ -291,7 +290,7 @@ public final class Constants {
     public static final InvertedValue ARM_FOLLOWER_INVERSION =
         InvertedValue.CounterClockwise_Positive;
     public static final double CORAL_ARM_CRUISE_VELOCITY = 4;
-    public static final double CORAL_ARM_ACCELERATION = 1.75;
+    public static final double CORAL_ARM_ACCELERATION = 2.5; // 1.75
     public static final double ALGAE_ARM_CRUISE_VELOCITY = 4;
     public static final double ALGAE_ARM_ACCELERATION = 0.65;
     public static final double SAFTEY_ARM_CRUISE_VELOCITY = 2;

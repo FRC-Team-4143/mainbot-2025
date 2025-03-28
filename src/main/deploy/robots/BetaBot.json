@@ -83,8 +83,8 @@
         }
     },
     "imp": {
-        "coral_offset": 1,
-        "algae_offset": 1
+        "coral_offset": 0,
+        "algae_offset": 0
     },
     "elevator": {
         "CONTROLLER_P": 1.0,
@@ -115,9 +115,9 @@
             "location": {
                 "X": -1,
                 "Y": -11.75,
-                "Z": 6.25,
+                "Z": 7.25,
                 "ROLL": 0,
-                "PITCH": -15,
+                "PITCH": -5,
                 "YAW": 25
             }
         }

@@ -303,6 +303,8 @@ public class Elevator extends Subsystem {
         "Subsystems/Elevator/Intermediate Count", io_.intermediate_targets_.size());
     SmartDashboard.putString("Subsystems/Elevator/Target", io_.target_type_.toString());
     SmartDashboard.putString("Subsystems/Elevator/Pending Target", io_.pending_target.toString());
+    SmartDashboard.putBoolean("Subsystems/Elevator/At Target", isElevatorAtTarget());
+    SmartDashboard.putBoolean("Subsystems/Arm/At Target", isArmAtTarget());
     updateMechanism();
   }
 
