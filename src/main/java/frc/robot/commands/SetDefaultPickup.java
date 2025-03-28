@@ -35,7 +35,7 @@ public class SetDefaultPickup extends Command {
       }
     } else {
       // Climb
-      Pickup.getInstance().setPickupMode(PickupMode.DEPLOYED);
+      Pickup.getInstance().setPickupMode(PickupMode.CLIMB);
     }
   }
 

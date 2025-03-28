@@ -137,7 +137,7 @@ public class ElevatorTargets {
     CLIMB(
         new TargetData(
             ElevatorConstants.ELEVATOR_HEIGHT_PIVOT_MIN + Units.inchesToMeters(0),
-            Rotation2d.fromDegrees(0),
+            Rotation2d.fromDegrees(20),
             ControlType.PIVOT,
             "CLIMB"),
         Optional.of(CLIMB_INT),
@@ -176,7 +176,7 @@ public class ElevatorTargets {
         Optional.empty()),
     ALGAE_PROCESSOR(
         new TargetData(
-            FieldConstants.ReefHeight.L3.HEIGHT,
+            FieldConstants.ReefHeight.L3.HEIGHT - Units.inchesToMeters(-18),
             Rotation2d.fromDegrees(-55),
             ControlType.EFFECTOR,
             "ALGAE_PROCESSOR"),

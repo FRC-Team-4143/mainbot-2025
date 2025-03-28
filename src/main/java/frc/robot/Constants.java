@@ -231,7 +231,7 @@ public final class Constants {
     public static final double PRONG_HOLD_SPEED = -0.4;
     public static final double ARM_DEPLOY_SPEED = 0.8;
     public static final double ARM_HOLD_SPEED = 0.8;
-    public static final double STRAP_RETRACTED_POSITION = 85;
+    public static final double STRAP_RETRACTED_POSITION = 105;
     public static final double STRAP_SETPOINT_BUMP = (STRAP_RETRACTED_POSITION / 25.0);
     public static final double PRONG_PRESET_COUNT = 17;
     public static final double DEPLOYING_TIME = 1.2;
@@ -291,6 +291,7 @@ public final class Constants {
         InvertedValue.CounterClockwise_Positive;
     public static final double CORAL_ARM_CRUISE_VELOCITY = 4;
     public static final double CORAL_ARM_ACCELERATION = 2.5; // 1.75
+    public static final double L4_ARM_ACCEL = 1.75;
     public static final double ALGAE_ARM_CRUISE_VELOCITY = 4;
     public static final double ALGAE_ARM_ACCELERATION = 0.65;
     public static final double SAFTEY_ARM_CRUISE_VELOCITY = 2;
@@ -323,11 +324,13 @@ public final class Constants {
     public static final int PIVOT_ID = 40;
     public static final double PIVOT_DEPLOYED_ANGLE = 0;
     public static final double PIVOT_STATION_ANGLE = -23;
+    public static final double PIVOT_CLIMB_ANGLE = -10;
     public static final double PIVOT_THRESHOLD = 0.5;
     public static final double INTAKE_IN_SPEED = 0.50;
     public static final double INTAKE_OUT_SPEED = -0.50;
     public static final Slot0Configs PICKUP_GAINS =
         new Slot0Configs().withKP(0.5).withKI(0.00).withKD(0.00);
+    public static final double StatorCurrentLimit = 80;
   }
 
   public class GameStateManagerConstatns {

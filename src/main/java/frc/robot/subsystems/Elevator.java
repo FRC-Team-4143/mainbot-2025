@@ -81,7 +81,8 @@ public class Elevator extends Subsystem {
   public enum SpeedLimit {
     CORAL,
     ALGAE,
-    SAFTEY
+    SAFTEY,
+    L4
   }
 
   public enum OffsetType {
@@ -463,6 +464,10 @@ public class Elevator extends Subsystem {
       return;
     }
 
+    if (new_target == TargetType.L4) {
+      setSpeedLimit(SpeedLimit.L4);
+    }
+
     TargetType old_target = io_.target_type_;
     io_.target_type_ = new_target;
 
@@ -504,6 +509,10 @@ public class Elevator extends Subsystem {
   }
 
   public void setSpeedLimit(SpeedLimit limit) {
+    if (limit == io_.current_speed_limit) {
+      return;
+    }
+
     if (limit == SpeedLimit.CORAL) {
       arm_config_.MotionMagic.MotionMagicCruiseVelocity = ArmConstants.CORAL_ARM_CRUISE_VELOCITY;
       arm_config_.MotionMagic.MotionMagicAcceleration = ArmConstants.CORAL_ARM_ACCELERATION;
@@ -513,6 +522,9 @@ public class Elevator extends Subsystem {
     } else if (limit == SpeedLimit.SAFTEY) {
       arm_config_.MotionMagic.MotionMagicCruiseVelocity = ArmConstants.SAFTEY_ARM_CRUISE_VELOCITY;
       arm_config_.MotionMagic.MotionMagicAcceleration = ArmConstants.SAFTEY_ARM_ACCELERATION;
+    } else if (limit == SpeedLimit.L4) {
+      arm_config_.MotionMagic.MotionMagicCruiseVelocity = ArmConstants.CORAL_ARM_CRUISE_VELOCITY;
+      arm_config_.MotionMagic.MotionMagicAcceleration = ArmConstants.L4_ARM_ACCEL;
     }
     arm_motor_.getConfigurator().apply(arm_config_);
     io_.current_speed_limit = limit;

@@ -29,7 +29,8 @@ public class Pickup extends Subsystem {
     INTAKE,
     FLUSH_OUT,
     STATION,
-    DEPLOYED
+    DEPLOYED,
+    CLIMB
   }
 
   // Singleton pattern
@@ -55,6 +56,7 @@ public class Pickup extends Subsystem {
     config_ = new TalonFXConfiguration();
     config_.MotorOutput.NeutralMode = NeutralModeValue.Brake;
     config_.Slot0 = Constants.PickupConstatns.PICKUP_GAINS;
+    config_.CurrentLimits.StatorCurrentLimit = Constants.PickupConstatns.StatorCurrentLimit;
 
     intake_motor_.getConfigurator().apply(config_);
     pivot_motor_.getConfigurator().apply(config_);
@@ -112,6 +114,9 @@ public class Pickup extends Subsystem {
         io_.target_intake_speed_ = 0;
         io_.target_pivot_angle = Constants.PickupConstatns.PIVOT_STATION_ANGLE;
         break;
+      case CLIMB:
+        io_.target_intake_speed_ = 0;
+        io_.target_pivot_angle = Constants.PickupConstatns.PIVOT_CLIMB_ANGLE;
       default:
         io_.target_intake_speed_ = 0;
         break;

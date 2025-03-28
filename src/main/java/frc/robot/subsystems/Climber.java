@@ -114,6 +114,7 @@ public class Climber extends RemovableSubsystem {
   @Override
   public void readPeriodicInputs(double timestamp) {
     io_.current_prong = prong_counter_.get();
+    io_.strap_motor_current_ = strap_motor_.getPosition().getValueAsDouble();
   }
 
   /**
@@ -127,7 +128,7 @@ public class Climber extends RemovableSubsystem {
     switch (io_.current_mode_) {
       case PRECLIMB:
         io_.deploying_start_time_ = 0;
-        Pickup.getInstance().setPickupMode(PickupMode.DEPLOYED);
+        Pickup.getInstance().setPickupMode(PickupMode.CLIMB);
         break;
       case STAGING:
         io_.prong_target = Constants.ClimberConstants.PRONG_PRESET_COUNT;
@@ -255,6 +256,7 @@ public class Climber extends RemovableSubsystem {
   public class ClimberPeriodicIo implements Logged {
     @Log.File public double strap_motor_target = 0;
     @Log.File public double strap_motor_target_offset = 0;
+    @Log.File public double strap_motor_current_ = 0;
     @Log.File public double prong_motor_demand = 0;
     @Log.File public double current_prong = 0;
     @Log.File public double prong_target = 0;
