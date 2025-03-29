@@ -1,9 +1,11 @@
 package frc.robot.autos;
 
+import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.mw_lib.auto.Auto;
 import frc.robot.commands.AutoCoralReefScore;
 import frc.robot.commands.CoralLoad;
+import frc.robot.commands.SetIntake;
 import frc.robot.subsystems.GameStateManager;
 import frc.robot.subsystems.GameStateManager.Column;
 import frc.robot.subsystems.GameStateManager.ReefScoringTarget;
@@ -22,7 +24,7 @@ public class Bump_J4_LeftStation_L4_LeftStation_K4 extends Auto {
         // Score game Piece 1
         GameStateManager.setScoringCommand(Column.RIGHT, ReefScoringTarget.L4),
         this.getTrajectoryCmd("Bump Left Start to IJ"),
-        new AutoCoralReefScore(),
+        Commands.parallel(new AutoCoralReefScore(), new SetIntake().withTimeout(1.0)),
 
         // Get game piece 2
         this.getTrajectoryCmd("IJ to Left Station")
