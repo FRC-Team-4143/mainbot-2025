@@ -9,10 +9,10 @@ import static edu.wpi.first.units.Units.Amps;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.NeutralModeValue;
-import com.playingwithfusion.TimeOfFlight;
 import edu.wpi.first.math.filter.Debouncer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.mw_lib.drivers.SimTof;
 import frc.mw_lib.subsystem.Subsystem;
 import frc.mw_lib.util.Util;
 import frc.robot.Constants;
@@ -24,7 +24,7 @@ public class Claw extends Subsystem {
 
   private TalonFX wheel_motor_;
   private TalonFXConfiguration wheel_config_;
-  private TimeOfFlight tof_;
+  private SimTof tof_;
 
   public enum ClawMode {
     SHOOT,
@@ -58,7 +58,7 @@ public class Claw extends Subsystem {
     // Create io object first in subsystem configuration
     io_ = new ClawPeriodicIo();
 
-    tof_ = new TimeOfFlight(3);
+    tof_ = new SimTof(3);
     wheel_motor_ = new TalonFX(ClawConstants.WHEEL_MOTOR_ID);
     wheel_config_ = new TalonFXConfiguration();
     wheel_config_.CurrentLimits.StatorCurrentLimit = ClawConstants.STATOR_CURRENT_LIMIT;
