@@ -25,6 +25,7 @@ import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Commands;
 import frc.lib.ElevatorKinematics;
+import frc.lib.ElevatorTargets;
 import frc.lib.ElevatorTargets.TargetType;
 import frc.lib.FieldRegions;
 import frc.lib.TargetData;
@@ -38,6 +39,7 @@ import frc.robot.Constants.ArmConstants;
 import frc.robot.Constants.ElevatorConstants;
 import frc.robot.OI;
 import frc.robot.commands.SetDefaultStow;
+import frc.robot.subsystems.Pickup.PickupMode;
 import java.util.ArrayList;
 import monologue.Annotations.Log;
 import monologue.Logged;
@@ -79,7 +81,8 @@ public class Elevator extends Subsystem {
   public enum SpeedLimit {
     CORAL,
     ALGAE,
-    SAFTEY
+    SAFTEY,
+    L4
   }
 
   public enum OffsetType {
@@ -97,10 +100,10 @@ public class Elevator extends Subsystem {
 
     // Hardware
     elevator_limit_switch_ = new DigitalInput(ElevatorConstants.ELEVATOR_LIMIT_SWITCH_PORT_NUMBER);
-    elevator_master_ = new TalonFX(ElevatorConstants.ELEVATOR_MASTER_ID, "CANivore");
-    elevator_follower_ = new TalonFX(ElevatorConstants.ELEVATOR_FOLLOWER_ID, "CANivore");
-    arm_motor_ = new TalonFX(ArmConstants.ARM_MOTOR_ID, "CANivore");
-    arm_encoder_ = new CANcoder(ArmConstants.ARM_ENCODER_ID, "CANivore");
+    elevator_master_ = new TalonFX(ElevatorConstants.ELEVATOR_MASTER_ID);
+    elevator_follower_ = new TalonFX(ElevatorConstants.ELEVATOR_FOLLOWER_ID);
+    arm_motor_ = new TalonFX(ArmConstants.ARM_MOTOR_ID);
+    arm_encoder_ = new CANcoder(ArmConstants.ARM_ENCODER_ID);
 
     // Elevator Config
     elevator_config_ = new TalonFXConfiguration();
@@ -203,27 +206,36 @@ public class Elevator extends Subsystem {
 
   /** Computes updated outputs for the actuators */
   public void updateLogic(double timestamp) {
-    TargetData pending_target = io_.target_type_.getTarget();
+    setStowSaftey();
+
+    io_.pending_target = io_.target_type_.getTarget();
 
     // If we have pending intermediate targets run them first
     if (io_.intermediate_targets_.size() > 0) {
-      pending_target = io_.intermediate_targets_.get(0);
+      io_.pending_target = io_.intermediate_targets_.get(0);
     }
 
-    io_.target_arm_angle_ = pending_target.getAngle();
-    switch (io_.current_control_mode_) {
+    io_.target_arm_angle_ = io_.pending_target.getAngle();
+    switch (io_.pending_target.getControlType()) {
       case EFFECTOR:
         io_.target_elevator_height_ =
-            kinematics_.desiredElevatorZ(pending_target.getHeight(), io_.target_arm_angle_);
+            kinematics_.desiredElevatorZ(io_.pending_target.getHeight(), io_.target_arm_angle_);
         break;
       case PIVOT:
-        io_.target_elevator_height_ = pending_target.getHeight();
+        io_.target_elevator_height_ = io_.pending_target.getHeight();
         break;
     }
 
     // Determine if we are ready to move on with another intermediate
-    if (systemAtTarget(pending_target) && io_.intermediate_targets_.size() > 0) {
-      io_.intermediate_targets_.remove(0);
+    if (systemAtTarget(io_.pending_target) && io_.intermediate_targets_.size() > 0) {
+      if (io_.target_type_ == TargetType.STATION) {
+        if (Pickup.getInstance().isAtTarget()
+            && Pickup.getInstance().getPickupMode() == PickupMode.STATION) {
+          io_.intermediate_targets_.remove(0);
+        }
+      } else {
+        io_.intermediate_targets_.remove(0);
+      }
     }
 
     if (io_.target_elevator_height_ < ElevatorConstants.ELEVATOR_HEIGHT_PIVOT_MIN) {
@@ -277,7 +289,7 @@ public class Elevator extends Subsystem {
     SmartDashboard.putString("Subsystems/Arm/Control Mode", io_.current_control_mode_.toString());
     SmartDashboard.putNumber(
         "Subsystems/Arm/Current Angle", Units.radiansToDegrees(io_.current_arm_angle_));
-    SmartDashboard.putNumber("Subsystems/Arm/Target Angle", current_target.getAngle().getRadians());
+    SmartDashboard.putNumber("Subsystems/Arm/Target Angle", current_target.getAngle().getDegrees());
     SmartDashboard.putNumber(
         "Subsystems/Arm/Current Height",
         kinematics_.effectorZ(io_.current_elevator_height_, io_.current_arm_angle_));
@@ -290,6 +302,10 @@ public class Elevator extends Subsystem {
         "Subsystems/Arm/Manual Offset", current_target.getAngleOffset().getDegrees());
     SmartDashboard.putNumber(
         "Subsystems/Elevator/Intermediate Count", io_.intermediate_targets_.size());
+    SmartDashboard.putString("Subsystems/Elevator/Target", io_.target_type_.toString());
+    SmartDashboard.putString("Subsystems/Elevator/Pending Target", io_.pending_target.toString());
+    SmartDashboard.putBoolean("Subsystems/Elevator/At Target", isElevatorAtTarget());
+    SmartDashboard.putBoolean("Subsystems/Arm/At Target", isArmAtTarget());
     updateMechanism();
   }
 
@@ -319,10 +335,17 @@ public class Elevator extends Subsystem {
   }
 
   private boolean elevatorAtTarget(TargetData target) {
+    double height = 0;
+    switch (target.getControlType()) {
+      case EFFECTOR:
+        height = kinematics_.desiredElevatorZ(target.getHeight(), target.getAngle());
+        break;
+      case PIVOT:
+        height = target.getHeight();
+        break;
+    }
     return Util.epislonEquals(
-        io_.current_elevator_height_,
-        target.getHeight(),
-        ElevatorConstants.ELEVATOR_TARGET_THRESHOLD);
+        io_.current_elevator_height_, height, ElevatorConstants.ELEVATOR_TARGET_THRESHOLD);
   }
 
   private boolean systemAtTarget(TargetData target) {
@@ -410,6 +433,27 @@ public class Elevator extends Subsystem {
     }
   }
 
+  public void setStowSaftey() {
+    if (Pickup.getInstance().isAtTarget()) {
+      switch (Pickup.getInstance().getPickupMode()) {
+        case DEPLOYED:
+          ElevatorTargets.CURRENT_STOW_INT = ElevatorTargets.LOW_STOW_INT;
+          break;
+        case INTAKE:
+          ElevatorTargets.CURRENT_STOW_INT = ElevatorTargets.LOW_STOW_INT;
+          break;
+        case STATION:
+          ElevatorTargets.CURRENT_STOW_INT = ElevatorTargets.HIGH_STOW_INT;
+          break;
+        default:
+          ElevatorTargets.CURRENT_STOW_INT = ElevatorTargets.HIGH_STOW_INT;
+          break;
+      }
+    } else {
+      ElevatorTargets.CURRENT_STOW_INT = ElevatorTargets.HIGH_STOW_INT;
+    }
+  }
+
   /**
    * Sets the target for arm and elevator Only sets if climber is disabled
    *
@@ -419,6 +463,11 @@ public class Elevator extends Subsystem {
     if (new_target == io_.target_type_) {
       return;
     }
+
+    if (new_target == TargetType.L4) {
+      setSpeedLimit(SpeedLimit.L4);
+    }
+
     TargetType old_target = io_.target_type_;
     io_.target_type_ = new_target;
 
@@ -438,7 +487,8 @@ public class Elevator extends Subsystem {
         new TargetData(
             io_.current_elevator_height_ + Units.inchesToMeters(2),
             Rotation2d.fromDegrees(90),
-            ControlType.PIVOT));
+            ControlType.PIVOT,
+            "Buffer Saftey"));
   }
 
   public int getNumIntermediates() {
@@ -455,10 +505,14 @@ public class Elevator extends Subsystem {
   }
 
   public void stowElevator() {
-    setTarget(TargetType.STOW);
+    setTarget(TargetType.CORAL_INTAKE);
   }
 
   public void setSpeedLimit(SpeedLimit limit) {
+    if (limit == io_.current_speed_limit) {
+      return;
+    }
+
     if (limit == SpeedLimit.CORAL) {
       arm_config_.MotionMagic.MotionMagicCruiseVelocity = ArmConstants.CORAL_ARM_CRUISE_VELOCITY;
       arm_config_.MotionMagic.MotionMagicAcceleration = ArmConstants.CORAL_ARM_ACCELERATION;
@@ -468,6 +522,9 @@ public class Elevator extends Subsystem {
     } else if (limit == SpeedLimit.SAFTEY) {
       arm_config_.MotionMagic.MotionMagicCruiseVelocity = ArmConstants.SAFTEY_ARM_CRUISE_VELOCITY;
       arm_config_.MotionMagic.MotionMagicAcceleration = ArmConstants.SAFTEY_ARM_ACCELERATION;
+    } else if (limit == SpeedLimit.L4) {
+      arm_config_.MotionMagic.MotionMagicCruiseVelocity = ArmConstants.CORAL_ARM_CRUISE_VELOCITY;
+      arm_config_.MotionMagic.MotionMagicAcceleration = ArmConstants.L4_ARM_ACCEL;
     }
     arm_motor_.getConfigurator().apply(arm_config_);
     io_.current_speed_limit = limit;
@@ -505,11 +562,12 @@ public class Elevator extends Subsystem {
     @Log.File public double current_elevator_height_ = 0;
     @Log.File public double target_elevator_height_ = ElevatorConstants.ELEVATOR_HEIGHT_PIVOT_MIN;
     @Log.File public double current_arm_angle_ = 0;
-    @Log.File public Rotation2d target_arm_angle_ = TargetType.STOW.getTarget().getAngle();
-    @Log.File public TargetType target_type_ = TargetType.STOW;
+    @Log.File public Rotation2d target_arm_angle_ = TargetType.CORAL_INTAKE.getTarget().getAngle();
+    @Log.File public TargetType target_type_ = TargetType.CORAL_INTAKE;
     @Log.File public ArrayList<TargetData> intermediate_targets_ = new ArrayList<>();
     @Log.File public double elevator_master_rotations_ = 0;
     @Log.File public double elevator_follower_rotations_ = 0;
+    @Log.File public TargetData pending_target = new TargetData();
     // @Log.File public TargetData target_data_ = target_.getLoggingObject();
     @Log.File public SpeedLimit current_speed_limit;
   }

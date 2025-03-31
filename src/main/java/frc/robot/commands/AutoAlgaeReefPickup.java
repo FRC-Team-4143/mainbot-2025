@@ -31,11 +31,11 @@ public class AutoAlgaeReefPickup extends Command {
   @Override
   public void initialize() {
     Elevator.getInstance().setSpeedLimit(SpeedLimit.CORAL);
-    GameStateManager.getInstance().setRobotState(RobotState.TARGET_ACQUISITION);
     GameStateManager.getInstance().setScoringTarget(ReefScoringTarget.ALGAE, false);
     GameStateManager.getInstance().setScoringColum(Column.ALGAE, false);
     Claw.getInstance().setGamePiece(GamePiece.ALGAE);
     Claw.getInstance().setClawMode(ClawMode.LOAD);
+    GameStateManager.getInstance().setRobotState(RobotState.TARGET_ACQUISITION);
   }
 
   // Called every time the scheduler runs while the command is scheduled.

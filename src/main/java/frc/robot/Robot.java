@@ -14,13 +14,7 @@ import frc.lib.FieldRegions;
 import frc.mw_lib.auto.Auto;
 import frc.mw_lib.auto.AutoManager;
 import frc.mw_lib.logging.Elastic;
-import frc.robot.autos.Bump_E4_RightStation_C4_RightStation_D4;
-import frc.robot.autos.Bump_J4_LeftStation_L4_LeftStation_K4;
-import frc.robot.autos.E4_RightStation_C4;
-import frc.robot.autos.E4_RightStation_C4_RightStation_D4;
-import frc.robot.autos.H4_Algae;
-import frc.robot.autos.J4_LeftStation_L4;
-import frc.robot.autos.J4_LeftStation_L4_LeftStation_K4;
+import frc.robot.autos.*;
 import frc.robot.commands.HangProtection;
 import frc.robot.subsystems.GameStateManager;
 import frc.robot.subsystems.GameStateManager.RobotState;
@@ -40,15 +34,13 @@ public class Robot extends TimedRobot {
 
     AutoManager.getInstance()
         .registerAutos(
-            new J4_LeftStation_L4(),
-            new J4_LeftStation_L4_LeftStation_K4(),
-            new E4_RightStation_C4(),
-            new E4_RightStation_C4_RightStation_D4(),
-            // new H4_GH_Barge(),
-            // new H4_GH_Barge_IJ_Barge()
-            new H4_Algae(),
             new Bump_E4_RightStation_C4_RightStation_D4(),
-            new Bump_J4_LeftStation_L4_LeftStation_K4());
+            new Bump_J4_LeftStation_L4_LeftStation_K4(),
+            new E4_RightStation_C4_RightStation_D4(),
+            new E4_RightStation_C4(),
+            new H4_Algae(),
+            new J4_LeftStation_L4_LeftStation_K4(),
+            new J4_LeftStation_L4());
   }
 
   @Override
@@ -60,6 +52,7 @@ public class Robot extends TimedRobot {
     robot_container_.outputTelemetry();
 
     SmartDashboard.putNumber("Match Time", DriverStation.getMatchTime());
+    SmartDashboard.putString("Intake Preference", OI.intake_preference.toString());
   }
 
   @Override

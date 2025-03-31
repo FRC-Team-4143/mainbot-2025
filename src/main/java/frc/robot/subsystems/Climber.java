@@ -21,6 +21,7 @@ import frc.mw_lib.logging.Elastic;
 import frc.mw_lib.subsystem.RemovableSubsystem;
 import frc.robot.Constants;
 import frc.robot.Constants.ClimberConstants;
+import frc.robot.subsystems.Pickup.PickupMode;
 import monologue.Annotations.Log;
 import monologue.Logged;
 
@@ -66,7 +67,7 @@ public class Climber extends RemovableSubsystem {
     io_ = new ClimberPeriodicIo();
 
     if (isEnabled()) {
-      strap_motor_ = new TalonFX(Constants.ClimberConstants.STRAP_ID);
+      strap_motor_ = new TalonFX(Constants.ClimberConstants.STRAP_ID, "CANivore");
       prong_motor_ = new Spark(Constants.ClimberConstants.PRONG_ID);
       prong_motor_.setInverted(true);
       arm_motor_ = new Spark(Constants.ClimberConstants.ARM_ID);
@@ -113,6 +114,7 @@ public class Climber extends RemovableSubsystem {
   @Override
   public void readPeriodicInputs(double timestamp) {
     io_.current_prong = prong_counter_.get();
+    io_.strap_motor_current_ = strap_motor_.getPosition().getValueAsDouble();
   }
 
   /**
@@ -126,6 +128,7 @@ public class Climber extends RemovableSubsystem {
     switch (io_.current_mode_) {
       case PRECLIMB:
         io_.deploying_start_time_ = 0;
+        Pickup.getInstance().setPickupMode(PickupMode.CLIMB);
         break;
       case STAGING:
         io_.prong_target = Constants.ClimberConstants.PRONG_PRESET_COUNT;
@@ -153,12 +156,12 @@ public class Climber extends RemovableSubsystem {
         break;
       case DEPLOYED:
         io_.arm_motor_target = Constants.ClimberConstants.ARM_HOLD_SPEED;
-        io_.prong_motor_demand = Constants.ClimberConstants.PRONG_DEPLOY_SPEED;
+        io_.prong_motor_demand = Constants.ClimberConstants.PRONG_DEPLOY_SPEED / 2;
         // Wait for transition
         break;
       case RETRACTED:
         io_.arm_motor_target = 0;
-        io_.prong_motor_demand = Constants.ClimberConstants.PRONG_DEPLOY_SPEED;
+        io_.prong_motor_demand = 0;
         strap_request_ =
             strap_position_request_.withPosition(
                 io_.strap_motor_target + io_.strap_motor_target_offset);
@@ -205,7 +208,10 @@ public class Climber extends RemovableSubsystem {
         Elastic.selectTab("Climb");
         break;
       case PRECLIMB:
-        io_.current_mode_ = ClimberMode.STAGING;
+        if (Pickup.getInstance().isAtTarget()
+            && Elevator.getInstance().isElevatorAndArmAtTarget()) {
+          io_.current_mode_ = ClimberMode.STAGING;
+        }
         break;
       case PRESET:
         io_.current_mode_ = ClimberMode.DEPLOYING;
@@ -250,6 +256,7 @@ public class Climber extends RemovableSubsystem {
   public class ClimberPeriodicIo implements Logged {
     @Log.File public double strap_motor_target = 0;
     @Log.File public double strap_motor_target_offset = 0;
+    @Log.File public double strap_motor_current_ = 0;
     @Log.File public double prong_motor_demand = 0;
     @Log.File public double current_prong = 0;
     @Log.File public double prong_target = 0;

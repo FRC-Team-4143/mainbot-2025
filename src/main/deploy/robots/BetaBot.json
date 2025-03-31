@@ -18,7 +18,7 @@
             "DRIVE_GAINS_S": 0.18,
             "DRIVE_GAINS_V": 0.117,
             "DRIVE_GAINS_A": 0,
-            "STEER_GAINS_P": 100,
+            "STEER_GAINS_P": 80,
             "STEER_GAINS_I": 0,
             "STEER_GAINS_D": 0,
             "STEER_GAINS_S": 0,
@@ -83,8 +83,8 @@
         }
     },
     "imp": {
-        "coral_offset": -4,
-        "algae_offset": -4
+        "coral_offset": 0,
+        "algae_offset": 0
     },
     "elevator": {
         "CONTROLLER_P": 1.0,
@@ -96,7 +96,7 @@
         "CONTROLLER_G": 0.43,
         "HEIGHT_PIVOT_MIN": 28.5,
         "HEIGHT_PIVOT_MAX": 80.75,
-        "ELEVATOR_GEAR_RATIO":4
+        "ELEVATOR_GEAR_RATIO": 5
     },
     "arm": {
         "CONTROLLER_P": 40.0,
@@ -107,23 +107,22 @@
         "CONTROLLER_A": 0.25148,
         "CONTROLLER_G": 0.28,
         "LENGTH_PIVOT_TO_FUNNEL": 11.5,
-        "DEPTH_CORAL_POCKET":10
+        "DEPTH_CORAL_POCKET": 10
     },
     "vision": {
         "camera0": {
             "NAME": "PC_Camera",
             "location": {
-                "X": -6.149,
-                "Y": -11.127,
-                "Z": 8.563,
+                "X": -1,
+                "Y": -11.75,
+                "Z": 7.25,
                 "ROLL": 0,
-                "PITCH": -9.656,
-                "YAW": 15
+                "PITCH": -5,
+                "YAW": 25
             }
         }
-    }
-    ,
+    },
     "auto": {
-        "SCORING_DELAY": 0.2 
+        "SCORING_DELAY": 0.2
     }
 }

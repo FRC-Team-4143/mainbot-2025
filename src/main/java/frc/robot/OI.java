@@ -15,15 +15,16 @@ import frc.robot.commands.ElevatorL1Target;
 import frc.robot.commands.ElevatorL2Target;
 import frc.robot.commands.ElevatorL3Target;
 import frc.robot.commands.ElevatorL4Target;
-import frc.robot.commands.GMSTargetLeft;
-import frc.robot.commands.GMSTargetRight;
 import frc.robot.commands.GamePieceEject;
 import frc.robot.commands.GamePieceLoad;
+import frc.robot.commands.OverrideFlush;
 import frc.robot.commands.OverrideLoad;
 import frc.robot.subsystems.Claw;
 import frc.robot.subsystems.Climber;
 import frc.robot.subsystems.Elevator;
 import frc.robot.subsystems.Elevator.OffsetType;
+import frc.robot.subsystems.GameStateManager;
+import frc.robot.subsystems.GameStateManager.Column;
 import frc.robot.subsystems.PoseEstimator;
 import frc.robot.subsystems.SwerveDrivetrain;
 import frc.robot.subsystems.SwerveDrivetrain.DriveMode;
@@ -40,6 +41,12 @@ public abstract class OI {
   private static Trigger driver_pov_active_ = new Trigger(pov_is_present_);
   public static BooleanSupplier use_vision =
       () -> SmartDashboard.getBoolean("Vision/Use Vision Features", true);
+  public static IntakePreference intake_preference = IntakePreference.STATION;
+
+  public enum IntakePreference {
+    STATION,
+    GROUND
+  }
 
   public static void configureBindings() {
     SmartDashboard.putData("CommandScheduler", CommandScheduler.getInstance());
@@ -61,7 +68,7 @@ public abstract class OI {
     SmartDashboard.putData(
         "Commands/Disturb Pose",
         Commands.runOnce(() -> PoseEstimator.getInstance().disturbPose()).ignoringDisable(true));
-    SmartDashboard.putBoolean("Vision/Use Vision Features", true);
+    SmartDashboard.putBoolean("Vision/Use Vision Features", false);
 
     /*
      *
@@ -92,6 +99,12 @@ public abstract class OI {
       driver_controller_.back().onTrue(Commands.runOnce(() -> Climber.getInstance().backStage()));
     }
 
+    driver_controller_
+        .a()
+        .onTrue(
+            Commands.runOnce(() -> toggleIntakePreference())
+                .unless(Climber.getInstance()::lockOutControl));
+
     // Swap Between Robot Centric and Field Centric
     driver_controller_
         .rightStick()
@@ -111,7 +124,7 @@ public abstract class OI {
     // Set L4 Target:
     // - Algae Mode (Manual) -> Barge
     // - Coral Mode (Manual) -> L4
-    // - Any Mode   (Vision) -> Set GSM L4
+    // - Any Mode (Vision) -> Set GSM L4
     operator_controller_
         .y()
         .toggleOnTrue(
@@ -121,7 +134,7 @@ public abstract class OI {
     // Set L3 Target:
     // - Algae Mode (Manual) -> Algae High
     // - Coral Mode (Manual) -> L3
-    // - Any Mode   (Vision) -> Set GSM L3
+    // - Any Mode (Vision) -> Set GSM L3
     operator_controller_
         .b()
         .toggleOnTrue(
@@ -131,7 +144,7 @@ public abstract class OI {
     // Set L2 Target:
     // - Algae Mode (Manual) -> Algae Low
     // - Coral Mode (Manual) -> L2
-    // - Any Mode   (Vision) -> Set GSM L2
+    // - Any Mode (Vision) -> Set GSM L2
     operator_controller_
         .x()
         .toggleOnTrue(
@@ -141,7 +154,7 @@ public abstract class OI {
     // Set L1 Target:
     // - Algae Mode (Manual) -> Processor
     // - Coral Mode (Manual) -> L1
-    // - Any Mode   (Vision) -> Set GSM L1
+    // - Any Mode (Vision) -> Set GSM L1
     operator_controller_
         .a()
         .toggleOnTrue(
@@ -153,16 +166,16 @@ public abstract class OI {
     operator_controller_
         .leftBumper()
         .onTrue(
-            new GMSTargetLeft()
-                .unless(Climber.getInstance()::lockOutControl)
+            Commands.runOnce(
+                    () -> GameStateManager.getInstance().setScoringColum(Column.LEFT, true))
                 .ignoringDisable(true));
 
     // Set GSM Target Column Right
     operator_controller_
         .rightBumper()
         .onTrue(
-            new GMSTargetRight()
-                .unless(Climber.getInstance()::lockOutControl)
+            Commands.runOnce(
+                    () -> GameStateManager.getInstance().setScoringColum(Column.RIGHT, true))
                 .ignoringDisable(true));
 
     // Manual Adjust Elevator Setpoint Up
@@ -171,6 +184,7 @@ public abstract class OI {
         .onTrue(
             Commands.runOnce(() -> Elevator.getInstance().setOffset(OffsetType.ELEVATOR_UP))
                 .ignoringDisable(true));
+
     // Manual Adjust Elevator Setpoint Down
     operator_controller_
         .povDown()
@@ -189,8 +203,11 @@ public abstract class OI {
         .onTrue(
             Commands.runOnce(() -> Elevator.getInstance().setOffset(OffsetType.ARM_CW))
                 .ignoringDisable(true));
+
     // Manual Override for loading
-    operator_controller_.leftTrigger().whileTrue(new OverrideLoad());
+    operator_controller_.rightTrigger().whileTrue(new OverrideLoad());
+    // Manual Override for intake flush
+    operator_controller_.leftTrigger().whileTrue(new OverrideFlush());
 
     operator_controller_
         .start()
@@ -212,6 +229,18 @@ public abstract class OI {
     double output = val * val;
     output = Math.copySign(output, val);
     return val;
+  }
+
+  public static void toggleIntakePreference() {
+    if (intake_preference == IntakePreference.GROUND) {
+      intake_preference = IntakePreference.STATION;
+    } else {
+      intake_preference = IntakePreference.GROUND;
+    }
+  }
+
+  public static boolean preferStationIntake() {
+    return intake_preference == IntakePreference.STATION;
   }
 
   /**

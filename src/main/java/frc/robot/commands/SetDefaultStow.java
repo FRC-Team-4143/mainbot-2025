@@ -2,8 +2,8 @@ package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.lib.ElevatorTargets.TargetType;
-import frc.lib.FieldRegions;
 import frc.robot.OI;
+import frc.robot.OI.IntakePreference;
 import frc.robot.subsystems.Claw;
 import frc.robot.subsystems.Climber;
 import frc.robot.subsystems.Climber.ClimberMode;
@@ -23,27 +23,28 @@ public class SetDefaultStow extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    if (Climber.getInstance().getMode() == ClimberMode.DISABLED) {
-      if (Claw.getInstance().isAlgaeMode()) {
-        if (FieldRegions.PROCESSOR_DEAD_REGION.contains(
-            PoseEstimator.getInstance().getRobotPose())) {
-          Elevator.getInstance().setTarget(TargetType.STOW);
-        } else {
-          Elevator.getInstance().setTarget(TargetType.ALGAE_STOW);
-        }
+    if (Climber.getInstance().getMode() != ClimberMode.DISABLED) {
+      Elevator.getInstance().setTarget(TargetType.CLIMB);
+    } else if (Claw.getInstance().isAlgaeMode()) {
+      Elevator.getInstance().setTarget(TargetType.ALGAE_STOW);
+    } else if (OI.use_vision.getAsBoolean()) {
+      if (PoseEstimator.getInstance().isStationZone()
+          && OI.intake_preference == IntakePreference.STATION) {
+        Elevator.getInstance().setTarget(TargetType.STATION);
+      } else if (!Claw.getInstance().isCoralPresent()
+          && OI.intake_preference == IntakePreference.GROUND) {
+        Elevator.getInstance().setTarget(TargetType.CORAL_INTAKE);
       } else {
-        if (OI.use_vision.getAsBoolean()) {
-          if (PoseEstimator.getInstance().isStationZone()) {
-            Elevator.getInstance().setTarget(TargetType.STOW);
-          } else {
-            Elevator.getInstance().setTarget(TargetType.CORAL_STOW);
-          }
-        } else {
-          Elevator.getInstance().setTarget(TargetType.STOW);
-        }
+        Elevator.getInstance().setTarget(TargetType.CORAL_STOW);
       }
     } else {
-      Elevator.getInstance().setTarget(TargetType.CLIMB);
+      if (OI.intake_preference == IntakePreference.GROUND && Claw.getInstance().isCoralPresent()) {
+        Elevator.getInstance().setTarget(TargetType.CORAL_STOW);
+      } else if (OI.intake_preference == IntakePreference.GROUND) {
+        Elevator.getInstance().setTarget(TargetType.CORAL_INTAKE);
+      } else {
+        Elevator.getInstance().setTarget(TargetType.STATION);
+      }
     }
   }
 

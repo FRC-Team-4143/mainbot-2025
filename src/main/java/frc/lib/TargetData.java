@@ -10,11 +10,21 @@ public class TargetData implements Logged {
   @Log.File public ControlType type_;
   @Log.File public double height_offset_ = 0;
   @Log.File public Rotation2d angle_offset_ = new Rotation2d();
+  @Log.File public String name_;
 
-  public TargetData(double h, Rotation2d a, ControlType t) {
+  public TargetData(double h, Rotation2d a, ControlType t, String n) {
     this.height_ = h;
     this.angle_ = a;
     this.type_ = t;
+    this.name_ = n;
+  }
+
+  public TargetData() {
+    this.name_ = "Unset";
+  }
+
+  public String toString() {
+    return this.name_;
   }
 
   public enum ControlType {
