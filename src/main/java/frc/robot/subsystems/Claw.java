@@ -87,8 +87,7 @@ public class Claw extends Subsystem {
   @Override
   public void readPeriodicInputs(double timestamp) {
     io_.tof_distance = tof_.getRange();
-    io_.coral_present_ = io_.tof_distance < Constants.ClawConstants.TIME_OF_FLIGHT_DIST;
-    io_.current_output_ = wheel_motor_.getSupplyCurrent().getValue().in(Amps);
+    io_.wheel_motor_current_ = wheel_motor_.getSupplyCurrent().getValue().in(Amps);
   }
 
   /**
@@ -98,6 +97,7 @@ public class Claw extends Subsystem {
    */
   @Override
   public void updateLogic(double timestamp) {
+    io_.coral_present_ = io_.tof_distance < Constants.ClawConstants.TIME_OF_FLIGHT_DIST;
     if (io_.game_piece_ == GamePiece.CORAL) {
       switch (io_.claw_mode_) {
         case BLAST:
@@ -151,13 +151,13 @@ public class Claw extends Subsystem {
    */
   @Override
   public void outputTelemetry(double timestamp) {
-    SmartDashboard.putNumber("Subsystems/Claw/Tof_Distance", io_.tof_distance);
+    SmartDashboard.putNumber("Subsystems/Claw/TOF Distance (cm)", io_.tof_distance);
     SmartDashboard.putBoolean("Subsystems/Claw/Sees_Coral", io_.coral_present_);
     SmartDashboard.putString("Subsystems/Claw/Mode", io_.claw_mode_.toString());
-    SmartDashboard.putNumber("Subsystems/Claw/Current_Output", io_.current_output_);
+    SmartDashboard.putNumber("Subsystems/Claw/Current (Amps)", io_.wheel_motor_current_);
     SmartDashboard.putBoolean("Subsystems/Claw/Has Algae", hasAlgae());
     SmartDashboard.putBoolean("Subsystems/Claw/Has Coral", hasCoral());
-    SmartDashboard.putBoolean("Subsystems/Claw/CoralPresent", isCoralPresent());
+    SmartDashboard.putBoolean("Subsystems/Claw/Coral Present", isCoralPresent());
     SmartDashboard.putString(
         "Subsystems/Claw/Game Piece Mode",
         (io_.game_piece_ == GamePiece.CORAL)
@@ -245,7 +245,7 @@ public class Claw extends Subsystem {
     @Log.File public boolean enable_blast_ = false;
     @Log.File public GamePiece game_piece_ = GamePiece.CORAL;
     @Log.File public double wheel_output_ = 0;
-    @Log.File public double current_output_ = 0;
+    @Log.File public double wheel_motor_current_ = 0;
     @Log.File public boolean coral_present_ = false;
   }
 

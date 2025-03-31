@@ -1,5 +1,6 @@
 package frc.robot.subsystems;
 
+import static edu.wpi.first.units.Units.Fahrenheit;
 import static edu.wpi.first.units.Units.Radians;
 import static edu.wpi.first.units.Units.Rotations;
 
@@ -21,7 +22,6 @@ import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.networktables.StructArrayPublisher;
 import edu.wpi.first.networktables.StructPublisher;
 import edu.wpi.first.wpilibj.DataLogManager;
-import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Commands;
 import frc.lib.ElevatorKinematics;
@@ -63,7 +63,6 @@ public class Elevator extends Subsystem {
   private TalonFXConfiguration arm_config_;
   private MotionMagicVoltage elevator_request_;
   private MotionMagicVoltage arm_request_;
-  private DigitalInput elevator_limit_switch_;
   private CANcoder arm_encoder_;
   private CANcoderConfiguration arm_encoder_config_;
 
@@ -81,7 +80,7 @@ public class Elevator extends Subsystem {
   public enum SpeedLimit {
     CORAL,
     ALGAE,
-    SAFTEY,
+    SAFETY,
     L4
   }
 
@@ -99,7 +98,6 @@ public class Elevator extends Subsystem {
     io_ = new ElevatorPeriodicIo();
 
     // Hardware
-    elevator_limit_switch_ = new DigitalInput(ElevatorConstants.ELEVATOR_LIMIT_SWITCH_PORT_NUMBER);
     elevator_master_ = new TalonFX(ElevatorConstants.ELEVATOR_MASTER_ID);
     elevator_follower_ = new TalonFX(ElevatorConstants.ELEVATOR_FOLLOWER_ID);
     arm_motor_ = new TalonFX(ArmConstants.ARM_MOTOR_ID);
@@ -138,9 +136,9 @@ public class Elevator extends Subsystem {
     arm_config_.MotorOutput.NeutralMode = NeutralModeValue.Brake;
     arm_config_.ClosedLoopGeneral.ContinuousWrap = false;
     arm_config_.SoftwareLimitSwitch.ForwardSoftLimitEnable = true;
-    arm_config_.SoftwareLimitSwitch.ForwardSoftLimitThreshold = ArmConstants.ARM_FORWARD_LIMT;
+    arm_config_.SoftwareLimitSwitch.ForwardSoftLimitThreshold = ArmConstants.ARM_FORWARD_LIMIT;
     arm_config_.SoftwareLimitSwitch.ReverseSoftLimitEnable = true;
-    arm_config_.SoftwareLimitSwitch.ReverseSoftLimitThreshold = ArmConstants.ARM_REVERSE_LIMT;
+    arm_config_.SoftwareLimitSwitch.ReverseSoftLimitThreshold = ArmConstants.ARM_REVERSE_LIMIT;
     arm_motor_.getConfigurator().apply(arm_config_);
 
     // Arm Encoder Config
@@ -201,12 +199,13 @@ public class Elevator extends Subsystem {
     io_.current_elevator_height_ =
         io_.elevator_master_rotations_ * ElevatorConstants.ELEVATOR_ROTATIONS_TO_METERS
             + ElevatorConstants.ELEVATOR_HEIGHT_PIVOT_MIN;
-    io_.current_arm_angle_ = arm_motor_.getPosition().getValue().in(Radians);
+    io_.current_arm_angle_ =
+        Rotation2d.fromRadians(arm_motor_.getPosition().getValue().in(Radians));
   }
 
   /** Computes updated outputs for the actuators */
   public void updateLogic(double timestamp) {
-    setStowSaftey();
+    setStowSafety();
 
     io_.pending_target = io_.target_type_.getTarget();
 
@@ -259,11 +258,9 @@ public class Elevator extends Subsystem {
   /** Writes the periodic outputs to actuators (motors and etc...) */
   public void writePeriodicOutputs(double timestamp) {
     elevator_master_.setControl(
-        elevator_request_
-            .withPosition(
-                (io_.target_elevator_height_ - ElevatorConstants.ELEVATOR_HEIGHT_PIVOT_MIN)
-                    / ElevatorConstants.ELEVATOR_ROTATIONS_TO_METERS)
-            .withLimitReverseMotion(isElevatorAtMinimum()));
+        elevator_request_.withPosition(
+            (io_.target_elevator_height_ - ElevatorConstants.ELEVATOR_HEIGHT_PIVOT_MIN)
+                / ElevatorConstants.ELEVATOR_ROTATIONS_TO_METERS));
     elevator_follower_.setControl(new StrictFollower(elevator_master_.getDeviceID()));
     arm_motor_.setControl(arm_request_.withPosition(io_.target_arm_angle_.getRotations()));
   }
@@ -274,32 +271,37 @@ public class Elevator extends Subsystem {
 
     SmartDashboard.putString(
         "Subsystems/Elevator/Control Mode", io_.current_control_mode_.toString());
-    SmartDashboard.putNumber("Subsystems/Elevator/Target Height", io_.target_elevator_height_);
-    SmartDashboard.putNumber("Subsystems/Elevator/Current Height", io_.current_elevator_height_);
-    SmartDashboard.putNumber("Subsystems/Elevator/Manual Offset", current_target.getHeightOffset());
     SmartDashboard.putNumber(
-        "Subsystems/Elevator/Inches Off Zero",
+        "Subsystems/Elevator/Target Height (Meters)", io_.target_elevator_height_);
+    SmartDashboard.putNumber(
+        "Subsystems/Elevator/Current Height (Meters)", io_.current_elevator_height_);
+    SmartDashboard.putNumber(
+        "Subsystems/Elevator/Manual Offset (Meters)", current_target.getHeightOffset());
+    SmartDashboard.putNumber(
+        "Subsystems/Elevator/Distance from Zero (Inches)",
         Units.metersToInches(
             io_.current_elevator_height_ - ElevatorConstants.ELEVATOR_HEIGHT_PIVOT_MIN));
-    SmartDashboard.putString(
-        "Subsystems/Elevator/Motor Temp Master", elevator_master_.getDeviceTemp().toString());
-    SmartDashboard.putString(
-        "Subsystems/Elevator/Motor Temp Follower", elevator_follower_.getDeviceTemp().toString());
-
+    SmartDashboard.putNumber(
+        "Subsystems/Elevator/Motor Temp Master (Fahrenheit)",
+        elevator_master_.getDeviceTemp().getValue().in(Fahrenheit));
+    SmartDashboard.putNumber(
+        "Subsystems/Elevator/Motor Temp Follower (Fahrenheit)",
+        elevator_follower_.getDeviceTemp().getValue().in(Fahrenheit));
     SmartDashboard.putString("Subsystems/Arm/Control Mode", io_.current_control_mode_.toString());
     SmartDashboard.putNumber(
-        "Subsystems/Arm/Current Angle", Units.radiansToDegrees(io_.current_arm_angle_));
-    SmartDashboard.putNumber("Subsystems/Arm/Target Angle", current_target.getAngle().getDegrees());
+        "Subsystems/Arm/Current Angle (Degrees)", io_.current_arm_angle_.getDegrees());
     SmartDashboard.putNumber(
-        "Subsystems/Arm/Current Height",
+        "Subsystems/Arm/Target Angle (Degrees)", current_target.getAngle().getDegrees());
+    SmartDashboard.putNumber(
+        "Subsystems/Arm/Current Height (Meters)",
         kinematics_.effectorZ(io_.current_elevator_height_, io_.current_arm_angle_));
     SmartDashboard.putNumber(
-        "Subsystems/Arm/Height Offset", kinematics_.calZOffset(io_.current_arm_angle_));
+        "Subsystems/Arm/Height Offset (Meters)", kinematics_.calZOffset(io_.current_arm_angle_));
     SmartDashboard.putNumber(
-        "Subsystems/Arm/Absolute Encoder",
+        "Subsystems/Arm/Absolute Encoder (Rotations)",
         arm_encoder_.getAbsolutePosition().getValue().in(Rotations));
     SmartDashboard.putNumber(
-        "Subsystems/Arm/Manual Offset", current_target.getAngleOffset().getDegrees());
+        "Subsystems/Arm/Manual Offset (Degrees)", current_target.getAngleOffset().getDegrees());
     SmartDashboard.putNumber(
         "Subsystems/Elevator/Intermediate Count", io_.intermediate_targets_.size());
     SmartDashboard.putString("Subsystems/Elevator/Target", io_.target_type_.toString());
@@ -309,7 +311,7 @@ public class Elevator extends Subsystem {
     updateMechanism();
   }
 
-  public void updateMechanism() {
+  private void updateMechanism() {
     stages_pub_.set(
         new Pose3d[] {
           new Pose3d(),
@@ -322,16 +324,14 @@ public class Elevator extends Subsystem {
           new Pose3d(0, 0, io_.current_elevator_height_, new Rotation3d())
         });
     arm_pub_.set(
-        new Pose3d(
-            0,
-            0,
-            io_.current_elevator_height_ + 0.012,
-            new Rotation3d(0, io_.current_arm_angle_, 0)));
+        new Pose3d(0, 0, io_.current_elevator_height_ + 0.012, new Rotation3d(0, -Math.PI / 2, 0)));
   }
 
   private boolean armAtTarget(TargetData target) {
     return Util.epislonEquals(
-        io_.current_arm_angle_, target.getAngle().getRadians(), ArmConstants.ARM_TARGET_THRESHOLD);
+        io_.current_arm_angle_.getRadians(),
+        target.getAngle().getRadians(),
+        ArmConstants.ARM_TARGET_THRESHOLD);
   }
 
   private boolean elevatorAtTarget(TargetData target) {
@@ -380,17 +380,10 @@ public class Elevator extends Subsystem {
   }
 
   /**
-   * @return If the arm is posibly over the reef
+   * @return If the arm is possibly over the reef
    */
   public boolean isArmInDangerZone() {
-    return io_.current_arm_angle_ > Constants.ArmConstants.DANGER_ARM_ANGLE;
-  }
-
-  /**
-   * @return If the limit switch is pressed
-   */
-  public boolean isLimitSwitchPressed() {
-    return !elevator_limit_switch_.get();
+    return io_.current_arm_angle_.getRadians() > Constants.ArmConstants.DANGER_ARM_ANGLE;
   }
 
   /**
@@ -433,7 +426,7 @@ public class Elevator extends Subsystem {
     }
   }
 
-  public void setStowSaftey() {
+  public void setStowSafety() {
     if (Pickup.getInstance().isAtTarget()) {
       switch (Pickup.getInstance().getPickupMode()) {
         case DEPLOYED:
@@ -519,22 +512,15 @@ public class Elevator extends Subsystem {
     } else if (limit == SpeedLimit.ALGAE) {
       arm_config_.MotionMagic.MotionMagicCruiseVelocity = ArmConstants.ALGAE_ARM_CRUISE_VELOCITY;
       arm_config_.MotionMagic.MotionMagicAcceleration = ArmConstants.ALGAE_ARM_ACCELERATION;
-    } else if (limit == SpeedLimit.SAFTEY) {
-      arm_config_.MotionMagic.MotionMagicCruiseVelocity = ArmConstants.SAFTEY_ARM_CRUISE_VELOCITY;
-      arm_config_.MotionMagic.MotionMagicAcceleration = ArmConstants.SAFTEY_ARM_ACCELERATION;
+    } else if (limit == SpeedLimit.SAFETY) {
+      arm_config_.MotionMagic.MotionMagicCruiseVelocity = ArmConstants.SAFETY_ARM_CRUISE_VELOCITY;
+      arm_config_.MotionMagic.MotionMagicAcceleration = ArmConstants.SAFETY_ARM_ACCELERATION;
     } else if (limit == SpeedLimit.L4) {
       arm_config_.MotionMagic.MotionMagicCruiseVelocity = ArmConstants.CORAL_ARM_CRUISE_VELOCITY;
       arm_config_.MotionMagic.MotionMagicAcceleration = ArmConstants.L4_ARM_ACCEL;
     }
     arm_motor_.getConfigurator().apply(arm_config_);
     io_.current_speed_limit = limit;
-  }
-
-  /**
-   * @return If the elevator is within the threshold of zero and the limit switch is pressed
-   */
-  public boolean isElevatorAtMinimum() {
-    return isLimitSwitchPressed() && isElevatorNearLimitSwitch();
   }
 
   public void bindTuner(TalonFXTuner tuner, double pos1, double pos2) {
@@ -561,7 +547,7 @@ public class Elevator extends Subsystem {
     @Log.File public ControlType current_control_mode_ = ControlType.PIVOT;
     @Log.File public double current_elevator_height_ = 0;
     @Log.File public double target_elevator_height_ = ElevatorConstants.ELEVATOR_HEIGHT_PIVOT_MIN;
-    @Log.File public double current_arm_angle_ = 0;
+    @Log.File public Rotation2d current_arm_angle_ = new Rotation2d();
     @Log.File public Rotation2d target_arm_angle_ = TargetType.CORAL_INTAKE.getTarget().getAngle();
     @Log.File public TargetType target_type_ = TargetType.CORAL_INTAKE;
     @Log.File public ArrayList<TargetData> intermediate_targets_ = new ArrayList<>();

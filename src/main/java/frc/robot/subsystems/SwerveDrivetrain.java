@@ -184,7 +184,7 @@ public class SwerveDrivetrain extends Subsystem {
     heading_pose_controller_ = Constants.DrivetrainConstants.POSE_HEADING;
     heading_pose_controller_.enableContinuousInput(-Math.PI, Math.PI);
 
-    // Allow PID Configuration for Traj / Pose Controll on the Dashboard
+    // Allow PID Configuration for Traj / Pose Control on the Dashboard
     SmartDashboard.putData("Tuning/Swerve/X Traj Controller", x_traj_controller_);
     SmartDashboard.putData("Tuning/Swerve/Y Traj Controller", y_traj_controller_);
     SmartDashboard.putData("Tuning/Swerve/Heading Traj Controller", heading_traj_controller_);
@@ -299,7 +299,7 @@ public class SwerveDrivetrain extends Subsystem {
       io_.current_module_states_[i] = swerve_modules_[i].getCurrentState();
       io_.requested_module_states_[i] = swerve_modules_[i].getTargetState();
     }
-    // Control Imputs
+    // Control Inputs
     io_.joystick_left_x_ = OI.getDriverJoystickLeftX();
     io_.joystick_left_y_ = OI.getDriverJoystickLeftY();
     io_.joystick_right_x_ = OI.getDriverJoystickRightX();
@@ -499,7 +499,7 @@ public class SwerveDrivetrain extends Subsystem {
     SmartDashboard.putString(
         "Subsystems/Swerve/Request Type", request_to_apply_.getClass().getSimpleName());
     SmartDashboard.putNumber(
-        "Subsystems/Swerve/Driver Prespective", io_.drivers_station_perspective_.getDegrees());
+        "Subsystems/Swerve/Driver Perspective", io_.drivers_station_perspective_.getDegrees());
     SmartDashboard.putNumber("Subsystems/Swerve/Yaw", io_.robot_yaw_.getDegrees());
     SmartDashboard.putNumber(
         "Subsystems/Swerve/FL Encoder",
@@ -616,10 +616,10 @@ public class SwerveDrivetrain extends Subsystem {
   /**
    * Sets the drivers perspective for field relative requests
    *
-   * @param prespective rotation to set as forward perspective
+   * @param perspective rotation to set as forward perspective
    */
-  public void setDriverPerspective(Rotation2d prespective) {
-    io_.drivers_station_perspective_ = prespective;
+  public void setDriverPerspective(Rotation2d perspective) {
+    io_.drivers_station_perspective_ = perspective;
   }
 
   /**
@@ -644,7 +644,7 @@ public class SwerveDrivetrain extends Subsystem {
   }
 
   /**
-   * @return if robot at its target Tractoy Beam Pose
+   * @return if robot at its target tractor Beam Pose
    */
   public boolean atTractorBeamPose() {
     return Util.epislonEquals(
@@ -661,9 +661,9 @@ public class SwerveDrivetrain extends Subsystem {
    *
    * @param TightRope
    */
-  public void setTightRope(TightRope trightrope) {
+  public void setTightRope(TightRope tightrope) {
     io_.drive_mode_ = DriveMode.TIGHT_ROPE;
-    io_.tight_rope_ = trightrope;
+    io_.tight_rope_ = tightrope;
   }
 
   /**
@@ -677,7 +677,7 @@ public class SwerveDrivetrain extends Subsystem {
   }
 
   /**
-   * alows the selction of max speed presets
+   * Allows the selection of max speed presets
    *
    * @param preset
    */
@@ -709,7 +709,7 @@ public class SwerveDrivetrain extends Subsystem {
     @Log.File public Pose2d target_pose_ = new Pose2d();
 
     @Log.File
-    public TightRope tight_rope_ = new TightRope(new Pose2d(), new Pose2d(), "Defalut Drivetrain");
+    public TightRope tight_rope_ = new TightRope(new Pose2d(), new Pose2d(), "Default Drivetrain");
 
     @Log.File
     public SwerveSample target_sample_ = new SwerveSample(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, null, null);
