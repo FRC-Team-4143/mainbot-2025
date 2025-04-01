@@ -323,18 +323,15 @@ public final class Constants {
     public static final int INTAKE_ID = 41;
     public static final int PIVOT_ID = 40;
     public static final double PIVOT_THRESHOLD = 0.5;
-    public static final double PIVOT_ROTATIONS_TO_RADIANS = 10 / 33.841;
-    public static final Rotation2d PIVOT_OFFSET = new Rotation2d(-10 * PIVOT_ROTATIONS_TO_RADIANS);
-    public static final Rotation2d PIVOT_DEPLOYED_ANGLE =
-        new Rotation2d(0 * PIVOT_ROTATIONS_TO_RADIANS).rotateBy(PIVOT_OFFSET);
-    public static final Rotation2d PIVOT_STATION_ANGLE =
-        new Rotation2d(-23 * PIVOT_ROTATIONS_TO_RADIANS).rotateBy(PIVOT_OFFSET);
-    public static final Rotation2d PIVOT_CLIMB_ANGLE =
-        new Rotation2d(-10 * PIVOT_ROTATIONS_TO_RADIANS).rotateBy(PIVOT_OFFSET);
+    public static final double SENSOR_TO_MECHANISM_RATIO = (85.714 / 1.0);
+    public static final Rotation2d PIVOT_OFFSET = Rotation2d.fromDegrees(33);
+    public static final Rotation2d PIVOT_DEPLOYED_ANGLE = Rotation2d.fromDegrees(-33);
+    public static final Rotation2d PIVOT_STATION_ANGLE = Rotation2d.fromDegrees(59);
+    public static final Rotation2d PIVOT_CLIMB_ANGLE = Rotation2d.fromDegrees(0);
     public static final double INTAKE_IN_SPEED = 0.50;
     public static final double INTAKE_OUT_SPEED = -0.50;
     public static final Slot0Configs PICKUP_GAINS =
-        new Slot0Configs().withKP(0.5).withKI(0.00).withKD(0.00);
+        new Slot0Configs().withKP(42.857).withKI(0.00).withKD(0.00);
     public static final double StatorCurrentLimit = 80;
   }
 
