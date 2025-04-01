@@ -324,7 +324,7 @@ public class Elevator extends Subsystem {
           new Pose3d(0, 0, io_.current_elevator_height_, new Rotation3d())
         });
     arm_pub_.set(
-        new Pose3d(0, 0, io_.current_elevator_height_ + 0.012, new Rotation3d(0, -Math.PI / 2, 0)));
+        new Pose3d(0, 0, io_.current_elevator_height_ + 0.012, new Rotation3d(0, io_.current_arm_angle_.getRadians(), 0)));
   }
 
   private boolean armAtTarget(TargetData target) {
