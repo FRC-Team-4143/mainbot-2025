@@ -324,8 +324,8 @@ public final class Constants {
     public static final int PIVOT_ID = 40;
     public static final double PIVOT_THRESHOLD = 0.5;
     public static final double SENSOR_TO_MECHANISM_RATIO = (85.714 / 1.0);
-    public static final Rotation2d PIVOT_OFFSET = Rotation2d.fromDegrees(33);
-    public static final Rotation2d PIVOT_DEPLOYED_ANGLE = Rotation2d.fromDegrees(-33);
+    public static final Rotation2d PIVOT_OFFSET = Rotation2d.fromDegrees(35);
+    public static final Rotation2d PIVOT_DEPLOYED_ANGLE = Rotation2d.fromDegrees(-35);
     public static final Rotation2d PIVOT_STATION_ANGLE = Rotation2d.fromDegrees(59);
     public static final Rotation2d PIVOT_CLIMB_ANGLE = Rotation2d.fromDegrees(0);
     public static final double INTAKE_IN_SPEED = 0.50;
