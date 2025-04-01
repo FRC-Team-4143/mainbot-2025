@@ -152,7 +152,6 @@ public class Claw extends Subsystem {
   @Override
   public void outputTelemetry(double timestamp) {
     SmartDashboard.putNumber("Subsystems/Claw/TOF Distance (cm)", io_.tof_distance);
-    SmartDashboard.putBoolean("Subsystems/Claw/Sees_Coral", io_.coral_present_);
     SmartDashboard.putString("Subsystems/Claw/Mode", io_.claw_mode_.toString());
     SmartDashboard.putNumber("Subsystems/Claw/Current (Amps)", io_.wheel_motor_current_);
     SmartDashboard.putBoolean("Subsystems/Claw/Has Algae", hasAlgae());

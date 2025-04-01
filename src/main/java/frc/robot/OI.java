@@ -68,7 +68,7 @@ public abstract class OI {
     SmartDashboard.putData(
         "Commands/Disturb Pose",
         Commands.runOnce(() -> PoseEstimator.getInstance().disturbPose()).ignoringDisable(true));
-    SmartDashboard.putBoolean("Vision/Use Vision Features", false);
+    SmartDashboard.putBoolean("Vision/Use Vision Features", true);
 
     /*
      *

@@ -166,9 +166,9 @@ public class Pickup extends Subsystem {
   public void outputTelemetry(double timestamp) {
     SmartDashboard.putString("Subsystems/Pickup/Mode", io_.current_mode_.toString());
     SmartDashboard.putNumber(
-        "Subsystems/Pickup/Current Angle", io_.current_pivot_angle_.getDegrees());
+        "Subsystems/Pickup/Current Angle (Degrees)", io_.current_pivot_angle_.getDegrees());
     SmartDashboard.putNumber(
-        "Subsystems/Pickup/Target Angle", io_.target_pivot_angle_.getDegrees());
+        "Subsystems/Pickup/Target Angle (Degrees)", io_.target_pivot_angle_.getDegrees());
     updateMechanism();
   }
 
