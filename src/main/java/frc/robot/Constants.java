@@ -11,6 +11,7 @@ import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.math.util.Units;
@@ -243,7 +244,6 @@ public final class Constants {
     // Elevator Constants
     public static final int ELEVATOR_MASTER_ID = 21;
     public static final int ELEVATOR_FOLLOWER_ID = 22;
-    public static final int ELEVATOR_LIMIT_SWITCH_PORT_NUMBER = 4;
     public static final double ELEVATOR_TARGET_THRESHOLD = Units.inchesToMeters(1); // In m
     public static final InvertedValue ELEVATOR_MASTER_INVERSION =
         InvertedValue.CounterClockwise_Positive;
@@ -279,7 +279,7 @@ public final class Constants {
             .withKA(LOADER.getDoubleValue("elevator", "CONTROLLER_A"))
             .withKG(LOADER.getDoubleValue("elevator", "CONTROLLER_G"))
             .withGravityType(GravityTypeValue.Elevator_Static);
-    public static final double ELEVATOR_SAFTEY_BUMP = Units.inchesToMeters(2);
+    public static final double ELEVATOR_SAFETY_BUMP = Units.inchesToMeters(2);
   }
 
   public class ArmConstants {
@@ -290,12 +290,12 @@ public final class Constants {
     public static final InvertedValue ARM_FOLLOWER_INVERSION =
         InvertedValue.CounterClockwise_Positive;
     public static final double CORAL_ARM_CRUISE_VELOCITY = 4;
-    public static final double CORAL_ARM_ACCELERATION = 2.5; // 1.75
+    public static final double CORAL_ARM_ACCELERATION = 2.5;
     public static final double L4_ARM_ACCEL = 1.75;
     public static final double ALGAE_ARM_CRUISE_VELOCITY = 4;
     public static final double ALGAE_ARM_ACCELERATION = 0.65;
-    public static final double SAFTEY_ARM_CRUISE_VELOCITY = 2;
-    public static final double SAFTEY_ARM_ACCELERATION = 0.30;
+    public static final double SAFETY_ARM_CRUISE_VELOCITY = 2;
+    public static final double SAFETY_ARM_ACCELERATION = 0.30;
     public static final double DANGER_ARM_ANGLE = Units.degreesToRadians(95);
     public static final double ARM_LENGTH =
         Units.inchesToMeters(LOADER.getDoubleValue("arm", "LENGTH_PIVOT_TO_FUNNEL"));
@@ -303,8 +303,8 @@ public final class Constants {
         Units.inchesToMeters(LOADER.getDoubleValue("arm", "DEPTH_CORAL_POCKET"));
     // ((shaft sprocket / pivot sprocket) / gearbox) * rotations to radians ratio)
     public static final double SENSOR_TO_MECHANISM_RATIO = (1.0 / ((16.0 / 64.0) / 20.0));
-    public static final double ARM_FORWARD_LIMT = Units.radiansToRotations(Math.PI);
-    public static final double ARM_REVERSE_LIMT =
+    public static final double ARM_FORWARD_LIMIT = Units.radiansToRotations(Math.PI);
+    public static final double ARM_REVERSE_LIMIT =
         Units.radiansToRotations(Units.degreesToRadians(-130));
     public static final Slot0Configs ARM_GAINS =
         new Slot0Configs()
@@ -318,22 +318,24 @@ public final class Constants {
             .withGravityType(GravityTypeValue.Arm_Cosine);
   }
 
-  public static final class PickupConstatns {
+  public static final class PickupConstants {
     public static final int TIME_OF_FLIGHT_ID = 3;
     public static final int INTAKE_ID = 41;
     public static final int PIVOT_ID = 40;
-    public static final double PIVOT_DEPLOYED_ANGLE = 0;
-    public static final double PIVOT_STATION_ANGLE = -23;
-    public static final double PIVOT_CLIMB_ANGLE = -10;
     public static final double PIVOT_THRESHOLD = 0.5;
+    public static final double SENSOR_TO_MECHANISM_RATIO = (85.714 / 1.0);
+    public static final Rotation2d PIVOT_OFFSET = Rotation2d.fromDegrees(33);
+    public static final Rotation2d PIVOT_DEPLOYED_ANGLE = Rotation2d.fromDegrees(-33);
+    public static final Rotation2d PIVOT_STATION_ANGLE = Rotation2d.fromDegrees(59);
+    public static final Rotation2d PIVOT_CLIMB_ANGLE = Rotation2d.fromDegrees(0);
     public static final double INTAKE_IN_SPEED = 0.50;
     public static final double INTAKE_OUT_SPEED = -0.50;
     public static final Slot0Configs PICKUP_GAINS =
-        new Slot0Configs().withKP(0.5).withKI(0.00).withKD(0.00);
+        new Slot0Configs().withKP(42.857).withKI(0.00).withKD(0.00);
     public static final double StatorCurrentLimit = 80;
   }
 
-  public class GameStateManagerConstatns {
+  public class GameStateManagerConstants {
     public static final double REQUIRED_ROTATION_FOR_ELEVATOR = Units.degreesToRadians(45);
   }
 }

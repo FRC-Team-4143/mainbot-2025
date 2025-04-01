@@ -30,7 +30,7 @@ public class HangProtection extends Command {
     num_intermediates = Elevator.getInstance().getNumIntermediates();
 
     if (was_unsafe) {
-      Elevator.getInstance().setSpeedLimit(SpeedLimit.SAFTEY);
+      Elevator.getInstance().setSpeedLimit(SpeedLimit.SAFETY);
       Elevator.getInstance().addSafetyIntermediate();
     }
   }

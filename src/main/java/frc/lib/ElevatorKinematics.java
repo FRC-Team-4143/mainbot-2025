@@ -26,7 +26,8 @@ public class ElevatorKinematics {
   public double desiredElevatorZ(double desiredZ, Rotation2d desiredAngle) {
     return desiredZ
         - calZOffset(
-            desiredAngle.getRadians() - (Math.cos(desiredAngle.getRadians()) * arm_width_));
+            desiredAngle.rotateBy(
+                Rotation2d.fromRadians(-(Math.cos(desiredAngle.getRadians()) * arm_width_))));
   }
 
   /**
@@ -37,7 +38,7 @@ public class ElevatorKinematics {
    * @param desiredAngle the current angle of the pivot arm
    * @return the needed z for the wanted z position of the elevator
    */
-  public double effectorZ(double current_z, double current_angle) {
+  public double effectorZ(double current_z, Rotation2d current_angle) {
     return current_z + calZOffset(current_angle);
   }
 
@@ -62,8 +63,8 @@ public class ElevatorKinematics {
     return arm_length_ * Math.cos(angle);
   }
 
-  public double calZOffset(double angle) {
-    return arm_length_ * Math.sin(angle);
+  public double calZOffset(Rotation2d angle) {
+    return arm_length_ * Math.sin(angle.getRadians());
   }
 
   public double calAngleWithX(double X) {

@@ -7,23 +7,31 @@ package frc.robot.subsystems;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.PositionVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
+import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
+import edu.wpi.first.math.geometry.Pose3d;
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Rotation3d;
+import edu.wpi.first.math.util.Units;
+import edu.wpi.first.networktables.NetworkTableInstance;
+import edu.wpi.first.networktables.StructPublisher;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Commands;
 import frc.mw_lib.subsystem.Subsystem;
 import frc.mw_lib.util.Util;
-import frc.robot.Constants;
+import frc.robot.Constants.PickupConstants;
 import frc.robot.commands.SetDefaultPickup;
 import monologue.Annotations.Log;
 import monologue.Logged;
 
 public class Pickup extends Subsystem {
 
-  private TalonFX intake_motor_;
+  private TalonFX roller_motor_;
   private TalonFX pivot_motor_;
 
-  private TalonFXConfiguration config_;
   private PositionVoltage pivot_request_;
+
+  private StructPublisher<Pose3d> pickup_pub_;
 
   public enum PickupMode {
     INTAKE,
@@ -50,25 +58,34 @@ public class Pickup extends Subsystem {
     // Create io object first in subsystem configuration
     io_ = new PickupPeriodicIo();
 
-    intake_motor_ = new TalonFX(Constants.PickupConstatns.INTAKE_ID);
-    pivot_motor_ = new TalonFX(Constants.PickupConstatns.PIVOT_ID);
+    roller_motor_ = new TalonFX(PickupConstants.INTAKE_ID);
+    pivot_motor_ = new TalonFX(PickupConstants.PIVOT_ID);
 
-    config_ = new TalonFXConfiguration();
-    config_.MotorOutput.NeutralMode = NeutralModeValue.Brake;
-    config_.Slot0 = Constants.PickupConstatns.PICKUP_GAINS;
-    config_.CurrentLimits.StatorCurrentLimit = Constants.PickupConstatns.StatorCurrentLimit;
+    TalonFXConfiguration config = new TalonFXConfiguration();
+    config.MotorOutput.NeutralMode = NeutralModeValue.Brake;
+    config.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
+    config.Slot0 = PickupConstants.PICKUP_GAINS;
+    config.CurrentLimits.StatorCurrentLimit = PickupConstants.StatorCurrentLimit;
+    config.Feedback.SensorToMechanismRatio = PickupConstants.SENSOR_TO_MECHANISM_RATIO;
+    pivot_motor_.getConfigurator().apply(config);
 
-    intake_motor_.getConfigurator().apply(config_);
-    pivot_motor_.getConfigurator().apply(config_);
+    config = new TalonFXConfiguration();
+    config.MotorOutput.NeutralMode = NeutralModeValue.Brake;
+    roller_motor_.getConfigurator().apply(config);
 
     pivot_request_ = new PositionVoltage(0);
 
     SmartDashboard.putData(
         "Subsystems/Pickup/Zero Ground",
-        Commands.runOnce(() -> setPivotPosition(Constants.PickupConstatns.PIVOT_DEPLOYED_ANGLE)));
+        Commands.runOnce(() -> setPivotPosition(PickupConstants.PIVOT_DEPLOYED_ANGLE)));
     SmartDashboard.putData(
         "Subsystems/Pickup/Zero Station",
-        Commands.runOnce(() -> setPivotPosition(Constants.PickupConstatns.PIVOT_STATION_ANGLE)));
+        Commands.runOnce(() -> setPivotPosition(PickupConstants.PIVOT_STATION_ANGLE)));
+
+    pickup_pub_ =
+        NetworkTableInstance.getDefault()
+            .getStructTopic("Components/Pickup", Pose3d.struct)
+            .publish();
   }
 
   /**
@@ -87,7 +104,10 @@ public class Pickup extends Subsystem {
    */
   @Override
   public void readPeriodicInputs(double timestamp) {
-    io_.current_pivot_angle = pivot_motor_.getPosition().getValueAsDouble();
+    io_.current_pivot_angle_ =
+        Rotation2d.fromRotations(pivot_motor_.getPosition().getValueAsDouble())
+            .minus(PickupConstants.PIVOT_OFFSET);
+    io_.current_roller_outout_ = roller_motor_.getDutyCycle().getValueAsDouble();
   }
 
   /**
@@ -99,26 +119,26 @@ public class Pickup extends Subsystem {
   public void updateLogic(double timestamp) {
     switch (io_.current_mode_) {
       case INTAKE:
-        io_.target_intake_speed_ = Constants.PickupConstatns.INTAKE_IN_SPEED;
-        io_.target_pivot_angle = Constants.PickupConstatns.PIVOT_DEPLOYED_ANGLE;
+        io_.target_roller_output_ = PickupConstants.INTAKE_IN_SPEED;
+        io_.target_pivot_angle_ = PickupConstants.PIVOT_DEPLOYED_ANGLE;
         break;
       case DEPLOYED:
-        io_.target_intake_speed_ = 0;
-        io_.target_pivot_angle = Constants.PickupConstatns.PIVOT_DEPLOYED_ANGLE;
+        io_.target_roller_output_ = 0;
+        io_.target_pivot_angle_ = PickupConstants.PIVOT_DEPLOYED_ANGLE;
         break;
       case FLUSH_OUT:
-        io_.target_intake_speed_ = Constants.PickupConstatns.INTAKE_OUT_SPEED;
-        io_.target_pivot_angle = Constants.PickupConstatns.PIVOT_DEPLOYED_ANGLE;
+        io_.target_roller_output_ = PickupConstants.INTAKE_OUT_SPEED;
+        io_.target_pivot_angle_ = PickupConstants.PIVOT_DEPLOYED_ANGLE;
         break;
       case STATION:
-        io_.target_intake_speed_ = 0;
-        io_.target_pivot_angle = Constants.PickupConstatns.PIVOT_STATION_ANGLE;
+        io_.target_roller_output_ = 0;
+        io_.target_pivot_angle_ = PickupConstants.PIVOT_STATION_ANGLE;
         break;
       case CLIMB:
-        io_.target_intake_speed_ = 0;
-        io_.target_pivot_angle = Constants.PickupConstatns.PIVOT_CLIMB_ANGLE;
+        io_.target_roller_output_ = 0;
+        io_.target_pivot_angle_ = PickupConstants.PIVOT_CLIMB_ANGLE;
       default:
-        io_.target_intake_speed_ = 0;
+        io_.target_roller_output_ = 0;
         break;
     }
   }
@@ -130,8 +150,10 @@ public class Pickup extends Subsystem {
    */
   @Override
   public void writePeriodicOutputs(double timestamp) {
-    intake_motor_.set(io_.target_intake_speed_);
-    pivot_motor_.setControl(pivot_request_.withPosition(io_.target_pivot_angle));
+    roller_motor_.set(io_.target_roller_output_);
+    pivot_motor_.setControl(
+        pivot_request_.withPosition(
+            io_.target_pivot_angle_.plus(PickupConstants.PIVOT_OFFSET).getRotations()));
   }
 
   /**
@@ -142,8 +164,21 @@ public class Pickup extends Subsystem {
    */
   @Override
   public void outputTelemetry(double timestamp) {
-    SmartDashboard.putString("Subsystems/Pickup/current_mode_", io_.current_mode_.toString());
-    SmartDashboard.putNumber("Subsystems/Pickup/current_pivot_angle", io_.current_pivot_angle);
+    SmartDashboard.putString("Subsystems/Pickup/Mode", io_.current_mode_.toString());
+    SmartDashboard.putNumber(
+        "Subsystems/Pickup/Current Angle (Degrees)", io_.current_pivot_angle_.getDegrees());
+    SmartDashboard.putNumber(
+        "Subsystems/Pickup/Target Angle (Degrees)", io_.target_pivot_angle_.getDegrees());
+    updateMechanism();
+  }
+
+  private void updateMechanism() {
+    pickup_pub_.set(
+        new Pose3d(
+            -Units.inchesToMeters(11),
+            0,
+            Units.inchesToMeters(8.25),
+            new Rotation3d(0, io_.current_pivot_angle_.getRadians(), 0)));
   }
 
   /**
@@ -157,7 +192,7 @@ public class Pickup extends Subsystem {
 
   public boolean isAtTarget() {
     return Util.epislonEquals(
-        io_.current_pivot_angle, io_.target_pivot_angle, Constants.PickupConstatns.PIVOT_THRESHOLD);
+        io_.current_pivot_angle_, io_.target_pivot_angle_, PickupConstants.PIVOT_THRESHOLD);
   }
 
   /**
@@ -168,15 +203,16 @@ public class Pickup extends Subsystem {
   }
 
   /** Resets to the zero position of the pivot motor */
-  public void setPivotPosition(double value) {
-    pivot_motor_.setPosition(value);
+  public void setPivotPosition(Rotation2d value) {
+    pivot_motor_.setPosition(value.getRotations());
   }
 
   public class PickupPeriodicIo implements Logged {
     @Log.File public PickupMode current_mode_ = PickupMode.DEPLOYED;
-    @Log.File public double target_intake_speed_ = 0;
-    @Log.File public double current_pivot_angle = 0;
-    @Log.File public double target_pivot_angle = 0;
+    @Log.File public double target_roller_output_ = 0;
+    @Log.File public double current_roller_outout_ = 0;
+    @Log.File public Rotation2d current_pivot_angle_ = new Rotation2d();
+    @Log.File public Rotation2d target_pivot_angle_ = new Rotation2d();
   }
 
   @Override

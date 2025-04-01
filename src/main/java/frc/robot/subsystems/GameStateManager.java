@@ -101,7 +101,7 @@ public class GameStateManager extends Subsystem {
         if (Util.epislonEquals(
             PoseEstimator.getInstance().getRobotPose().getRotation(),
             io_.reef_target.get().getRotation(),
-            Constants.GameStateManagerConstatns
+            Constants.GameStateManagerConstants
                 .REQUIRED_ROTATION_FOR_ELEVATOR)) { // move elevator once within rotation
           elevatorTargetSwitch();
         }
