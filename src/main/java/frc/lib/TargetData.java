@@ -1,18 +1,17 @@
 package frc.lib;
 
-import edu.wpi.first.math.geometry.Rotation2d;
 import monologue.Annotations.Log;
 import monologue.Logged;
 
 public class TargetData implements Logged {
   @Log.File public double height_;
-  @Log.File public Rotation2d angle_;
+  @Log.File public double angle_;
   @Log.File public ControlType type_;
   @Log.File public double height_offset_ = 0;
-  @Log.File public Rotation2d angle_offset_ = new Rotation2d();
+  @Log.File public double angle_offset_ = 0;
   @Log.File public String name_;
 
-  public TargetData(double h, Rotation2d a, ControlType t, String n) {
+  public TargetData(double h, double a, ControlType t, String n) {
     this.height_ = h;
     this.angle_ = a;
     this.type_ = t;
@@ -71,8 +70,8 @@ public class TargetData implements Logged {
    *
    * @return target angle
    */
-  public Rotation2d getAngle() {
-    return angle_.rotateBy(angle_offset_);
+  public double getAngle() {
+    return angle_ + angle_offset_;
   }
 
   /**
@@ -80,8 +79,8 @@ public class TargetData implements Logged {
    *
    * @param offset
    */
-  public void offsetAngle(Rotation2d offset) {
-    angle_offset_ = angle_offset_.rotateBy(offset);
+  public void offsetAngle(double offset) {
+    angle_offset_ += offset;
   }
 
   /**
@@ -89,13 +88,13 @@ public class TargetData implements Logged {
    *
    * @return
    */
-  public Rotation2d getAngleOffset() {
+  public double getAngleOffset() {
     return angle_offset_;
   }
 
   /** Resets the angle offset to 0 */
   public void resetAngleOffset() {
-    angle_offset_ = new Rotation2d();
+    angle_offset_ = 0;
   }
 
   /**

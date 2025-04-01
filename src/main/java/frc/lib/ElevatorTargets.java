@@ -1,6 +1,5 @@
 package frc.lib;
 
-import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.util.Units;
 import frc.lib.TargetData.ControlType;
 import frc.robot.Constants.ElevatorConstants;
@@ -10,77 +9,74 @@ public class ElevatorTargets {
   private static final TargetData L4_INT =
       new TargetData(
           FieldConstants.ReefHeight.L4.HEIGHT + Units.inchesToMeters(11),
-          Rotation2d.fromDegrees(-270),
+          Units.degreesToRadians(-270),
           ControlType.EFFECTOR,
           "L4_INT");
 
   private static final TargetData STATION_INT =
       new TargetData(
-          0.8468 + Units.inchesToMeters(5),
-          Rotation2d.fromRadians(-1.027767),
-          ControlType.EFFECTOR,
-          "STATION_INT");
+          0.8468 + Units.inchesToMeters(8), (-1.027767), ControlType.EFFECTOR, "STATION_INT");
 
   private static final TargetData L3_INT =
       new TargetData(
           FieldConstants.ReefHeight.L3.HEIGHT + Units.inchesToMeters(8),
-          Rotation2d.fromDegrees(-270),
+          Units.degreesToRadians(-270),
           ControlType.EFFECTOR,
           "L3_INT");
 
   private static final TargetData L2_INT =
       new TargetData(
           FieldConstants.ReefHeight.L2.HEIGHT + Units.inchesToMeters(15),
-          Rotation2d.fromDegrees(-270),
+          Units.degreesToRadians(-270),
           ControlType.EFFECTOR,
           "L2_INT");
 
   private static final TargetData L1_INT =
       new TargetData(
           FieldConstants.ReefHeight.L1.HEIGHT + Units.inchesToMeters(8),
-          Rotation2d.fromDegrees(-270),
+          Units.degreesToRadians(-270),
           ControlType.EFFECTOR,
           "L1_INT");
 
   private static final TargetData CLIMB_INT =
       new TargetData(
           ElevatorConstants.ELEVATOR_HEIGHT_PIVOT_MIN + Units.inchesToMeters(12),
-          Rotation2d.fromDegrees(0),
+          Units.degreesToRadians(0),
           ControlType.PIVOT,
           "CLIMB_INT");
 
   public static TargetData CURRENT_STOW_INT =
       new TargetData(
           ElevatorConstants.ELEVATOR_HEIGHT_PIVOT_SAFETY + Units.inchesToMeters(12),
-          Rotation2d.fromDegrees(-120),
+          Units.degreesToRadians(-120),
           ControlType.PIVOT,
           "CURRENT_STOW_INT");
 
   public static final TargetData HIGH_STOW_INT =
       new TargetData(
           ElevatorConstants.ELEVATOR_HEIGHT_PIVOT_SAFETY + Units.inchesToMeters(12),
-          Rotation2d.fromDegrees(-120),
+          Units.degreesToRadians(-120),
           ControlType.PIVOT,
           "HIGH_STOW_INT");
 
   public static final TargetData LOW_STOW_INT =
       new TargetData(
           ElevatorConstants.ELEVATOR_HEIGHT_PIVOT_SAFETY + Units.inchesToMeters(6),
-          Rotation2d.fromDegrees(-120),
+          Units.degreesToRadians(-120),
           ControlType.PIVOT,
           "LOW_STOW_INT");
 
   private static final TargetData ALGAE_STOW_ENTER =
       new TargetData(
           ElevatorConstants.ELEVATOR_HEIGHT_PIVOT_SAFETY + Units.inchesToMeters(12),
-          Rotation2d.fromDegrees(-270),
+          Units.degreesToRadians(-270),
           ControlType.PIVOT,
           "ALGAE_STOW_ENTER");
 
   private static final TargetData CORAL_STOW_ENTER =
       new TargetData(
           ElevatorConstants.ELEVATOR_HEIGHT_PIVOT_SAFETY + Units.inchesToMeters(12),
-          Rotation2d.fromDegrees(-270),
+          Units.degreesToRadians(-270),
           ControlType.PIVOT,
           "CORAL_STOW_ENTER");
 
@@ -89,7 +85,7 @@ public class ElevatorTargets {
         new TargetData(
             ElevatorConstants
                 .ELEVATOR_HEIGHT_PIVOT_SAFETY, // height is ignored for this special target
-            Rotation2d.fromDegrees(90),
+            Units.degreesToRadians(90),
             ControlType.PIVOT,
             "SAFETY"),
         Optional.empty(),
@@ -97,7 +93,7 @@ public class ElevatorTargets {
     L4(
         new TargetData(
             FieldConstants.ReefHeight.L4.HEIGHT + Units.inchesToMeters(11),
-            Rotation2d.fromDegrees(-180 - (180 - 145.3)),
+            Units.degreesToRadians(-180 - (180 - 145.3)),
             ControlType.EFFECTOR,
             "L4"),
         Optional.of(L4_INT),
@@ -105,7 +101,7 @@ public class ElevatorTargets {
     L3(
         new TargetData(
             FieldConstants.ReefHeight.L3.HEIGHT + Units.inchesToMeters(8),
-            Rotation2d.fromDegrees(-180 - (180 - 125)),
+            Units.degreesToRadians(-180 - (180 - 125)),
             ControlType.EFFECTOR,
             "L3"),
         Optional.of(L3_INT),
@@ -113,7 +109,7 @@ public class ElevatorTargets {
     L2(
         new TargetData(
             FieldConstants.ReefHeight.L2.HEIGHT + Units.inchesToMeters(8),
-            Rotation2d.fromDegrees(-180 - (180 - 125)),
+            Units.degreesToRadians(-180 - (180 - 125)),
             ControlType.EFFECTOR,
             "L2"),
         Optional.of(L2_INT),
@@ -121,23 +117,20 @@ public class ElevatorTargets {
     L1(
         new TargetData(
             FieldConstants.ReefHeight.L2.HEIGHT + Units.inchesToMeters(8),
-            Rotation2d.fromDegrees(-180 - (180 - 125)),
+            Units.degreesToRadians(-180 - (180 - 125)),
             ControlType.EFFECTOR,
             "L1"),
         Optional.of(L1_INT),
         Optional.empty()),
     STATION(
         new TargetData(
-            0.8468 + Units.inchesToMeters(0),
-            Rotation2d.fromRadians(-1.027767),
-            ControlType.EFFECTOR,
-            "STATION"),
+            0.8468 + Units.inchesToMeters(0), (-1.027767), ControlType.EFFECTOR, "STATION"),
         Optional.of(STATION_INT),
         Optional.empty()),
     CLIMB(
         new TargetData(
             ElevatorConstants.ELEVATOR_HEIGHT_PIVOT_MIN + Units.inchesToMeters(0),
-            Rotation2d.fromDegrees(20),
+            Units.degreesToRadians(20),
             ControlType.PIVOT,
             "CLIMB"),
         Optional.of(CLIMB_INT),
@@ -145,7 +138,7 @@ public class ElevatorTargets {
     CORAL_INTAKE(
         new TargetData(
             0.7891225351316538 + Units.inchesToMeters(1),
-            Rotation2d.fromDegrees(-115),
+            Units.degreesToRadians(-115),
             ControlType.PIVOT,
             "CORAL_INTAKE"),
         Optional.of(CURRENT_STOW_INT),
@@ -153,7 +146,7 @@ public class ElevatorTargets {
     CORAL_STOW(
         new TargetData(
             ElevatorConstants.ELEVATOR_HEIGHT_PIVOT_MIN,
-            Rotation2d.fromDegrees(-270),
+            Units.degreesToRadians(-270),
             ControlType.PIVOT,
             "CORAL_STOW"),
         Optional.of(CORAL_STOW_ENTER),
@@ -161,7 +154,7 @@ public class ElevatorTargets {
     ALGAE_LOW(
         new TargetData(
             0.9702231159054557 + Units.inchesToMeters(0),
-            Rotation2d.fromDegrees(-180 - (180 - 149)),
+            Units.degreesToRadians(-180 - (180 - 149)),
             ControlType.EFFECTOR,
             "ALGAE_LOW"),
         Optional.empty(),
@@ -169,7 +162,7 @@ public class ElevatorTargets {
     ALGAE_HIGH(
         new TargetData(
             1.2535345791562702 + Units.inchesToMeters(0),
-            Rotation2d.fromDegrees(-180 - (180 - 130.79)),
+            Units.degreesToRadians(-180 - (180 - 130.79)),
             ControlType.EFFECTOR,
             "ALGAE_HIGH"),
         Optional.empty(),
@@ -177,7 +170,7 @@ public class ElevatorTargets {
     ALGAE_PROCESSOR(
         new TargetData(
             FieldConstants.ReefHeight.L3.HEIGHT - Units.inchesToMeters(-18),
-            Rotation2d.fromDegrees(-55),
+            Units.degreesToRadians(-55),
             ControlType.EFFECTOR,
             "ALGAE_PROCESSOR"),
         Optional.empty(),
@@ -185,7 +178,7 @@ public class ElevatorTargets {
     BARGE(
         new TargetData(
             2.159 + Units.inchesToMeters(0),
-            Rotation2d.fromDegrees(-270),
+            Units.degreesToRadians(-270),
             ControlType.EFFECTOR,
             "BARGE"),
         Optional.empty(),
@@ -193,7 +186,7 @@ public class ElevatorTargets {
     ALGAE_STOW(
         new TargetData(
             ElevatorConstants.ELEVATOR_HEIGHT_PIVOT_MIN + Units.inchesToMeters(0),
-            Rotation2d.fromDegrees(-270),
+            Units.degreesToRadians(-270),
             ControlType.PIVOT,
             "ALGAE_STOW"),
         Optional.of(ALGAE_STOW_ENTER),
@@ -242,7 +235,7 @@ public class ElevatorTargets {
      *
      * @param offset
      */
-    public void offsetAngle(Rotation2d offset) {
+    public void offsetAngle(double offset) {
       target.offsetAngle(offset);
     }
 
