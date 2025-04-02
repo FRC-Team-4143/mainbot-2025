@@ -230,9 +230,9 @@ public final class Constants {
         new Slot0Configs().withKP(0.16).withKD(0.0).withKS(0.0).withKV(0.0).withKA(0.0);
     public static final double PRONG_DEPLOY_SPEED = 0.4;
     public static final double PRONG_HOLD_SPEED = -0.4;
-    public static final double ARM_DEPLOY_SPEED = 0.8;
-    public static final double ARM_HOLD_SPEED = 0.8;
-    public static final double ARM_SUPPLY_CURRENT_LIMIT = 15;
+    public static final double ARM_DEPLOY_SPEED = 0.2;
+    public static final double ARM_HOLD_SPEED = 0.08;
+    public static final double ARM_SUPPLY_CURRENT_LIMIT = 10;
     public static final double STRAP_RETRACTED_POSITION = 100;
     public static final double STRAP_SETPOINT_BUMP = (STRAP_RETRACTED_POSITION / 25.0);
     public static final double PRONG_PRESET_COUNT = 17;

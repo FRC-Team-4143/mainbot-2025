@@ -113,7 +113,7 @@
         "camera0": {
             "NAME": "PC_Camera",
             "location": {
-                "X": -1,
+                "X": 0,
                 "Y": -11.75,
                 "Z": 7.25,
                 "ROLL": 0,

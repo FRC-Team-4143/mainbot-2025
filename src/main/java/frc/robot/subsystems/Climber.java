@@ -68,14 +68,15 @@ public class Climber extends RemovableSubsystem {
     io_ = new ClimberPeriodicIo();
 
     if (isEnabled()) {
-      strap_motor_ = new TalonFX(ClimberConstants.STRAP_ID, "CANivore");
       prong_motor_ = new Spark(ClimberConstants.PRONG_ID);
       prong_motor_.setInverted(true);
+
       arm_motor_ = new ThriftyNova(ClimberConstants.ARM_ID);
-      arm_motor_.setInverted(true);
-      arm_motor_.setMaxCurrent(CurrentType.SUPPLY, ClimberConstants.ARM_SUPPLY_CURRENT_LIMIT);
+      arm_motor_.setInverted(false);
+      arm_motor_.setMaxCurrent(CurrentType.STATOR, ClimberConstants.ARM_SUPPLY_CURRENT_LIMIT);
       arm_motor_.setMotorType(MotorType.NEO);
 
+      strap_motor_ = new TalonFX(ClimberConstants.STRAP_ID, "CANivore");
       strap_motor_.getConfigurator().apply(ClimberConstants.STRAP_GAINS);
 
       strap_position_request_ = new PositionVoltage(0.0);
