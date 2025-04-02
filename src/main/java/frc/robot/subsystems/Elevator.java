@@ -15,7 +15,6 @@ import com.ctre.phoenix6.signals.FeedbackSensorSourceValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.ctre.phoenix6.signals.SensorDirectionValue;
 import edu.wpi.first.math.geometry.Pose3d;
-import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.networktables.NetworkTableInstance;
@@ -199,8 +198,7 @@ public class Elevator extends Subsystem {
     io_.current_elevator_height_ =
         io_.elevator_master_rotations_ * ElevatorConstants.ELEVATOR_ROTATIONS_TO_METERS
             + ElevatorConstants.ELEVATOR_HEIGHT_PIVOT_MIN;
-    io_.current_arm_angle_ =
-        Rotation2d.fromRadians(arm_motor_.getPosition().getValue().in(Radians));
+    io_.current_arm_angle_ = (arm_motor_.getPosition().getValue().in(Radians));
   }
 
   /** Computes updated outputs for the actuators */
@@ -262,7 +260,8 @@ public class Elevator extends Subsystem {
             (io_.target_elevator_height_ - ElevatorConstants.ELEVATOR_HEIGHT_PIVOT_MIN)
                 / ElevatorConstants.ELEVATOR_ROTATIONS_TO_METERS));
     elevator_follower_.setControl(new StrictFollower(elevator_master_.getDeviceID()));
-    arm_motor_.setControl(arm_request_.withPosition(io_.target_arm_angle_.getRotations()));
+    arm_motor_.setControl(
+        arm_request_.withPosition(Units.radiansToRotations(io_.target_arm_angle_)));
   }
 
   /** Outputs all logging information to the SmartDashboard */
@@ -289,9 +288,9 @@ public class Elevator extends Subsystem {
         elevator_follower_.getDeviceTemp().getValue().in(Fahrenheit));
     SmartDashboard.putString("Subsystems/Arm/Control Mode", io_.current_control_mode_.toString());
     SmartDashboard.putNumber(
-        "Subsystems/Arm/Current Angle (Degrees)", io_.current_arm_angle_.getDegrees());
+        "Subsystems/Arm/Current Angle (Degrees)", Units.radiansToDegrees(io_.current_arm_angle_));
     SmartDashboard.putNumber(
-        "Subsystems/Arm/Target Angle (Degrees)", current_target.getAngle().getDegrees());
+        "Subsystems/Arm/Target Angle (Degrees)", Units.radiansToDegrees(current_target.getAngle()));
     SmartDashboard.putNumber(
         "Subsystems/Arm/Current Height (Meters)",
         kinematics_.effectorZ(io_.current_elevator_height_, io_.current_arm_angle_));
@@ -301,7 +300,8 @@ public class Elevator extends Subsystem {
         "Subsystems/Arm/Absolute Encoder (Rotations)",
         arm_encoder_.getAbsolutePosition().getValue().in(Rotations));
     SmartDashboard.putNumber(
-        "Subsystems/Arm/Manual Offset (Degrees)", current_target.getAngleOffset().getDegrees());
+        "Subsystems/Arm/Manual Offset (Degrees)",
+        Units.radiansToDegrees(current_target.getAngleOffset()));
     SmartDashboard.putNumber(
         "Subsystems/Elevator/Intermediate Count", io_.intermediate_targets_.size());
     SmartDashboard.putString("Subsystems/Elevator/Target", io_.target_type_.toString());
@@ -324,14 +324,16 @@ public class Elevator extends Subsystem {
           new Pose3d(0, 0, io_.current_elevator_height_, new Rotation3d())
         });
     arm_pub_.set(
-        new Pose3d(0, 0, io_.current_elevator_height_ + 0.012, new Rotation3d(0, io_.current_arm_angle_.getRadians(), 0)));
+        new Pose3d(
+            0,
+            0,
+            io_.current_elevator_height_ + 0.012,
+            new Rotation3d(0, io_.current_arm_angle_, 0)));
   }
 
   private boolean armAtTarget(TargetData target) {
     return Util.epislonEquals(
-        io_.current_arm_angle_.getRadians(),
-        target.getAngle().getRadians(),
-        ArmConstants.ARM_TARGET_THRESHOLD);
+        io_.current_arm_angle_, target.getAngle(), ArmConstants.ARM_TARGET_THRESHOLD);
   }
 
   private boolean elevatorAtTarget(TargetData target) {
@@ -383,7 +385,7 @@ public class Elevator extends Subsystem {
    * @return If the arm is possibly over the reef
    */
   public boolean isArmInDangerZone() {
-    return io_.current_arm_angle_.getRadians() > Constants.ArmConstants.DANGER_ARM_ANGLE;
+    return io_.current_arm_angle_ > Constants.ArmConstants.DANGER_ARM_ANGLE;
   }
 
   /**
@@ -417,11 +419,11 @@ public class Elevator extends Subsystem {
         io_.target_type_.offsetHeight(-0.0254);
         break;
       case ARM_CCW:
-        io_.target_type_.offsetAngle(Rotation2d.fromDegrees(-1));
+        io_.target_type_.offsetAngle(Units.degreesToRadians(-1));
         break;
       case ARM_CW:
       default:
-        io_.target_type_.offsetAngle(Rotation2d.fromDegrees(1));
+        io_.target_type_.offsetAngle(Units.degreesToRadians(1));
         break;
     }
   }
@@ -479,7 +481,7 @@ public class Elevator extends Subsystem {
         0,
         new TargetData(
             io_.current_elevator_height_ + Units.inchesToMeters(2),
-            Rotation2d.fromDegrees(90),
+            Units.degreesToRadians(-270),
             ControlType.PIVOT,
             "Buffer Saftey"));
   }
@@ -547,8 +549,8 @@ public class Elevator extends Subsystem {
     @Log.File public ControlType current_control_mode_ = ControlType.PIVOT;
     @Log.File public double current_elevator_height_ = 0;
     @Log.File public double target_elevator_height_ = ElevatorConstants.ELEVATOR_HEIGHT_PIVOT_MIN;
-    @Log.File public Rotation2d current_arm_angle_ = new Rotation2d();
-    @Log.File public Rotation2d target_arm_angle_ = TargetType.CORAL_INTAKE.getTarget().getAngle();
+    @Log.File public double current_arm_angle_ = 0;
+    @Log.File public double target_arm_angle_ = TargetType.CORAL_INTAKE.getTarget().getAngle();
     @Log.File public TargetType target_type_ = TargetType.CORAL_INTAKE;
     @Log.File public ArrayList<TargetData> intermediate_targets_ = new ArrayList<>();
     @Log.File public double elevator_master_rotations_ = 0;

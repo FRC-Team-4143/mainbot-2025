@@ -230,8 +230,9 @@ public final class Constants {
         new Slot0Configs().withKP(0.16).withKD(0.0).withKS(0.0).withKV(0.0).withKA(0.0);
     public static final double PRONG_DEPLOY_SPEED = 0.4;
     public static final double PRONG_HOLD_SPEED = -0.4;
-    public static final double ARM_DEPLOY_SPEED = 0.8;
-    public static final double ARM_HOLD_SPEED = 0.8;
+    public static final double ARM_DEPLOY_SPEED = 0.2;
+    public static final double ARM_HOLD_SPEED = 0.08;
+    public static final double ARM_SUPPLY_CURRENT_LIMIT = 10;
     public static final double STRAP_RETRACTED_POSITION = 100;
     public static final double STRAP_SETPOINT_BUMP = (STRAP_RETRACTED_POSITION / 25.0);
     public static final double PRONG_PRESET_COUNT = 17;
@@ -303,9 +304,8 @@ public final class Constants {
         Units.inchesToMeters(LOADER.getDoubleValue("arm", "DEPTH_CORAL_POCKET"));
     // ((shaft sprocket / pivot sprocket) / gearbox) * rotations to radians ratio)
     public static final double SENSOR_TO_MECHANISM_RATIO = (1.0 / ((16.0 / 64.0) / 20.0));
-    public static final double ARM_FORWARD_LIMIT = Units.radiansToRotations(Math.PI);
-    public static final double ARM_REVERSE_LIMIT =
-        Units.radiansToRotations(Units.degreesToRadians(-130));
+    public static final double ARM_FORWARD_LIMIT = Units.radiansToRotations(30);
+    public static final double ARM_REVERSE_LIMIT = Units.degreesToRotations(-275);
     public static final Slot0Configs ARM_GAINS =
         new Slot0Configs()
             .withKP(LOADER.getDoubleValue("arm", "CONTROLLER_P"))

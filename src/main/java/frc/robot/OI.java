@@ -41,7 +41,7 @@ public abstract class OI {
   private static Trigger driver_pov_active_ = new Trigger(pov_is_present_);
   public static BooleanSupplier use_vision =
       () -> SmartDashboard.getBoolean("Vision/Use Vision Features", true);
-  public static IntakePreference intake_preference = IntakePreference.STATION;
+  public static IntakePreference intake_preference = IntakePreference.GROUND;
 
   public enum IntakePreference {
     STATION,

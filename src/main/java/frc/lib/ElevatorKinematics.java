@@ -30,6 +30,10 @@ public class ElevatorKinematics {
                 Rotation2d.fromRadians(-(Math.cos(desiredAngle.getRadians()) * arm_width_))));
   }
 
+  public double desiredElevatorZ(double desiredZ, double desiredAngle) {
+    return desiredZ - calZOffset(desiredAngle + (-(Math.cos(desiredAngle) * arm_width_)));
+  }
+
   /**
    * Calculates and returns the z position needed for the wanted z-position MUST HAVE ANGLE SET
    * CORRECT FOR HEIGHT TO BE ACCURATE
@@ -39,6 +43,10 @@ public class ElevatorKinematics {
    * @return the needed z for the wanted z position of the elevator
    */
   public double effectorZ(double current_z, Rotation2d current_angle) {
+    return current_z + calZOffset(current_angle);
+  }
+
+  public double effectorZ(double current_z, double current_angle) {
     return current_z + calZOffset(current_angle);
   }
 
@@ -65,6 +73,10 @@ public class ElevatorKinematics {
 
   public double calZOffset(Rotation2d angle) {
     return arm_length_ * Math.sin(angle.getRadians());
+  }
+
+  public double calZOffset(double angle) {
+    return arm_length_ * Math.sin(angle);
   }
 
   public double calAngleWithX(double X) {

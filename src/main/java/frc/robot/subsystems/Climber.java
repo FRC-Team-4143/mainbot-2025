@@ -10,6 +10,9 @@ import com.ctre.phoenix6.controls.PositionVoltage;
 import com.ctre.phoenix6.controls.VoltageOut;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.NeutralModeValue;
+import com.thethriftybot.ThriftyNova;
+import com.thethriftybot.ThriftyNova.CurrentType;
+import com.thethriftybot.ThriftyNova.MotorType;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj.CounterBase.EncodingType;
 import edu.wpi.first.wpilibj.DriverStation;
@@ -35,8 +38,7 @@ public class Climber extends RemovableSubsystem {
   private Encoder prong_counter_;
   private PIDController prong_controller_;
   private Spark prong_motor_;
-
-  private Spark arm_motor_;
+  private ThriftyNova arm_motor_;
 
   public enum ClimberMode {
     DISABLED,
@@ -66,12 +68,15 @@ public class Climber extends RemovableSubsystem {
     io_ = new ClimberPeriodicIo();
 
     if (isEnabled()) {
-      strap_motor_ = new TalonFX(ClimberConstants.STRAP_ID, "CANivore");
       prong_motor_ = new Spark(ClimberConstants.PRONG_ID);
       prong_motor_.setInverted(true);
-      arm_motor_ = new Spark(ClimberConstants.ARM_ID);
-      arm_motor_.setInverted(true);
 
+      arm_motor_ = new ThriftyNova(ClimberConstants.ARM_ID);
+      arm_motor_.setInverted(false);
+      arm_motor_.setMaxCurrent(CurrentType.STATOR, ClimberConstants.ARM_SUPPLY_CURRENT_LIMIT);
+      arm_motor_.setMotorType(MotorType.NEO);
+
+      strap_motor_ = new TalonFX(ClimberConstants.STRAP_ID, "CANivore");
       strap_motor_.getConfigurator().apply(ClimberConstants.STRAP_GAINS);
 
       strap_position_request_ = new PositionVoltage(0.0);
