@@ -22,9 +22,8 @@ public class ElevatorL2Target extends NoReqConditionalCommand {
         Commands.runOnce(
             () -> {
               GameStateManager.getInstance().setScoringTarget(ReefScoringTarget.L2, true);
-              if (GameStateManager.getInstance().getRobotState() != RobotState.TELEOP_CONTROL
-                  && Claw.getInstance().isCoralMode()) {
-                GameStateManager.getInstance().setRobotState(RobotState.APPROACHING_TARGET);
+              if (GameStateManager.getInstance().isRunning() && Claw.getInstance().isCoralMode()) {
+                GameStateManager.getInstance().setRobotState(RobotState.TARGET_ACQUISITION);
               }
             }),
         new ManualElevatorOverride(Level.L2),

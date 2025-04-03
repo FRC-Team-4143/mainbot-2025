@@ -161,6 +161,7 @@ public class GameStateManager extends Subsystem {
    */
   @Override
   public void outputTelemetry(double timestamp) {
+    SmartDashboard.putBoolean("Subsystems/GameStateManager/isRunning", isRunning());
     SmartDashboard.putString(
         "Subsystems/GameStateManager/Robot State", io_.robot_state_.toString());
     SmartDashboard.putString(
@@ -268,7 +269,7 @@ public class GameStateManager extends Subsystem {
 
   public void setRobotState(RobotState state) {
     // sets the current state of the robot (should really only set to
-    // TARGET_ACQUISITION to preserve
+    // TARGET_ACQUISITION or END to preserve
     // structure of the switch case)
     io_.robot_state_ = state;
   }
@@ -324,6 +325,10 @@ public class GameStateManager extends Subsystem {
         io_.scoring_target = ReefScoringTarget.L3_HIGH;
       }
     }
+  }
+
+  public boolean isRunning() {
+    return !(io_.robot_state_ == RobotState.TELEOP_CONTROL || io_.robot_state_ == RobotState.END);
   }
 
   /**
