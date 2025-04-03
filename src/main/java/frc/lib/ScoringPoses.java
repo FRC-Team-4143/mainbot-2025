@@ -13,6 +13,8 @@ import frc.robot.Constants.DrivetrainConstants;
 public class ScoringPoses {
 
   private static final ConstantsLoader LOADER = ConstantsLoader.getInstance();
+    public static final Transform2d CORAL_OFFSET = new Transform2d(Units.inchesToMeters(4.5), 0, new Rotation2d(0));
+
 
   // Offset to align robot bumpers with reef face
   public static final Transform2d REEF_FACE_OFFSET =
