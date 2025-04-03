@@ -152,8 +152,11 @@ public class SwerveDrivetrain extends Subsystem {
    */
   public SwerveDrivetrain(SwerveModuleConstants... modules) {
 
-    //make a debouncer
-    stallingDebouncer = new Debouncer(Constants.DrivetrainConstants.FAILING_TO_REACH_TARGET_DEBOUNCE_TIME, DebounceType.kRising);
+    // make a debouncer
+    stallingDebouncer =
+        new Debouncer(
+            Constants.DrivetrainConstants.FAILING_TO_REACH_TARGET_DEBOUNCE_TIME,
+            DebounceType.kRising);
 
     // make new io instance
     io_ = new SwerveDrivetrainPeriodicIo();
@@ -322,7 +325,12 @@ public class SwerveDrivetrain extends Subsystem {
 
   @Override
   public synchronized void updateLogic(double timestamp) {
-    io_.failing_to_reach_target = stallingDebouncer.calculate(Util.epislonEquals(io_.current_chassis_speeds_, io_.requested_chassis_speeds_, Constants.DrivetrainConstants.FAILING_TO_REACH_TARGET_SPEEDS_TOLERANCE));
+    io_.failing_to_reach_target =
+        stallingDebouncer.calculate(
+            !Util.epislonEquals(
+                io_.current_chassis_speeds_,
+                io_.requested_chassis_speeds_,
+                Constants.DrivetrainConstants.FAILING_TO_REACH_TARGET_SPEEDS_TOLERANCE));
     if (OI.use_vision.getAsBoolean() == true) {
       request_parameters_.currentPose = io_.current_pose_;
     } else {
@@ -501,7 +509,8 @@ public class SwerveDrivetrain extends Subsystem {
     requested_chassis_speeds_pub_.set(io_.requested_chassis_speeds_);
 
     SmartDashboard.putString("Subsystems/Swerve/Mode", io_.drive_mode_.toString());
-
+    SmartDashboard.putBoolean(
+        "Subsystems/Swerve/FailingToReachTarget", io_.failing_to_reach_target);
     SmartDashboard.putNumber(
         "Subsystems/Swerve/Controller POV", io_.joystick_pov.orElse(new Rotation2d()).getDegrees());
     SmartDashboard.putString(
