@@ -1,9 +1,7 @@
 package frc.mw_lib.geometry.spline;
 
-import edu.wpi.first.math.spline.Spline.ControlVector;
-
 public class Spline {
-  private ControlVector p0, p1, p2, p3;
+  private double p0, p1, p2, p3;
 
   public Spline(double p0, double p1, double p2, double p3) {
     this.p0 = p0;
