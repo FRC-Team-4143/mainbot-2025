@@ -16,7 +16,7 @@ public class ChassisProxyServer {
   // Data Packets
   private static OdomPacket odom_packet_ = new OdomPacket();
   private static StatesPacket states_packet_ = new StatesPacket();
-  private static DetectionPacket detection_packet_ = new DetectionPacket();
+  private static TagSolutionPacket tag_solution_packet_ = new TagSolutionPacket();
 
   // Socket Config
   private static DatagramSocket socket_ = null;
@@ -79,8 +79,8 @@ public class ChassisProxyServer {
         case StatesPacket.TYPE_ID: // const uint8_t msg_id{ 2u };
           states_packet_.updateData(buffer);
           break;
-        case DetectionPacket.TYPE_ID:
-          detection_packet_.updateData(buffer);
+        case TagSolutionPacket.TYPE_ID:
+          tag_solution_packet_.updateData(buffer);
           break;
           // Unknown Packet Type
         default:
@@ -127,10 +127,12 @@ public class ChassisProxyServer {
   }
 
   /**
-   * Gets the current detection info. Detections are updated by calling {@link #updateData()}
-   * @return Detection current the latest Pose and ids used to determine pose.
+   * Gets the current tag solution info. Solutions are updated by calling {@link #updateData()}
+   *
+   * @return {@link TagSolution} with latest Pose and ids used to determine pose.
    */
-  public static Detection getLatestDetection(){
-    return detection_packet_.detection_;
+  public static TagSolution getLatestTagSolution() {
+    return tag_solution_packet_.tag_solution_;
+  }
   }
 }

@@ -5,9 +5,9 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
 
-public class DetectionPacket implements Packet {
+public class TagSolutionPacket implements Packet {
 
-  public class Detection {
+  public class TagSolution {
     public Pose2d pose_ = new Pose2d();
     public ArrayList<Integer> detected_ids_ = new ArrayList<>();
   }
@@ -20,7 +20,9 @@ public class DetectionPacket implements Packet {
   private static final int DETECTED_TAG_SIZE = 21;
   private static final int DETECTED_TAG_START = 25;
 
-  public Detection detection_ = new Detection();
+  private static final double RESOLUTION = 1000.0;
+
+  public TagSolution tag_solution_ = new TagSolution();
   private Timestamp timestamp_ = new Timestamp(0, 0);
 
   public void updateData(byte[] buffer) {
@@ -31,17 +33,18 @@ public class DetectionPacket implements Packet {
     if (timestamp.isLatest(timestamp_)) {
       timestamp_ = timestamp;
       // Position data
-      detection_.pose_ =
+      tag_solution_.pose_ =
           new Pose2d(
-              ByteBuffer.wrap(buffer, X_POS_IDX, 4).getInt() / 1000.0,
-              ByteBuffer.wrap(buffer, Y_POS_IDX, 4).getInt() / 1000.0,
-              new Rotation2d(ByteBuffer.wrap(buffer, OMEGA_POS_IDX, 4).getInt() / 1000.0));
+              ByteBuffer.wrap(buffer, X_POS_IDX, 4).getInt() / RESOLUTION,
+              ByteBuffer.wrap(buffer, Y_POS_IDX, 4).getInt() / RESOLUTION,
+              new Rotation2d(ByteBuffer.wrap(buffer, OMEGA_POS_IDX, 4).getInt() / RESOLUTION));
 
       // Detection ID data
-      detection_.detected_ids_.clear();
+      tag_solution_.detected_ids_.clear();
       int detected_tag_size = ByteBuffer.wrap(buffer, DETECTED_TAG_SIZE, 4).getInt();
       for (int i = 0; i < detected_tag_size; i++) {
-        detection_.detected_ids_.add(ByteBuffer.wrap(buffer, DETECTED_TAG_START + (i * 4), 4).getInt());
+        tag_solution_.detected_ids_.add(
+            ByteBuffer.wrap(buffer, DETECTED_TAG_START + (i * 4), 4).getInt());
       }
     }
   }
