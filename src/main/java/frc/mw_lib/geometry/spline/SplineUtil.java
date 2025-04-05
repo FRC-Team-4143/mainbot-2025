@@ -1,6 +1,7 @@
 package frc.mw_lib.geometry.spline;
 
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.spline.Spline.ControlVector;
 
 public class SplineUtil {
   /**
@@ -21,7 +22,10 @@ public class SplineUtil {
       Translation2d p2 = points[i + 1];
       Translation2d p3 = (i + 2 == points.length) ? points[i + 1] : points[i + 2];
 
-      Spline2d crs = new Spline2d(p0, p1, p2, p3);
+      double[] cvX = {};
+      double[] cvY = {};
+
+      Spline2d crs = new Spline2d(new ControlVector(cvX, cvY));
 
       for (int j = 0; j <= subdivisions; j++) {
         subdividedPoints[(i * subdivisions) + j] = crs.q(j * increments);
