@@ -22,10 +22,7 @@ public class SplineUtil {
       Translation2d p2 = points[i + 1];
       Translation2d p3 = (i + 2 == points.length) ? points[i + 1] : points[i + 2];
 
-      double[] cvX = {};
-      double[] cvY = {};
-
-      Spline2d crs = new Spline2d(new ControlVector(cvX, cvY));
+      Spline2d crs = new Spline2d(p0, p1, p2, p3);
 
       for (int j = 0; j <= subdivisions; j++) {
         subdividedPoints[(i * subdivisions) + j] = crs.q(j * increments);
