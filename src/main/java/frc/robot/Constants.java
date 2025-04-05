@@ -282,6 +282,7 @@ public final class Constants {
             .withGravityType(GravityTypeValue.Elevator_Static);
     public static final double ELEVATOR_SAFETY_BUMP = Units.inchesToMeters(2);
 
+    public static final double SUBDIVISION_PER_METER = 100;
     public static final double SUBDIVISION_FOLLOW_DIST = Units.inchesToMeters(1);
   }
 
