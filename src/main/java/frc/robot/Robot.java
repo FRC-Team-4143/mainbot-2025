@@ -8,14 +8,12 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import edu.wpi.first.wpilibj2.command.Command.InterruptionBehavior;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.lib.FieldRegions;
 import frc.mw_lib.auto.Auto;
 import frc.mw_lib.auto.AutoManager;
 import frc.mw_lib.logging.Elastic;
 import frc.robot.autos.*;
-import frc.robot.commands.HangProtection;
 import frc.robot.subsystems.GameStateManager;
 import frc.robot.subsystems.GameStateManager.RobotState;
 import frc.robot.subsystems.SwerveDrivetrain;
@@ -102,8 +100,6 @@ public class Robot extends TimedRobot {
   public void teleopInit() {
     SwerveDrivetrain.getInstance().restoreDefaultDriveMode();
     CommandScheduler.getInstance().cancelAll();
-    CommandScheduler.getInstance()
-        .schedule(new HangProtection().withInterruptBehavior(InterruptionBehavior.kCancelIncoming));
     Elastic.selectTab("Teleop");
   }
 

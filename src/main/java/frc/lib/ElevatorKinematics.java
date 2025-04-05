@@ -1,6 +1,8 @@
 package frc.lib;
 
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Translation2d;
+import frc.lib.TargetData.ControlType;
 
 public class ElevatorKinematics {
   private double arm_length_ = 0;
@@ -85,5 +87,15 @@ public class ElevatorKinematics {
 
   public double calAngleWithZ(double Z) {
     return Math.asin(Z / arm_length_);
+  }
+
+  public TargetData convertToEnderfector(Translation2d translation) {
+    double neededAngle = desiredJointAngle(translation.getX());
+    double neededHeight = effectorZ(translation.getY(), neededAngle);
+    return new TargetData(neededHeight, neededAngle, ControlType.EFFECTOR);
+  }
+
+  public TargetData convertToPivot(Translation2d translation) {
+    return new TargetData();
   }
 }

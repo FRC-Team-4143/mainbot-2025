@@ -6,14 +6,14 @@ public class SplineUtil {
   /**
    * Creates catmull spline curves between the points array.
    *
-   * @param points       The current 2D points array
-   * @param subdivisions The number of subdivisions to add between each of the
-   *                     points.
+   * @param points The current 2D points array
+   * @param subdivisions The number of subdivisions to add between each of the points.
    * @return A larger array with the points subdivided.
    */
   public static Translation2d[] subdividePoints(Translation2d[] points, int[] subdivisions) {
     int totalSubdivisions = sumArray(subdivisions);
-    Translation2d[] subdividedPoints = new Translation2d[((points.length - 1) * totalSubdivisions) + 1];
+    Translation2d[] subdividedPoints =
+        new Translation2d[((points.length - 1) * totalSubdivisions) + 1];
 
     for (int i = 0; i < points.length - 1; i++) {
       float increments = 1f / (float) subdivisions[i];
@@ -34,16 +34,15 @@ public class SplineUtil {
   }
 
   /**
-   * Creates catmull spline curves between the points array with a given number
-   * for subdivions per
+   * Creates catmull spline curves between the points array with a given number for subdivions per
    * unit.
    *
-   * @param points              The current 2D points array
-   * @param subdivisionsPerUnit The number of subdivisions to add per unit of
-   *                            liner distatnce
+   * @param points The current 2D points array
+   * @param subdivisionsPerUnit The number of subdivisions to add per unit of liner distatnce
    * @return A larger array with the points subdivided.
    */
-  public static Translation2d[] subdividePoints(Translation2d[] points, double subdivisionsPerUnit) {
+  public static Translation2d[] subdividePoints(
+      Translation2d[] points, double subdivisionsPerUnit) {
     double[] distOfPoints = new double[points.length - 1];
     for (int i = 0; i < distOfPoints.length - 1; i++) {
       distOfPoints[i] = points[i].getDistance(points[i + 1]);

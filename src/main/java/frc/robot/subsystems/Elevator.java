@@ -24,7 +24,7 @@ import edu.wpi.first.wpilibj.DataLogManager;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Commands;
 import frc.lib.ElevatorKinematics;
-import frc.lib.ElevatorTargets;
+import frc.lib.ElevatorPlanner;
 import frc.lib.ElevatorTargets.TargetType;
 import frc.lib.FieldRegions;
 import frc.lib.TargetData;
@@ -38,8 +38,6 @@ import frc.robot.Constants.ArmConstants;
 import frc.robot.Constants.ElevatorConstants;
 import frc.robot.OI;
 import frc.robot.commands.SetDefaultStow;
-import frc.robot.subsystems.Pickup.PickupMode;
-import java.util.ArrayList;
 import monologue.Annotations.Log;
 import monologue.Logged;
 
@@ -67,6 +65,7 @@ public class Elevator extends Subsystem {
 
   // Control Behavior
   private ElevatorKinematics kinematics_;
+  private ElevatorPlanner planner_;
 
   // Mechanisms
   private StructArrayPublisher<Pose3d> stages_pub_;
@@ -152,6 +151,11 @@ public class Elevator extends Subsystem {
     arm_request_ = new MotionMagicVoltage(0);
 
     kinematics_ = new ElevatorKinematics(ArmConstants.ARM_LENGTH, ArmConstants.ARM_WIDTH);
+    planner_ =
+        new ElevatorPlanner(
+            kinematics_,
+            Constants.ElevatorConstants.SUBDIVISION_PER_METER,
+            Constants.ElevatorConstants.SUBDIVISION_FOLLOW_DIST);
 
     // Mechanism Setup
     stages_pub_ =
@@ -203,38 +207,15 @@ public class Elevator extends Subsystem {
 
   /** Computes updated outputs for the actuators */
   public void updateLogic(double timestamp) {
-    setStowSafety();
-
-    io_.pending_target = io_.target_type_.getTarget();
-
-    // If we have pending intermediate targets run them first
-    if (io_.intermediate_targets_.size() > 0) {
-      io_.pending_target = io_.intermediate_targets_.get(0);
+    // TODO: --
+    if (systemAtTarget(io_.current_target)) {
+      io_.current_target = planner_.nextTargetData(null);
     }
 
-    io_.target_arm_angle_ = io_.pending_target.getAngle();
-    switch (io_.pending_target.getControlType()) {
-      case EFFECTOR:
-        io_.target_elevator_height_ =
-            kinematics_.desiredElevatorZ(io_.pending_target.getHeight(), io_.target_arm_angle_);
-        break;
-      case PIVOT:
-        io_.target_elevator_height_ = io_.pending_target.getHeight();
-        break;
-    }
+    io_.target_elevator_height_ = io_.current_target.height_;
+    io_.target_arm_angle_ = io_.current_target.angle_;
 
-    // Determine if we are ready to move on with another intermediate
-    if (systemAtTarget(io_.pending_target) && io_.intermediate_targets_.size() > 0) {
-      if (io_.target_type_ == TargetType.STATION) {
-        if (Pickup.getInstance().isAtTarget()
-            && Pickup.getInstance().getPickupMode() == PickupMode.STATION) {
-          io_.intermediate_targets_.remove(0);
-        }
-      } else {
-        io_.intermediate_targets_.remove(0);
-      }
-    }
-
+    // elevator safteys
     if (io_.target_elevator_height_ < ElevatorConstants.ELEVATOR_HEIGHT_PIVOT_MIN) {
       DataLogManager.log(
           "ERROR: Target Elevator Height: "
@@ -266,7 +247,7 @@ public class Elevator extends Subsystem {
 
   /** Outputs all logging information to the SmartDashboard */
   public void outputTelemetry(double timestamp) {
-    TargetData current_target = io_.target_type_.getTarget();
+    TargetData current_target = io_.final_target_.getTarget();
 
     SmartDashboard.putString(
         "Subsystems/Elevator/Control Mode", io_.current_control_mode_.toString());
@@ -302,10 +283,8 @@ public class Elevator extends Subsystem {
     SmartDashboard.putNumber(
         "Subsystems/Arm/Manual Offset (Degrees)",
         Units.radiansToDegrees(current_target.getAngleOffset()));
-    SmartDashboard.putNumber(
-        "Subsystems/Elevator/Intermediate Count", io_.intermediate_targets_.size());
-    SmartDashboard.putString("Subsystems/Elevator/Target", io_.target_type_.toString());
-    SmartDashboard.putString("Subsystems/Elevator/Pending Target", io_.pending_target.toString());
+    SmartDashboard.putString("Subsystems/Elevator/Target", io_.final_target_.toString());
+    SmartDashboard.putString("Subsystems/Elevator/Pending Target", io_.current_target.toString());
     SmartDashboard.putBoolean("Subsystems/Elevator/At Target", isElevatorAtTarget());
     SmartDashboard.putBoolean("Subsystems/Arm/At Target", isArmAtTarget());
     updateMechanism();
@@ -355,23 +334,17 @@ public class Elevator extends Subsystem {
   }
 
   /**
-   * @return If the arm is within the threshold of its target
+   * @return If the arm is within the threshold of its final target
    */
   public boolean isArmAtTarget() {
-    if (io_.intermediate_targets_.size() > 0) {
-      return false;
-    }
-    return armAtTarget(io_.target_type_.getTarget());
+    return armAtTarget(io_.final_target_.getTarget());
   }
 
   /**
-   * @return If the elevator is within the threshold of its target
+   * @return If the elevator is within the threshold of its final target
    */
   public boolean isElevatorAtTarget() {
-    if (io_.intermediate_targets_.size() > 0) {
-      return false;
-    }
-    return elevatorAtTarget(io_.target_type_.getTarget());
+    return elevatorAtTarget(io_.final_target_.getTarget());
   }
 
   /**
@@ -413,49 +386,28 @@ public class Elevator extends Subsystem {
   public void setOffset(OffsetType offset_type) {
     switch (offset_type) {
       case ELEVATOR_UP:
-        io_.target_type_.offsetHeight(0.0254);
+        io_.final_target_.offsetHeight(0.0254);
         break;
       case ELEVATOR_DOWN:
-        io_.target_type_.offsetHeight(-0.0254);
+        io_.final_target_.offsetHeight(-0.0254);
         break;
       case ARM_CCW:
-        io_.target_type_.offsetAngle(Units.degreesToRadians(-1));
+        io_.final_target_.offsetAngle(Units.degreesToRadians(-1));
         break;
       case ARM_CW:
       default:
-        io_.target_type_.offsetAngle(Units.degreesToRadians(1));
+        io_.final_target_.offsetAngle(Units.degreesToRadians(1));
         break;
-    }
-  }
-
-  public void setStowSafety() {
-    if (Pickup.getInstance().isAtTarget()) {
-      switch (Pickup.getInstance().getPickupMode()) {
-        case DEPLOYED:
-          ElevatorTargets.CURRENT_STOW_INT = ElevatorTargets.LOW_STOW_INT;
-          break;
-        case INTAKE:
-          ElevatorTargets.CURRENT_STOW_INT = ElevatorTargets.LOW_STOW_INT;
-          break;
-        case STATION:
-          ElevatorTargets.CURRENT_STOW_INT = ElevatorTargets.HIGH_STOW_INT;
-          break;
-        default:
-          ElevatorTargets.CURRENT_STOW_INT = ElevatorTargets.HIGH_STOW_INT;
-          break;
-      }
-    } else {
-      ElevatorTargets.CURRENT_STOW_INT = ElevatorTargets.HIGH_STOW_INT;
     }
   }
 
   /**
-   * Sets the target for arm and elevator Only sets if climber is disabled
+   * Sets the target for arm and elevator
    *
    * @param target
    */
   public void setTarget(TargetType new_target) {
-    if (new_target == io_.target_type_) {
+    if (new_target == io_.final_target_) {
       return;
     }
 
@@ -463,40 +415,21 @@ public class Elevator extends Subsystem {
       setSpeedLimit(SpeedLimit.L4);
     }
 
-    TargetType old_target = io_.target_type_;
-    io_.target_type_ = new_target;
+    TargetType old_target = io_.final_target_;
+    io_.final_target_ = new_target;
 
-    // Handle intermediate targets if they exist
-    io_.intermediate_targets_.clear();
-    if (old_target.getExitTarget().isPresent()) {
-      io_.intermediate_targets_.add(old_target.getExitTarget().get());
-    }
-    if (new_target.getEnterTarget().isPresent()) {
-      io_.intermediate_targets_.add(new_target.getEnterTarget().get());
-    }
-  }
-
-  public void addSafetyIntermediate() {
-    io_.intermediate_targets_.add(
-        0,
-        new TargetData(
-            io_.current_elevator_height_ + Units.inchesToMeters(2),
-            Units.degreesToRadians(-270),
-            ControlType.PIVOT,
-            "Buffer Saftey"));
-  }
-
-  public int getNumIntermediates() {
-    return io_.intermediate_targets_.size();
+    // TODO: --
+    planner_.plan(null);
+    io_.current_target = planner_.nextTargetData(null);
   }
 
   public TargetType getTarget() {
-    return io_.target_type_;
+    return io_.final_target_;
   }
 
   public void resetManualOffsets() {
-    io_.target_type_.resetAngleOffset();
-    io_.target_type_.resetHeightOffset();
+    io_.final_target_.resetAngleOffset();
+    io_.final_target_.resetHeightOffset();
   }
 
   public void stowElevator() {
@@ -551,13 +484,13 @@ public class Elevator extends Subsystem {
     @Log.File public double target_elevator_height_ = ElevatorConstants.ELEVATOR_HEIGHT_PIVOT_MIN;
     @Log.File public double current_arm_angle_ = 0;
     @Log.File public double target_arm_angle_ = TargetType.CORAL_INTAKE.getTarget().getAngle();
-    @Log.File public TargetType target_type_ = TargetType.CORAL_INTAKE;
-    @Log.File public ArrayList<TargetData> intermediate_targets_ = new ArrayList<>();
     @Log.File public double elevator_master_rotations_ = 0;
     @Log.File public double elevator_follower_rotations_ = 0;
-    @Log.File public TargetData pending_target = new TargetData();
-    // @Log.File public TargetData target_data_ = target_.getLoggingObject();
     @Log.File public SpeedLimit current_speed_limit;
+    // the final goal
+    @Log.File public TargetType final_target_ = TargetType.CORAL_INTAKE;
+    // all targets between the curent pose and the final target
+    @Log.File public TargetData current_target = new TargetData();
   }
 
   /** Get logging object from subsystem */
