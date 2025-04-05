@@ -1,27 +1,26 @@
 package frc.lib;
 
 import monologue.Annotations.Log;
+import edu.wpi.first.math.geometry.Translation2d;
 import monologue.Logged;
 
 public class TargetData implements Logged {
-  @Log.File public double height_;
-  @Log.File public double angle_;
-  @Log.File public ControlType type_;
-  @Log.File public double height_offset_ = 0;
-  @Log.File public double angle_offset_ = 0;
-  @Log.File public String name_;
+  @Log.File
+  public Translation2d translation;
+  @Log.File
+  public double X_offset_ = 0;
+  @Log.File
+  public double Y_offset_ = 0;
+  @Log.File
+  public String name_;
 
-  public TargetData(double h, double a, ControlType t, String n) {
-    this.height_ = h;
-    this.angle_ = a;
-    this.type_ = t;
+  public TargetData(Translation2d t, String n) {
+    this.translation = t;
     this.name_ = n;
   }
 
-  public TargetData(double h, double a, ControlType t) {
-    this.height_ = h;
-    this.angle_ = a;
-    this.type_ = t;
+  public TargetData(Translation2d t) {
+    this.translation = t;
     this.name_ = "Unset";
   }
 
@@ -38,78 +37,66 @@ public class TargetData implements Logged {
     EFFECTOR
   }
 
-  // Height Methods
   /**
-   * Returns the current height including the active offset
-   *
-   * @return
+   * @return the current Y including the active offset
    */
-  public double getHeight() {
-    return height_ + height_offset_;
+  public double getY() {
+    return translation.getY() + Y_offset_;
   }
 
   /**
-   * Adjusts the height offset by the supplied increment
+   * Adjusts the Y offset by the supplied increment
    *
-   * @param offset
+   * @param offset increment to adjust the Y offset by
    */
-  public void offsetHeight(double offset) {
-    height_offset_ += offset;
+  public void offsetY(double offset) {
+    Y_offset_ += offset;
   }
 
   /**
-   * Returns the current stored angle offset
-   *
-   * @return
+   * @return the current stored Y offset
    */
-  public double getHeightOffset() {
-    return height_offset_;
+  public double getYOffset() {
+    return Y_offset_;
   }
 
-  /** Reset the height offset to 0 */
-  public void resetHeightOffset() {
-    height_offset_ = 0;
+  /** Reset the Y offset to 0 */
+  public void resetYOffset() {
+    Y_offset_ = 0;
   }
 
-  // Angle Methods
-  /**
-   * Returns the current angle including the active offset
-   *
-   * @return target angle
+    /**
+   * @return the current X including the active offset
    */
-  public double getAngle() {
-    return angle_ + angle_offset_;
+  public double getX() {
+    return translation.getX() + X_offset_;
   }
 
   /**
-   * Adjusts the angle offset by the supplied increment
+   * Adjusts the X offset by the supplied increment
    *
-   * @param offset
+   * @param offset increment to adjust the X offset by
    */
-  public void offsetAngle(double offset) {
-    angle_offset_ += offset;
+  public void offsetX(double offset) {
+    X_offset_ += offset;
   }
 
   /**
-   * Returns the current stored angle offset
-   *
-   * @return
+   * @return the current stored X offset
    */
-  public double getAngleOffset() {
-    return angle_offset_;
+  public double getXOffset() {
+    return X_offset_;
   }
 
-  /** Resets the angle offset to 0 */
-  public void resetAngleOffset() {
-    angle_offset_ = 0;
+  /** Reset the X offset to 0 */
+  public void resetXOffset() {
+    X_offset_ = 0;
   }
 
   /**
-   * Returns the control type associated with the target
-   *
-   * @return stored control type
+   * @return the name of the target
    */
-  public ControlType getControlType() {
-    return type_;
+  public String getName() {
+    return name_;
   }
 }
