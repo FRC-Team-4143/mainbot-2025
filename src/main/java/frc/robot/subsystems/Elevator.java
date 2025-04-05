@@ -105,14 +105,18 @@ public class Elevator extends Subsystem {
     // Elevator Config
     elevator_config_ = new TalonFXConfiguration();
     elevator_config_.Slot0 = ElevatorConstants.ELEVATOR_GAINS;
-    elevator_config_.MotionMagic.MotionMagicCruiseVelocity = ElevatorConstants.ELEVATOR_CRUISE_VELOCITY;
+    elevator_config_.MotionMagic.MotionMagicCruiseVelocity =
+        ElevatorConstants.ELEVATOR_CRUISE_VELOCITY;
     elevator_config_.MotionMagic.MotionMagicAcceleration = ElevatorConstants.ELEVATOR_ACCEL;
     elevator_config_.MotorOutput.NeutralMode = NeutralModeValue.Brake;
     elevator_config_.SoftwareLimitSwitch.ForwardSoftLimitEnable = false;
-    elevator_config_.SoftwareLimitSwitch.ForwardSoftLimitThreshold = ElevatorConstants.ELEVATOR_HEIGHT_PIVOT_MAX;
+    elevator_config_.SoftwareLimitSwitch.ForwardSoftLimitThreshold =
+        ElevatorConstants.ELEVATOR_HEIGHT_PIVOT_MAX;
     elevator_config_.SoftwareLimitSwitch.ReverseSoftLimitEnable = false;
-    elevator_config_.SoftwareLimitSwitch.ReverseSoftLimitThreshold = ElevatorConstants.ELEVATOR_HEIGHT_PIVOT_MIN;
-    elevator_config_.CurrentLimits.StatorCurrentLimit = ElevatorConstants.ELEVATOR_STATOR_CURRENT_LIMIT;
+    elevator_config_.SoftwareLimitSwitch.ReverseSoftLimitThreshold =
+        ElevatorConstants.ELEVATOR_HEIGHT_PIVOT_MIN;
+    elevator_config_.CurrentLimits.StatorCurrentLimit =
+        ElevatorConstants.ELEVATOR_STATOR_CURRENT_LIMIT;
     elevator_config_.CurrentLimits.StatorCurrentLimitEnable = true;
 
     elevator_config_.MotorOutput.Inverted = ElevatorConstants.ELEVATOR_MASTER_INVERSION;
@@ -154,13 +158,16 @@ public class Elevator extends Subsystem {
             Constants.ElevatorConstants.SUBDIVISION_FOLLOW_DIST);
 
     // Mechanism Setup
-    stages_pub_ = NetworkTableInstance.getDefault()
-        .getStructArrayTopic("Components/Elevator/Stages", Pose3d.struct)
-        .publish();
-    arm_pub_ = NetworkTableInstance.getDefault().getStructTopic("Components/Arm", Pose3d.struct).publish();
+    stages_pub_ =
+        NetworkTableInstance.getDefault()
+            .getStructArrayTopic("Components/Elevator/Stages", Pose3d.struct)
+            .publish();
+    arm_pub_ =
+        NetworkTableInstance.getDefault().getStructTopic("Components/Arm", Pose3d.struct).publish();
 
     // System Tuning
-    elevator_tuner_ = new TalonFXTuner(elevator_master_, new TalonFX[] { elevator_follower_ }, "Elevator", this);
+    elevator_tuner_ =
+        new TalonFXTuner(elevator_master_, new TalonFX[] {elevator_follower_}, "Elevator", this);
     // bindTuner(elevator_tuner_, 5, 10);
 
     arm_tuner_ = new TalonFXTuner(arm_motor_, "Arm", this);
@@ -194,8 +201,9 @@ public class Elevator extends Subsystem {
   public void readPeriodicInputs(double timestamp) {
     io_.elevator_follower_rotations_ = elevator_follower_.getPosition().getValue().in(Rotations);
     io_.elevator_master_rotations_ = elevator_master_.getPosition().getValue().in(Rotations);
-    io_.current_elevator_height_ = io_.elevator_master_rotations_ * ElevatorConstants.ELEVATOR_ROTATIONS_TO_METERS
-        + ElevatorConstants.ELEVATOR_HEIGHT_PIVOT_MIN;
+    io_.current_elevator_height_ =
+        io_.elevator_master_rotations_ * ElevatorConstants.ELEVATOR_ROTATIONS_TO_METERS
+            + ElevatorConstants.ELEVATOR_HEIGHT_PIVOT_MIN;
     io_.current_arm_angle_ = (arm_motor_.getPosition().getValue().in(Radians));
   }
 
