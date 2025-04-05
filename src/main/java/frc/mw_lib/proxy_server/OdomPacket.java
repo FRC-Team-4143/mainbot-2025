@@ -19,6 +19,8 @@ public class OdomPacket implements Packet {
   private static final int Y_DOT_IDX = 37;
   private static final int OMEGA_DOT_IDX = 41;
 
+  private static final double RESOLUTION = 1000.0;
+
   public Pose2d pose_ = new Pose2d();
   public Twist2d twist_ = new Twist2d();
   public double[] variances_ = new double[3];
@@ -36,21 +38,21 @@ public class OdomPacket implements Packet {
       // Position data
       pose_ =
           new Pose2d(
-              ByteBuffer.wrap(buffer, X_POS_IDX, 4).getInt() / 1000.0,
-              ByteBuffer.wrap(buffer, Y_POS_IDX, 4).getInt() / 1000.0,
-              new Rotation2d(ByteBuffer.wrap(buffer, OMEGA_POS_IDX, 4).getInt() / 1000.0));
+              ByteBuffer.wrap(buffer, X_POS_IDX, 4).getInt() / RESOLUTION,
+              ByteBuffer.wrap(buffer, Y_POS_IDX, 4).getInt() / RESOLUTION,
+              new Rotation2d(ByteBuffer.wrap(buffer, OMEGA_POS_IDX, 4).getInt() / RESOLUTION));
 
       // Velocity data
       twist_ =
           new Twist2d(
-              ByteBuffer.wrap(buffer, X_DOT_IDX, 4).getInt() / 1000.0,
-              ByteBuffer.wrap(buffer, Y_DOT_IDX, 4).getInt() / 1000.0,
-              ByteBuffer.wrap(buffer, OMEGA_DOT_IDX, 4).getInt() / 1000.0);
+              ByteBuffer.wrap(buffer, X_DOT_IDX, 4).getInt() / RESOLUTION,
+              ByteBuffer.wrap(buffer, Y_DOT_IDX, 4).getInt() / RESOLUTION,
+              ByteBuffer.wrap(buffer, OMEGA_DOT_IDX, 4).getInt() / RESOLUTION);
 
       // Position variances for certainty estimation
-      variances_[0] = ByteBuffer.wrap(buffer, X_VAR_IDX, 4).getInt() / 1000.0;
-      variances_[1] = ByteBuffer.wrap(buffer, Y_VAR_IDX, 4).getInt() / 1000.0;
-      variances_[2] = ByteBuffer.wrap(buffer, OMEGA_VAR_IDX, 4).getInt() / 1000.0;
+      variances_[0] = ByteBuffer.wrap(buffer, X_VAR_IDX, 4).getInt() / RESOLUTION;
+      variances_[1] = ByteBuffer.wrap(buffer, Y_VAR_IDX, 4).getInt() / RESOLUTION;
+      variances_[2] = ByteBuffer.wrap(buffer, OMEGA_VAR_IDX, 4).getInt() / RESOLUTION;
     }
   }
 }

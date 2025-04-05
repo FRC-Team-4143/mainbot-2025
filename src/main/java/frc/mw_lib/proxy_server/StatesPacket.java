@@ -17,6 +17,8 @@ public class StatesPacket implements Packet {
   private static final int MOD_4_ANG_POS_IDX = 33;
   private static final int MOD_4_LIN_VEL_IDX = 37;
 
+  private static final double RESOLUTION = 1000.0;
+
   public SwerveModuleState[] module_states_ = new SwerveModuleState[4];
   private Timestamp timestamp_ = new Timestamp(0, 0);
 
@@ -31,20 +33,20 @@ public class StatesPacket implements Packet {
       timestamp_ = timestamp;
       module_states_[0] =
           new SwerveModuleState(
-              ByteBuffer.wrap(buffer, MOD_1_LIN_VEL_IDX, 4).getInt() / 1000.0,
-              new Rotation2d(ByteBuffer.wrap(buffer, MOD_1_ANG_POS_IDX, 4).getInt() / 1000.0));
+              ByteBuffer.wrap(buffer, MOD_1_LIN_VEL_IDX, 4).getInt() / RESOLUTION,
+              new Rotation2d(ByteBuffer.wrap(buffer, MOD_1_ANG_POS_IDX, 4).getInt() / RESOLUTION));
       module_states_[1] =
           new SwerveModuleState(
-              ByteBuffer.wrap(buffer, MOD_2_LIN_VEL_IDX, 4).getInt() / 1000.0,
-              new Rotation2d(ByteBuffer.wrap(buffer, MOD_2_ANG_POS_IDX, 4).getInt() / 1000.0));
+              ByteBuffer.wrap(buffer, MOD_2_LIN_VEL_IDX, 4).getInt() / RESOLUTION,
+              new Rotation2d(ByteBuffer.wrap(buffer, MOD_2_ANG_POS_IDX, 4).getInt() / RESOLUTION));
       module_states_[2] =
           new SwerveModuleState(
-              ByteBuffer.wrap(buffer, MOD_3_LIN_VEL_IDX, 4).getInt() / 1000.0,
-              new Rotation2d(ByteBuffer.wrap(buffer, MOD_3_ANG_POS_IDX, 4).getInt() / 1000.0));
+              ByteBuffer.wrap(buffer, MOD_3_LIN_VEL_IDX, 4).getInt() / RESOLUTION,
+              new Rotation2d(ByteBuffer.wrap(buffer, MOD_3_ANG_POS_IDX, 4).getInt() / RESOLUTION));
       module_states_[3] =
           new SwerveModuleState(
-              ByteBuffer.wrap(buffer, MOD_4_LIN_VEL_IDX, 4).getInt() / 1000.0,
-              new Rotation2d(ByteBuffer.wrap(buffer, MOD_4_ANG_POS_IDX, 4).getInt() / 1000.0));
+              ByteBuffer.wrap(buffer, MOD_4_LIN_VEL_IDX, 4).getInt() / RESOLUTION,
+              new Rotation2d(ByteBuffer.wrap(buffer, MOD_4_ANG_POS_IDX, 4).getInt() / RESOLUTION));
     }
   }
 }
