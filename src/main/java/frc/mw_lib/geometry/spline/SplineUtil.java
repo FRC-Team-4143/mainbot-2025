@@ -43,7 +43,8 @@ public class SplineUtil {
    *                            liner distatnce
    * @return A larger array with the points subdivided.
    */
-  public static Translation2d[] subdividePoints(Translation2d[] points, double subdivisionsPerUnit) {
+  public static Translation2d[] subdividePoints(
+      Translation2d[] points, double subdivisionsPerUnit) {
     double[] distOfPoints = new double[points.length - 1];
     for (int i = 0; i < distOfPoints.length - 1; i++) {
       distOfPoints[i] = points[i].getDistance(points[i + 1]);
@@ -68,19 +69,4 @@ public class SplineUtil {
     }
     return count;
   }
-
-  // public static void main(String[] args) {
-  // Translation2d[] pointArray = new Translation2d[4];
-
-  // pointArray[0] = new Translation2d(1f, 1f);
-  // pointArray[1] = new Translation2d(2f, 2f);
-  // pointArray[2] = new Translation2d(3f, 2f);
-  // pointArray[3] = new Translation2d(4f, 1f);
-
-  // Translation2d[] subdividedPoints = SplineUtil.subdividePoints(pointArray, 4);
-
-  // for (Translation2d point : subdividedPoints) {
-  // System.out.println("" + point);
-  // }
-  // }
 }
