@@ -7,16 +7,18 @@ public class SplineUtil {
   /**
    * Creates catmull spline curves between the points array.
    *
-   * @param points The current 2D points array
-   * @param subdivisions The number of subdivisions to add between each of the points.
+   * @param points       The current 2D points array
+   * @param subdivisions The number of subdivisions to add between each of the
+   *                     points.
    * @return A larger array with the points subdivided.
    */
-  public static Translation2d[] subdividePoints(Translation2d[] points, int subdivisions) {
-    Translation2d[] subdividedPoints = new Translation2d[((points.length - 1) * subdivisions) + 1];
-
-    float increments = 1f / (float) subdivisions;
+  public static Translation2d[] subdividePoints(Translation2d[] points, int[] subdivisions) {
+    int totalSubdivisions = sumArray(subdivisions);
+    Translation2d[] subdividedPoints = new Translation2d[((points.length - 1) * totalSubdivisions) + 1];
 
     for (int i = 0; i < points.length - 1; i++) {
+      float increments = 1f / (float) subdivisions[i];
+
       Translation2d p0 = i == 0 ? points[i] : points[i - 1];
       Translation2d p1 = points[i];
       Translation2d p2 = points[i + 1];
@@ -24,26 +26,34 @@ public class SplineUtil {
 
       Spline2d crs = new Spline2d(p0, p1, p2, p3);
 
-      for (int j = 0; j <= subdivisions; j++) {
-        subdividedPoints[(i * subdivisions) + j] = crs.q(j * increments);
+      for (int j = 0; j <= subdivisions[i]; j++) {
+        subdividedPoints[(i * subdivisions[i]) + j] = crs.q(j * increments);
       }
     }
 
     return subdividedPoints;
   }
 
-//   public static void main(String[] args) {
-//     Translation2d[] pointArray = new Translation2d[4];
+  private static int sumArray(int[] a) {
+    int count = 0;
+    for (int i = 0; i < a.length; i++) {
+      count += a[i];
+    }
+    return count;
+  }
 
-//     pointArray[0] = new Translation2d(1f, 1f);
-//     pointArray[1] = new Translation2d(2f, 2f);
-//     pointArray[2] = new Translation2d(3f, 2f);
-//     pointArray[3] = new Translation2d(4f, 1f);
+  // public static void main(String[] args) {
+  // Translation2d[] pointArray = new Translation2d[4];
 
-//     Translation2d[] subdividedPoints = SplineUtil.subdividePoints(pointArray, 4);
+  // pointArray[0] = new Translation2d(1f, 1f);
+  // pointArray[1] = new Translation2d(2f, 2f);
+  // pointArray[2] = new Translation2d(3f, 2f);
+  // pointArray[3] = new Translation2d(4f, 1f);
 
-//     for (Translation2d point : subdividedPoints) {
-//       System.out.println("" + point);
-//     }
-//   }
+  // Translation2d[] subdividedPoints = SplineUtil.subdividePoints(pointArray, 4);
+
+  // for (Translation2d point : subdividedPoints) {
+  // System.out.println("" + point);
+  // }
+  // }
 }
