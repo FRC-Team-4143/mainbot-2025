@@ -1,7 +1,9 @@
 package frc.robot.subsystems;
 
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.networktables.NetworkTableInstance;
+import edu.wpi.first.networktables.StructArrayPublisher;
 import edu.wpi.first.networktables.StructPublisher;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -19,8 +21,10 @@ import monologue.Logged;
 
 public class GameStateManager extends Subsystem {
 
-  private StructPublisher<Pose2d> reef_target_publisher =
-      NetworkTableInstance.getDefault().getStructTopic("ReefTarget", Pose2d.struct).publish();
+  private StructPublisher<Pose2d> reef_target_publisher = NetworkTableInstance.getDefault()
+      .getStructTopic("ReefTarget", Pose2d.struct).publish();
+  private StructArrayPublisher<Pose3d> stages_pub_;
+  private StructPublisher<Pose3d> arm_pub_;
 
   // Singleton pattern
   private static GameStateManager instance_ = null;
@@ -63,33 +67,47 @@ public class GameStateManager extends Subsystem {
 
   private GameStateManager() {
     io_ = new GameStateManagerPeriodicIo();
+
+    // Mechanism Setup
+    stages_pub_ = NetworkTableInstance.getDefault()
+        .getStructArrayTopic("Components/Elevator/Stages", Pose3d.struct)
+        .publish();
+    arm_pub_ = NetworkTableInstance.getDefault().getStructTopic("Components/Arm", Pose3d.struct).publish();
   }
 
   /**
-   * This function should be logic and code to fully reset your subsystem. This is called during
-   * initialization, and should handle I/O configuration and initializing data members.
+   * This function should be logic and code to fully reset your subsystem. This is
+   * called during
+   * initialization, and should handle I/O configuration and initializing data
+   * members.
    */
   @Override
-  public void reset() {}
+  public void reset() {
+  }
 
   /**
-   * Inside this function, all of the SENSORS should be read into variables stored in the PeriodicIO
-   * class defined below. There should be no calls to output to actuators, or any logic within this
+   * Inside this function, all of the SENSORS should be read into variables stored
+   * in the PeriodicIO
+   * class defined below. There should be no calls to output to actuators, or any
+   * logic within this
    * function.
    */
   @Override
-  public void readPeriodicInputs(double timestamp) {}
+  public void readPeriodicInputs(double timestamp) {
+  }
 
   /**
-   * Inside this function, all of the LOGIC should compute updates to output variables in the
-   * PeriodicIO class defined below. There should be no calls to read from sensors or write to
+   * Inside this function, all of the LOGIC should compute updates to output
+   * variables in the
+   * PeriodicIO class defined below. There should be no calls to read from sensors
+   * or write to
    * actuators in this function.
    */
   @Override
   public void updateLogic(double timestamp) {
+    io_.reef_target = reefPose(io_.target_column);
     switch (io_.robot_state_) {
       case TARGET_ACQUISITION:
-        io_.reef_target = reefPose(io_.target_column);
         if (io_.reef_target.isPresent()) {
           SwerveDrivetrain.getInstance().setTargetPose(io_.reef_target.get());
           if (FieldRegions.REEF_ENTER.contains(PoseEstimator.getInstance().getRobotPose())) {
@@ -101,8 +119,8 @@ public class GameStateManager extends Subsystem {
         if (Util.epislonEquals(
             PoseEstimator.getInstance().getRobotPose().getRotation(),
             io_.reef_target.get().getRotation(),
-            Constants.GameStateManagerConstants
-                .REQUIRED_ROTATION_FOR_ELEVATOR)) { // move elevator once within rotation
+            Constants.GameStateManagerConstants.REQUIRED_ROTATION_FOR_ELEVATOR)) {
+          // move elevator once within rotation threshold
           elevatorTargetSwitch();
         }
         if (SwerveDrivetrain.getInstance().atTractorBeamPose()
@@ -137,17 +155,23 @@ public class GameStateManager extends Subsystem {
   }
 
   /**
-   * Inside this function actuator OUTPUTS should be updated from data contained in the PeriodicIO
-   * class defined below. There should be little to no logic contained within this function, and no
+   * Inside this function actuator OUTPUTS should be updated from data contained
+   * in the PeriodicIO
+   * class defined below. There should be little to no logic contained within this
+   * function, and no
    * sensors should be read.
    */
   @Override
-  public void writePeriodicOutputs(double timestamp) {}
+  public void writePeriodicOutputs(double timestamp) {
+  }
 
   /**
-   * Inside this function telemetry should be output to smartdashboard. The data should be collected
-   * out of the PeriodicIO class instance defined below. There should be no sensor information read
-   * in this function nor any outputs made to actuators within this function. Only publish to
+   * Inside this function telemetry should be output to smartdashboard. The data
+   * should be collected
+   * out of the PeriodicIO class instance defined below. There should be no sensor
+   * information read
+   * in this function nor any outputs made to actuators within this function. Only
+   * publish to
    * smartdashboard here.
    */
   @Override
@@ -163,20 +187,25 @@ public class GameStateManager extends Subsystem {
     SmartDashboard.putString(
         "Subsystems/GameStateManager/Saved Target Level", io_.saved_scoring_target.toString());
     SmartDashboard.putBoolean(
-        "Subsystems/GameStateManager/Ready to Score",
-        (SwerveDrivetrain.getInstance().atTractorBeamPose()
-            && Elevator.getInstance().isElevatorAndArmAtTarget()
-            && io_.robot_state_ == RobotState.SCORING));
+        "Subsystems/GameStateManager/Ready to Score", isReadyToScore());
+
     if (io_.reef_target.isPresent()) {
       reef_target_publisher.set(io_.reef_target.get());
+      updateElevatorPublishers();
     } else {
       reef_target_publisher.set(new Pose2d());
     }
   }
 
+  public boolean isReadyToScore() {
+    return SwerveDrivetrain.getInstance().atTractorBeamPose()
+        && Elevator.getInstance().isElevatorAndArmAtTarget()
+        && io_.robot_state_ == RobotState.SCORING;
+  }
+
   /**
    * @param target_score new target
-   * @param save weather or not to save the target
+   * @param save         weather or not to save the target
    */
   public void setScoringColum(Column col, boolean save) {
     io_.target_column = col;
@@ -187,7 +216,7 @@ public class GameStateManager extends Subsystem {
 
   /**
    * @param target_score new target
-   * @param save weather or not to save the target
+   * @param save         weather or not to save the target
    */
   public void setScoringTarget(ReefScoringTarget target, boolean save) {
     io_.scoring_target = target;
@@ -214,7 +243,8 @@ public class GameStateManager extends Subsystem {
   }
 
   /**
-   * Returns a target pose when robot is in an reef region If not in a region empty is returned.
+   * Returns a target pose when robot is in an reef region If not in a region
+   * empty is returned.
    * Also adjust to the provided column
    *
    * @return target pose
@@ -259,7 +289,7 @@ public class GameStateManager extends Subsystem {
 
   public void setRobotState(RobotState state) {
     // sets the current state of the robot (should really only set to
-    // TARGET_ACQUISITION to preserve
+    // TARGET_ACQUISITION or END to preserve
     // structure of the switch case)
     io_.robot_state_ = state;
   }
@@ -296,19 +326,54 @@ public class GameStateManager extends Subsystem {
     }
   }
 
+  public void updateElevatorPublishers() {
+    switch (io_.scoring_target) {
+      case L1:
+        Elevator.getInstance().updateMechanism(TargetType.L1.getTarget(), stages_pub_, arm_pub_);
+        break;
+      case L2:
+        Elevator.getInstance().updateMechanism(TargetType.L2.getTarget(), stages_pub_, arm_pub_);
+        break;
+      case L3:
+        Elevator.getInstance().updateMechanism(TargetType.L3.getTarget(), stages_pub_, arm_pub_);
+        break;
+      case L4:
+        Elevator.getInstance().updateMechanism(TargetType.L4.getTarget(), stages_pub_, arm_pub_);
+        break;
+      case ALGAE:
+        if (io_.algae_level_high) {
+          Elevator.getInstance().updateMechanism(TargetType.ALGAE_HIGH.getTarget(), stages_pub_, arm_pub_);
+        } else {
+          Elevator.getInstance().updateMechanism(TargetType.ALGAE_LOW.getTarget(), stages_pub_, arm_pub_);
+        }
+        break;
+      case TELEOP_CONTROL:
+      case TURTLE:
+      default:
+        break;
+    }
+  }
+
   /**
-   * Inside this function actuator OUTPUTS should be updated from data contained in the PeriodicIO
-   * class defined below. There should be little to no logic contained within this function, and no
+   * Inside this function actuator OUTPUTS should be updated from data contained
+   * in the PeriodicIO
+   * class defined below. There should be little to no logic contained within this
+   * function, and no
    * sensors should be read.
    */
   public class GameStateManagerPeriodicIo implements Logged {
-    @Log.File public ReefScoringTarget scoring_target = ReefScoringTarget.TURTLE;
-    @Log.File public ReefScoringTarget saved_scoring_target = ReefScoringTarget.L2;
-    @Log.File public RobotState robot_state_ = RobotState.TELEOP_CONTROL;
-    @Log.File public Optional<Pose2d> reef_target = Optional.empty();
-    @Log.File public Column target_column = Column.LEFT;
-    @Log.File public Column saved_target_column = Column.LEFT;
-
+    @Log.File
+    public ReefScoringTarget scoring_target = ReefScoringTarget.TURTLE;
+    @Log.File
+    public ReefScoringTarget saved_scoring_target = ReefScoringTarget.L2;
+    @Log.File
+    public RobotState robot_state_ = RobotState.TELEOP_CONTROL;
+    @Log.File
+    public Optional<Pose2d> reef_target = Optional.empty();
+    @Log.File
+    public Column target_column = Column.LEFT;
+    @Log.File
+    public Column saved_target_column = Column.LEFT;
     @Log.File
     public boolean algae_level_high = false; // false is low level and true is the higher level
   }
