@@ -1,0 +1,71 @@
+h1 {
+ text-align: center;
+ font-family: cursive;
+ color: red;
+}
+h2 {
+ text-align: center;
+ font-family: system-ui;
+ color: black;
+p {
+ color: black;
+}
+body {
+ display: flex;
+ justify-content: center;
+ align-items: center;
+ height: 100vh;
+ margin: 0;
+}
+.CENTERDAMNIT {
+ text-align: center;
+}
+table{
+ border-collapse: collapse;
+ margin: auto;
+}
+caption {
+  caption-side: top;
+  padding: 10px;
+  font-weight: bold;
+}
+th, td {
+ border: 1px solid black;
+ padding: 10px;
+}
+label {
+ font:
+  1rem 'Fira Sans',
+  sans-serif;
+}
+input {
+ margin: 0.4rem;
+}
+.styled {
+ border: 2;
+ line-height: 3.5;
+ padding: 0 20px;
+ font-size: 1rem;
+ text-align: center;
+ color: #def;
+ text-shadow: 1px 1px 1px #000;
+ border-radius: 10px;
+ background-color: rgb(220 0 0/ 100%);
+ background-image: linear-gradient(
+  to top left,
+  rgb(0 0 0 / 20%),
+  rgb(0 0 0 / 20%) 30%,
+  rgb(0 0 0 / 0%)
+ );
+ box-shadow:
+  inset 2px 2px 3px rpg(255 255 255 / 60%),
+  inset -2px -2px 3px rgb(0 0 0 / 60%);
+}
+.styled:hover {
+ background-cover: rgb(255 0 0 / 100%);
+}
+.styled:active {
+ box-shadow:
+  inset -2px -2px 3px rgb(255 255 255 / 60%),
+  inset 2px 2px 3px rgb(0 0 0 / 60%);
+}
