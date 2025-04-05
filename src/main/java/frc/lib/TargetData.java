@@ -18,6 +18,13 @@ public class TargetData implements Logged {
     this.name_ = n;
   }
 
+  public TargetData(double h, double a, ControlType t) {
+    this.height_ = h;
+    this.angle_ = a;
+    this.type_ = t;
+    this.name_ = "Unset";
+  }
+
   public TargetData() {
     this.name_ = "Unset";
   }
