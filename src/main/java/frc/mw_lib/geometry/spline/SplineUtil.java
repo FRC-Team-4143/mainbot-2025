@@ -1,7 +1,6 @@
 package frc.mw_lib.geometry.spline;
 
 import edu.wpi.first.math.geometry.Translation2d;
-import edu.wpi.first.math.spline.Spline.ControlVector;
 
 public class SplineUtil {
   /**
@@ -30,6 +29,34 @@ public class SplineUtil {
         subdividedPoints[(i * subdivisions[i]) + j] = crs.q(j * increments);
       }
     }
+
+    return subdividedPoints;
+  }
+
+  /**
+   * Creates catmull spline curves between the points array with a given number
+   * for subdivions per
+   * unit.
+   *
+   * @param points              The current 2D points array
+   * @param subdivisionsPerUnit The number of subdivisions to add per unit of
+   *                            liner distatnce
+   * @return A larger array with the points subdivided.
+   */
+  public static Translation2d[] subdividePoints(Translation2d[] points, double subdivisionsPerUnit) {
+    double[] distOfPoints = new double[points.length - 1];
+    for (int i = 0; i < distOfPoints.length - 1; i++) {
+      distOfPoints[i] = points[i].getDistance(points[i + 1]);
+    }
+
+    int[] subdivisions = new int[points.length - 1];
+    for (int i = 0; i < subdivisions.length; i++) {
+      subdivisions[i] = (int) Math.round(distOfPoints[i] * subdivisionsPerUnit);
+    }
+
+    int totalSubdivisions = sumArray(subdivisions);
+    Translation2d[] subdividedPoints = new Translation2d[totalSubdivisions + 1];
+    subdividedPoints = subdividePoints(points, subdivisions);
 
     return subdividedPoints;
   }
