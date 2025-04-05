@@ -3,13 +3,14 @@ package frc.mw_lib.proxy_server;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Twist2d;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
-import frc.mw_lib.proxy_server.DetectionPacket.Detection;
-
+import frc.mw_lib.proxy_server.PieceDetectionPacket.PieceDetection;
+import frc.mw_lib.proxy_server.TagSolutionPacket.TagSolution;
 import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.SocketException;
 import java.net.SocketTimeoutException;
+import java.util.ArrayList;
 
 public class ChassisProxyServer {
 
@@ -17,6 +18,7 @@ public class ChassisProxyServer {
   private static OdomPacket odom_packet_ = new OdomPacket();
   private static StatesPacket states_packet_ = new StatesPacket();
   private static TagSolutionPacket tag_solution_packet_ = new TagSolutionPacket();
+  private static PieceDetectionPacket piece_detection_packet_ = new PieceDetectionPacket();
 
   // Socket Config
   private static DatagramSocket socket_ = null;
@@ -82,6 +84,9 @@ public class ChassisProxyServer {
         case TagSolutionPacket.TYPE_ID:
           tag_solution_packet_.updateData(buffer);
           break;
+        case PieceDetectionPacket.TYPE_ID:
+          piece_detection_packet_.updateData(buffer);
+          break;
           // Unknown Packet Type
         default:
           return false;
@@ -134,5 +139,14 @@ public class ChassisProxyServer {
   public static TagSolution getLatestTagSolution() {
     return tag_solution_packet_.tag_solution_;
   }
+
+  /**
+   * Gets the current array list of detected game pieces. Detections are updated by calling {@link
+   * #updateData()}
+   *
+   * @return {@link PieceDetection} ArrayList with latest piece detection data
+   */
+  public static ArrayList<PieceDetection> getLatestPieceDetections() {
+    return piece_detection_packet_.piece_detections_;
   }
 }
