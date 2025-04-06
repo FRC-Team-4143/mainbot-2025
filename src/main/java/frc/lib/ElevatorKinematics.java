@@ -1,12 +1,12 @@
 package frc.lib;
 
-import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
-import frc.lib.TargetData.ControlType;
 
 public class ElevatorKinematics {
   private double arm_length_ = 0;
   private double arm_width_ = 0;
+  private double virtual_arm_length;
+  private double virtual_arm_angle;
 
   /**
    * Elevator Kinematic's Constructor
@@ -14,88 +14,40 @@ public class ElevatorKinematics {
    * @param arm_length The Length of the robot's arm in meters
    */
   public ElevatorKinematics(double arm_length, double arm_width_) {
-    arm_length_ = arm_length;
+    this.arm_length_ = arm_length;
+    this.arm_width_ = arm_width_;
+    this.virtual_arm_length = Math.sqrt(Math.pow(arm_length, 2) + Math.pow(arm_width_, 2));
+    this.virtual_arm_angle = Math.tan(arm_width_ / arm_length);
   }
 
-  /**
-   * Calculates and returns the z position needed for the wanted z-position MUST HAVE ANGLE SET
-   * CORRECT FOR HEIGHT TO BE ACCURATE
-   *
-   * @param desiredZ the wanted z position of the Claw
-   * @param desiredAngle the current angle of the pivot arm
-   * @return the needed z for the wanted z position of the elevator
-   */
-  public double desiredElevatorZ(double desiredZ, Rotation2d desiredAngle) {
-    return desiredZ
-        - calZOffset(
-            desiredAngle.rotateBy(
-                Rotation2d.fromRadians(-(Math.cos(desiredAngle.getRadians()) * arm_width_))));
+  public JointSpaceTarget translationToJointSpace(Translation2d t) {
+    JointSpaceTarget target = new JointSpaceTarget();
+    target.pivot_angle = Math.asin(t.getX() / virtual_arm_length);
+    target.pivot_height = (t.getX() / Math.tan(target.pivot_angle)) + t.getY();
+    return target;
   }
 
-  public double desiredElevatorZ(double desiredZ, double desiredAngle) {
-    return desiredZ - calZOffset(desiredAngle + (-(Math.cos(desiredAngle) * arm_width_)));
+  public Translation2d jointSpaceToTranslation(JointSpaceTarget j) {
+    double x = Math.sin(j.pivot_angle) * virtual_arm_length;
+    double y = j.pivot_height - (Math.cos(j.pivot_angle) * virtual_arm_length);
+    return new Translation2d(x, y);
   }
 
-  /**
-   * Calculates and returns the z position needed for the wanted z-position MUST HAVE ANGLE SET
-   * CORRECT FOR HEIGHT TO BE ACCURATE
-   *
-   * @param desiredZ the wanted z position of the Claw
-   * @param desiredAngle the current angle of the pivot arm
-   * @return the needed z for the wanted z position of the elevator
-   */
-  public double effectorZ(double current_z, Rotation2d current_angle) {
-    return current_z + calZOffset(current_angle);
+  public Translation2d jointSpaceToTranslation(double pivot_height, double pivot_angle) {
+    double x = Math.sin(pivot_angle) * virtual_arm_length;
+    double y = pivot_height - (Math.cos(pivot_angle) * virtual_arm_length);
+    return new Translation2d(x, y);
   }
 
-  public double effectorZ(double current_z, double current_angle) {
-    return current_z + calZOffset(current_angle);
-  }
+  public class JointSpaceTarget {
+    public double pivot_height = 0;
+    public double pivot_angle = 0;
 
-  /**
-   * Calculates and returns the pivot arm angle needed for the wanted x-position of the claw
-   *
-   * @param desiredX The wanted x position of the Claw
-   * @param isRightSide True for the angle to go right and False for left
-   * @return the joint angle needed for the desired x position
-   */
-  public double desiredJointAngle(double desiredX) {
-    if (desiredX > arm_length_) {
-      desiredX = arm_length_;
+    public JointSpaceTarget(double height, double angle) {
+      this.pivot_height = height;
+      this.pivot_angle = angle;
     }
-    if (desiredX <= 0) {
-      return calAngleWithX(desiredX);
-    }
-    return calAngleWithX(desiredX);
-  }
 
-  public double calXOffset(double angle) {
-    return arm_length_ * Math.cos(angle);
-  }
-
-  public double calZOffset(Rotation2d angle) {
-    return arm_length_ * Math.sin(angle.getRadians());
-  }
-
-  public double calZOffset(double angle) {
-    return arm_length_ * Math.sin(angle);
-  }
-
-  public double calAngleWithX(double X) {
-    return Math.acos(X / arm_length_);
-  }
-
-  public double calAngleWithZ(double Z) {
-    return Math.asin(Z / arm_length_);
-  }
-
-  public TargetData convertToEnderfector(Translation2d translation) {
-    double neededAngle = desiredJointAngle(translation.getX());
-    double neededHeight = effectorZ(translation.getY(), neededAngle);
-    return new TargetData(neededHeight, neededAngle, ControlType.EFFECTOR);
-  }
-
-  public TargetData convertToPivot(Translation2d translation) {
-    return new TargetData();
+    public JointSpaceTarget() {}
   }
 }

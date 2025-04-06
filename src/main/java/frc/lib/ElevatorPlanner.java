@@ -1,6 +1,7 @@
 package frc.lib;
 
 import edu.wpi.first.math.geometry.Translation2d;
+import frc.lib.ElevatorKinematics.JointSpaceTarget;
 import frc.mw_lib.geometry.spline.SplineUtil;
 
 public class ElevatorPlanner {
@@ -19,7 +20,7 @@ public class ElevatorPlanner {
     path = SplineUtil.subdividePoints(wayPoints, subdivisionsPerUnit);
   }
 
-  public TargetData nextTargetData(Translation2d current_translation) {
+  public JointSpaceTarget nextTarget(Translation2d current_translation) {
     double distanceFromFolowTarget =
         Math.abs(followDistance - current_translation.getDistance(path[0]));
     double LAST_distanceFromFolowTarget = distanceFromFolowTarget;
@@ -30,7 +31,7 @@ public class ElevatorPlanner {
       distanceFromFolowTarget = Math.abs(followDistance - current_translation.getDistance(path[0]));
       if (LAST_distanceFromFolowTarget < distanceFromFolowTarget) {
         newTargetIndex = i;
-        i = path.length + 1; // break;
+        break;
       }
       LAST_distanceFromFolowTarget = distanceFromFolowTarget;
     }
@@ -42,6 +43,6 @@ public class ElevatorPlanner {
     }
     path = newPath;
 
-    return kinematics.convertToPivot(path[0]);
+    return kinematics.translationToJointSpace(path[0]);
   }
 }

@@ -302,9 +302,9 @@ public final class Constants {
     public static final double SAFETY_ARM_ACCELERATION = 0.30;
     public static final double DANGER_ARM_ANGLE = Units.degreesToRadians(95);
     public static final double ARM_LENGTH =
-        Units.inchesToMeters(LOADER.getDoubleValue("arm", "LENGTH_PIVOT_TO_FUNNEL"));
+        Units.inchesToMeters(LOADER.getDoubleValue("arm", "LENGTH_PIVOT_TO_FUNNEL")); // 16.456 in
     public static final double ARM_WIDTH =
-        Units.inchesToMeters(LOADER.getDoubleValue("arm", "DEPTH_CORAL_POCKET"));
+        Units.inchesToMeters(LOADER.getDoubleValue("arm", "DEPTH_CORAL_POCKET")); // 0.053 in
     // ((shaft sprocket / pivot sprocket) / gearbox) * rotations to radians ratio)
     public static final double SENSOR_TO_MECHANISM_RATIO = (1.0 / ((16.0 / 64.0) / 20.0));
     public static final double ARM_FORWARD_LIMIT = Units.radiansToRotations(30);

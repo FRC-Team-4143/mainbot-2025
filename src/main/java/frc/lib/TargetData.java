@@ -1,18 +1,14 @@
 package frc.lib;
 
-import monologue.Annotations.Log;
 import edu.wpi.first.math.geometry.Translation2d;
+import monologue.Annotations.Log;
 import monologue.Logged;
 
 public class TargetData implements Logged {
-  @Log.File
-  public Translation2d translation;
-  @Log.File
-  public double X_offset_ = 0;
-  @Log.File
-  public double Y_offset_ = 0;
-  @Log.File
-  public String name_;
+  @Log.File public Translation2d translation;
+  @Log.File public double X_offset_ = 0;
+  @Log.File public double Y_offset_ = 0;
+  @Log.File public String name_;
 
   public TargetData(Translation2d t, String n) {
     this.translation = t;
@@ -30,11 +26,6 @@ public class TargetData implements Logged {
 
   public String toString() {
     return this.name_;
-  }
-
-  public enum ControlType {
-    PIVOT,
-    EFFECTOR
   }
 
   /**
@@ -65,7 +56,7 @@ public class TargetData implements Logged {
     Y_offset_ = 0;
   }
 
-    /**
+  /**
    * @return the current X including the active offset
    */
   public double getX() {

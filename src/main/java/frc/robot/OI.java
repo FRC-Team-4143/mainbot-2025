@@ -182,26 +182,26 @@ public abstract class OI {
     operator_controller_
         .povUp()
         .onTrue(
-            Commands.runOnce(() -> Elevator.getInstance().setOffset(OffsetType.ELEVATOR_UP))
+            Commands.runOnce(() -> Elevator.getInstance().setOffset(OffsetType.UP))
                 .ignoringDisable(true));
 
     // Manual Adjust Elevator Setpoint Down
     operator_controller_
         .povDown()
         .onTrue(
-            Commands.runOnce(() -> Elevator.getInstance().setOffset(OffsetType.ELEVATOR_DOWN))
+            Commands.runOnce(() -> Elevator.getInstance().setOffset(OffsetType.DOWN))
                 .ignoringDisable(true));
     // Manual Adjust Arm Setpoint Counter Clockwise
     operator_controller_
         .povLeft()
         .onTrue(
-            Commands.runOnce(() -> Elevator.getInstance().setOffset(OffsetType.ARM_CCW))
+            Commands.runOnce(() -> Elevator.getInstance().setOffset(OffsetType.LEFT))
                 .ignoringDisable(true));
     // Manual Adjust Arm Setpoint Clockwise
     operator_controller_
         .povRight()
         .onTrue(
-            Commands.runOnce(() -> Elevator.getInstance().setOffset(OffsetType.ARM_CW))
+            Commands.runOnce(() -> Elevator.getInstance().setOffset(OffsetType.RIGHT))
                 .ignoringDisable(true));
 
     // Manual Override for loading
