@@ -1,21 +1,21 @@
 package frc.lib;
 
-import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.geometry.Translation3d;
 import monologue.Annotations.Log;
 import monologue.Logged;
 
 public class TargetData implements Logged {
-  @Log.File public Translation2d translation;
+  @Log.File public Translation3d translation;
   @Log.File public double X_offset_ = 0;
-  @Log.File public double Y_offset_ = 0;
+  @Log.File public double Z_offset_ = 0;
   @Log.File public String name_;
 
-  public TargetData(Translation2d t, String n) {
+  public TargetData(Translation3d t, String n) {
     this.translation = t;
     this.name_ = n;
   }
 
-  public TargetData(Translation2d t) {
+  public TargetData(Translation3d t) {
     this.translation = t;
     this.name_ = "Unset";
   }
@@ -29,31 +29,31 @@ public class TargetData implements Logged {
   }
 
   /**
-   * @return the current Y including the active offset
+   * @return the current Z including the active offset
    */
-  public double getY() {
-    return translation.getY() + Y_offset_;
+  public double getZ() {
+    return translation.getZ() + Z_offset_;
   }
 
   /**
-   * Adjusts the Y offset by the supplied increment
+   * Adjusts the Z offset by the supplied increment
    *
-   * @param offset increment to adjust the Y offset by
+   * @param offset increment to adjust the Z offset by
    */
-  public void offsetY(double offset) {
-    Y_offset_ += offset;
+  public void offsetZ(double offset) {
+    Z_offset_ += offset;
   }
 
   /**
-   * @return the current stored Y offset
+   * @return the current stored Z offset
    */
-  public double getYOffset() {
-    return Y_offset_;
+  public double getZOffset() {
+    return Z_offset_;
   }
 
-  /** Reset the Y offset to 0 */
-  public void resetYOffset() {
-    Y_offset_ = 0;
+  /** Reset the Z offset to 0 */
+  public void resetZOffset() {
+    Z_offset_ = 0;
   }
 
   /**

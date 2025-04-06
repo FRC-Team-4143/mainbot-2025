@@ -15,7 +15,7 @@ import com.ctre.phoenix6.signals.FeedbackSensorSourceValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation3d;
-import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.networktables.StructArrayPublisher;
@@ -446,16 +446,16 @@ public class Elevator extends Subsystem {
     io_.final_target_ = new_target;
 
     // TODO: reciving new targets when not at a known target
-    Translation2d[] waypoints =
-        new Translation2d[1 + old_target.getExitTrj().length + new_target.getEnterTrj().length + 1];
+    Translation3d[] waypoints =
+        new Translation3d[1 + old_target.getExitTrj().length + new_target.getEnterTrj().length + 1];
     waypoints[0] =
         kinematics_.jointSpaceToTranslation(io_.current_elevator_height_, io_.current_arm_angle_);
     int index = 0;
-    for (Translation2d t : old_target.getExitTrj()) {
+    for (Translation3d t : old_target.getExitTrj()) {
       waypoints[index] = t;
       index++;
     }
-    for (Translation2d t : new_target.getEnterTrj()) {
+    for (Translation3d t : new_target.getEnterTrj()) {
       waypoints[index] = t;
       index++;
     }
@@ -530,7 +530,7 @@ public class Elevator extends Subsystem {
     @Log.File public double target_arm_angle_ = Units.degreesToRadians(-90);
     @Log.File public double elevator_master_rotations_ = 0;
     @Log.File public double elevator_follower_rotations_ = 0;
-    @Log.File public Translation2d currentTranslation;
+    @Log.File public Translation3d currentTranslation = new Translation3d();
     @Log.File public SpeedLimit current_speed_limit = SpeedLimit.CORAL;
     // the final goal
     @Log.File public TargetType final_target_ = TargetType.TEST;

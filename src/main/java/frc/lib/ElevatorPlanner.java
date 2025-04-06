@@ -1,12 +1,12 @@
 package frc.lib;
 
-import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.geometry.Translation3d;
 import frc.lib.ElevatorKinematics.JointSpaceTarget;
 import frc.mw_lib.geometry.spline.SplineUtil;
 
 public class ElevatorPlanner {
   private ElevatorKinematics kinematics;
-  private Translation2d[] path;
+  private Translation3d[] path;
   private double subdivisionsPerUnit;
   private double followDistance;
 
@@ -16,11 +16,11 @@ public class ElevatorPlanner {
     this.followDistance = followDist;
   }
 
-  public void plan(Translation2d[] wayPoints) {
+  public void plan(Translation3d[] wayPoints) {
     path = SplineUtil.subdividePoints(wayPoints, subdivisionsPerUnit);
   }
 
-  public JointSpaceTarget nextTarget(Translation2d current_translation) {
+  public JointSpaceTarget nextTarget(Translation3d current_translation) {
     double distanceFromFollowTarget =
         Math.abs(followDistance - current_translation.getDistance(path[0]));
     double LAST_distanceFromFollowTarget = distanceFromFollowTarget;
@@ -38,7 +38,7 @@ public class ElevatorPlanner {
     }
 
     // remove any points that are behind the target point
-    Translation2d[] newPath = new Translation2d[path.length - newTargetIndex];
+    Translation3d[] newPath = new Translation3d[path.length - newTargetIndex];
     for (int i = newTargetIndex; i < path.length; i++) {
       newPath[i - newTargetIndex] = path[i];
     }

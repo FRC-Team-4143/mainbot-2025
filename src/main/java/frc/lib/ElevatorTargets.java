@@ -1,65 +1,65 @@
 package frc.lib;
 
-import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.geometry.Translation3d;
 import frc.robot.Constants;
 
 public class ElevatorTargets {
   public enum TargetType {
     TEST(
         new TargetData(
-            new Translation2d(0, Constants.ElevatorConstants.ELEVATOR_HEIGHT_PIVOT_MIN), "TEST"),
-        new Translation2d[0],
-        new Translation2d[0]),
+            new Translation3d(0, 0, Constants.ElevatorConstants.ELEVATOR_HEIGHT_PIVOT_MIN), "TEST"),
+        new Translation3d[0],
+        new Translation3d[0]),
     SAFETY(
-        new TargetData(new Translation2d(), "SAFETY"), new Translation2d[0], new Translation2d[0]),
-    L4(new TargetData(new Translation2d(), "L4"), new Translation2d[0], new Translation2d[0]),
-    L3(new TargetData(new Translation2d(), "L3"), new Translation2d[0], new Translation2d[0]),
-    L2(new TargetData(new Translation2d(), "L2"), new Translation2d[0], new Translation2d[0]),
-    L1(new TargetData(new Translation2d(), "L1"), new Translation2d[0], new Translation2d[0]),
+        new TargetData(new Translation3d(), "SAFETY"), new Translation3d[0], new Translation3d[0]),
+    L4(new TargetData(new Translation3d(), "L4"), new Translation3d[0], new Translation3d[0]),
+    L3(new TargetData(new Translation3d(), "L3"), new Translation3d[0], new Translation3d[0]),
+    L2(new TargetData(new Translation3d(), "L2"), new Translation3d[0], new Translation3d[0]),
+    L1(new TargetData(new Translation3d(), "L1"), new Translation3d[0], new Translation3d[0]),
     STATION(
-        new TargetData(new Translation2d(), "STATION"), new Translation2d[0], new Translation2d[0]),
-    CLIMB(new TargetData(new Translation2d(), "CLIMB"), new Translation2d[0], new Translation2d[0]),
+        new TargetData(new Translation3d(), "STATION"), new Translation3d[0], new Translation3d[0]),
+    CLIMB(new TargetData(new Translation3d(), "CLIMB"), new Translation3d[0], new Translation3d[0]),
     CORAL_INTAKE(
-        new TargetData(new Translation2d(), "CORAL_INTAKE"),
-        new Translation2d[0],
-        new Translation2d[0]),
+        new TargetData(new Translation3d(), "CORAL_INTAKE"),
+        new Translation3d[0],
+        new Translation3d[0]),
     CORAL_STOW(
-        new TargetData(new Translation2d(), "CORAL_STOW"),
-        new Translation2d[0],
-        new Translation2d[0]),
+        new TargetData(new Translation3d(), "CORAL_STOW"),
+        new Translation3d[0],
+        new Translation3d[0]),
     ALGAE_LOW(
-        new TargetData(new Translation2d(), "ALGAE_LOW"),
-        new Translation2d[0],
-        new Translation2d[0]),
+        new TargetData(new Translation3d(), "ALGAE_LOW"),
+        new Translation3d[0],
+        new Translation3d[0]),
     ALGAE_HIGH(
-        new TargetData(new Translation2d(), "ALGAE_HIGH"),
-        new Translation2d[0],
-        new Translation2d[0]),
+        new TargetData(new Translation3d(), "ALGAE_HIGH"),
+        new Translation3d[0],
+        new Translation3d[0]),
     ALGAE_PROCESSOR(
-        new TargetData(new Translation2d(), "ALGAE_PROCESSOR"),
-        new Translation2d[0],
-        new Translation2d[0]),
-    BARGE(new TargetData(new Translation2d(), "BARGE"), new Translation2d[0], new Translation2d[0]),
+        new TargetData(new Translation3d(), "ALGAE_PROCESSOR"),
+        new Translation3d[0],
+        new Translation3d[0]),
+    BARGE(new TargetData(new Translation3d(), "BARGE"), new Translation3d[0], new Translation3d[0]),
     ALGAE_STOW(
-        new TargetData(new Translation2d(), "ALGAE_STOW"),
-        new Translation2d[0],
-        new Translation2d[0]);
+        new TargetData(new Translation3d(), "ALGAE_STOW"),
+        new Translation3d[0],
+        new Translation3d[0]);
 
-    TargetType(TargetData target, Translation2d[] enter, Translation2d[] exit) {
+    TargetType(TargetData target, Translation3d[] enter, Translation3d[] exit) {
       this.target = target;
       this.enter_trj = enter;
       this.exit_trj = exit;
     }
 
     private TargetData target;
-    private Translation2d[] enter_trj;
-    private Translation2d[] exit_trj;
+    private Translation3d[] enter_trj;
+    private Translation3d[] exit_trj;
 
-    public Translation2d[] getEnterTrj() {
+    public Translation3d[] getEnterTrj() {
       return enter_trj;
     }
 
-    public Translation2d[] getExitTrj() {
+    public Translation3d[] getExitTrj() {
       return exit_trj;
     }
 
@@ -68,11 +68,11 @@ public class ElevatorTargets {
     }
 
     public void offsetY(double offset) {
-      target.offsetY(offset);
+      target.offsetZ(offset);
     }
 
     public void resetYOffset() {
-      target.resetYOffset();
+      target.resetZOffset();
     }
 
     public void offsetX(double offset) {

@@ -1,6 +1,6 @@
 package frc.lib;
 
-import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.geometry.Translation3d;
 
 public class ElevatorKinematics {
   private double arm_length_ = 0;
@@ -20,20 +20,20 @@ public class ElevatorKinematics {
     this.virtual_arm_angle = Math.tan(arm_width_ / arm_length);
   }
 
-  public JointSpaceTarget translationToJointSpace(Translation2d t) {
+  public JointSpaceTarget translationToJointSpace(Translation3d t) {
     JointSpaceTarget target = new JointSpaceTarget();
     target.pivot_angle = -Math.acos(t.getX() / virtual_arm_length);
-    target.pivot_height = -(Math.sin(target.pivot_angle) * virtual_arm_length) + t.getY();
+    target.pivot_height = -(Math.sin(target.pivot_angle) * virtual_arm_length) + t.getZ();
     return target;
   }
 
-  public Translation2d jointSpaceToTranslation(JointSpaceTarget j) {
+  public Translation3d jointSpaceToTranslation(JointSpaceTarget j) {
     double x = Math.cos(j.pivot_angle) * virtual_arm_length;
-    double y = j.pivot_height + (Math.sin(j.pivot_angle) * virtual_arm_length);
-    return new Translation2d(x, y);
+    double z = j.pivot_height + (Math.sin(j.pivot_angle) * virtual_arm_length);
+    return new Translation3d(x, 0, z);
   }
 
-  public Translation2d jointSpaceToTranslation(double pivot_height, double pivot_angle) {
+  public Translation3d jointSpaceToTranslation(double pivot_height, double pivot_angle) {
     return jointSpaceToTranslation(new JointSpaceTarget(pivot_height, pivot_angle));
   }
 
