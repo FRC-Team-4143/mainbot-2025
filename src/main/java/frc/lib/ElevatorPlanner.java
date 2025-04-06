@@ -21,19 +21,20 @@ public class ElevatorPlanner {
   }
 
   public JointSpaceTarget nextTarget(Translation2d current_translation) {
-    double distanceFromFolowTarget =
+    double distanceFromFollowTarget =
         Math.abs(followDistance - current_translation.getDistance(path[0]));
-    double LAST_distanceFromFolowTarget = distanceFromFolowTarget;
-    int newTargetIndex = -1;
+    double LAST_distanceFromFollowTarget = distanceFromFollowTarget;
+    int newTargetIndex = 0;
 
     // find nearest point on the path to the followDistance
     for (int i = 0; i < path.length; i++) {
-      distanceFromFolowTarget = Math.abs(followDistance - current_translation.getDistance(path[0]));
-      if (LAST_distanceFromFolowTarget < distanceFromFolowTarget) {
+      distanceFromFollowTarget =
+          Math.abs(followDistance - current_translation.getDistance(path[0]));
+      if (LAST_distanceFromFollowTarget < distanceFromFollowTarget) {
         newTargetIndex = i;
         break;
       }
-      LAST_distanceFromFolowTarget = distanceFromFolowTarget;
+      LAST_distanceFromFollowTarget = distanceFromFollowTarget;
     }
 
     // remove any points that are behind the target point

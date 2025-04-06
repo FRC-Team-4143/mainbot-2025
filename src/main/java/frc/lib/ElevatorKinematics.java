@@ -22,24 +22,22 @@ public class ElevatorKinematics {
 
   public JointSpaceTarget translationToJointSpace(Translation2d t) {
     JointSpaceTarget target = new JointSpaceTarget();
-    target.pivot_angle = Math.asin(t.getX() / virtual_arm_length);
-    target.pivot_height = (t.getX() / Math.tan(target.pivot_angle)) + t.getY();
+    target.pivot_angle = -Math.acos(t.getX() / virtual_arm_length);
+    target.pivot_height = -(Math.sin(target.pivot_angle) * virtual_arm_length) + t.getY();
     return target;
   }
 
   public Translation2d jointSpaceToTranslation(JointSpaceTarget j) {
-    double x = Math.sin(j.pivot_angle) * virtual_arm_length;
-    double y = j.pivot_height - (Math.cos(j.pivot_angle) * virtual_arm_length);
+    double x = Math.cos(j.pivot_angle) * virtual_arm_length;
+    double y = j.pivot_height + (Math.sin(j.pivot_angle) * virtual_arm_length);
     return new Translation2d(x, y);
   }
 
   public Translation2d jointSpaceToTranslation(double pivot_height, double pivot_angle) {
-    double x = Math.sin(pivot_angle) * virtual_arm_length;
-    double y = pivot_height - (Math.cos(pivot_angle) * virtual_arm_length);
-    return new Translation2d(x, y);
+    return jointSpaceToTranslation(new JointSpaceTarget(pivot_height, pivot_angle));
   }
 
-  public class JointSpaceTarget {
+  public static class JointSpaceTarget {
     public double pivot_height = 0;
     public double pivot_angle = 0;
 
@@ -49,5 +47,9 @@ public class ElevatorKinematics {
     }
 
     public JointSpaceTarget() {}
+
+    public String toString() {
+      return "pivot_height: " + pivot_height + " |pivot_angle: " + pivot_angle;
+    }
   }
 }

@@ -1,9 +1,15 @@
 package frc.lib;
 
 import edu.wpi.first.math.geometry.Translation2d;
+import frc.robot.Constants;
 
 public class ElevatorTargets {
   public enum TargetType {
+    TEST(
+        new TargetData(
+            new Translation2d(0, Constants.ElevatorConstants.ELEVATOR_HEIGHT_PIVOT_MIN), "TEST"),
+        new Translation2d[0],
+        new Translation2d[0]),
     SAFETY(
         new TargetData(new Translation2d(), "SAFETY"), new Translation2d[0], new Translation2d[0]),
     L4(new TargetData(new Translation2d(), "L4"), new Translation2d[0], new Translation2d[0]),

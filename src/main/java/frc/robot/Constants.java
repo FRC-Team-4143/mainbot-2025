@@ -7,6 +7,7 @@ package frc.robot;
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.signals.GravityTypeValue;
 import com.ctre.phoenix6.signals.InvertedValue;
+import com.ctre.phoenix6.signals.SensorDirectionValue;
 import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.VecBuilder;
@@ -291,8 +292,9 @@ public final class Constants {
     public static final int ARM_MOTOR_ID = 23;
     public static final int ARM_ENCODER_ID = 24;
     public static final double ARM_TARGET_THRESHOLD = 0.25; // In rads
-    public static final InvertedValue ARM_FOLLOWER_INVERSION =
-        InvertedValue.CounterClockwise_Positive;
+    public static final InvertedValue ARM_FOLLOWER_INVERSION = InvertedValue.Clockwise_Positive;
+    public static final SensorDirectionValue ABSOLUTE_ENCODER_INVERSION =
+        SensorDirectionValue.Clockwise_Positive;
     public static final double CORAL_ARM_CRUISE_VELOCITY = 4;
     public static final double CORAL_ARM_ACCELERATION = 2.5;
     public static final double L4_ARM_ACCEL = 1.75;

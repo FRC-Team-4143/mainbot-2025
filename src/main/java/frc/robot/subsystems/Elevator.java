@@ -13,7 +13,6 @@ import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.FeedbackSensorSourceValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
-import com.ctre.phoenix6.signals.SensorDirectionValue;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Translation2d;
@@ -138,6 +137,7 @@ public class Elevator extends Subsystem {
     arm_config_ = new TalonFXConfiguration();
     arm_config_.Feedback.FeedbackSensorSource = FeedbackSensorSourceValue.RotorSensor;
     arm_config_.Feedback.SensorToMechanismRatio = ArmConstants.SENSOR_TO_MECHANISM_RATIO;
+    arm_config_.MotorOutput.Inverted = ArmConstants.ARM_FOLLOWER_INVERSION;
     arm_config_.Slot0 = ArmConstants.ARM_GAINS;
     arm_config_.MotionMagic.MotionMagicCruiseVelocity = ArmConstants.CORAL_ARM_CRUISE_VELOCITY;
     arm_config_.MotionMagic.MotionMagicAcceleration = ArmConstants.CORAL_ARM_ACCELERATION;
@@ -151,8 +151,7 @@ public class Elevator extends Subsystem {
 
     // Arm Encoder Config
     arm_encoder_config_ = new CANcoderConfiguration();
-    arm_encoder_config_.MagnetSensor.SensorDirection =
-        SensorDirectionValue.CounterClockwise_Positive;
+    arm_encoder_config_.MagnetSensor.SensorDirection = ArmConstants.ABSOLUTE_ENCODER_INVERSION;
     arm_encoder_config_.MagnetSensor.AbsoluteSensorDiscontinuityPoint = 1;
     arm_encoder_.getConfigurator().apply(arm_encoder_config_);
 
@@ -212,7 +211,8 @@ public class Elevator extends Subsystem {
     arm_motor_.setPosition(
         arm_encoder_.getAbsolutePosition().getValueAsDouble()
             - (MWPreferences.getInstance().getPreferenceDouble("ArmEncoderOffset", 0)));
-    elevatorPosReset();
+
+    buildPlan(io_.final_target_); // update final_target_to change default
   }
 
   /** Called to reset and configure the subsystem */
@@ -232,11 +232,10 @@ public class Elevator extends Subsystem {
 
   /** Computes updated outputs for the actuators */
   public void updateLogic(double timestamp) {
+    io_.currentTranslation =
+        kinematics_.jointSpaceToTranslation(io_.current_elevator_height_, io_.current_arm_angle_);
     if (systemAtTarget(io_.current_target)) {
-      io_.current_target =
-          planner_.nextTarget(
-              kinematics_.jointSpaceToTranslation(
-                  io_.current_elevator_height_, io_.current_arm_angle_));
+      io_.current_target = planner_.nextTarget(io_.currentTranslation);
     }
 
     io_.target_elevator_height_ = io_.current_target.pivot_height;
@@ -294,10 +293,8 @@ public class Elevator extends Subsystem {
         "Subsystems/Arm/Target Angle (Degrees)",
         Units.radiansToDegrees(io_.current_target.pivot_angle));
     SmartDashboard.putNumber(
-        "Subsystems/Arm/Current Height (Meters)",
-        kinematics_
-            .jointSpaceToTranslation(io_.current_elevator_height_, io_.current_arm_angle_)
-            .getY());
+        "Subsystems/Arm/Current Height (Meters)", io_.currentTranslation.getY());
+    SmartDashboard.putNumber("Subsystems/Arm/Current X (Meters)", io_.currentTranslation.getX());
     SmartDashboard.putNumber(
         "Subsystems/Arm/Absolute Encoder (Rotations)",
         arm_encoder_.getAbsolutePosition().getValue().in(Rotations));
@@ -305,6 +302,15 @@ public class Elevator extends Subsystem {
     SmartDashboard.putString("Subsystems/Elevator/Pending Target", io_.current_target.toString());
     SmartDashboard.putBoolean("Subsystems/Elevator/At Target", isElevatorAtTarget());
     SmartDashboard.putBoolean("Subsystems/Arm/At Target", isArmAtTarget());
+
+    SmartDashboard.putNumber(
+        "Subsystems/Arm/KinematicsTesting Angle Deg",
+        Units.radiansToDegrees(
+            kinematics_.translationToJointSpace(io_.currentTranslation).pivot_angle));
+    SmartDashboard.putNumber(
+        "Subsystems/Arm/KinematicsTesting Pivot Height",
+        kinematics_.translationToJointSpace(io_.currentTranslation).pivot_height);
+
     updateMechanism();
   }
 
@@ -432,12 +438,18 @@ public class Elevator extends Subsystem {
       setSpeedLimit(SpeedLimit.L4);
     }
 
+    buildPlan(new_target);
+  }
+
+  private void buildPlan(TargetType new_target) {
     TargetType old_target = io_.final_target_;
     io_.final_target_ = new_target;
 
     // TODO: reciving new targets when not at a known target
     Translation2d[] waypoints =
-        new Translation2d[old_target.getExitTrj().length + new_target.getEnterTrj().length];
+        new Translation2d[1 + old_target.getExitTrj().length + new_target.getEnterTrj().length + 1];
+    waypoints[0] =
+        kinematics_.jointSpaceToTranslation(io_.current_elevator_height_, io_.current_arm_angle_);
     int index = 0;
     for (Translation2d t : old_target.getExitTrj()) {
       waypoints[index] = t;
@@ -447,6 +459,7 @@ public class Elevator extends Subsystem {
       waypoints[index] = t;
       index++;
     }
+    waypoints[waypoints.length - 1] = new_target.getTarget().translation;
     planner_.plan(waypoints);
 
     io_.current_target =
@@ -517,14 +530,15 @@ public class Elevator extends Subsystem {
     @Log.File public double target_arm_angle_ = Units.degreesToRadians(-90);
     @Log.File public double elevator_master_rotations_ = 0;
     @Log.File public double elevator_follower_rotations_ = 0;
-    @Log.File public SpeedLimit current_speed_limit;
+    @Log.File public Translation2d currentTranslation;
+    @Log.File public SpeedLimit current_speed_limit = SpeedLimit.CORAL;
     // the final goal
-    @Log.File public TargetType final_target_ = TargetType.CORAL_INTAKE;
+    @Log.File public TargetType final_target_ = TargetType.TEST;
 
     // all targets between the curent pose and the final target
     @Log.File
     public JointSpaceTarget current_target =
-        kinematics_.new JointSpaceTarget(target_elevator_height_, target_arm_angle_);
+        new JointSpaceTarget(target_elevator_height_, target_arm_angle_);
   }
 
   /** Get logging object from subsystem */
