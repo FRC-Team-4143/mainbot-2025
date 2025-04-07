@@ -23,7 +23,6 @@ import monologue.Logged;
 public class GameStateManager extends Subsystem {
 
   private StructPublisher<Pose2d> reef_target_pub_;
-  private JointSpaceSolution target_gsm_solution_pub;
   private StructArrayPublisher<Pose3d> target_stages_pub_;
   private StructPublisher<Pose3d> target_arm_pub_;
 
@@ -182,6 +181,17 @@ public class GameStateManager extends Subsystem {
     SmartDashboard.putString(
         "Subsystems/GameStateManager/Saved Target Level", io_.saved_scoring_target_.toString());
     SmartDashboard.putBoolean("Subsystems/GameStateManager/Ready to Score", isReadyToScore());
+
+    if(io_.reef_target_.isPresent()){
+      reef_target_pub_.set(io_.reef_target_.get());
+      Elevator.getInstance()
+      .updateMechanism(
+          target_stages_pub_,
+          target_arm_pub_,
+          Elevator.getInstance()
+              .getElevatorKinematics()
+              .translationToJointSpace(elevatorTargetSwitch().getTarget().getTranslation()));
+    }
   }
 
   public boolean isReadyToScore() {
@@ -210,13 +220,6 @@ public class GameStateManager extends Subsystem {
     if (save) {
       io_.saved_scoring_target_ = target;
     }
-    Elevator.getInstance()
-        .updateMechanism(
-            target_stages_pub_,
-            target_arm_pub_,
-            Elevator.getInstance()
-                .getElevatorKinematics()
-                .translationToJointSpace(elevatorTargetSwitch().getTarget().getTranslation()));
   }
 
   public void setScoringObj(Column col, ReefScoringTarget target, boolean save) {
