@@ -1,27 +1,51 @@
 {
   "hubs": [
     {
-      "x": 0,
-      "y": 64,
-      "width": 1503,
-      "height": 938,
+      "x": -8,
+      "y": -8,
+      "width": 1552,
+      "height": 928,
       "state": {
         "sidebar": {
-          "width": 300,
+          "width": 268,
           "expanded": [
-            "/NT",
             "/NT/Robot/subsystems_ios",
             "/NT/Components/Elevator",
             "/NT/Components/Elevator/Stages",
             "/NT/Components/Arm",
-            "/NT/SmartDashboard/Subsystems",
-            "/NT/Robot/subsystems_ios/GameStateManagerPeriodicIo[4]",
-            "/DS/joystick0",
-            "/NT/PoseEstimation"
+            "/Swerve/Module States/Current",
+            "/Swerve/Module States/Current/0",
+            "/SmartDashboard/Subsystems",
+            "/NT",
+            "/NT/Robot/subsystems_ios/PoseEstimatorPeriodicIo[1]/filtered_vision_pose_",
+            "/NT/Robot/subsystems_ios/PoseEstimatorPeriodicIo[1]/filtered_vision_pose_/rotation",
+            "/NT/Robot/subsystems_ios/PoseEstimatorPeriodicIo[1]/filtered_vision_pose_/translation",
+            "/TalonFX-23",
+            "/Phoenix6",
+            "/NT/SmartDashboard",
+            "/NT/SmartDashboard/Subsystems/PoseEstimator/Field",
+            "/NT/Robot",
+            "/Phoenix6/TalonFX-31",
+            "/Phoenix6/TalonFX-31/PIDPosition",
+            "/NT/Robot/subsystems_ios/PickupPeriodicIo[6]",
+            "/DS/joystick2/buttons",
+            "/DS/joystick1/buttons",
+            "/NT/SmartDashboard/CommandScheduler",
+            "/DS",
+            "/SmartDashboard/Subsystems/Pickup",
+            "/Phoenix6/TalonFX-41",
+            "/TightRopes",
+            "/Swerve/Chassis Speeds",
+            "/Swerve/Chassis Speeds/Current",
+            "/Swerve/Chassis Speeds/Request",
+            "/Swerve",
+            "/Components",
+            "/Components/Arm",
+            "/Components/ElevatorGSM"
           ]
         },
         "tabs": {
-          "selected": 7,
+          "selected": 3,
           "tabs": [
             {
               "type": 0,
@@ -254,7 +278,7 @@
               },
               "controllerUUID": "ni5kibjvstnwqlp66jtyg3ehsof6axkl",
               "renderer": null,
-              "controlsHeight": 0
+              "controlsHeight": 205
             },
             {
               "type": 3,
@@ -299,6 +323,13 @@
                     "options": {}
                   },
                   {
+                    "type": "component",
+                    "logKey": "NT:Components/Pickup",
+                    "logType": "Pose3d",
+                    "visible": true,
+                    "options": {}
+                  },
+                  {
                     "type": "ghost",
                     "logKey": "NT:PoseEstimation/Vision Pose",
                     "logType": "Pose2d",
@@ -327,6 +358,20 @@
                       "model": "2025 MARS/WARS Base",
                       "color": "#ff8c00"
                     }
+                  },
+                  {
+                    "type": "component",
+                    "logKey": "NT:Components/ArmGSM",
+                    "logType": "Pose3d",
+                    "visible": true,
+                    "options": {}
+                  },
+                  {
+                    "type": "component",
+                    "logKey": "NT:Components/ElevatorGSM/Stages",
+                    "logType": "Pose3d",
+                    "visible": true,
+                    "options": {}
                   }
                 ],
                 "game": "2025 Field (Welded)",
@@ -334,19 +379,85 @@
               },
               "controllerUUID": "m1ztkrgvb2rk8mgn84immhzwfqu24dn4",
               "renderer": {
-                "cameraIndex": -1,
+                "cameraIndex": -2,
                 "orbitFov": 50,
                 "cameraPosition": [
-                  1.4695761589768238e-15,
-                  5.999999999999999,
-                  -12
+                  -0.4191252288023525,
+                  0.8146052117698535,
+                  -1.354586079713291
                 ],
                 "cameraTarget": [
-                  0,
-                  0.5,
-                  0
+                  0.13993363337576847,
+                  0.4101893861508323,
+                  -0.05001795582347898
                 ]
               },
+              "controlsHeight": 344
+            },
+            {
+              "type": 1,
+              "title": "Line Graph",
+              "controller": {
+                "leftSources": [
+                  {
+                    "type": "stepped",
+                    "logKey": "NT:Swerve/Chassis Speeds/Current/vx",
+                    "logType": "Number",
+                    "visible": true,
+                    "options": {
+                      "color": "#2b66a2",
+                      "size": "normal"
+                    }
+                  },
+                  {
+                    "type": "stepped",
+                    "logKey": "NT:Swerve/Chassis Speeds/Request/vx",
+                    "logType": "Number",
+                    "visible": true,
+                    "options": {
+                      "color": "#e5b31b",
+                      "size": "normal"
+                    }
+                  }
+                ],
+                "rightSources": [],
+                "discreteSources": [],
+                "leftLockedRange": null,
+                "rightLockedRange": null,
+                "leftUnitConversion": {
+                  "type": null,
+                  "factor": 1
+                },
+                "rightUnitConversion": {
+                  "type": null,
+                  "factor": 1
+                },
+                "leftFilter": 0,
+                "rightFilter": 0
+              },
+              "controllerUUID": "txusgvjwzhozesnrd2wz43pnk3jfhks6",
+              "renderer": null,
+              "controlsHeight": 200
+            },
+            {
+              "type": 4,
+              "title": "Table",
+              "controller": [
+                "DS:autonomous",
+                "NT:/SmartDashboard/CommandScheduler/Names"
+              ],
+              "controllerUUID": "o42q2fmzyhwnb50sqpi7217uf096fbz1",
+              "renderer": null,
+              "controlsHeight": 0
+            },
+            {
+              "type": 4,
+              "title": "Table",
+              "controller": [
+                "NT:/SmartDashboard/CommandScheduler/Names"
+              ],
+              "controllerUUID": "446cpsws3rah2eey5xwrzs7fbjj1irqe",
+              "renderer": null,
               "controlsHeight": 0
             },
             {
@@ -354,15 +465,6 @@
               "title": "Swerve",
               "controller": {
                 "sources": [
-                  {
-                    "type": "chassisSpeeds",
-                    "logKey": "NT:Swerve/Chassis Speeds",
-                    "logType": "ChassisSpeeds",
-                    "visible": true,
-                    "options": {
-                      "color": "#00ff00"
-                    }
-                  },
                   {
                     "type": "states",
                     "logKey": "NT:Swerve/Module States/Current",
@@ -389,7 +491,25 @@
                     "logType": "Number",
                     "visible": true,
                     "options": {
-                      "units": "radians"
+                      "units": "degrees"
+                    }
+                  },
+                  {
+                    "type": "chassisSpeeds",
+                    "logKey": "NT:Swerve/Chassis Speeds/Current",
+                    "logType": "ChassisSpeeds",
+                    "visible": true,
+                    "options": {
+                      "color": "#00ff00"
+                    }
+                  },
+                  {
+                    "type": "chassisSpeeds",
+                    "logKey": "NT:Swerve/Chassis Speeds/Request",
+                    "logType": "ChassisSpeeds",
+                    "visible": true,
+                    "options": {
+                      "color": "#ff8c00"
                     }
                   }
                 ],
@@ -425,6 +545,16 @@
                     "options": {
                       "color": "#80588e",
                       "size": "normal"
+                    }
+                  },
+                  {
+                    "type": "stepped",
+                    "logKey": "NT:/SmartDashboard/Subsystems/Elevator/Intermediate Count",
+                    "logType": "Number",
+                    "visible": true,
+                    "options": {
+                      "color": "#e5b31b",
+                      "size": "bold"
                     }
                   }
                 ],
@@ -462,15 +592,6 @@
                   },
                   {
                     "type": "stripes",
-                    "logKey": "NT:/Robot/subsystems_ios/ElevatorPeriodicIo[3]/target_",
-                    "logType": "String",
-                    "visible": true,
-                    "options": {
-                      "color": "#e5b31b"
-                    }
-                  },
-                  {
-                    "type": "stripes",
                     "logKey": "DS:enabled",
                     "logType": "Boolean",
                     "visible": true,
@@ -486,16 +607,37 @@
                     "options": {
                       "color": "#d993aa"
                     }
+                  },
+                  {
+                    "type": "stripes",
+                    "logKey": "NT:/Robot/subsystems_ios/ElevatorPeriodicIo[3]/target_type_",
+                    "logType": "String",
+                    "visible": true,
+                    "options": {
+                      "color": "#858584"
+                    }
+                  },
+                  {
+                    "type": "stripes",
+                    "logKey": "NT:/SmartDashboard/Subsystems/Elevator/Pending Target",
+                    "logType": "String",
+                    "visible": true,
+                    "options": {
+                      "color": "#5f4528"
+                    }
+                  },
+                  {
+                    "type": "stripes",
+                    "logKey": "NT:/SmartDashboard/Subsystems/Elevator/Target",
+                    "logType": "String",
+                    "visible": true,
+                    "options": {
+                      "color": "#2b66a2"
+                    }
                   }
                 ],
-                "leftLockedRange": [
-                  0.6647544003646675,
-                  2.0027305488649545
-                ],
-                "rightLockedRange": [
-                  -1.7761343132920295,
-                  2.741301389644894
-                ],
+                "leftLockedRange": null,
+                "rightLockedRange": null,
                 "leftUnitConversion": {
                   "type": null,
                   "factor": 1
@@ -513,12 +655,88 @@
             },
             {
               "type": 1,
+              "title": "Climb",
+              "controller": {
+                "leftSources": [
+                  {
+                    "type": "stepped",
+                    "logKey": "NT:/Robot/subsystems_ios/ClimberPeriodicIo[4]/arm_motor_target",
+                    "logType": "Number",
+                    "visible": false,
+                    "options": {
+                      "color": "#e5b31b",
+                      "size": "normal"
+                    }
+                  },
+                  {
+                    "type": "stepped",
+                    "logKey": "NT:/Robot/subsystems_ios/ClimberPeriodicIo[4]/prong_motor_target",
+                    "logType": "Number",
+                    "visible": true,
+                    "options": {
+                      "color": "#af2437",
+                      "size": "normal"
+                    }
+                  }
+                ],
+                "rightSources": [
+                  {
+                    "type": "stepped",
+                    "logKey": "NT:/Robot/subsystems_ios/ClimberPeriodicIo[4]/strap_motor_target",
+                    "logType": "Number",
+                    "visible": true,
+                    "options": {
+                      "color": "#80588e",
+                      "size": "normal"
+                    }
+                  },
+                  {
+                    "type": "stepped",
+                    "logKey": "NT:/Robot/subsystems_ios/ClimberPeriodicIo[4]/strap_motor_target_offset",
+                    "logType": "Number",
+                    "visible": true,
+                    "options": {
+                      "color": "#e48b32",
+                      "size": "normal"
+                    }
+                  }
+                ],
+                "discreteSources": [
+                  {
+                    "type": "stripes",
+                    "logKey": "NT:/Robot/subsystems_ios/ClimberPeriodicIo[4]/current_mode_",
+                    "logType": "String",
+                    "visible": true,
+                    "options": {
+                      "color": "#2b66a2"
+                    }
+                  }
+                ],
+                "leftLockedRange": null,
+                "rightLockedRange": null,
+                "leftUnitConversion": {
+                  "type": null,
+                  "factor": 1
+                },
+                "rightUnitConversion": {
+                  "type": null,
+                  "factor": 1
+                },
+                "leftFilter": 0,
+                "rightFilter": 0
+              },
+              "controllerUUID": "swdzdxarlg7rc3vl9ibwlceh7d8mpgrg",
+              "renderer": null,
+              "controlsHeight": 200
+            },
+            {
+              "type": 1,
               "title": "Claw",
               "controller": {
                 "leftSources": [
                   {
                     "type": "stepped",
-                    "logKey": "NT:/Robot/subsystems_ios/ClawPeriodicIo[2]/current_output_",
+                    "logKey": "NT:/SmartDashboard/Subsystems/Claw/Current_Output",
                     "logType": "Number",
                     "visible": true,
                     "options": {
@@ -582,6 +800,15 @@
                     "options": {
                       "color": "#d993aa"
                     }
+                  },
+                  {
+                    "type": "stripes",
+                    "logKey": "NT:/Robot/subsystems_ios/ClawPeriodicIo[2]/coral_present_",
+                    "logType": "Boolean",
+                    "visible": true,
+                    "options": {
+                      "color": "#c0b487"
+                    }
                   }
                 ],
                 "leftLockedRange": [
@@ -603,6 +830,51 @@
               "controllerUUID": "sc1blb9ed4n4hp99pv9srxf8c8lf31gg",
               "renderer": null,
               "controlsHeight": 302
+            },
+            {
+              "type": 1,
+              "title": "Intake",
+              "controller": {
+                "leftSources": [
+                  {
+                    "type": "stepped",
+                    "logKey": "NT:/SmartDashboard/Subsystems/Pickup/current_pivot_angle",
+                    "logType": "Number",
+                    "visible": true,
+                    "options": {
+                      "color": "#e5b31b",
+                      "size": "normal"
+                    }
+                  }
+                ],
+                "rightSources": [],
+                "discreteSources": [
+                  {
+                    "type": "stripes",
+                    "logKey": "NT:/SmartDashboard/Subsystems/Pickup/current_mode_",
+                    "logType": "String",
+                    "visible": true,
+                    "options": {
+                      "color": "#2b66a2"
+                    }
+                  }
+                ],
+                "leftLockedRange": null,
+                "rightLockedRange": null,
+                "leftUnitConversion": {
+                  "type": null,
+                  "factor": 1
+                },
+                "rightUnitConversion": {
+                  "type": null,
+                  "factor": 1
+                },
+                "leftFilter": 0,
+                "rightFilter": 0
+              },
+              "controllerUUID": "mvhz9mfm082aw7gnjhlu5ie979pb423o",
+              "renderer": null,
+              "controlsHeight": 200
             },
             {
               "type": 1,
@@ -713,7 +985,7 @@
               "controller": "console",
               "controllerUUID": "u41xx4l7i9wyg3caf0d9kixg1e0jwjpb",
               "renderer": {
-                "highlight": false
+                "highlight": true
               },
               "controlsHeight": 0
             }
@@ -723,5 +995,5 @@
     }
   ],
   "satellites": [],
-  "version": "4.1.4"
+  "version": "4.1.2"
 }
