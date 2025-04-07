@@ -1,5 +1,6 @@
 package frc.robot.subsystems;
 
+import static edu.wpi.first.units.Units.Degrees;
 import static edu.wpi.first.units.Units.Fahrenheit;
 import static edu.wpi.first.units.Units.Radians;
 import static edu.wpi.first.units.Units.Rotations;
@@ -309,7 +310,9 @@ public class Elevator extends Subsystem {
   }
 
   private Rotation2d readArmEncoder() {
-    return Rotation2d.fromRotations(arm_encoder_.getAbsolutePosition().getValueAsDouble());
+    double value = arm_encoder_.getAbsolutePosition().getValue().in(Degrees);
+    if (Math.abs(value) > 180) return Rotation2d.fromDegrees(value + (-Math.copySign(360, value)));
+    return Rotation2d.fromDegrees(value);
   }
 
   private boolean armAtTarget(JointSpaceTarget target) {
