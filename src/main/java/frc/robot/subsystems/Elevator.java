@@ -150,7 +150,7 @@ public class Elevator extends Subsystem {
     elevator_request_ = new MotionMagicVoltage(0);
     arm_request_ = new MotionMagicVoltage(0);
 
-    kinematics_ = new ElevatorKinematics(ArmConstants.ARM_LENGTH, ArmConstants.ARM_WIDTH);
+    kinematics_ = new ElevatorKinematics(ArmConstants.ARM_LENGTH, ArmConstants.ARM_WIDTH, ElevatorConstants.ELEVATOR_HEIGHT_PIVOT_MAX, ElevatorConstants.ELEVATOR_HEIGHT_PIVOT_MIN);
     planner_ =
         new ElevatorPlanner(
             kinematics_,

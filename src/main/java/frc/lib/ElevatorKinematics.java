@@ -1,32 +1,44 @@
 package frc.lib;
 
 import edu.wpi.first.math.geometry.Translation3d;
-import edu.wpi.first.math.util.Units;
-import frc.robot.Constants.ElevatorConstants;
 
 public class ElevatorKinematics {
-  private double arm_length_ = 0;
-  private double arm_width_ = 0;
   private double virtual_arm_length_ = 0;
   private double virtual_arm_angle_ = 0;
+  private double reachable_max_ = 0;
+  private double reachable_min_ = 0;
 
   /**
    * Elevator Kinematic's Constructor
    *
-   * @param length The Length of the robot's arm in meters
+   * @param arm_length The Length of the robot's arm in meters
    */
-  public ElevatorKinematics(double length, double width) {
-    arm_length_ = length;
-    arm_width_ = width;
-    virtual_arm_length_ = Math.sqrt(Math.pow(length, 2) + Math.pow(width, 2));
-    virtual_arm_angle_ = Math.tan(width / length);
-    System.out.println("Arm Length: " + Units.metersToInches(virtual_arm_length_));
+  public ElevatorKinematics(double arm_length, double arm_width, double elevator_max, double elevator_min) {
+    virtual_arm_length_ = Math.sqrt(Math.pow(arm_length, 2) + Math.pow(arm_width, 2));
+    virtual_arm_angle_ = Math.tan(arm_width / arm_length);
+    reachable_max_ = elevator_max + virtual_arm_length_;
+    reachable_min_ = elevator_min - virtual_arm_length_;
   }
 
   public JointSpaceTarget translationToJointSpace(Translation3d t) {
     JointSpaceTarget target = new JointSpaceTarget();
-    target.pivot_angle = -Math.acos(t.getX() / virtual_arm_length_);
-    target.pivot_height = -(Math.sin(target.pivot_angle) * virtual_arm_length_) + t.getZ();
+    double x = t.getX();
+    if(Math.abs(x) > virtual_arm_length_){
+      System.out.println("WARNING: Inverse Kinematics X Value : Out of Reach");
+      x = Math.copySign(virtual_arm_length_, x);
+    }
+    double z = t.getZ();
+    if(z > reachable_max_){
+      System.out.println("WARNING: Inverse Kinematics Z Value : Out of Reach (+)");
+      z = reachable_max_;
+    }
+    if(z < reachable_min_){
+      System.out.println("WARNING: Inverse Kinematics Z Value : Out of Reach (-)");
+      z = reachable_min_;
+    }
+    
+    target.pivot_angle = -Math.acos(x / virtual_arm_length_);
+    target.pivot_height = -(Math.sin(target.pivot_angle) * virtual_arm_length_) + z;
     return target;
   }
 
@@ -34,11 +46,11 @@ public class ElevatorKinematics {
     double x = Math.cos(j.pivot_angle) * virtual_arm_length_;
     double z = j.pivot_height + (Math.sin(j.pivot_angle) * virtual_arm_length_);
     if (Math.abs(x) > virtual_arm_length_)
-      System.out.println("WARNING: Kinematics X Value : Out of Reach");
-    if (z > ElevatorConstants.ELEVATOR_HEIGHT_PIVOT_MAX + virtual_arm_length_)
-      System.out.println("WARNING: Kinematics Z Value : Out of Reach (+)");
-    if (z < ElevatorConstants.ELEVATOR_HEIGHT_PIVOT_MIN - virtual_arm_length_)
-      System.out.println("WARNING: Kinematics Z Value : Out of Reach (-)");
+      System.out.println("WARNING: Forward Kinematics X Value : Out of Reach");
+    if (z > reachable_max_)
+      System.out.println("WARNING: Forward Kinematics Z Value : Out of Reach (+)");
+    if (z < reachable_min_)
+      System.out.println("WARNING: Forward Kinematics Z Value : Out of Reach (-)");
     return new Translation3d(x, 0, z);
   }
 
