@@ -25,10 +25,9 @@ import edu.wpi.first.networktables.StructPublisher;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Commands;
 import frc.lib.ElevatorKinematics;
-import frc.lib.ElevatorKinematics.JointSpaceTarget;
+import frc.lib.ElevatorKinematics.JointSpaceSolution;
 import frc.lib.ElevatorPlanner;
 import frc.lib.ElevatorTargets.TargetType;
-import frc.lib.FieldRegions;
 import frc.mw_lib.controls.TalonFXTuner;
 import frc.mw_lib.subsystem.Subsystem;
 import frc.mw_lib.util.MWPreferences;
@@ -69,8 +68,8 @@ public class Elevator extends Subsystem {
   private ElevatorPlanner planner_;
 
   // Mechanisms
-  private StructArrayPublisher<Pose3d> stages_pub_;
-  private StructPublisher<Pose3d> arm_pub_;
+  private StructArrayPublisher<Pose3d> current_stages_pub_;
+  private StructPublisher<Pose3d> current_arm_pub_;
 
   TalonFXTuner elevator_tuner_;
   TalonFXTuner arm_tuner_;
@@ -150,7 +149,12 @@ public class Elevator extends Subsystem {
     elevator_request_ = new MotionMagicVoltage(0);
     arm_request_ = new MotionMagicVoltage(0);
 
-    kinematics_ = new ElevatorKinematics(ArmConstants.ARM_LENGTH, ArmConstants.ARM_WIDTH, ElevatorConstants.ELEVATOR_HEIGHT_PIVOT_MAX, ElevatorConstants.ELEVATOR_HEIGHT_PIVOT_MIN);
+    kinematics_ =
+        new ElevatorKinematics(
+            ArmConstants.ARM_LENGTH,
+            ArmConstants.ARM_WIDTH,
+            ElevatorConstants.ELEVATOR_HEIGHT_PIVOT_MAX,
+            ElevatorConstants.ELEVATOR_HEIGHT_PIVOT_MIN);
     planner_ =
         new ElevatorPlanner(
             kinematics_,
@@ -158,11 +162,11 @@ public class Elevator extends Subsystem {
             Constants.ElevatorConstants.SUBDIVISION_FOLLOW_DIST);
 
     // Mechanism Setup
-    stages_pub_ =
+    current_stages_pub_ =
         NetworkTableInstance.getDefault()
-            .getStructArrayTopic("Components/Elevator/Stages", Pose3d.struct)
+            .getStructArrayTopic("Components/Elevator Stages", Pose3d.struct)
             .publish();
-    arm_pub_ =
+    current_arm_pub_ =
         NetworkTableInstance.getDefault().getStructTopic("Components/Arm", Pose3d.struct).publish();
 
     // System Tuning
@@ -205,16 +209,17 @@ public class Elevator extends Subsystem {
         io_.elevator_master_rotations_ * ElevatorConstants.ELEVATOR_ROTATIONS_TO_METERS
             + ElevatorConstants.ELEVATOR_HEIGHT_PIVOT_MIN;
     io_.current_arm_angle_ = (arm_motor_.getPosition().getValue().in(Radians));
+    io_.current_system_solution_ =
+        new JointSpaceSolution(io_.current_elevator_height_, io_.current_arm_angle_);
   }
 
   /** Computes updated outputs for the actuators */
   public void updateLogic(double timestamp) {
-    io_.currentTranslation =
-        kinematics_.jointSpaceToTranslation(io_.current_elevator_height_, io_.current_arm_angle_);
-    if (!systemAtTarget(io_.current_target) && planner_.hasPath()) {
-      io_.current_target = planner_.nextTarget(io_.currentTranslation);
-      io_.target_elevator_height_ = io_.current_target.pivot_height;
-      io_.target_arm_angle_ = io_.current_target.pivot_angle;
+    io_.current_translation_ = kinematics_.jointSpaceToTranslation(io_.current_system_solution_);
+    if (!systemAtTarget(io_.target_system_solution_) && planner_.hasPath()) {
+      io_.target_system_solution_ = planner_.nextTarget(io_.current_translation_);
+      io_.target_elevator_height_ = io_.target_system_solution_.getPivotHeight();
+      io_.target_arm_angle_ = io_.target_system_solution_.getPivotAngle();
     }
 
     // Elevator Safety
@@ -266,64 +271,88 @@ public class Elevator extends Subsystem {
     SmartDashboard.putNumber(
         "Subsystems/Arm/Current Angle (Degrees)", Units.radiansToDegrees(io_.current_arm_angle_));
     SmartDashboard.putNumber(
-        "Subsystems/Arm/Target Angle (Degrees)",
-        Units.radiansToDegrees(io_.current_target.pivot_angle));
+        "Subsystems/Arm/Target Angle (Degrees)", Units.radiansToDegrees(io_.target_arm_angle_));
     SmartDashboard.putNumber(
-        "Subsystems/Arm/Current Height (Meters)", io_.currentTranslation.getZ());
-    SmartDashboard.putNumber("Subsystems/Arm/Current X (Meters)", io_.currentTranslation.getX());
+        "Subsystems/Arm/Current Height (Meters)", io_.current_translation_.getZ());
+    SmartDashboard.putNumber("Subsystems/Arm/Current X (Meters)", io_.current_translation_.getX());
     SmartDashboard.putNumber(
         "Subsystems/Arm/Absolute Encoder (Rotations)", readArmEncoder().getRotations());
     SmartDashboard.putString("Subsystems/Elevator/Target", io_.final_target_.toString());
-    SmartDashboard.putString("Subsystems/Elevator/Pending Target", io_.current_target.toString());
+    SmartDashboard.putString(
+        "Subsystems/Elevator/Pending Target", io_.target_system_solution_.toString());
     SmartDashboard.putBoolean("Subsystems/Elevator/At Target", isElevatorAtTarget());
     SmartDashboard.putBoolean("Subsystems/Arm/At Target", isArmAtTarget());
-
-    SmartDashboard.putNumber(
-        "Subsystems/Arm/KinematicsTesting Angle Deg",
-        Units.radiansToDegrees(
-            kinematics_.translationToJointSpace(io_.currentTranslation).pivot_angle));
-    SmartDashboard.putNumber(
-        "Subsystems/Arm/KinematicsTesting Pivot Height",
-        kinematics_.translationToJointSpace(io_.currentTranslation).pivot_height);
-
-    updateMechanism();
+    updateMechanism(current_stages_pub_, current_arm_pub_, io_.current_system_solution_);
   }
 
-  private void updateMechanism() {
-    stages_pub_.set(
+  /**
+   * Publishes a JointSpaceSolution of the Elevator to NT
+   *
+   * @param stages_pub publisher for elevator stages
+   * @param arm_pub publisher for arm
+   * @param solution JointSpaceSolution to display using mechanism
+   */
+  public void updateMechanism(
+      StructArrayPublisher<Pose3d> stages_pub,
+      StructPublisher<Pose3d> arm_pub,
+      JointSpaceSolution solution) {
+    stages_pub.set(
         new Pose3d[] {
           new Pose3d(
               0,
               0,
-              (io_.current_elevator_height_ - ElevatorConstants.ELEVATOR_HEIGHT_PIVOT_MIN) / 2
+              (solution.getPivotHeight() - ElevatorConstants.ELEVATOR_HEIGHT_PIVOT_MIN) / 2
                   + ElevatorConstants.ELEVATOR_HEIGHT_PIVOT_MIN,
               new Rotation3d()),
-          new Pose3d(0, 0, io_.current_elevator_height_, new Rotation3d())
+          new Pose3d(0, 0, solution.getPivotHeight(), new Rotation3d())
         });
-    arm_pub_.set(
+    arm_pub.set(
         new Pose3d(
-            0, 0, io_.current_elevator_height_, new Rotation3d(0, io_.current_arm_angle_, 0)));
+            0, 0, solution.getPivotHeight(), new Rotation3d(0, solution.getPivotAngle(), 0)));
   }
 
+  /**
+   * Reads the arm encoder and handles wrapping
+   *
+   * @return raw arm encoder value without wrapping
+   */
   private Rotation2d readArmEncoder() {
     double value = arm_encoder_.getAbsolutePosition().getValue().in(Degrees);
     if (Math.abs(value) > 180) return Rotation2d.fromDegrees(value + (-Math.copySign(360, value)));
     return Rotation2d.fromDegrees(value);
   }
 
-  private boolean armAtTarget(JointSpaceTarget target) {
+  /**
+   * Checks is arm is at provided JointSpaceSolution angle
+   *
+   * @param target JointSpaceSolution containing desired angle for comparison
+   * @return current and provided target arm angle are within tolerance
+   */
+  private boolean armAtTarget(JointSpaceSolution target) {
     return Util.epislonEquals(
-        io_.current_arm_angle_, target.pivot_angle, ArmConstants.ARM_TARGET_THRESHOLD);
+        io_.current_arm_angle_, target.getPivotAngle(), ArmConstants.ARM_TARGET_THRESHOLD);
   }
 
-  private boolean elevatorAtTarget(JointSpaceTarget target) {
+  /**
+   * Checks is elevator is at provided JointSpaceSolution height
+   *
+   * @param target JointSpaceSolution containing desired height for comparison
+   * @return current and provided target elevator height are within tolerance
+   */
+  private boolean elevatorAtTarget(JointSpaceSolution target) {
     return Util.epislonEquals(
         io_.current_elevator_height_,
-        target.pivot_height,
+        target.getPivotHeight(),
         ElevatorConstants.ELEVATOR_TARGET_THRESHOLD);
   }
 
-  private boolean systemAtTarget(JointSpaceTarget target) {
+  /**
+   * Checks is elevator and arm is at provided JointSpaceSolution
+   *
+   * @param target JointSpaceSolution containing desired height and angle for comparison
+   * @return current and provided target elevator height & arm angle are within tolerance
+   */
+  private boolean systemAtTarget(JointSpaceSolution target) {
     return elevatorAtTarget(target) && armAtTarget(target);
   }
 
@@ -331,16 +360,14 @@ public class Elevator extends Subsystem {
    * @return If the arm is within the threshold of its final target
    */
   public boolean isArmAtTarget() {
-    return armAtTarget(
-        kinematics_.translationToJointSpace(io_.final_target_.getTarget().translation));
+    return armAtTarget(io_.final_system_solution_);
   }
 
   /**
    * @return If the elevator is within the threshold of its final target
    */
   public boolean isElevatorAtTarget() {
-    return elevatorAtTarget(
-        kinematics_.translationToJointSpace(io_.final_target_.getTarget().translation));
+    return elevatorAtTarget(io_.final_system_solution_);
   }
 
   /**
@@ -378,6 +405,11 @@ public class Elevator extends Subsystem {
             - (MWPreferences.getInstance().getPreferenceDouble("ArmEncoderOffset", 0)));
   }
 
+  /**
+   * Adjust the stored target setpoint by an inch in offset_type direction
+   *
+   * @param offset_type direction to move the translation point
+   */
   public void setOffset(OffsetType offset_type) {
     switch (offset_type) {
       case UP:
@@ -396,6 +428,12 @@ public class Elevator extends Subsystem {
     }
   }
 
+  /** Removes any applied offsets to the currently selected target */
+  public void resetManualOffsets() {
+    io_.final_target_.resetXOffset();
+    io_.final_target_.resetYOffset();
+  }
+
   /**
    * Sets the target for arm and elevator
    *
@@ -409,43 +447,49 @@ public class Elevator extends Subsystem {
     buildPlan(new_target);
   }
 
+  /**
+   * Creates a new plan for the system to follow from the current solution to the new target
+   *
+   * @param new_target
+   */
   public void buildPlan(TargetType new_target) {
     TargetType old_target = io_.final_target_;
     io_.final_target_ = new_target;
 
-    // TODO: reciving new targets when not at a known target
     ArrayList<Translation3d> waypoints = new ArrayList<>();
-    waypoints.add(
-        kinematics_.jointSpaceToTranslation(io_.current_elevator_height_, io_.current_arm_angle_));
-    waypoints.addAll(old_target.getExitTrj());
+    waypoints.add(io_.current_translation_);
+    // Only add exit traj if system is at final target
+    if (systemAtTarget(io_.final_system_solution_)) {
+      waypoints.addAll(old_target.getExitTrj());
+    }
     waypoints.addAll(new_target.getEnterTrj());
     waypoints.add(new_target.getTarget().getTranslation());
 
     planner_.plan(waypoints);
 
     if (planner_.hasPath()) {
-      io_.current_target =
-          planner_.nextTarget(
-              kinematics_.jointSpaceToTranslation(
-                  io_.current_elevator_height_, io_.current_arm_angle_));
+      io_.target_system_solution_ = planner_.nextTarget(io_.current_translation_);
     }
+    io_.final_system_solution_ =
+        kinematics_.translationToJointSpace(io_.final_target_.getTarget().getTranslation());
   }
 
+  /**
+   * Gets the current target of the system
+   *
+   * @return current target
+   */
   public TargetType getTarget() {
     return io_.final_target_;
   }
 
-  public void resetManualOffsets() {
-    io_.final_target_.resetXOffset();
-    io_.final_target_.resetYOffset();
-  }
-
-  public void stowElevator() {
-    setTarget(TargetType.CORAL_INTAKE);
-  }
-
+  /**
+   * Applies a rotational speed limit to the arm motor
+   *
+   * @param limit type of limit to apply to arm
+   */
   public void setSpeedLimit(SpeedLimit limit) {
-    if (limit == io_.current_speed_limit) {
+    if (limit == io_.current_speed_limit_) {
       return;
     }
 
@@ -463,9 +507,34 @@ public class Elevator extends Subsystem {
       arm_config_.MotionMagic.MotionMagicAcceleration = ArmConstants.L4_ARM_ACCEL;
     }
     arm_motor_.getConfigurator().apply(arm_config_);
-    io_.current_speed_limit = limit;
+    io_.current_speed_limit_ = limit;
   }
 
+  /**
+   * Gets the current applied speed limit of the arm motor
+   *
+   * @return current speed limit
+   */
+  public SpeedLimit getCurrSpeedLimit() {
+    return io_.current_speed_limit_;
+  }
+
+  /**
+   * Gets the local instrance of the elevator kinematics
+   *
+   * @return elevator kinematics
+   */
+  public ElevatorKinematics getElevatorKinematics() {
+    return kinematics_;
+  }
+
+  /**
+   * Binds supplied tuner to controller triggers
+   *
+   * @param tuner tuner to enable
+   * @param pos1 first test position for MotionMagicVoltage
+   * @param pos2 second test position for MotionMagicVoltage
+   */
   public void bindTuner(TalonFXTuner tuner, double pos1, double pos2) {
     tuner.bindSetpoint(new MotionMagicVoltage(pos1), OI.getDriverJoystickAButtonTrigger());
     tuner.bindSetpoint(new MotionMagicVoltage(pos2), OI.getDriverJoystickYButtonTrigger());
@@ -477,31 +546,28 @@ public class Elevator extends Subsystem {
     tuner.bindQuasistaticReverse(OI.getOperatorJoystickYButtonTrigger());
   }
 
-  public boolean canExtendForBarge() {
-    return FieldRegions.ALGAE_REGIONS[0].contains(PoseEstimator.getInstance().getRobotPose());
-  }
-
-  public SpeedLimit getCurrSpeedLimit() {
-    return io_.current_speed_limit;
-  }
-
   public class ElevatorPeriodicIo implements Logged {
     // IO container for all variables
     @Log.File public double current_elevator_height_ = 0;
-    @Log.File public double target_elevator_height_ = ElevatorConstants.ELEVATOR_HEIGHT_PIVOT_MIN;
     @Log.File public double current_arm_angle_ = 0;
+
+    @Log.File
+    public JointSpaceSolution current_system_solution_ =
+        new JointSpaceSolution(current_elevator_height_, current_arm_angle_);
+
+    @Log.File public double target_elevator_height_ = ElevatorConstants.ELEVATOR_HEIGHT_PIVOT_MIN;
     @Log.File public double target_arm_angle_ = Units.degreesToRadians(-90);
+
+    @Log.File
+    public JointSpaceSolution target_system_solution_ =
+        new JointSpaceSolution(target_elevator_height_, target_arm_angle_);
+
     @Log.File public double elevator_master_rotations_ = 0;
     @Log.File public double elevator_follower_rotations_ = 0;
-    @Log.File public Translation3d currentTranslation = new Translation3d();
-    @Log.File public SpeedLimit current_speed_limit = SpeedLimit.CORAL;
-    // the final goal
+    @Log.File public Translation3d current_translation_ = new Translation3d();
+    @Log.File public SpeedLimit current_speed_limit_ = SpeedLimit.CORAL;
     @Log.File public TargetType final_target_ = TargetType.CORAL_INTAKE;
-
-    // all targets between the current pose and the final target
-    @Log.File
-    public JointSpaceTarget current_target =
-        new JointSpaceTarget(target_elevator_height_, target_arm_angle_);
+    @Log.File public JointSpaceSolution final_system_solution_ = target_system_solution_;
   }
 
   /** Get logging object from subsystem */
