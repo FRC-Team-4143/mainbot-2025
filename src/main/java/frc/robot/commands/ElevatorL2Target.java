@@ -20,13 +20,14 @@ public class ElevatorL2Target extends NoReqConditionalCommand {
     // Use addRequirements() here to declare subsystem dependencies.
     super(
         Commands.runOnce(
-            () -> {
-              GameStateManager.getInstance().setScoringTarget(ReefScoringTarget.L2, true);
-              if (GameStateManager.getInstance().getRobotState() != RobotState.TELEOP_CONTROL
-                  && Claw.getInstance().isCoralMode()) {
-                GameStateManager.getInstance().setRobotState(RobotState.APPROACHING_TARGET);
-              }
-            }),
+                () -> {
+                  GameStateManager.getInstance().setScoringTarget(ReefScoringTarget.L2, true);
+                  if (GameStateManager.getInstance().getRobotState() != RobotState.TELEOP_CONTROL
+                      && Claw.getInstance().isCoralMode()) {
+                    GameStateManager.getInstance().setRobotState(RobotState.APPROACHING_TARGET);
+                  }
+                })
+            .ignoringDisable(true),
         new ManualElevatorOverride(Level.L2),
         OI.use_vision);
     setName(this.getClass().getSimpleName());

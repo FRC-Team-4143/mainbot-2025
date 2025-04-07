@@ -12,9 +12,8 @@ public class SplineUtil {
    */
   public static Translation3d[] subdividePoints(Translation3d[] points, int[] subdivisions) {
     int totalSubdivisions = sumArray(subdivisions);
-    Translation3d[] subdividedPoints =
-        new Translation3d[((points.length - 1) * totalSubdivisions) + 1];
-
+    Translation3d[] subdividedPoints = new Translation3d[totalSubdivisions];
+    int index = 0;
     for (int i = 0; i < points.length - 1; i++) {
       float increments = 1f / (float) subdivisions[i];
 
@@ -25,11 +24,18 @@ public class SplineUtil {
 
       Spline2d crs = new Spline2d(p0, p1, p2, p3);
 
-      for (int j = 0; j <= subdivisions[i]; j++) {
-        subdividedPoints[(i * subdivisions[i]) + j] = crs.q(j * increments);
+      for (int j = 0; j < subdivisions[i]; j++) {
+        subdividedPoints[index + j] = crs.q(j * increments);
       }
+      System.out.println("Final Segment Translation: " + subdividedPoints[index].toString());
+      index += subdivisions[i];
     }
 
+    System.out.println(
+        "Final Translation @ "
+            + (subdividedPoints.length - 1)
+            + " : "
+            + subdividedPoints[subdividedPoints.length - 1].toString());
     return subdividedPoints;
   }
 
@@ -43,8 +49,9 @@ public class SplineUtil {
    */
   public static Translation3d[] subdividePoints(
       Translation3d[] points, double subdivisionsPerUnit) {
+
     double[] distOfPoints = new double[points.length - 1];
-    for (int i = 0; i < distOfPoints.length - 1; i++) {
+    for (int i = 0; i < distOfPoints.length; i++) {
       distOfPoints[i] = points[i].getDistance(points[i + 1]);
     }
 
@@ -53,11 +60,11 @@ public class SplineUtil {
       subdivisions[i] = (int) Math.round(distOfPoints[i] * subdivisionsPerUnit);
     }
 
-    int totalSubdivisions = sumArray(subdivisions);
-    Translation3d[] subdividedPoints = new Translation3d[totalSubdivisions + 1];
-    subdividedPoints = subdividePoints(points, subdivisions);
-
-    return subdividedPoints;
+    System.out.println("Found needed subdivions per run");
+    System.out.println("distOfPoints: " + distOfPoints.length);
+    System.out.println("subdivisions: " + subdivisions.length);
+    System.out.println("subdivisionsCount: " + sumArray(subdivisions));
+    return subdividePoints(points, subdivisions);
   }
 
   private static int sumArray(int[] a) {

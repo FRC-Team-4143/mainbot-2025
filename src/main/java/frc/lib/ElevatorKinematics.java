@@ -11,13 +11,13 @@ public class ElevatorKinematics {
   /**
    * Elevator Kinematic's Constructor
    *
-   * @param arm_length The Length of the robot's arm in meters
+   * @param length The Length of the robot's arm in meters
    */
-  public ElevatorKinematics(double arm_length, double arm_width_) {
-    this.arm_length_ = arm_length;
-    this.arm_width_ = arm_width_;
-    this.virtual_arm_length = Math.sqrt(Math.pow(arm_length, 2) + Math.pow(arm_width_, 2));
-    this.virtual_arm_angle = Math.tan(arm_width_ / arm_length);
+  public ElevatorKinematics(double length, double width) {
+    this.arm_length_ = length;
+    this.arm_width_ = width;
+    this.virtual_arm_length = Math.sqrt(Math.pow(length, 2) + Math.pow(width, 2));
+    this.virtual_arm_angle = Math.tan(width / length);
   }
 
   public JointSpaceTarget translationToJointSpace(Translation3d t) {
@@ -49,7 +49,7 @@ public class ElevatorKinematics {
     public JointSpaceTarget() {}
 
     public String toString() {
-      return "pivot_height: " + pivot_height + " |pivot_angle: " + pivot_angle;
+      return "pivot_height: " + pivot_height + " | pivot_angle: " + pivot_angle;
     }
   }
 }

@@ -8,14 +8,46 @@ public class ElevatorTargets {
     TEST(
         new TargetData(
             new Translation3d(0, 0, Constants.ElevatorConstants.ELEVATOR_HEIGHT_PIVOT_MIN), "TEST"),
-        new Translation3d[0],
+        new Translation3d[] {new Translation3d(0.2, 0, 1)},
         new Translation3d[0]),
     SAFETY(
         new TargetData(new Translation3d(), "SAFETY"), new Translation3d[0], new Translation3d[0]),
-    L4(new TargetData(new Translation3d(), "L4"), new Translation3d[0], new Translation3d[0]),
-    L3(new TargetData(new Translation3d(), "L3"), new Translation3d[0], new Translation3d[0]),
-    L2(new TargetData(new Translation3d(), "L2"), new Translation3d[0], new Translation3d[0]),
-    L1(new TargetData(new Translation3d(), "L1"), new Translation3d[0], new Translation3d[0]),
+    L4(
+        new TargetData(
+            new Translation3d(
+                Constants.DrivetrainConstants.CENTER_OFFSET_X,
+                0,
+                FieldConstants.ReefHeight.L4.HEIGHT),
+            "L4"),
+        new Translation3d[0],
+        new Translation3d[0]),
+    L3(
+        new TargetData(
+            new Translation3d(
+                Constants.DrivetrainConstants.CENTER_OFFSET_X,
+                0,
+                FieldConstants.ReefHeight.L3.HEIGHT),
+            "L3"),
+        new Translation3d[0],
+        new Translation3d[0]),
+    L2(
+        new TargetData(
+            new Translation3d(
+                Constants.DrivetrainConstants.CENTER_OFFSET_X,
+                0,
+                FieldConstants.ReefHeight.L2.HEIGHT),
+            "L2"),
+        new Translation3d[0],
+        new Translation3d[0]),
+    L1(
+        new TargetData(
+            new Translation3d(
+                Constants.DrivetrainConstants.CENTER_OFFSET_X,
+                0,
+                FieldConstants.ReefHeight.L1.HEIGHT),
+            "L1"),
+        new Translation3d[0],
+        new Translation3d[0]),
     STATION(
         new TargetData(new Translation3d(), "STATION"), new Translation3d[0], new Translation3d[0]),
     CLIMB(new TargetData(new Translation3d(), "CLIMB"), new Translation3d[0], new Translation3d[0]),

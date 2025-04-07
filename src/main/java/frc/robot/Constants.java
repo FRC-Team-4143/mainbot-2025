@@ -258,9 +258,7 @@ public final class Constants {
             / LOADER.getDoubleValue("elevator", "ELEVATOR_GEAR_RATIO")
             * 2;
     public static final double ELEVATOR_CRUISE_VELOCITY = 5.0 / ELEVATOR_ROTATIONS_TO_METERS;
-    public static final double ELEVATOR_ACCEL = 3.0 / ELEVATOR_ROTATIONS_TO_METERS;
-    public static final double ELEVATOR_EXPO_KV = 0.11733;
-    public static final double ELEVATOR_EXPO_KA = 0.0070285;
+    public static final double ELEVATOR_ACCEL = 10.0 / ELEVATOR_ROTATIONS_TO_METERS; // 3
     public static final double ELEVATOR_ZERO_THRESHOLD = 0; // In m
     public static final double ELEVATOR_STATOR_CURRENT_LIMIT = 80.0;
     public static final double ELEVATOR_HEIGHT_PIVOT_MIN =
@@ -283,8 +281,8 @@ public final class Constants {
             .withGravityType(GravityTypeValue.Elevator_Static);
     public static final double ELEVATOR_SAFETY_BUMP = Units.inchesToMeters(2);
 
-    public static final double SUBDIVISION_PER_METER = 100;
-    public static final double SUBDIVISION_FOLLOW_DIST = Units.inchesToMeters(1);
+    public static final double SUBDIVISION_PER_METER = 5;
+    public static final double SUBDIVISION_FOLLOW_DIST = Units.inchesToMeters(5);
   }
 
   public class ArmConstants {
