@@ -106,8 +106,8 @@
         "CONTROLLER_V": 8.778,
         "CONTROLLER_A": 0.25148,
         "CONTROLLER_G": 0.28,
-        "LENGTH_PIVOT_TO_FUNNEL": 11.5,
-        "DEPTH_CORAL_POCKET": 10
+        "LENGTH_PIVOT_TO_FUNNEL": 17,
+        "DEPTH_CORAL_POCKET": -1.1
     },
     "vision": {
         "camera0": {

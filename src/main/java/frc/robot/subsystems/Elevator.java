@@ -211,14 +211,13 @@ public class Elevator extends Subsystem {
   public void updateLogic(double timestamp) {
     io_.currentTranslation =
         kinematics_.jointSpaceToTranslation(io_.current_elevator_height_, io_.current_arm_angle_);
-    if (systemAtTarget(io_.current_target) && planner_.hasPath()) {
+    if (!systemAtTarget(io_.current_target) && planner_.hasPath()) {
       io_.current_target = planner_.nextTarget(io_.currentTranslation);
+      io_.target_elevator_height_ = io_.current_target.pivot_height;
+      io_.target_arm_angle_ = io_.current_target.pivot_angle;
     }
 
-    io_.target_elevator_height_ = io_.current_target.pivot_height;
-    io_.target_arm_angle_ = io_.current_target.pivot_angle;
-
-    // elevator safteys
+    // Elevator Safety
     if (io_.target_elevator_height_ < ElevatorConstants.ELEVATOR_HEIGHT_PIVOT_MIN) {
       // DataLogManager.log(
       // "ERROR: Target Elevator Height: "

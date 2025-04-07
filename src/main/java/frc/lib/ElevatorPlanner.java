@@ -21,6 +21,7 @@ public class ElevatorPlanner {
   private StructArrayPublisher<Translation3d> path_publisher_;
   private StructArrayPublisher<Translation3d> point_publisher_;
   private StructPublisher<Pose2d> base_publisher_;
+  private StructPublisher<Translation3d> target_publisher_;
 
   public ElevatorPlanner(
       ElevatorKinematics kinematics, double subdivisions_per_unit, double follow_distance) {
@@ -35,6 +36,10 @@ public class ElevatorPlanner {
     point_publisher_ =
         NetworkTableInstance.getDefault()
             .getStructArrayTopic("ElevatorPlanner/Points", Translation3d.struct)
+            .publish();
+    target_publisher_ =
+        NetworkTableInstance.getDefault()
+            .getStructTopic("ElevatorPlanner/Target", Translation3d.struct)
             .publish();
     base_publisher_ =
         NetworkTableInstance.getDefault()
@@ -52,11 +57,10 @@ public class ElevatorPlanner {
   }
 
   public boolean hasPath() {
-    return path_.size() > 0;
+    return !path_.isEmpty();
   }
 
   public JointSpaceTarget nextTarget(Translation3d current_translation) {
-    // find nearest point on the path to the followDistance
     Iterator<Translation3d> iterator = path_.iterator();
     int iterations = 0;
     while (iterator.hasNext()) {
@@ -72,6 +76,7 @@ public class ElevatorPlanner {
         break;
       }
     }
+    target_publisher_.set(path_.get(0));
     return kinematics_.translationToJointSpace(path_.get(0));
   }
 }

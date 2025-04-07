@@ -17,7 +17,7 @@ public class ElevatorTargets {
     L4(
         new TargetData(
             new Translation3d(
-                Constants.DrivetrainConstants.CENTER_OFFSET_X,
+                Constants.DrivetrainConstants.CENTER_OFFSET_X - 0.1,
                 0,
                 FieldConstants.ReefHeight.L4.HEIGHT),
             "L4"),
@@ -26,7 +26,7 @@ public class ElevatorTargets {
     L3(
         new TargetData(
             new Translation3d(
-                Constants.DrivetrainConstants.CENTER_OFFSET_X,
+                Constants.DrivetrainConstants.CENTER_OFFSET_X - 0.1,
                 0,
                 FieldConstants.ReefHeight.L3.HEIGHT),
             "L3"),
@@ -35,7 +35,7 @@ public class ElevatorTargets {
     L2(
         new TargetData(
             new Translation3d(
-                Constants.DrivetrainConstants.CENTER_OFFSET_X,
+                Constants.DrivetrainConstants.CENTER_OFFSET_X - 0.1,
                 0,
                 FieldConstants.ReefHeight.L2.HEIGHT),
             "L2"),
@@ -44,7 +44,7 @@ public class ElevatorTargets {
     L1(
         new TargetData(
             new Translation3d(
-                Constants.DrivetrainConstants.CENTER_OFFSET_X,
+                Constants.DrivetrainConstants.CENTER_OFFSET_X - 0.1,
                 0,
                 FieldConstants.ReefHeight.L1.HEIGHT),
             "L1"),
@@ -54,7 +54,8 @@ public class ElevatorTargets {
     CLIMB(new TargetData(new Translation3d(), "CLIMB"), Arrays.asList(), Arrays.asList()),
     CORAL_INTAKE(
         new TargetData(
-            new Translation3d(Constants.DrivetrainConstants.CENTER_OFFSET_X, 0, 1), "CORAL_INTAKE"),
+            new Translation3d(Constants.DrivetrainConstants.CENTER_OFFSET_X - 0.1, 0, 1),
+            "CORAL_INTAKE"),
         Arrays.asList(),
         Arrays.asList()),
     CORAL_STOW(
