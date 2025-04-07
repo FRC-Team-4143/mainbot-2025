@@ -8,7 +8,6 @@ import edu.wpi.first.networktables.StructPublisher;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
-import frc.lib.ElevatorKinematics.JointSpaceSolution;
 import frc.lib.ElevatorTargets.TargetType;
 import frc.lib.FieldRegions;
 import frc.lib.ScoringPoses;
@@ -182,15 +181,15 @@ public class GameStateManager extends Subsystem {
         "Subsystems/GameStateManager/Saved Target Level", io_.saved_scoring_target_.toString());
     SmartDashboard.putBoolean("Subsystems/GameStateManager/Ready to Score", isReadyToScore());
 
-    if(io_.reef_target_.isPresent()){
+    if (io_.reef_target_.isPresent()) {
       reef_target_pub_.set(io_.reef_target_.get());
       Elevator.getInstance()
-      .updateMechanism(
-          target_stages_pub_,
-          target_arm_pub_,
-          Elevator.getInstance()
-              .getElevatorKinematics()
-              .translationToJointSpace(elevatorTargetSwitch().getTarget().getTranslation()));
+          .updateMechanism(
+              target_stages_pub_,
+              target_arm_pub_,
+              Elevator.getInstance()
+                  .getElevatorKinematics()
+                  .translationToJointSpace(elevatorTargetSwitch().getTarget().getTranslation()));
     }
   }
 
@@ -314,7 +313,7 @@ public class GameStateManager extends Subsystem {
       case TURTLE:
       default:
         return (Claw.getInstance().isCoralMode()) ? TargetType.CORAL_STOW : TargetType.ALGAE_STOW;
-      } 
+    }
   }
 
   /**
