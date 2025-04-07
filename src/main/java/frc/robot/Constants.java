@@ -341,8 +341,8 @@ public final class Constants {
   }
 
   public class CoralDetectorConstants {
-    public static final CamConstants CORAL_CAM_CONSTANTS = new CamConstants("Coral Cam", new Transform3d());
-    public static final double COARL_HEIGHT_METERS = Units.inchesToMeters(2.25);
+    public static final Transform3d CAMERA_TRANSFORM = new Transform3d();
+    public static final double CORAL_HEIGHT_METERS = Units.inchesToMeters(2.25);
     public static final double DETECTION_DISTANCE_LIMIT = 1.5;
     public static final double DETECT_RISING = 0.1;
     public static final double DETECT_FALLING = 3.0;
