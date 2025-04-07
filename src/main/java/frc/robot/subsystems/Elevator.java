@@ -292,7 +292,6 @@ public class Elevator extends Subsystem {
   private void updateMechanism() {
     stages_pub_.set(
         new Pose3d[] {
-          new Pose3d(),
           new Pose3d(
               0,
               0,
@@ -303,10 +302,7 @@ public class Elevator extends Subsystem {
         });
     arm_pub_.set(
         new Pose3d(
-            0,
-            0,
-            io_.current_elevator_height_ + 0.012,
-            new Rotation3d(0, io_.current_arm_angle_, 0)));
+            0, 0, io_.current_elevator_height_, new Rotation3d(0, io_.current_arm_angle_, 0)));
   }
 
   private Rotation2d readArmEncoder() {
