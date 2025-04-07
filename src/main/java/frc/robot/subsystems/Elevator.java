@@ -38,6 +38,7 @@ import frc.robot.Constants.ArmConstants;
 import frc.robot.Constants.ElevatorConstants;
 import frc.robot.OI;
 import frc.robot.commands.SetDefaultStow;
+import java.util.ArrayList;
 import monologue.Annotations.Log;
 import monologue.Logged;
 
@@ -418,20 +419,12 @@ public class Elevator extends Subsystem {
     io_.final_target_ = new_target;
 
     // TODO: reciving new targets when not at a known target
-    Translation3d[] waypoints =
-        new Translation3d[1 + old_target.getExitTrj().length + new_target.getEnterTrj().length + 1];
-    waypoints[0] =
-        kinematics_.jointSpaceToTranslation(io_.current_elevator_height_, io_.current_arm_angle_);
-    int index = 1;
-    for (Translation3d t : old_target.getExitTrj()) {
-      waypoints[index] = t;
-      index++;
-    }
-    for (Translation3d t : new_target.getEnterTrj()) {
-      waypoints[index] = t;
-      index++;
-    }
-    waypoints[waypoints.length - 1] = new_target.getTarget().translation;
+    ArrayList<Translation3d> waypoints = new ArrayList<>();
+    waypoints.add(
+        kinematics_.jointSpaceToTranslation(io_.current_elevator_height_, io_.current_arm_angle_));
+    waypoints.addAll(old_target.getExitTrj());
+    waypoints.addAll(new_target.getEnterTrj());
+    waypoints.add(new_target.getTarget().getTranslation());
 
     planner_.plan(waypoints);
 

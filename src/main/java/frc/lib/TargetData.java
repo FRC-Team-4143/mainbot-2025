@@ -28,6 +28,10 @@ public class TargetData implements Logged {
     return this.name_;
   }
 
+  public Translation3d getTranslation() {
+    return translation;
+  }
+
   /**
    * @return the current Z including the active offset
    */

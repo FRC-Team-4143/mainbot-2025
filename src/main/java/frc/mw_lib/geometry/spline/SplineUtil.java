@@ -1,6 +1,7 @@
 package frc.mw_lib.geometry.spline;
 
 import edu.wpi.first.math.geometry.Translation3d;
+import java.util.ArrayList;
 
 public class SplineUtil {
   /**
@@ -10,24 +11,22 @@ public class SplineUtil {
    * @param subdivisions The number of subdivisions to add between each of the points.
    * @return A larger array with the points subdivided.
    */
-  public static Translation3d[] subdividePoints(Translation3d[] points, int[] subdivisions) {
-    int totalSubdivisions = sumArray(subdivisions);
-    Translation3d[] subdividedPoints = new Translation3d[totalSubdivisions];
-    int index = 0;
-    for (int i = 0; i < points.length - 1; i++) {
-      float increments = 1f / (float) subdivisions[i];
+  public static ArrayList<Translation3d> subdividePoints(
+      ArrayList<Translation3d> points, ArrayList<Integer> subdivisions) {
+    ArrayList<Translation3d> subdividedPoints = new ArrayList<>();
+    for (int i = 0; i < points.size() - 1; i++) {
+      float increments = 1f / (float) subdivisions.get(i);
 
-      Translation3d p0 = i == 0 ? points[i] : points[i - 1];
-      Translation3d p1 = points[i];
-      Translation3d p2 = points[i + 1];
-      Translation3d p3 = (i + 2 == points.length) ? points[i + 1] : points[i + 2];
+      Translation3d p0 = i == 0 ? points.get(i) : points.get(i - 1);
+      Translation3d p1 = points.get(i);
+      Translation3d p2 = points.get(i + 1);
+      Translation3d p3 = (i + 2 == points.size()) ? points.get(i + 1) : points.get(i + 2);
 
       Spline2d crs = new Spline2d(p0, p1, p2, p3);
 
-      for (int j = 0; j < subdivisions[i]; j++) {
-        subdividedPoints[index + j] = crs.q(j * increments);
+      for (int j = 0; j < subdivisions.get(i); j++) {
+        subdividedPoints.add(crs.q(j * increments));
       }
-      index += subdivisions[i];
     }
     return subdividedPoints;
   }
@@ -40,27 +39,19 @@ public class SplineUtil {
    * @param subdivisionsPerUnit The number of subdivisions to add per unit of liner distatnce
    * @return A larger array with the points subdivided.
    */
-  public static Translation3d[] subdividePoints(
-      Translation3d[] points, double subdivisionsPerUnit) {
+  public static ArrayList<Translation3d> subdividePoints(
+      ArrayList<Translation3d> points, double subdivisionsPerUnit) {
 
-    double[] distOfPoints = new double[points.length - 1];
-    for (int i = 0; i < distOfPoints.length; i++) {
-      distOfPoints[i] = points[i].getDistance(points[i + 1]);
+    ArrayList<Double> distance_between_points = new ArrayList<>();
+    for (int i = 0; i < points.size() - 1; i++) {
+      distance_between_points.add(points.get(i).getDistance(points.get(i + 1)));
     }
 
-    int[] subdivisions = new int[points.length - 1];
-    for (int i = 0; i < subdivisions.length; i++) {
-      subdivisions[i] = (int) Math.round(distOfPoints[i] * subdivisionsPerUnit);
+    ArrayList<Integer> subdivisions = new ArrayList<>();
+    for (int i = 0; i < points.size() - 1; i++) {
+      subdivisions.add((int) Math.round(distance_between_points.get(i) * subdivisionsPerUnit));
     }
 
     return subdividePoints(points, subdivisions);
-  }
-
-  private static int sumArray(int[] a) {
-    int count = 0;
-    for (int i = 0; i < a.length; i++) {
-      count += a[i];
-    }
-    return count;
   }
 }
