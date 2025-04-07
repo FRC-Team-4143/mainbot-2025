@@ -53,25 +53,18 @@ public class ElevatorPlanner {
   }
 
   public JointSpaceTarget nextTarget(Translation3d current_translation) {
-    double distanceFromFollowTarget = 0;
-    double LAST_distanceFromFollowTarget = 10;
-    int newTargetIndex = 0;
-
     // find nearest point on the path to the followDistance
-    for (int i = 0; i < path_.size(); i++) {
-      distanceFromFollowTarget =
-          Math.abs(follow_distance_ - current_translation.getDistance(path_.get(i)));
-      if (LAST_distanceFromFollowTarget < distanceFromFollowTarget) {
-        newTargetIndex = i;
+    int size = path_.size();
+    for (int i = 0; i < size; i++) {
+      if (current_translation.getDistance(path_.get(i)) < follow_distance_ && path_.size() > 1) {
+        // remove any points that are behind the target point
+        path_.remove(i);
+        size -= 1;
+        i -= 1;
+      } else {
         break;
       }
-      LAST_distanceFromFollowTarget = distanceFromFollowTarget;
     }
-
-    // remove any points that are behind the target point
-    path_ = new ArrayList<>(path_.subList(newTargetIndex, path_.size() - 1));
-    System.out.println("path_ Size:" + path_.size());
-
     return kinematics_.translationToJointSpace(path_.get(0));
   }
 }

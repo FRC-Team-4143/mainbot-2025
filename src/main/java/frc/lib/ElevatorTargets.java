@@ -52,11 +52,12 @@ public class ElevatorTargets {
         new TargetData(new Translation3d(), "STATION"), new Translation3d[0], new Translation3d[0]),
     CLIMB(new TargetData(new Translation3d(), "CLIMB"), new Translation3d[0], new Translation3d[0]),
     CORAL_INTAKE(
-        new TargetData(new Translation3d(), "CORAL_INTAKE"),
+        new TargetData(
+            new Translation3d(Constants.DrivetrainConstants.CENTER_OFFSET_X, 0, 1), "CORAL_INTAKE"),
         new Translation3d[0],
         new Translation3d[0]),
     CORAL_STOW(
-        new TargetData(new Translation3d(), "CORAL_STOW"),
+        new TargetData(CORAL_INTAKE.getTarget().translation, "CORAL_STOW"),
         new Translation3d[0],
         new Translation3d[0]),
     ALGAE_LOW(

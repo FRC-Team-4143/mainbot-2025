@@ -27,15 +27,8 @@ public class SplineUtil {
       for (int j = 0; j < subdivisions[i]; j++) {
         subdividedPoints[index + j] = crs.q(j * increments);
       }
-      System.out.println("Final Segment Translation: " + subdividedPoints[index].toString());
       index += subdivisions[i];
     }
-
-    System.out.println(
-        "Final Translation @ "
-            + (subdividedPoints.length - 1)
-            + " : "
-            + subdividedPoints[subdividedPoints.length - 1].toString());
     return subdividedPoints;
   }
 
@@ -60,10 +53,6 @@ public class SplineUtil {
       subdivisions[i] = (int) Math.round(distOfPoints[i] * subdivisionsPerUnit);
     }
 
-    System.out.println("Found needed subdivions per run");
-    System.out.println("distOfPoints: " + distOfPoints.length);
-    System.out.println("subdivisions: " + subdivisions.length);
-    System.out.println("subdivisionsCount: " + sumArray(subdivisions));
     return subdividePoints(points, subdivisions);
   }
 

@@ -505,9 +505,9 @@ public class Elevator extends Subsystem {
     @Log.File public Translation3d currentTranslation = new Translation3d();
     @Log.File public SpeedLimit current_speed_limit = SpeedLimit.CORAL;
     // the final goal
-    @Log.File public TargetType final_target_ = TargetType.TEST;
+    @Log.File public TargetType final_target_ = TargetType.CORAL_INTAKE;
 
-    // all targets between the curent pose and the final target
+    // all targets between the current pose and the final target
     @Log.File
     public JointSpaceTarget current_target =
         new JointSpaceTarget(target_elevator_height_, target_arm_angle_);
