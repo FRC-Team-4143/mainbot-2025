@@ -122,7 +122,7 @@ public class GameStateManager extends Subsystem {
         }
         break;
       case APPROACHING_TARGET:
-        updateNeededCoralOffset();
+        updateCoralBlockLatch();
         SwerveDrivetrain.getInstance().setTargetPose(io_.reef_target_.get());
         if (Util.epislonEquals(
             PoseEstimator.getInstance().getRobotPose().getRotation(),
@@ -196,6 +196,8 @@ public class GameStateManager extends Subsystem {
     SmartDashboard.putString(
         "Subsystems/GameStateManager/Saved Target Level", io_.saved_scoring_target_.toString());
     SmartDashboard.putBoolean("Subsystems/GameStateManager/Ready to Score", isReadyToScore());
+    SmartDashboard.putBoolean(
+        "Subsystems/GameStateManager/coral_block_latch", io_.coral_block_latch);
 
     if (io_.reef_target_.isPresent()) {
       reef_target_pub_.set(io_.reef_target_.get());
@@ -262,38 +264,47 @@ public class GameStateManager extends Subsystem {
    * @return target pose
    */
   public Optional<Pose2d> reefPose(Column column) {
+    Pose2d newPose = Pose2d.kZero;
     for (int i = 0; i < FieldRegions.REEF_REGIONS.length; i++) {
       if (FieldRegions.REEF_REGIONS[i].contains(PoseEstimator.getInstance().getRobotPose())) {
         if (io_.scoring_target_ == ReefScoringTarget.L1) {
-          return Optional.of(
-              FieldRegions.REGION_POSE_TABLE
-                  .get(FieldRegions.REEF_REGIONS[i].getName())
-                  .transformBy(ScoringPoses.ALGAE_ALIGN_OFFSET));
+          newPose = FieldRegions.REGION_POSE_TABLE
+              .get(FieldRegions.REEF_REGIONS[i].getName())
+              .transformBy(ScoringPoses.ALGAE_ALIGN_OFFSET);
         }
         if (column == Column.CENTER) {
-          return Optional.of(
-              FieldRegions.REGION_POSE_TABLE.get(FieldRegions.REEF_REGIONS[i].getName()));
+          newPose = FieldRegions.REGION_POSE_TABLE.get(FieldRegions.REEF_REGIONS[i].getName());
         }
         if (column == Column.LEFT) {
-          return Optional.of(
-              FieldRegions.REGION_POSE_TABLE
-                  .get(FieldRegions.REEF_REGIONS[i].getName())
-                  .transformBy(ScoringPoses.LEFT_COLUMN_OFFSET));
+          newPose = FieldRegions.REGION_POSE_TABLE
+              .get(FieldRegions.REEF_REGIONS[i].getName())
+              .transformBy(ScoringPoses.LEFT_COLUMN_OFFSET);
         }
         if (column == Column.RIGHT) {
-          return Optional.of(
-              FieldRegions.REGION_POSE_TABLE
-                  .get(FieldRegions.REEF_REGIONS[i].getName())
-                  .transformBy(ScoringPoses.RIGHT_COLUMN_OFFSET));
+          newPose = FieldRegions.REGION_POSE_TABLE
+              .get(FieldRegions.REEF_REGIONS[i].getName())
+              .transformBy(ScoringPoses.RIGHT_COLUMN_OFFSET);
         }
         if (column == Column.ALGAE) {
           io_.algae_level_high = ((i % 2) == 0); // this line prevents converting this method to use
-          return Optional.of(
-              FieldRegions.REGION_POSE_TABLE
-                  .get(FieldRegions.REEF_REGIONS[i].getName())
-                  .transformBy(ScoringPoses.ALGAE_ALIGN_OFFSET));
+          newPose = FieldRegions.REGION_POSE_TABLE
+              .get(FieldRegions.REEF_REGIONS[i].getName())
+              .transformBy(ScoringPoses.ALGAE_ALIGN_OFFSET);
         }
+        break;
       }
+    }
+
+    if (io_.scoring_target_ == ReefScoringTarget.L2 && io_.coral_block_latch) {
+      newPose = io_.reef_target_.get().transformBy(ScoringPoses.CORAL_OFFSET);
+      io_.scoring_target_ = ReefScoringTarget.L2_FAR;
+    } else if (io_.scoring_target_ == ReefScoringTarget.L3 && io_.coral_block_latch) {
+      newPose = io_.reef_target_.get().transformBy(ScoringPoses.CORAL_OFFSET);
+      io_.scoring_target_ = ReefScoringTarget.L3_FAR;
+    }
+
+    if (newPose != Pose2d.kZero) {
+      return Optional.of(newPose);
     }
     return Optional.empty();
   }
@@ -336,20 +347,12 @@ public class GameStateManager extends Subsystem {
     }
   }
 
-  public void updateNeededCoralOffset() {
-    if (io_.reef_target_.isPresent()
-        && (SwerveDrivetrain.getInstance().getFailingToReachTarget()
-            && SwerveDrivetrain.getInstance()
-                .getTractorBeamError() <= Constants.GameStateManagerConstants.CORAL_BLOCKED_THRESHOLD)
+  public void updateCoralBlockLatch() {
+    if ((SwerveDrivetrain.getInstance().getFailingToReachTarget()
+        && SwerveDrivetrain.getInstance()
+            .getTractorBeamError() <= Constants.GameStateManagerConstants.CORAL_BLOCKED_THRESHOLD)
         || io_.coral_block_latch) {
       io_.coral_block_latch = true;
-      if (io_.scoring_target_ == ReefScoringTarget.L2) {
-        io_.reef_target_ = Optional.of(io_.reef_target_.get().transformBy(ScoringPoses.CORAL_OFFSET));
-        io_.scoring_target_ = ReefScoringTarget.L2_FAR;
-      } else if (io_.scoring_target_ == ReefScoringTarget.L3) {
-        io_.reef_target_ = Optional.of(io_.reef_target_.get().transformBy(ScoringPoses.CORAL_OFFSET));
-        io_.scoring_target_ = ReefScoringTarget.L3_FAR;
-      }
     }
   }
 
@@ -379,6 +382,7 @@ public class GameStateManager extends Subsystem {
     public Column saved_target_column_ = Column.LEFT;
     @Log.File
     public boolean coral_block_latch = false;
+
     @Log.File
     public boolean algae_level_high = false; // false is low level and true is the higher level
   }

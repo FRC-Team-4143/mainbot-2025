@@ -531,7 +531,8 @@ public class SwerveDrivetrain extends Subsystem {
         "Subsystems/Swerve/BR Encoder",
         Units.rotationsToDegrees(swerve_modules_[3].getEncoderValue()));
     SmartDashboard.putNumber("Subsystems/Swerve/Active Max Speed", io_.active_max_speed);
-    SmartDashboard.putBoolean("Subsystems/Swerve/Failing To Reach Target", getFailingToReachTarget());
+    SmartDashboard.putBoolean(
+        "Subsystems/Swerve/Failing To Reach Target", getFailingToReachTarget());
     SmartDashboard.putNumber("Subsystems/Swerve/Tractor Beam Error", getTractorBeamError());
   }
 
