@@ -1,6 +1,7 @@
 package frc.lib;
 
 import edu.wpi.first.math.geometry.Translation3d;
+import edu.wpi.first.wpilibj.DataLogManager;
 
 public class ElevatorKinematics {
   private double virtual_arm_length_ = 0;
@@ -19,21 +20,38 @@ public class ElevatorKinematics {
     virtual_arm_angle_ = Math.tan(arm_width / arm_length);
     reachable_max_ = elevator_max + virtual_arm_length_;
     reachable_min_ = elevator_min - virtual_arm_length_;
+    DataLogManager.log(
+        "Max Z: "
+            + reachable_max_
+            + " | Min Z: "
+            + reachable_min_
+            + " | Max X: "
+            + virtual_arm_length_);
   }
 
   public JointSpaceSolution translationToJointSpace(Translation3d t) {
     double x = t.getX();
     if (Math.abs(x) > virtual_arm_length_) {
-      System.out.println("WARNING: Inverse Kinematics X Value : Out of Reach");
+      DataLogManager.log("WARNING: Inverse Kinematics X Value : " + x + "| Out of Reach");
       x = Math.copySign(virtual_arm_length_, x);
     }
     double z = t.getZ();
     if (z > reachable_max_) {
-      System.out.println("WARNING: Inverse Kinematics Z Value : Out of Reach (+)");
+      DataLogManager.log(
+          "WARNING: Inverse Kinematics Z Value : "
+              + z
+              + " | Out of Reach ("
+              + reachable_min_
+              + ")");
       z = reachable_max_;
     }
     if (z < reachable_min_) {
-      System.out.println("WARNING: Inverse Kinematics Z Value : Out of Reach (-)");
+      DataLogManager.log(
+          "WARNING: Inverse Kinematics Z Value : "
+              + z
+              + " | Out of Reach ("
+              + reachable_min_
+              + ")");
       z = reachable_min_;
     }
 
@@ -46,11 +64,11 @@ public class ElevatorKinematics {
     double x = Math.cos(j.getPivotAngle()) * virtual_arm_length_;
     double z = j.getPivotHeight() + (Math.sin(j.getPivotAngle()) * virtual_arm_length_);
     if (Math.abs(x) > virtual_arm_length_)
-      System.out.println("WARNING: Forward Kinematics X Value : Out of Reach");
+      DataLogManager.log("WARNING: Forward Kinematics X Value : Out of Reach");
     if (z > reachable_max_)
-      System.out.println("WARNING: Forward Kinematics Z Value : Out of Reach (+)");
+      DataLogManager.log("WARNING: Forward Kinematics Z Value : Out of Reach (+)");
     if (z < reachable_min_)
-      System.out.println("WARNING: Forward Kinematics Z Value : Out of Reach (-)");
+      DataLogManager.log("WARNING: Forward Kinematics Z Value : Out of Reach (-)");
     return new Translation3d(x, 0, z);
   }
 

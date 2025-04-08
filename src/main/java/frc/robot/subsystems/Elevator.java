@@ -23,7 +23,6 @@ import edu.wpi.first.math.util.Units;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.networktables.StructArrayPublisher;
 import edu.wpi.first.networktables.StructPublisher;
-import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Commands;
 import frc.lib.ElevatorKinematics;
@@ -211,7 +210,6 @@ public class Elevator extends Subsystem {
 
   /** Computes updated outputs for the actuators */
   public void updateLogic(double timestamp) {
-    double start = Timer.getFPGATimestamp();
     io_.current_translation_ = kinematics_.jointSpaceToTranslation(io_.current_system_solution_);
     if (planner_.hasPath() && !systemAtTarget(io_.final_system_solution_)) {
       io_.target_system_solution_ = planner_.nextTarget(io_.current_translation_);
@@ -239,9 +237,6 @@ public class Elevator extends Subsystem {
       // + ElevatorConstants.ELEVATOR_HEIGHT_PIVOT_MAX);
       // io_.target_elevator_height_ = ElevatorConstants.ELEVATOR_HEIGHT_PIVOT_MAX;
     }
-
-    double end = Timer.getFPGATimestamp();
-    SmartDashboard.putNumber("elevator_time", end - start);
   }
 
   /** Writes the periodic outputs to actuators (motors and etc...) */
