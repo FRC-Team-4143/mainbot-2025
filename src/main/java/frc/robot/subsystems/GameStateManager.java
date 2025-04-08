@@ -50,9 +50,9 @@ public class GameStateManager extends Subsystem {
   public enum ReefScoringTarget {
     L1,
     L2,
-    L2_HIGH,
+    L2_FAR,
     L3,
-    L3_HIGH,
+    L3_FAR,
     L4,
     ALGAE,
     TURTLE,
@@ -118,7 +118,7 @@ public class GameStateManager extends Subsystem {
         break;
       case APPROACHING_TARGET:
         updateNeededCoralOffset();
-        SwerveDrivetrain.getInstance().setTargetPose(io_.reef_target.get());
+        SwerveDrivetrain.getInstance().setTargetPose(io_.reef_target_.get());
         if (Util.epislonEquals(
             PoseEstimator.getInstance().getRobotPose().getRotation(),
             io_.reef_target_.get().getRotation(),
@@ -303,12 +303,12 @@ public class GameStateManager extends Subsystem {
         return TargetType.L1;
       case L2:
         return TargetType.L2;
-      case L2_HIGH:
-        return TargetType.L2_HIGH;
+      case L2_FAR:
+        return TargetType.L2_FAR;
       case L3:
         return TargetType.L3;
-      case L3_HIGH:
-        return TargetType.L3_HIGH;
+      case L3_FAR:
+        return TargetType.L3_FAR;
       case L4:
         return TargetType.L4;
       case ALGAE:
@@ -325,16 +325,18 @@ public class GameStateManager extends Subsystem {
   }
 
   public void updateNeededCoralOffset() {
-    if (io_.reef_target.isPresent()
+    if (io_.reef_target_.isPresent()
         && SwerveDrivetrain.getInstance().getFailingToReachTarget()
         && SwerveDrivetrain.getInstance().getTractorBeamError()
             <= Constants.GameStateManagerConstants.CORAL_BLOCKED_THRESHHOLD) {
-      if (io_.scoring_target == ReefScoringTarget.L2) {
-        io_.reef_target = Optional.of(io_.reef_target.get().transformBy(ScoringPoses.CORAL_OFFSET));
-        io_.scoring_target = ReefScoringTarget.L2_HIGH;
-      } else if (io_.scoring_target == ReefScoringTarget.L3) {
-        io_.reef_target = Optional.of(io_.reef_target.get().transformBy(ScoringPoses.CORAL_OFFSET));
-        io_.scoring_target = ReefScoringTarget.L3_HIGH;
+      if (io_.scoring_target_ == ReefScoringTarget.L2) {
+        io_.reef_target_ =
+            Optional.of(io_.reef_target_.get().transformBy(ScoringPoses.CORAL_OFFSET));
+        io_.scoring_target_ = ReefScoringTarget.L2_FAR;
+      } else if (io_.scoring_target_ == ReefScoringTarget.L3) {
+        io_.reef_target_ =
+            Optional.of(io_.reef_target_.get().transformBy(ScoringPoses.CORAL_OFFSET));
+        io_.scoring_target_ = ReefScoringTarget.L3_FAR;
       }
     }
   }
