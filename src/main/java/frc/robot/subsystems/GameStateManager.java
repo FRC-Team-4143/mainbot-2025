@@ -328,7 +328,7 @@ public class GameStateManager extends Subsystem {
     if (io_.reef_target_.isPresent()
         && SwerveDrivetrain.getInstance().getFailingToReachTarget()
         && SwerveDrivetrain.getInstance().getTractorBeamError()
-            <= Constants.GameStateManagerConstants.CORAL_BLOCKED_THRESHHOLD) {
+            <= Constants.GameStateManagerConstants.CORAL_BLOCKED_THRESHOLD) {
       if (io_.scoring_target_ == ReefScoringTarget.L2) {
         io_.reef_target_ =
             Optional.of(io_.reef_target_.get().transformBy(ScoringPoses.CORAL_OFFSET));

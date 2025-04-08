@@ -335,6 +335,6 @@ public final class Constants {
 
   public class GameStateManagerConstants {
     public static final double REQUIRED_ROTATION_FOR_ELEVATOR = Units.degreesToRadians(45);
-    public static final double CORAL_BLOCKED_THRESHHOLD = Units.inchesToMeters(6.5);
+    public static final double CORAL_BLOCKED_THRESHOLD = Units.inchesToMeters(6.5);
   }
 }
