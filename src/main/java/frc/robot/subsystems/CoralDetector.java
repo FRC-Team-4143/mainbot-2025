@@ -160,12 +160,22 @@ public class CoralDetector extends Subsystem {
    * @return the Pose2d of the coal on the field
    */
   private Pose2d calculateCoralPose2d() {
-    return PoseEstimator.getInstance().getRobotPose()
+    Pose2d coralPose =  PoseEstimator.getInstance().getRobotPose()
         .transformBy(calculateCoralTransform2d(io_.target_distance_, io_.target_x_));
+    Transform2d pickup_path_ = new Transform2d(PoseEstimator.getInstance().getRobotPose(), coralPose);
+    Rotation2d approuch_angle_ = pickup_path_.getRotation();
+    Pose2d final_ = new Pose2d(coralPose.getX(), coralPose.getY(), approuch_angle_);
+    return final_;
   }
+
+
 
   public Pose2d getCoralPose2d() {
     return io_.coral_pose_;
+  }
+
+  public boolean isValid(){
+    return io_.target_valid_ == 1;
   }
 
   public Transform2d getCoralTransform2d() {

@@ -319,6 +319,11 @@ public final class Constants {
             .withGravityType(GravityTypeValue.Arm_Cosine);
   }
 
+  public static final class IntakeConstants {
+    public static final double y_offset = Units.inchesToMeters(4.25);
+    public static final double width = Units.inchesToMeters(17);
+  }
+
   public static final class PickupConstants {
     public static final int TIME_OF_FLIGHT_ID = 3;
     public static final int INTAKE_ID = 41;
