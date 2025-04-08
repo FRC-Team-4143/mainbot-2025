@@ -14,7 +14,7 @@ import frc.lib.FieldRegions;
 import frc.mw_lib.auto.Auto;
 import frc.mw_lib.auto.AutoManager;
 import frc.mw_lib.logging.Elastic;
-import frc.mw_lib.proxy_server.ChassisProxyServer;
+import frc.mw_lib.proxy_server.ProxyServer;
 import frc.robot.autos.*;
 import frc.robot.commands.HangProtection;
 import frc.robot.subsystems.GameStateManager;
@@ -32,7 +32,7 @@ public class Robot extends TimedRobot {
     robot_container_ = RobotContainer.getInstance();
     OI.configureBindings();
     FieldRegions.makeRegions();
-    ChassisProxyServer.configureServer();
+    ProxyServer.configureServer();
 
     AutoManager.getInstance()
         .registerAutos(
@@ -54,7 +54,7 @@ public class Robot extends TimedRobot {
     robot_container_.outputTelemetry();
 
     // updates data from chassis proxy server
-    ChassisProxyServer.updateData();
+    ProxyServer.updateData();
 
     SmartDashboard.putNumber("Match Time", DriverStation.getMatchTime());
     SmartDashboard.putString("Intake Preference", OI.intake_preference.toString());

@@ -13,6 +13,8 @@ public class PieceDetectionPacket implements Packet {
     public int detection_index_ = 0;
     public double theta_x_ = 0.0; // Fixed precision 64 bit int
     public double theta_y_ = 0.0; // Fixed precision 64 bit int
+
+    public PieceDetection() {}
   }
 
   // Byte index for detection solution packet data

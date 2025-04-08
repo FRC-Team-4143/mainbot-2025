@@ -12,7 +12,7 @@ import java.net.SocketException;
 import java.net.SocketTimeoutException;
 import java.util.ArrayList;
 
-public class ChassisProxyServer {
+public class ProxyServer {
 
   // Data Packets
   private static OdomPacket odom_packet_ = new OdomPacket();

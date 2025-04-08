@@ -351,5 +351,6 @@ public final class Constants {
     public static final double DETECTION_DISTANCE_LIMIT = 1.5;
     public static final double DETECT_RISING = 0.1;
     public static final double DETECT_FALLING = 3.0;
+    public static final double CORAL_CLASS_ID = 1;
   }
 }

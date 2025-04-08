@@ -4,15 +4,17 @@
 
 package frc.robot.subsystems;
 
+import java.util.ArrayList;
+
 import edu.wpi.first.math.filter.Debouncer;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation2d;
-import edu.wpi.first.networktables.NetworkTable;
-import edu.wpi.first.networktables.NetworkTableEntry;
-import edu.wpi.first.networktables.NetworkTableInstance;
+import frc.mw_lib.proxy_server.PieceDetectionPacket;
+import frc.mw_lib.proxy_server.PieceDetectionPacket.PieceDetection;
+import frc.mw_lib.proxy_server.ProxyServer;
 import frc.mw_lib.subsystem.Subsystem;
 import frc.robot.Constants.CoralDetectorConstants;
 import monologue.Annotations.Log;
@@ -23,8 +25,7 @@ public class CoralDetector extends Subsystem {
   // Singleton pattern
   private static CoralDetector coral_detector_instance_ = null;
 
-  private NetworkTable table_;
-  private NetworkTableEntry table_entry_tx_, table_entry_ty_, table_entry_ta_, table_entry_tv_;
+  private PieceDetection coral_detection_;
 
   private Debouncer rising_debouncer_;
   private Debouncer falling_debouncer_;
@@ -43,16 +44,12 @@ public class CoralDetector extends Subsystem {
     // Create io object first in subsystem configuration
     io_ = new CoralDetectorPeriodicIo();
 
-    table_ = NetworkTableInstance.getDefault().getTable("limelight");
-    table_entry_ty_ = table_.getEntry("ty");
-    table_entry_tx_ = table_.getEntry("tx");
-    table_entry_ta_ = table_.getEntry("ta");
-    table_entry_tv_ = table_.getEntry("tv");
-
     rising_debouncer_ =
         new Debouncer(CoralDetectorConstants.DETECT_FALLING, Debouncer.DebounceType.kFalling);
     falling_debouncer_ =
         new Debouncer(CoralDetectorConstants.DETECT_RISING, Debouncer.DebounceType.kRising);
+
+        // coral_detection_ = new PieceDetection();
 
     // Call reset last in subsystem configuration
     reset();
@@ -72,10 +69,15 @@ public class CoralDetector extends Subsystem {
    */
   @Override
   public void readPeriodicInputs(double timestamp) {
-    // ChassisProxyServer.getLatestPieceDetections();
-    io_.target_x_ = Math.toRadians(table_entry_tx_.getDouble(0));
-    io_.target_y_ = Math.toRadians(table_entry_ty_.getDouble(0));
-    io_.target_valid_ = table_entry_tv_.getInteger(0);
+    if (ProxyServer.getLatestPieceDetections().size() > 0) {
+      coral_detection_ = ProxyServer.getLatestPieceDetections().get(0);
+      io_.can_see_coral_ = true;
+    } else {
+      io_.can_see_coral_ = false;
+    }
+    // io_.target_x_ = Math.toRadians(table_entry_tx_.getDouble(0));
+    // io_.target_y_ = Math.toRadians(table_entry_ty_.getDouble(0));
+    // io_.target_valid_ = table_entry_tv_.getInteger(0);
   }
 
   /**
