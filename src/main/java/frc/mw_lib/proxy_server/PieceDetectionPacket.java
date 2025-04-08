@@ -37,13 +37,14 @@ public class PieceDetectionPacket implements Packet {
       PieceDetection piece_detection = new PieceDetection();
       piece_detection.detection_count_ = ByteBuffer.wrap(buffer, DETECTION_COUNT, 4).getInt();
       piece_detection.detection_index_ = ByteBuffer.wrap(buffer, DETECTION_INDEX, 4).getInt();
-      if (piece_detection.detection_index_ == 0) {
+      if (piece_detection.detection_count_ == 0 || piece_detection.detection_index_ == 0) {
         piece_detections_.clear();
+      } else {
+        piece_detection.class_id_ = ByteBuffer.wrap(buffer, CLASS_ID, 1).get();
+        piece_detection.theta_x_ = ByteBuffer.wrap(buffer, THETA_X, 8).getLong() / RESOLUTION;
+        piece_detection.theta_y_ = ByteBuffer.wrap(buffer, THETA_Y, 8).getLong() / RESOLUTION;
+        piece_detections_.add(piece_detection.detection_index_, piece_detection);
       }
-      piece_detection.class_id_ = ByteBuffer.wrap(buffer, CLASS_ID, 1).get();
-      piece_detection.theta_x_ = ByteBuffer.wrap(buffer, THETA_X, 8).getLong() / RESOLUTION;
-      piece_detection.theta_y_ = ByteBuffer.wrap(buffer, THETA_Y, 8).getLong() / RESOLUTION;
-      piece_detections_.add(piece_detection.detection_index_, piece_detection);
     }
   }
 }
