@@ -13,7 +13,6 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.networktables.NetworkTableInstance;
-import frc.mw_lib.proxy_server.ChassisProxyServer;
 import frc.mw_lib.subsystem.Subsystem;
 import frc.robot.Constants.CoralDetectorConstants;
 import monologue.Annotations.Log;
@@ -50,108 +49,91 @@ public class CoralDetector extends Subsystem {
     table_entry_ta_ = table_.getEntry("ta");
     table_entry_tv_ = table_.getEntry("tv");
 
-    rising_debouncer_ = new Debouncer(CoralDetectorConstants.DETECT_FALLING,
-        Debouncer.DebounceType.kFalling);
-    falling_debouncer_ = new Debouncer(CoralDetectorConstants.DETECT_RISING,
-        Debouncer.DebounceType.kRising);
+    rising_debouncer_ =
+        new Debouncer(CoralDetectorConstants.DETECT_FALLING, Debouncer.DebounceType.kFalling);
+    falling_debouncer_ =
+        new Debouncer(CoralDetectorConstants.DETECT_RISING, Debouncer.DebounceType.kRising);
 
     // Call reset last in subsystem configuration
     reset();
   }
 
   /**
-   * This function should be logic and code to fully reset your subsystem. This is
-   * called during
-   * initialization, and should handle I/O configuration and initializing data
-   * members.
+   * This function should be logic and code to fully reset your subsystem. This is called during
+   * initialization, and should handle I/O configuration and initializing data members.
    */
   @Override
-  public void reset() {
-  }
+  public void reset() {}
 
   /**
-   * Inside this function, all of the SENSORS should be read into variables stored
-   * in the PeriodicIO
-   * class defined below. There should be no calls to output to actuators, or any
-   * logic within this
+   * Inside this function, all of the SENSORS should be read into variables stored in the PeriodicIO
+   * class defined below. There should be no calls to output to actuators, or any logic within this
    * function.
    */
   @Override
   public void readPeriodicInputs(double timestamp) {
-    //ChassisProxyServer.getLatestPieceDetections();
+    // ChassisProxyServer.getLatestPieceDetections();
     io_.target_x_ = Math.toRadians(table_entry_tx_.getDouble(0));
     io_.target_y_ = Math.toRadians(table_entry_ty_.getDouble(0));
     io_.target_valid_ = table_entry_tv_.getInteger(0);
   }
 
   /**
-   * Inside this function, all of the LOGIC should compute updates to output
-   * variables in the
-   * PeriodicIO class defined below. There should be no calls to read from sensors
-   * or write to
+   * Inside this function, all of the LOGIC should compute updates to output variables in the
+   * PeriodicIO class defined below. There should be no calls to read from sensors or write to
    * actuators in this function.
    */
   @Override
   public void updateLogic(double timestamp) {
     io_.target_distance_ = calculateDist(io_.target_y_);
-    io_.can_see_coral_ = rising_debouncer_.calculate(io_.target_valid_ == 1)
-        && io_.target_distance_ <= CoralDetectorConstants.DETECTION_DISTANCE_LIMIT;
+    io_.can_see_coral_ =
+        rising_debouncer_.calculate(io_.target_valid_ == 1)
+            && io_.target_distance_ <= CoralDetectorConstants.DETECTION_DISTANCE_LIMIT;
     if (io_.can_see_coral_) {
       io_.coral_pose_ = calculateCoralPose2d();
     }
   }
 
   /**
-   * Inside this function actuator OUTPUTS should be updated from data contained
-   * in the PeriodicIO
-   * class defined below. There should be little to no logic contained within this
-   * function, and no
+   * Inside this function actuator OUTPUTS should be updated from data contained in the PeriodicIO
+   * class defined below. There should be little to no logic contained within this function, and no
    * sensors should be read.
    */
   @Override
-  public void writePeriodicOutputs(double timestamp) {
-  }
+  public void writePeriodicOutputs(double timestamp) {}
 
   /**
-   * Inside this function telemetry should be output to smartdashboard. The data
-   * should be collected
-   * out of the PeriodicIO class instance defined below. There should be no sensor
-   * information read
-   * in this function nor any outputs made to actuators within this function. Only
-   * publish to
+   * Inside this function telemetry should be output to smartdashboard. The data should be collected
+   * out of the PeriodicIO class instance defined below. There should be no sensor information read
+   * in this function nor any outputs made to actuators within this function. Only publish to
    * smartdashboard here.
    */
   @Override
-  public void outputTelemetry(double timestamp) {
-  }
+  public void outputTelemetry(double timestamp) {}
 
   /**
-   * @param y the rotation in rads vertically that the coal is from the center of
-   *          the cam
-   *          screen
-   * @return the distance in meters the coral is from the lens of the cam along
-   *         the floor
+   * @param y the rotation in rads vertically that the coal is from the center of the cam screen
+   * @return the distance in meters the coral is from the lens of the cam along the floor
    */
   public double calculateDist(double y) {
     double angleToGoal = CoralDetectorConstants.CAMERA_TRANSFORM.getRotation().getY() + y;
     return (CoralDetectorConstants.CORAL_HEIGHT_METERS
-        - CoralDetectorConstants.CAMERA_TRANSFORM.getZ())
+            - CoralDetectorConstants.CAMERA_TRANSFORM.getZ())
         / Math.tan(angleToGoal);
   }
 
   /**
-   * @param dist the distance in meters the coral is from the lens of the cam
-   *             along the floor
-   * @param x    the rotation in rads horizontally that the coal is from the center
-   *             of the cam
-   *             screen
+   * @param dist the distance in meters the coral is from the lens of the cam along the floor
+   * @param x the rotation in rads horizontally that the coal is from the center of the cam screen
    * @return the Translation2d from the robot to the coal
    */
   private Transform2d calculateCoralTransform2d(double dist, double x) {
     Transform3d camTransform = CoralDetectorConstants.CAMERA_TRANSFORM;
-    Transform2d coralToCam = new Transform2d(new Translation2d(dist, Rotation2d.fromRadians(x)), Rotation2d.kZero);
-    Transform2d botToCam = new Transform2d(camTransform.getX(), camTransform.getY(),
-        camTransform.getRotation().toRotation2d());
+    Transform2d coralToCam =
+        new Transform2d(new Translation2d(dist, Rotation2d.fromRadians(x)), Rotation2d.kZero);
+    Transform2d botToCam =
+        new Transform2d(
+            camTransform.getX(), camTransform.getY(), camTransform.getRotation().toRotation2d());
     Transform2d finalTransform = coralToCam.plus(botToCam);
     return finalTransform;
   }
@@ -160,21 +142,22 @@ public class CoralDetector extends Subsystem {
    * @return the Pose2d of the coal on the field
    */
   private Pose2d calculateCoralPose2d() {
-    Pose2d coralPose =  PoseEstimator.getInstance().getRobotPose()
-        .transformBy(calculateCoralTransform2d(io_.target_distance_, io_.target_x_));
-    Transform2d pickup_path_ = new Transform2d(PoseEstimator.getInstance().getRobotPose(), coralPose);
+    Pose2d coralPose =
+        PoseEstimator.getInstance()
+            .getRobotPose()
+            .transformBy(calculateCoralTransform2d(io_.target_distance_, io_.target_x_));
+    Transform2d pickup_path_ =
+        new Transform2d(PoseEstimator.getInstance().getRobotPose(), coralPose);
     Rotation2d approuch_angle_ = pickup_path_.getRotation();
     Pose2d final_ = new Pose2d(coralPose.getX(), coralPose.getY(), approuch_angle_);
     return final_;
   }
 
-
-
   public Pose2d getCoralPose2d() {
     return io_.coral_pose_;
   }
 
-  public boolean isValid(){
+  public boolean isValid() {
     return io_.target_valid_ == 1;
   }
 

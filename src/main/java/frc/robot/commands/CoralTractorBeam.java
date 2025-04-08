@@ -4,11 +4,7 @@
 
 package frc.robot.commands;
 
-
-
-import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.lib.ElevatorTargets.TargetType;
 import frc.robot.subsystems.Claw;
 import frc.robot.subsystems.Claw.ClawMode;
@@ -20,13 +16,14 @@ import frc.robot.subsystems.Pickup.PickupMode;
 import frc.robot.subsystems.SwerveDrivetrain;
 
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
-public class TractorBeam_to_GamePiece extends Command {
-  /** Creates a new TractorBeam_to_GamePiece. */
+public class CoralTractorBeam extends Command {
+  /** Creates a new CoralTractorBeam. */
   static Pickup pickup_;
+
   static Claw claw_;
   static Elevator elevator_;
 
-  public TractorBeam_to_GamePiece() {
+  public CoralTractorBeam() {
     // Use addRequirements() here to declare subsystem dependencies.
     pickup_ = Pickup.getInstance();
     elevator_ = Elevator.getInstance();
@@ -36,7 +33,6 @@ public class TractorBeam_to_GamePiece extends Command {
     addRequirements(elevator_);
     setName(this.getClass().getSimpleName());
   }
-  
 
   // Called when the command is initially scheduled.
   @Override
@@ -53,10 +49,9 @@ public class TractorBeam_to_GamePiece extends Command {
       pickup_.setPickupMode(PickupMode.INTAKE);
       claw_.setClawMode(ClawMode.LOAD);
     }
-    if(CoralDetector.getInstance().isValid()){
+    if (CoralDetector.getInstance().isValid()) {
       SwerveDrivetrain.getInstance().setTargetPose(CoralDetector.getInstance().getCoralPose2d());
     }
-    
   }
 
   // Called once the command ends or is interrupted.
