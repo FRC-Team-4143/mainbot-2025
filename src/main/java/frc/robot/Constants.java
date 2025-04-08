@@ -197,6 +197,9 @@ public final class Constants {
 
     public static final double CENTER_OFFSET_X =
         Units.inchesToMeters(LOADER.getDoubleValue("drive", "com", "CENTER_OFFSET_X"));
+
+    public static final double FAILING_TO_REACH_TARGET_DEBOUNCE_TIME = 0.25;
+    public static final double FAILING_TO_REACH_TARGET_SPEEDS_TOLERANCE = 0.1;
   }
 
   public static final class ClawConstants {
@@ -332,5 +335,6 @@ public final class Constants {
 
   public class GameStateManagerConstants {
     public static final double REQUIRED_ROTATION_FOR_ELEVATOR = Units.degreesToRadians(45);
+    public static final double CORAL_BLOCKED_THRESHHOLD = Units.inchesToMeters(6.5);
   }
 }

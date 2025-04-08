@@ -3,6 +3,7 @@ package frc.mw_lib.util;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.kinematics.ChassisSpeeds;
 
 public abstract class Util {
   public static boolean epislonEquals(double x, double y, double epislon) {
@@ -25,6 +26,11 @@ public abstract class Util {
       Pose2d Pose2dA, Pose2d Pose2dB, double epislon_rotation, double epislon_translation) {
     return (epislonEquals(Pose2dA.getRotation(), Pose2dB.getRotation(), epislon_rotation)
         && epislonEquals(Pose2dA.getTranslation(), Pose2dB.getTranslation(), epislon_translation));
+  }
+
+  public static boolean epislonEquals(ChassisSpeeds ch1, ChassisSpeeds ch2, double d) {
+    return epislonEquals(ch1.vxMetersPerSecond, ch2.vxMetersPerSecond, d)
+        && epislonEquals(ch1.vyMetersPerSecond, ch2.vyMetersPerSecond, d);
   }
 
   public static double clamp(double x, double range) {

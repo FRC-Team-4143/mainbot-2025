@@ -8,8 +8,8 @@ import java.util.Arrays;
 import java.util.List;
 
 public class ElevatorTargets {
-  private static double IN_PERRIMITER_X = Units.inchesToMeters(9.246 - 2);
-  private static double BRACH_HIGHT_BUMP = Units.inchesToMeters(5.921);
+  private static final double IN_PERIMETER_X = Units.inchesToMeters(9.246 - 2);
+  private static final double BRANCH_HEIGHT_BUMP = Units.inchesToMeters(5.921);
 
   public enum TargetType {
     SAFETY(new TargetData(new Translation3d(), "SAFETY"), Arrays.asList(), Arrays.asList()),
@@ -20,34 +20,42 @@ public class ElevatorTargets {
                 0,
                 FieldConstants.ReefHeight.L4.HEIGHT + Units.inchesToMeters(4.047)),
             "L4"),
-        Arrays.asList(new Translation3d(IN_PERRIMITER_X, 0, Units.inchesToMeters(68.109))),
-        Arrays.asList(new Translation3d(IN_PERRIMITER_X, 0, Units.inchesToMeters(68.109)))),
+        Arrays.asList(new Translation3d(IN_PERIMETER_X, 0, Units.inchesToMeters(68.109))),
+        Arrays.asList(new Translation3d(IN_PERIMETER_X, 0, Units.inchesToMeters(68.109)))),
     L3(
         new TargetData(
             new Translation3d(
                 Units.inchesToMeters(16.593),
                 0,
-                FieldConstants.ReefHeight.L3.HEIGHT + BRACH_HIGHT_BUMP),
+                FieldConstants.ReefHeight.L3.HEIGHT + BRANCH_HEIGHT_BUMP),
             "L3"),
         Arrays.asList(
             new Translation3d(
-                IN_PERRIMITER_X, 0, FieldConstants.ReefHeight.L3.HEIGHT + BRACH_HIGHT_BUMP)),
+                IN_PERIMETER_X, 0, FieldConstants.ReefHeight.L3.HEIGHT + BRANCH_HEIGHT_BUMP)),
         Arrays.asList(
             new Translation3d(
-                IN_PERRIMITER_X, 0, FieldConstants.ReefHeight.L3.HEIGHT + BRACH_HIGHT_BUMP))),
+                IN_PERIMETER_X, 0, FieldConstants.ReefHeight.L3.HEIGHT + BRANCH_HEIGHT_BUMP))),
+    L3_FAR(
+        new TargetData(L3.getTarget().getTranslation(), "L3_FAR"),
+        Arrays.asList(),
+        Arrays.asList()),
     L2(
         new TargetData(
             new Translation3d(
                 Units.inchesToMeters(16.593),
                 0,
-                FieldConstants.ReefHeight.L2.HEIGHT + BRACH_HIGHT_BUMP),
+                FieldConstants.ReefHeight.L2.HEIGHT + BRANCH_HEIGHT_BUMP),
             "L2"),
         Arrays.asList(
             new Translation3d(
-                IN_PERRIMITER_X, 0, FieldConstants.ReefHeight.L2.HEIGHT + BRACH_HIGHT_BUMP)),
+                IN_PERIMETER_X, 0, FieldConstants.ReefHeight.L2.HEIGHT + BRANCH_HEIGHT_BUMP)),
         Arrays.asList(
             new Translation3d(
-                IN_PERRIMITER_X, 0, FieldConstants.ReefHeight.L2.HEIGHT + BRACH_HIGHT_BUMP))),
+                IN_PERIMETER_X, 0, FieldConstants.ReefHeight.L2.HEIGHT + BRANCH_HEIGHT_BUMP))),
+    L2_FAR(
+        new TargetData(L2.getTarget().getTranslation(), "L2_FAR"),
+        Arrays.asList(),
+        Arrays.asList()),
     L1(
         new TargetData(
             new Translation3d(

@@ -14,6 +14,7 @@ import frc.lib.ScoringPoses;
 import frc.mw_lib.subsystem.Subsystem;
 import frc.mw_lib.util.Util;
 import frc.robot.Constants;
+import frc.robot.subsystems.Claw.ClawMode;
 import java.util.Optional;
 import monologue.Annotations.Log;
 import monologue.Logged;
@@ -49,7 +50,9 @@ public class GameStateManager extends Subsystem {
   public enum ReefScoringTarget {
     L1,
     L2,
+    L2_HIGH,
     L3,
+    L3_HIGH,
     L4,
     ALGAE,
     TURTLE,
@@ -114,6 +117,8 @@ public class GameStateManager extends Subsystem {
         }
         break;
       case APPROACHING_TARGET:
+        updateNeededCoralOffset();
+        SwerveDrivetrain.getInstance().setTargetPose(io_.reef_target.get());
         if (Util.epislonEquals(
             PoseEstimator.getInstance().getRobotPose().getRotation(),
             io_.reef_target_.get().getRotation(),
@@ -129,6 +134,9 @@ public class GameStateManager extends Subsystem {
         }
         break;
       case SCORING:
+        if (Claw.getInstance().isCoralMode()) {
+          Claw.getInstance().setClawMode(ClawMode.SHOOT);
+        }
         if (!FieldRegions.REEF_EXIT.contains(PoseEstimator.getInstance().getRobotPose())) {
           // wait until you leave the exit Circle
           io_.robot_state_ = RobotState.END;
@@ -137,6 +145,7 @@ public class GameStateManager extends Subsystem {
       case END:
         // clear saved vars and reset drive mode
         SwerveDrivetrain.getInstance().restoreDefaultDriveMode();
+        Claw.getInstance().setClawMode(ClawMode.IDLE);
         io_.robot_state_ = RobotState.TELEOP_CONTROL;
         Claw.getInstance().disableBlastMode();
         break;
@@ -163,6 +172,7 @@ public class GameStateManager extends Subsystem {
    */
   @Override
   public void outputTelemetry(double timestamp) {
+    SmartDashboard.putBoolean("Subsystems/GameStateManager/isRunning", isRunning());
     SmartDashboard.putString(
         "Subsystems/GameStateManager/Robot State", io_.robot_state_.toString());
     SmartDashboard.putString(
@@ -293,8 +303,12 @@ public class GameStateManager extends Subsystem {
         return TargetType.L1;
       case L2:
         return TargetType.L2;
+      case L2_HIGH:
+        return TargetType.L2_HIGH;
       case L3:
         return TargetType.L3;
+      case L3_HIGH:
+        return TargetType.L3_HIGH;
       case L4:
         return TargetType.L4;
       case ALGAE:
@@ -308,6 +322,25 @@ public class GameStateManager extends Subsystem {
       default:
         return (Claw.getInstance().isCoralMode()) ? TargetType.CORAL_STOW : TargetType.ALGAE_STOW;
     }
+  }
+
+  public void updateNeededCoralOffset() {
+    if (io_.reef_target.isPresent()
+        && SwerveDrivetrain.getInstance().getFailingToReachTarget()
+        && SwerveDrivetrain.getInstance().getTractorBeamError()
+            <= Constants.GameStateManagerConstants.CORAL_BLOCKED_THRESHHOLD) {
+      if (io_.scoring_target == ReefScoringTarget.L2) {
+        io_.reef_target = Optional.of(io_.reef_target.get().transformBy(ScoringPoses.CORAL_OFFSET));
+        io_.scoring_target = ReefScoringTarget.L2_HIGH;
+      } else if (io_.scoring_target == ReefScoringTarget.L3) {
+        io_.reef_target = Optional.of(io_.reef_target.get().transformBy(ScoringPoses.CORAL_OFFSET));
+        io_.scoring_target = ReefScoringTarget.L3_HIGH;
+      }
+    }
+  }
+
+  public boolean isRunning() {
+    return !(io_.robot_state_ == RobotState.TELEOP_CONTROL || io_.robot_state_ == RobotState.END);
   }
 
   /**

@@ -74,7 +74,7 @@
             "HEADING_D": 0.0
         },
         "pose_controller": {
-            "TRANSLATION_P": 3.5,
+            "TRANSLATION_P": 5,
             "TRANSLATION_I": 0.0,
             "TRANSLATION_D": 0.0,
             "HEADING_P": 3.0,

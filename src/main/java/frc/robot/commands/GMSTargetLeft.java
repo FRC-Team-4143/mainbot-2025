@@ -20,8 +20,8 @@ public class GMSTargetLeft extends Command {
   @Override
   public void initialize() {
     GameStateManager.getInstance().setScoringColum(Column.LEFT, true);
-    if (GameStateManager.getInstance().getRobotState() != RobotState.TELEOP_CONTROL) {
-      GameStateManager.getInstance().setRobotState(RobotState.APPROACHING_TARGET);
+    if (GameStateManager.getInstance().isRunning()) {
+      GameStateManager.getInstance().setRobotState(RobotState.TARGET_ACQUISITION);
     }
   }
 
