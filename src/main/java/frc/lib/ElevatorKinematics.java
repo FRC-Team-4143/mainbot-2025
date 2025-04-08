@@ -78,5 +78,10 @@ public class ElevatorKinematics {
     public double getPivotAngle() {
       return pivot_angle_;
     }
+
+    public void update(double height, double angle) {
+      pivot_height_ = height;
+      pivot_angle_ = angle;
+    }
   }
 }

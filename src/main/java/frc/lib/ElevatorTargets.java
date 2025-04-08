@@ -1,46 +1,53 @@
 package frc.lib;
 
 import edu.wpi.first.math.geometry.Translation3d;
+import edu.wpi.first.math.util.Units;
 import frc.robot.Constants;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
 public class ElevatorTargets {
+  private static double IN_PERRIMITER_X = Units.inchesToMeters(9.246 - 2);
+  private static double BRACH_HIGHT_BUMP = Units.inchesToMeters(5.921);
+
   public enum TargetType {
-    TEST(
-        new TargetData(
-            new Translation3d(0, 0, Constants.ElevatorConstants.ELEVATOR_HEIGHT_PIVOT_MIN), "TEST"),
-        Arrays.asList(new Translation3d(0.2, 0, 1)),
-        Arrays.asList()),
     SAFETY(new TargetData(new Translation3d(), "SAFETY"), Arrays.asList(), Arrays.asList()),
     L4(
         new TargetData(
             new Translation3d(
-                Constants.DrivetrainConstants.CENTER_OFFSET_X - 0.1,
+                Units.inchesToMeters(16.031),
                 0,
-                FieldConstants.ReefHeight.L4.HEIGHT),
+                FieldConstants.ReefHeight.L4.HEIGHT + Units.inchesToMeters(4.047)),
             "L4"),
-        Arrays.asList(),
-        Arrays.asList()),
+        Arrays.asList(new Translation3d(IN_PERRIMITER_X, 0, Units.inchesToMeters(68.109))),
+        Arrays.asList(new Translation3d(IN_PERRIMITER_X, 0, Units.inchesToMeters(68.109)))),
     L3(
         new TargetData(
             new Translation3d(
-                Constants.DrivetrainConstants.CENTER_OFFSET_X - 0.1,
+                Units.inchesToMeters(16.593),
                 0,
-                FieldConstants.ReefHeight.L3.HEIGHT),
+                FieldConstants.ReefHeight.L3.HEIGHT + BRACH_HIGHT_BUMP),
             "L3"),
-        Arrays.asList(),
-        Arrays.asList()),
+        Arrays.asList(
+            new Translation3d(
+                IN_PERRIMITER_X, 0, FieldConstants.ReefHeight.L3.HEIGHT + BRACH_HIGHT_BUMP)),
+        Arrays.asList(
+            new Translation3d(
+                IN_PERRIMITER_X, 0, FieldConstants.ReefHeight.L3.HEIGHT + BRACH_HIGHT_BUMP))),
     L2(
         new TargetData(
             new Translation3d(
-                Constants.DrivetrainConstants.CENTER_OFFSET_X - 0.1,
+                Units.inchesToMeters(16.593),
                 0,
-                FieldConstants.ReefHeight.L2.HEIGHT),
+                FieldConstants.ReefHeight.L2.HEIGHT + BRACH_HIGHT_BUMP),
             "L2"),
-        Arrays.asList(),
-        Arrays.asList()),
+        Arrays.asList(
+            new Translation3d(
+                IN_PERRIMITER_X, 0, FieldConstants.ReefHeight.L2.HEIGHT + BRACH_HIGHT_BUMP)),
+        Arrays.asList(
+            new Translation3d(
+                IN_PERRIMITER_X, 0, FieldConstants.ReefHeight.L2.HEIGHT + BRACH_HIGHT_BUMP))),
     L1(
         new TargetData(
             new Translation3d(
@@ -54,7 +61,7 @@ public class ElevatorTargets {
     CLIMB(new TargetData(new Translation3d(), "CLIMB"), Arrays.asList(), Arrays.asList()),
     CORAL_INTAKE(
         new TargetData(
-            new Translation3d(Constants.DrivetrainConstants.CENTER_OFFSET_X - 0.1, 0, 1),
+            new Translation3d(-0.206312455806457, 0, 0.36658133576115 + Units.inchesToMeters(2)),
             "CORAL_INTAKE"),
         Arrays.asList(),
         Arrays.asList()),
@@ -91,20 +98,12 @@ public class ElevatorTargets {
       return target;
     }
 
-    public void offsetY(double offset) {
-      target.offsetZ(offset);
+    public void offSet(Translation3d t) {
+      target.offSet(t);
     }
 
-    public void resetYOffset() {
-      target.resetZOffset();
-    }
-
-    public void offsetX(double offset) {
-      target.offsetX(offset);
-    }
-
-    public void resetXOffset() {
-      target.resetXOffset();
+    public void resetOffsets() {
+      target.resetOffsets();
     }
 
     public TargetData getLoggingObject() {

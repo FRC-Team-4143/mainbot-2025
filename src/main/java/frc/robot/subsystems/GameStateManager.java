@@ -14,7 +14,6 @@ import frc.lib.ScoringPoses;
 import frc.mw_lib.subsystem.Subsystem;
 import frc.mw_lib.util.Util;
 import frc.robot.Constants;
-import frc.robot.subsystems.Elevator.SpeedLimit;
 import java.util.Optional;
 import monologue.Annotations.Log;
 import monologue.Logged;
@@ -138,11 +137,6 @@ public class GameStateManager extends Subsystem {
       case END:
         // clear saved vars and reset drive mode
         SwerveDrivetrain.getInstance().restoreDefaultDriveMode();
-        if (Claw.getInstance().isCoralMode()) {
-          Elevator.getInstance().setSpeedLimit(SpeedLimit.CORAL);
-        } else {
-          Elevator.getInstance().setSpeedLimit(SpeedLimit.ALGAE);
-        }
         io_.robot_state_ = RobotState.TELEOP_CONTROL;
         Claw.getInstance().disableBlastMode();
         break;

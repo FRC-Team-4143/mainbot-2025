@@ -195,13 +195,13 @@ public abstract class OI {
     operator_controller_
         .povLeft()
         .onTrue(
-            Commands.runOnce(() -> Elevator.getInstance().setOffset(OffsetType.LEFT))
+            Commands.runOnce(() -> Elevator.getInstance().setOffset(OffsetType.IN))
                 .ignoringDisable(true));
     // Manual Adjust Arm Setpoint Clockwise
     operator_controller_
         .povRight()
         .onTrue(
-            Commands.runOnce(() -> Elevator.getInstance().setOffset(OffsetType.RIGHT))
+            Commands.runOnce(() -> Elevator.getInstance().setOffset(OffsetType.OUT))
                 .ignoringDisable(true));
 
     // Manual Override for loading

@@ -87,7 +87,7 @@
         "algae_offset": 0
     },
     "elevator": {
-        "CONTROLLER_P": 1.0,
+        "CONTROLLER_P": 4.0,
         "CONTROLLER_I": 0.0,
         "CONTROLLER_D": 0.08,
         "CONTROLLER_S": 0.06766,
@@ -95,11 +95,11 @@
         "CONTROLLER_A": 0.0070285,
         "CONTROLLER_G": 0.43,
         "HEIGHT_PIVOT_MIN": 28.5,
-        "HEIGHT_PIVOT_MAX": 80.75,
+        "HEIGHT_PIVOT_MAX": 81.811,
         "ELEVATOR_GEAR_RATIO": 5
     },
     "arm": {
-        "CONTROLLER_P": 40.0,
+        "CONTROLLER_P": 80.0,
         "CONTROLLER_I": 0.0,
         "CONTROLLER_D": 0.0,
         "CONTROLLER_S": 0.024495,

@@ -57,7 +57,7 @@ public class ElevatorPlanner {
   }
 
   public boolean hasPath() {
-    return !path_.isEmpty();
+    return path_.size() > 1;
   }
 
   public JointSpaceSolution nextTarget(Translation3d current_translation) {

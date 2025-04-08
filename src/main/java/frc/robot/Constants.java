@@ -202,7 +202,7 @@ public final class Constants {
   public static final class ClawConstants {
     public static final double TIME_OF_FLIGHT_DIST = 50;
     public static final int WHEEL_MOTOR_ID = 11;
-    public static final double WHEEL_CORAL_SHOOT_SPEED = 0.3;
+    public static final double WHEEL_CORAL_SHOOT_SPEED = 0.6;
     public static final double WHEEL_CORAL_BLAST_SPEED = 0.6;
     public static final double WHEEL_ALGAE_SHOOT_SPEED = 0.5;
     public static final double WHEEL_ALGAE_BLAST_SPEED = 0.5;
@@ -212,7 +212,8 @@ public final class Constants {
     public static final double STATOR_CURRENT_LIMIT = 40;
     public static final String CORAL_COLOR = new Color(255, 255, 255).toHexString();
     public static final String ALGAE_COLOR = new Color(0, 255, 255).toHexString();
-    public static final InvertedValue WHEEL_MOTOR_INVERTED = InvertedValue.Clockwise_Positive;
+    public static final InvertedValue WHEEL_MOTOR_INVERTED =
+        InvertedValue.CounterClockwise_Positive;
     public static final double CORAL_IMP_OFFSET =
         Units.inchesToMeters(LOADER.getDoubleValue("imp", "coral_offset"));
     public static final double ALGAE_IMP_OFFSET =
@@ -257,15 +258,13 @@ public final class Constants {
         Units.inchesToMeters(1.751 * Math.PI)
             / LOADER.getDoubleValue("elevator", "ELEVATOR_GEAR_RATIO")
             * 2;
-    public static final double ELEVATOR_CRUISE_VELOCITY = 5.0 / ELEVATOR_ROTATIONS_TO_METERS;
-    public static final double ELEVATOR_ACCEL = 10.0 / ELEVATOR_ROTATIONS_TO_METERS; // 3
     public static final double ELEVATOR_ZERO_THRESHOLD = 0; // In m
     public static final double ELEVATOR_STATOR_CURRENT_LIMIT = 80.0;
     public static final double ELEVATOR_HEIGHT_PIVOT_MIN =
         Units.inchesToMeters(LOADER.getDoubleValue("elevator", "HEIGHT_PIVOT_MIN"));
     public static final double ELEVATOR_HEIGHT_PIVOT_MAX =
         Units.inchesToMeters(LOADER.getDoubleValue("elevator", "HEIGHT_PIVOT_MAX"))
-            - 0.1; // 0.1m of safety
+            - 0.05; // 0.05m of safety
     public static final double ELEVATOR_HEIGHT_PIVOT_SAFETY =
         ELEVATOR_HEIGHT_PIVOT_MIN + Units.inchesToMeters(6);
 
@@ -282,7 +281,7 @@ public final class Constants {
     public static final double ELEVATOR_SAFETY_BUMP = Units.inchesToMeters(2);
 
     public static final double SUBDIVISION_PER_METER = 100;
-    public static final double SUBDIVISION_FOLLOW_DIST = Units.inchesToMeters(10);
+    public static final double SUBDIVISION_FOLLOW_DIST = Units.inchesToMeters(5);
   }
 
   public class ArmConstants {
@@ -293,13 +292,6 @@ public final class Constants {
     public static final InvertedValue ARM_FOLLOWER_INVERSION = InvertedValue.Clockwise_Positive;
     public static final SensorDirectionValue ABSOLUTE_ENCODER_INVERSION =
         SensorDirectionValue.Clockwise_Positive;
-    public static final double CORAL_ARM_CRUISE_VELOCITY = 4;
-    public static final double CORAL_ARM_ACCELERATION = 2.5;
-    public static final double L4_ARM_ACCEL = 1.75;
-    public static final double ALGAE_ARM_CRUISE_VELOCITY = 4;
-    public static final double ALGAE_ARM_ACCELERATION = 0.65;
-    public static final double SAFETY_ARM_CRUISE_VELOCITY = 2;
-    public static final double SAFETY_ARM_ACCELERATION = 0.30;
     public static final double DANGER_ARM_ANGLE = Units.degreesToRadians(95);
     public static final double ARM_LENGTH =
         Units.inchesToMeters(LOADER.getDoubleValue("arm", "LENGTH_PIVOT_TO_FUNNEL")); // 16.456 in

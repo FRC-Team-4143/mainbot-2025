@@ -8,6 +8,7 @@ import static edu.wpi.first.units.Units.Rotations;
 import com.ctre.phoenix6.configs.CANcoderConfiguration;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.MotionMagicVoltage;
+import com.ctre.phoenix6.controls.PositionVoltage;
 import com.ctre.phoenix6.controls.StrictFollower;
 import com.ctre.phoenix6.controls.VoltageOut;
 import com.ctre.phoenix6.hardware.CANcoder;
@@ -22,6 +23,7 @@ import edu.wpi.first.math.util.Units;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.networktables.StructArrayPublisher;
 import edu.wpi.first.networktables.StructPublisher;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Commands;
 import frc.lib.ElevatorKinematics;
@@ -58,8 +60,8 @@ public class Elevator extends Subsystem {
   private TalonFX arm_motor_;
   private TalonFXConfiguration elevator_config_;
   private TalonFXConfiguration arm_config_;
-  private MotionMagicVoltage elevator_request_;
-  private MotionMagicVoltage arm_request_;
+  private PositionVoltage elevator_request_;
+  private PositionVoltage arm_request_;
   private CANcoder arm_encoder_;
   private CANcoderConfiguration arm_encoder_config_;
 
@@ -85,8 +87,8 @@ public class Elevator extends Subsystem {
   public enum OffsetType {
     UP,
     DOWN,
-    LEFT,
-    RIGHT
+    IN,
+    OUT
   }
 
   private ElevatorPeriodicIo io_;
@@ -104,9 +106,6 @@ public class Elevator extends Subsystem {
     // Elevator Config
     elevator_config_ = new TalonFXConfiguration();
     elevator_config_.Slot0 = ElevatorConstants.ELEVATOR_GAINS;
-    elevator_config_.MotionMagic.MotionMagicCruiseVelocity =
-        ElevatorConstants.ELEVATOR_CRUISE_VELOCITY;
-    elevator_config_.MotionMagic.MotionMagicAcceleration = ElevatorConstants.ELEVATOR_ACCEL;
     elevator_config_.MotorOutput.NeutralMode = NeutralModeValue.Brake;
     elevator_config_.SoftwareLimitSwitch.ForwardSoftLimitEnable = false;
     elevator_config_.SoftwareLimitSwitch.ForwardSoftLimitThreshold =
@@ -129,8 +128,6 @@ public class Elevator extends Subsystem {
     arm_config_.Feedback.SensorToMechanismRatio = ArmConstants.SENSOR_TO_MECHANISM_RATIO;
     arm_config_.MotorOutput.Inverted = ArmConstants.ARM_FOLLOWER_INVERSION;
     arm_config_.Slot0 = ArmConstants.ARM_GAINS;
-    arm_config_.MotionMagic.MotionMagicCruiseVelocity = ArmConstants.CORAL_ARM_CRUISE_VELOCITY;
-    arm_config_.MotionMagic.MotionMagicAcceleration = ArmConstants.CORAL_ARM_ACCELERATION;
     arm_config_.MotorOutput.NeutralMode = NeutralModeValue.Brake;
     arm_config_.ClosedLoopGeneral.ContinuousWrap = false;
     arm_config_.SoftwareLimitSwitch.ForwardSoftLimitEnable = true;
@@ -146,8 +143,8 @@ public class Elevator extends Subsystem {
     arm_encoder_.getConfigurator().apply(arm_encoder_config_);
 
     // System Behavior Setup
-    elevator_request_ = new MotionMagicVoltage(0);
-    arm_request_ = new MotionMagicVoltage(0);
+    elevator_request_ = new PositionVoltage(0);
+    arm_request_ = new PositionVoltage(0);
 
     kinematics_ =
         new ElevatorKinematics(
@@ -209,18 +206,21 @@ public class Elevator extends Subsystem {
         io_.elevator_master_rotations_ * ElevatorConstants.ELEVATOR_ROTATIONS_TO_METERS
             + ElevatorConstants.ELEVATOR_HEIGHT_PIVOT_MIN;
     io_.current_arm_angle_ = (arm_motor_.getPosition().getValue().in(Radians));
-    io_.current_system_solution_ =
-        new JointSpaceSolution(io_.current_elevator_height_, io_.current_arm_angle_);
+    io_.current_system_solution_.update(io_.current_elevator_height_, io_.current_arm_angle_);
   }
 
   /** Computes updated outputs for the actuators */
   public void updateLogic(double timestamp) {
+    double start = Timer.getFPGATimestamp();
     io_.current_translation_ = kinematics_.jointSpaceToTranslation(io_.current_system_solution_);
-    if (!systemAtTarget(io_.target_system_solution_) && planner_.hasPath()) {
+    if (planner_.hasPath() && !systemAtTarget(io_.final_system_solution_)) {
       io_.target_system_solution_ = planner_.nextTarget(io_.current_translation_);
-      io_.target_elevator_height_ = io_.target_system_solution_.getPivotHeight();
-      io_.target_arm_angle_ = io_.target_system_solution_.getPivotAngle();
+    } else if (!planner_.hasPath()) {
+      io_.target_system_solution_ = io_.final_system_solution_;
     }
+
+    io_.target_elevator_height_ = io_.target_system_solution_.getPivotHeight();
+    io_.target_arm_angle_ = io_.target_system_solution_.getPivotAngle();
 
     // Elevator Safety
     if (io_.target_elevator_height_ < ElevatorConstants.ELEVATOR_HEIGHT_PIVOT_MIN) {
@@ -229,16 +229,19 @@ public class Elevator extends Subsystem {
       // + io_.target_elevator_height_
       // + " Min Elevator Height: "
       // + ElevatorConstants.ELEVATOR_HEIGHT_PIVOT_MIN);
-      io_.target_elevator_height_ = ElevatorConstants.ELEVATOR_HEIGHT_PIVOT_MIN;
+      // io_.target_elevator_height_ = ElevatorConstants.ELEVATOR_HEIGHT_PIVOT_MIN;
     }
     if (io_.target_elevator_height_ > ElevatorConstants.ELEVATOR_HEIGHT_PIVOT_MAX) {
       // DataLogManager.log(
       // "ERROR: Target Elevator Height: "
       // + io_.target_elevator_height_
-      // + " Min Elevator Height: "
+      // + " Max Elevator Height: "
       // + ElevatorConstants.ELEVATOR_HEIGHT_PIVOT_MAX);
-      io_.target_elevator_height_ = ElevatorConstants.ELEVATOR_HEIGHT_PIVOT_MAX;
+      // io_.target_elevator_height_ = ElevatorConstants.ELEVATOR_HEIGHT_PIVOT_MAX;
     }
+
+    double end = Timer.getFPGATimestamp();
+    SmartDashboard.putNumber("elevator_time", end - start);
   }
 
   /** Writes the periodic outputs to actuators (motors and etc...) */
@@ -275,8 +278,6 @@ public class Elevator extends Subsystem {
     SmartDashboard.putNumber(
         "Subsystems/Arm/Current Height (Meters)", io_.current_translation_.getZ());
     SmartDashboard.putNumber("Subsystems/Arm/Current X (Meters)", io_.current_translation_.getX());
-    SmartDashboard.putNumber(
-        "Subsystems/Arm/Absolute Encoder (Rotations)", readArmEncoder().getRotations());
     SmartDashboard.putString("Subsystems/Elevator/Target", io_.final_target_.toString());
     SmartDashboard.putString(
         "Subsystems/Elevator/Pending Target", io_.target_system_solution_.toString());
@@ -303,8 +304,8 @@ public class Elevator extends Subsystem {
               0,
               (solution.getPivotHeight() - ElevatorConstants.ELEVATOR_HEIGHT_PIVOT_MIN) / 2
                   + ElevatorConstants.ELEVATOR_HEIGHT_PIVOT_MIN,
-              new Rotation3d()),
-          new Pose3d(0, 0, solution.getPivotHeight(), new Rotation3d())
+              Rotation3d.kZero),
+          new Pose3d(0, 0, solution.getPivotHeight(), Rotation3d.kZero)
         });
     arm_pub.set(
         new Pose3d(
@@ -413,25 +414,28 @@ public class Elevator extends Subsystem {
   public void setOffset(OffsetType offset_type) {
     switch (offset_type) {
       case UP:
-        io_.final_target_.offsetY(0.0254);
+        io_.final_target_.offSet(new Translation3d(0, 0, Units.inchesToMeters(0.25)));
         break;
       case DOWN:
-        io_.final_target_.offsetY(-0.0254);
+        io_.final_target_.offSet(new Translation3d(0, 0, Units.inchesToMeters(-0.25)));
         break;
-      case LEFT:
-        io_.final_target_.offsetX(-0.0254);
+      case IN:
+        io_.final_target_.offSet(new Translation3d(Units.inchesToMeters(-0.25), 0, 0));
         break;
-      case RIGHT:
+      case OUT:
       default:
-        io_.final_target_.offsetX(0.0254);
+        io_.final_target_.offSet(new Translation3d(Units.inchesToMeters(0.25), 0, 0));
         break;
     }
+
+    io_.final_system_solution_ =
+        kinematics_.translationToJointSpace(io_.final_target_.getTarget().getTranslation());
   }
 
   /** Removes any applied offsets to the currently selected target */
   public void resetManualOffsets() {
-    io_.final_target_.resetXOffset();
-    io_.final_target_.resetYOffset();
+    io_.final_target_.resetOffsets();
+    io_.final_target_.resetOffsets();
   }
 
   /**
@@ -481,33 +485,6 @@ public class Elevator extends Subsystem {
    */
   public TargetType getTarget() {
     return io_.final_target_;
-  }
-
-  /**
-   * Applies a rotational speed limit to the arm motor
-   *
-   * @param limit type of limit to apply to arm
-   */
-  public void setSpeedLimit(SpeedLimit limit) {
-    if (limit == io_.current_speed_limit_) {
-      return;
-    }
-
-    if (limit == SpeedLimit.CORAL) {
-      arm_config_.MotionMagic.MotionMagicCruiseVelocity = ArmConstants.CORAL_ARM_CRUISE_VELOCITY;
-      arm_config_.MotionMagic.MotionMagicAcceleration = ArmConstants.CORAL_ARM_ACCELERATION;
-    } else if (limit == SpeedLimit.ALGAE) {
-      arm_config_.MotionMagic.MotionMagicCruiseVelocity = ArmConstants.ALGAE_ARM_CRUISE_VELOCITY;
-      arm_config_.MotionMagic.MotionMagicAcceleration = ArmConstants.ALGAE_ARM_ACCELERATION;
-    } else if (limit == SpeedLimit.SAFETY) {
-      arm_config_.MotionMagic.MotionMagicCruiseVelocity = ArmConstants.SAFETY_ARM_CRUISE_VELOCITY;
-      arm_config_.MotionMagic.MotionMagicAcceleration = ArmConstants.SAFETY_ARM_ACCELERATION;
-    } else if (limit == SpeedLimit.L4) {
-      arm_config_.MotionMagic.MotionMagicCruiseVelocity = ArmConstants.CORAL_ARM_CRUISE_VELOCITY;
-      arm_config_.MotionMagic.MotionMagicAcceleration = ArmConstants.L4_ARM_ACCEL;
-    }
-    arm_motor_.getConfigurator().apply(arm_config_);
-    io_.current_speed_limit_ = limit;
   }
 
   /**
