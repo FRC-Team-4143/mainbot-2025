@@ -29,7 +29,8 @@ public class AllianceFlipUtil {
       return translation.plus(
           new Translation2d(
               translation.getDistance(
-                  new Translation2d(FieldConstants.FIELD_CENTER.getX(), translation.getY())),
+                      new Translation2d(FieldConstants.FIELD_CENTER.getX(), translation.getY()))
+                  * 2,
               translation.getY()));
     }
   }
