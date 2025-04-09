@@ -257,10 +257,10 @@ public class FieldRegions {
 
   /** Rotates all regions about the field center. */
   public static void flipRegions() {
-    for(int i = 0; i < ALL_REGIONS.size(); i++){
-      // TODO: Fix apply for Region
-      // ALL_REGIONS.set(AllianceFlipUtil.apply(ALL_REGIONS.get(i), FieldConstants.SYMMETRY_TYPE));
+    for (int i = 0; i < ALL_REGIONS.size(); i++) {
+      ALL_REGIONS.set(i, AllianceFlipUtil.apply(ALL_REGIONS.get(i), FieldConstants.SYMMETRY_TYPE));
     }
+
     ScoringPoses.REEF_FACE_0_POSE =
         AllianceFlipUtil.apply(ScoringPoses.REEF_FACE_0_POSE, FieldConstants.SYMMETRY_TYPE);
     ScoringPoses.REEF_FACE_1_POSE =
