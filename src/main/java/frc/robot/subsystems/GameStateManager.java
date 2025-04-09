@@ -5,15 +5,19 @@ import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.networktables.StructArrayPublisher;
 import edu.wpi.first.networktables.StructPublisher;
+import edu.wpi.first.units.measure.Time;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.lib.ElevatorTargets.TargetType;
 import frc.lib.FieldRegions;
 import frc.lib.ScoringPoses;
 import frc.mw_lib.subsystem.Subsystem;
 import frc.mw_lib.util.Util;
 import frc.robot.Constants;
+import frc.robot.commands.CoralEject;
 import frc.robot.subsystems.Claw.ClawMode;
 import java.util.Optional;
 import monologue.Annotations.Log;
@@ -130,13 +134,11 @@ public class GameStateManager extends Subsystem {
             && Elevator.getInstance().isElevatorAndArmAtTarget()) {
           // Once at final target, hand off control
           SwerveDrivetrain.getInstance().restoreDefaultDriveMode();
+          CommandScheduler.getInstance().schedule(new CoralEject().withTimeout(0.5).beforeStarting(new WaitCommand(0.25)));
           io_.robot_state_ = RobotState.SCORING;
         }
         break;
       case SCORING:
-        if (Claw.getInstance().isCoralMode()) {
-          Claw.getInstance().setClawMode(ClawMode.SHOOT);
-        }
         if (!FieldRegions.REEF_EXIT.contains(PoseEstimator.getInstance().getRobotPose())) {
           // wait until you leave the exit Circle
           io_.robot_state_ = RobotState.END;
