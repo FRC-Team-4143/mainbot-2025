@@ -23,25 +23,37 @@ public class SetDefaultStow extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
+    // If in Climb Mode
     if (Climber.getInstance().getMode() != ClimberMode.DISABLED) {
       Elevator.getInstance().setTarget(TargetType.CLIMB);
+      // If In Algae Mode
     } else if (Claw.getInstance().isAlgaeMode()) {
       Elevator.getInstance().setTarget(TargetType.ALGAE_STOW);
+      // If In Coral Mode + Vision is Enabled
     } else if (OI.use_vision.getAsBoolean()) {
+      // If in Coral Mode + Vision is Enabled + Robot in Station Zone + Pickup Preference is Station
       if (PoseEstimator.getInstance().isStationZone()
           && OI.intake_preference == IntakePreference.STATION) {
         Elevator.getInstance().setTarget(TargetType.STATION);
+        // If in Coral Mode + Vision is Enabled + Robot Does Not Have Coral + Pickup Preference is
+        // Ground
       } else if (!Claw.getInstance().isCoralPresent()
           && OI.intake_preference == IntakePreference.GROUND) {
         Elevator.getInstance().setTarget(TargetType.CORAL_INTAKE);
+        // If in Coral Mode + Vision is Enabled + Robot Has Coral + Pickup Preference is Ground
       } else {
         Elevator.getInstance().setTarget(TargetType.CORAL_STOW);
       }
+      // If In Coral Mode + Vision is Disabled
     } else {
+      // If in Coral Mode + Vision is Disabled + Robot Has Coral + Pickup Preference is Ground
       if (OI.intake_preference == IntakePreference.GROUND && Claw.getInstance().isCoralPresent()) {
         Elevator.getInstance().setTarget(TargetType.CORAL_STOW);
+        // If in Coral Mode + Vision is Disabled + Robot Does Not Have Coral + Pickup Preference is
+        // Ground
       } else if (OI.intake_preference == IntakePreference.GROUND) {
         Elevator.getInstance().setTarget(TargetType.CORAL_INTAKE);
+        // If in Coral Mode + Vision is Disabled + Pickup Preference is Station
       } else {
         Elevator.getInstance().setTarget(TargetType.STATION);
       }
