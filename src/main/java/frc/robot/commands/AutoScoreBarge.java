@@ -12,7 +12,6 @@ import frc.robot.subsystems.Claw;
 import frc.robot.subsystems.Claw.ClawMode;
 import frc.robot.subsystems.Claw.GamePiece;
 import frc.robot.subsystems.Elevator;
-import frc.robot.subsystems.Elevator.SpeedLimit;
 import frc.robot.subsystems.SwerveDrivetrain;
 import frc.robot.subsystems.SwerveDrivetrain.DriveMode;
 import java.util.Optional;
@@ -31,7 +30,6 @@ public class AutoScoreBarge extends Command {
   @Override
   public void initialize() {
     Claw.getInstance().setGamePiece(GamePiece.ALGAE);
-    Elevator.getInstance().setSpeedLimit(SpeedLimit.ALGAE);
     SwerveDrivetrain.getInstance().setTightRope(ScoringPoses.BARGE_TIGHT_ROPE);
   }
 

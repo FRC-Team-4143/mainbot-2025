@@ -1,256 +1,109 @@
 package frc.lib;
 
+import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.util.Units;
-import frc.lib.TargetData.ControlType;
-import frc.robot.Constants.ElevatorConstants;
-import java.util.Optional;
+import frc.robot.Constants;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 public class ElevatorTargets {
-  private static final TargetData L4_INT =
-      new TargetData(
-          FieldConstants.ReefHeight.L4.HEIGHT + Units.inchesToMeters(11),
-          Units.degreesToRadians(-270),
-          ControlType.EFFECTOR,
-          "L4_INT");
-
-  private static final TargetData STATION_INT =
-      new TargetData(
-          0.8468 + Units.inchesToMeters(8), (-1.027767), ControlType.EFFECTOR, "STATION_INT");
-
-  private static final TargetData L3_INT =
-      new TargetData(
-          FieldConstants.ReefHeight.L3.HEIGHT + Units.inchesToMeters(8),
-          Units.degreesToRadians(-270),
-          ControlType.EFFECTOR,
-          "L3_INT");
-
-  private static final TargetData L2_INT =
-      new TargetData(
-          FieldConstants.ReefHeight.L2.HEIGHT + Units.inchesToMeters(15),
-          Units.degreesToRadians(-270),
-          ControlType.EFFECTOR,
-          "L2_INT");
-
-  private static final TargetData L1_INT =
-      new TargetData(
-          FieldConstants.ReefHeight.L1.HEIGHT + Units.inchesToMeters(8),
-          Units.degreesToRadians(-270),
-          ControlType.EFFECTOR,
-          "L1_INT");
-
-  private static final TargetData CLIMB_INT =
-      new TargetData(
-          ElevatorConstants.ELEVATOR_HEIGHT_PIVOT_MIN + Units.inchesToMeters(12),
-          Units.degreesToRadians(0),
-          ControlType.PIVOT,
-          "CLIMB_INT");
-
-  public static TargetData CURRENT_STOW_INT =
-      new TargetData(
-          ElevatorConstants.ELEVATOR_HEIGHT_PIVOT_SAFETY + Units.inchesToMeters(12),
-          Units.degreesToRadians(-120),
-          ControlType.PIVOT,
-          "CURRENT_STOW_INT");
-
-  public static final TargetData HIGH_STOW_INT =
-      new TargetData(
-          ElevatorConstants.ELEVATOR_HEIGHT_PIVOT_SAFETY + Units.inchesToMeters(12),
-          Units.degreesToRadians(-120),
-          ControlType.PIVOT,
-          "HIGH_STOW_INT");
-
-  public static final TargetData LOW_STOW_INT =
-      new TargetData(
-          ElevatorConstants.ELEVATOR_HEIGHT_PIVOT_SAFETY + Units.inchesToMeters(6),
-          Units.degreesToRadians(-120),
-          ControlType.PIVOT,
-          "LOW_STOW_INT");
-
-  private static final TargetData ALGAE_STOW_ENTER =
-      new TargetData(
-          ElevatorConstants.ELEVATOR_HEIGHT_PIVOT_SAFETY + Units.inchesToMeters(12),
-          Units.degreesToRadians(-270),
-          ControlType.PIVOT,
-          "ALGAE_STOW_ENTER");
-
-  private static final TargetData CORAL_STOW_ENTER =
-      new TargetData(
-          ElevatorConstants.ELEVATOR_HEIGHT_PIVOT_SAFETY + Units.inchesToMeters(12),
-          Units.degreesToRadians(-270),
-          ControlType.PIVOT,
-          "CORAL_STOW_ENTER");
+  private static final double IN_PERIMETER_X = Units.inchesToMeters(9.246 - 2);
+  private static final double BRANCH_HEIGHT_BUMP = Units.inchesToMeters(5.921);
 
   public enum TargetType {
-    SAFETY(
-        new TargetData(
-            ElevatorConstants
-                .ELEVATOR_HEIGHT_PIVOT_SAFETY, // height is ignored for this special target
-            Units.degreesToRadians(90),
-            ControlType.PIVOT,
-            "SAFETY"),
-        Optional.empty(),
-        Optional.empty()),
+    SAFETY(new TargetData(new Translation3d(), "SAFETY"), Arrays.asList(), Arrays.asList()),
     L4(
         new TargetData(
-            FieldConstants.ReefHeight.L4.HEIGHT + Units.inchesToMeters(11),
-            Units.degreesToRadians(-180 - (180 - 145.3)),
-            ControlType.EFFECTOR,
+            new Translation3d(
+                Units.inchesToMeters(16.031),
+                0,
+                FieldConstants.ReefHeight.L4.HEIGHT + Units.inchesToMeters(5.297)),
             "L4"),
-        Optional.of(L4_INT),
-        Optional.empty()),
+        Arrays.asList(new Translation3d(IN_PERIMETER_X, 0, Units.inchesToMeters(68.109))),
+        Arrays.asList(new Translation3d(IN_PERIMETER_X, 0, Units.inchesToMeters(68.109)))),
     L3(
         new TargetData(
-            FieldConstants.ReefHeight.L3.HEIGHT + Units.inchesToMeters(8),
-            Units.degreesToRadians(-180 - (180 - 125)),
-            ControlType.EFFECTOR,
+            new Translation3d(
+                Units.inchesToMeters(16.593),
+                0,
+                FieldConstants.ReefHeight.L3.HEIGHT + BRANCH_HEIGHT_BUMP),
             "L3"),
-        Optional.of(L3_INT),
-        Optional.empty()),
+        Arrays.asList(new Translation3d(IN_PERIMETER_X, 0, FieldConstants.ReefHeight.L3.HEIGHT)),
+        Arrays.asList(new Translation3d(IN_PERIMETER_X, 0, FieldConstants.ReefHeight.L3.HEIGHT))),
+    L3_FAR(
+        new TargetData(L3.getTarget().getTranslation(), "L3_FAR"),
+        Arrays.asList(),
+        Arrays.asList()),
     L2(
         new TargetData(
-            FieldConstants.ReefHeight.L2.HEIGHT + Units.inchesToMeters(8),
-            Units.degreesToRadians(-180 - (180 - 125)),
-            ControlType.EFFECTOR,
+            new Translation3d(
+                Units.inchesToMeters(16.593),
+                0,
+                FieldConstants.ReefHeight.L2.HEIGHT + BRANCH_HEIGHT_BUMP),
             "L2"),
-        Optional.of(L2_INT),
-        Optional.empty()),
+        Arrays.asList(new Translation3d(IN_PERIMETER_X, 0, FieldConstants.ReefHeight.L2.HEIGHT)),
+        Arrays.asList(new Translation3d(IN_PERIMETER_X, 0, FieldConstants.ReefHeight.L2.HEIGHT))),
+    L2_FAR(
+        new TargetData(L2.getTarget().getTranslation(), "L2_FAR"),
+        Arrays.asList(),
+        Arrays.asList()),
     L1(
         new TargetData(
-            FieldConstants.ReefHeight.L2.HEIGHT + Units.inchesToMeters(8),
-            Units.degreesToRadians(-180 - (180 - 125)),
-            ControlType.EFFECTOR,
+            new Translation3d(
+                Constants.DrivetrainConstants.CENTER_OFFSET_X - 0.1,
+                0,
+                FieldConstants.ReefHeight.L1.HEIGHT),
             "L1"),
-        Optional.of(L1_INT),
-        Optional.empty()),
-    STATION(
-        new TargetData(
-            0.8468 + Units.inchesToMeters(0), (-1.027767), ControlType.EFFECTOR, "STATION"),
-        Optional.of(STATION_INT),
-        Optional.empty()),
-    CLIMB(
-        new TargetData(
-            ElevatorConstants.ELEVATOR_HEIGHT_PIVOT_MIN + Units.inchesToMeters(0),
-            Units.degreesToRadians(20),
-            ControlType.PIVOT,
-            "CLIMB"),
-        Optional.of(CLIMB_INT),
-        Optional.empty()),
+        Arrays.asList(),
+        Arrays.asList()),
+    STATION(new TargetData(new Translation3d(), "STATION"), Arrays.asList(), Arrays.asList()),
+    CLIMB(new TargetData(new Translation3d(), "CLIMB"), Arrays.asList(), Arrays.asList()),
     CORAL_INTAKE(
         new TargetData(
-            0.7891225351316538 + Units.inchesToMeters(1),
-            Units.degreesToRadians(-115),
-            ControlType.PIVOT,
+            new Translation3d(-0.206312455806457, 0, 0.36658133576115 + Units.inchesToMeters(2)),
             "CORAL_INTAKE"),
-        Optional.of(CURRENT_STOW_INT),
-        Optional.of(CURRENT_STOW_INT)),
+        Arrays.asList(),
+        Arrays.asList()),
     CORAL_STOW(
-        new TargetData(
-            ElevatorConstants.ELEVATOR_HEIGHT_PIVOT_MIN,
-            Units.degreesToRadians(-270),
-            ControlType.PIVOT,
-            "CORAL_STOW"),
-        Optional.of(CORAL_STOW_ENTER),
-        Optional.empty()),
-    ALGAE_LOW(
-        new TargetData(
-            0.9702231159054557 + Units.inchesToMeters(0),
-            Units.degreesToRadians(-180 - (180 - 149)),
-            ControlType.EFFECTOR,
-            "ALGAE_LOW"),
-        Optional.empty(),
-        Optional.empty()),
-    ALGAE_HIGH(
-        new TargetData(
-            1.2535345791562702 + Units.inchesToMeters(0),
-            Units.degreesToRadians(-180 - (180 - 130.79)),
-            ControlType.EFFECTOR,
-            "ALGAE_HIGH"),
-        Optional.empty(),
-        Optional.empty()),
+        new TargetData(CORAL_INTAKE.getTarget().getTranslation(), "CORAL_STOW"),
+        Arrays.asList(),
+        Arrays.asList()),
+    ALGAE_LOW(new TargetData(new Translation3d(), "ALGAE_LOW"), Arrays.asList(), Arrays.asList()),
+    ALGAE_HIGH(new TargetData(new Translation3d(), "ALGAE_HIGH"), Arrays.asList(), Arrays.asList()),
     ALGAE_PROCESSOR(
-        new TargetData(
-            FieldConstants.ReefHeight.L3.HEIGHT - Units.inchesToMeters(-18),
-            Units.degreesToRadians(-55),
-            ControlType.EFFECTOR,
-            "ALGAE_PROCESSOR"),
-        Optional.empty(),
-        Optional.empty()),
-    BARGE(
-        new TargetData(
-            2.159 + Units.inchesToMeters(0),
-            Units.degreesToRadians(-270),
-            ControlType.EFFECTOR,
-            "BARGE"),
-        Optional.empty(),
-        Optional.empty()),
-    ALGAE_STOW(
-        new TargetData(
-            ElevatorConstants.ELEVATOR_HEIGHT_PIVOT_MIN + Units.inchesToMeters(0),
-            Units.degreesToRadians(-270),
-            ControlType.PIVOT,
-            "ALGAE_STOW"),
-        Optional.of(ALGAE_STOW_ENTER),
-        Optional.empty());
+        new TargetData(new Translation3d(), "ALGAE_PROCESSOR"), Arrays.asList(), Arrays.asList()),
+    BARGE(new TargetData(new Translation3d(), "BARGE"), Arrays.asList(), Arrays.asList()),
+    ALGAE_STOW(new TargetData(new Translation3d(), "ALGAE_STOW"), Arrays.asList(), Arrays.asList());
 
-    TargetType(TargetData target, Optional<TargetData> enter_tgt, Optional<TargetData> exit_tgt) {
+    TargetType(TargetData target, List<Translation3d> enter, List<Translation3d> exit) {
       this.target = target;
-      this.int_enter_tgt = enter_tgt;
-      this.int_exit_tgt = exit_tgt;
+      this.enter_trj = new ArrayList<Translation3d>(enter);
+      this.exit_trj = new ArrayList<Translation3d>(exit);
     }
 
     private TargetData target;
-    private Optional<TargetData> int_enter_tgt;
-    private Optional<TargetData> int_exit_tgt;
+    private ArrayList<Translation3d> enter_trj;
+    private ArrayList<Translation3d> exit_trj;
 
-    public Optional<TargetData> getEnterTarget() {
-      return int_enter_tgt;
+    public ArrayList<Translation3d> getEnterTrj() {
+      return enter_trj;
     }
 
-    public Optional<TargetData> getExitTarget() {
-      return int_exit_tgt;
+    public ArrayList<Translation3d> getExitTrj() {
+      return exit_trj;
     }
 
     public TargetData getTarget() {
       return target;
     }
 
-    // Height Methods
-    /**
-     * Adjusts the height offset by the supplied increment
-     *
-     * @param offset
-     */
-    public void offsetHeight(double offset) {
-      target.offsetHeight(offset);
+    public void offSet(Translation3d t) {
+      target.offSet(t);
     }
 
-    /** Reset the height offset to 0 */
-    public void resetHeightOffset() {
-      target.resetHeightOffset();
-    }
-
-    // Angle Methods
-    /**
-     * Adjusts the angle offset by the supplied increment
-     *
-     * @param offset
-     */
-    public void offsetAngle(double offset) {
-      target.offsetAngle(offset);
-    }
-
-    /** Resets the angle offset to 0 */
-    public void resetAngleOffset() {
-      target.resetAngleOffset();
-    }
-
-    /**
-     * Returns the control type associated with the target
-     *
-     * @return stored control type
-     */
-    public ControlType getControlType() {
-      return target.type_;
+    public void resetOffsets() {
+      target.resetOffsets();
     }
 
     public TargetData getLoggingObject() {

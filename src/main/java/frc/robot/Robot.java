@@ -8,14 +8,16 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import edu.wpi.first.wpilibj2.command.Command.InterruptionBehavior;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.button.RobotModeTriggers;
 import frc.lib.FieldRegions;
 import frc.mw_lib.auto.Auto;
 import frc.mw_lib.auto.AutoManager;
 import frc.mw_lib.logging.Elastic;
+import frc.mw_lib.proxy_server.ProxyServer;
 import frc.robot.autos.*;
-import frc.robot.commands.HangProtection;
+import frc.robot.subsystems.Elevator;
 import frc.robot.subsystems.GameStateManager;
 import frc.robot.subsystems.GameStateManager.RobotState;
 import frc.robot.subsystems.SwerveDrivetrain;
@@ -31,6 +33,7 @@ public class Robot extends TimedRobot {
     robot_container_ = RobotContainer.getInstance();
     OI.configureBindings();
     FieldRegions.makeRegions();
+    ProxyServer.configureServer();
 
     AutoManager.getInstance()
         .registerAutos(
@@ -41,6 +44,11 @@ public class Robot extends TimedRobot {
             new H4_Algae(),
             new J4_LeftStation_L4_LeftStation_K4(),
             new J4_LeftStation_L4());
+
+    RobotModeTriggers.disabled()
+        .onFalse(
+            Commands.runOnce(
+                () -> Elevator.getInstance().buildPlan(Elevator.getInstance().getTarget())));
   }
 
   @Override
@@ -50,6 +58,9 @@ public class Robot extends TimedRobot {
 
     // tell the subsystems to output telemetry to smartdashboard
     robot_container_.outputTelemetry();
+
+    // updates data from chassis proxy server
+    ProxyServer.updateData();
 
     SmartDashboard.putNumber("Match Time", DriverStation.getMatchTime());
     SmartDashboard.putString("Intake Preference", OI.intake_preference.toString());
@@ -102,8 +113,6 @@ public class Robot extends TimedRobot {
   public void teleopInit() {
     SwerveDrivetrain.getInstance().restoreDefaultDriveMode();
     CommandScheduler.getInstance().cancelAll();
-    CommandScheduler.getInstance()
-        .schedule(new HangProtection().withInterruptBehavior(InterruptionBehavior.kCancelIncoming));
     Elastic.selectTab("Teleop");
   }
 

@@ -11,7 +11,6 @@ import frc.mw_lib.geometry.Region;
 import frc.robot.subsystems.Claw;
 import frc.robot.subsystems.Claw.GamePiece;
 import frc.robot.subsystems.Elevator;
-import frc.robot.subsystems.Elevator.SpeedLimit;
 import frc.robot.subsystems.PoseEstimator;
 import frc.robot.subsystems.SwerveDrivetrain;
 import java.util.Optional;
@@ -39,7 +38,6 @@ public class ScoreBarge extends Command {
   @Override
   public void initialize() {
     claw_.setGamePiece(GamePiece.ALGAE);
-    elevator_.setSpeedLimit(SpeedLimit.ALGAE);
   }
 
   // Called every time the scheduler runs while the command is scheduled.

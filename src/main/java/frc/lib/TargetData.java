@@ -1,21 +1,23 @@
 package frc.lib;
 
+import edu.wpi.first.math.geometry.Translation3d;
 import monologue.Annotations.Log;
 import monologue.Logged;
 
 public class TargetData implements Logged {
-  @Log.File public double height_;
-  @Log.File public double angle_;
-  @Log.File public ControlType type_;
-  @Log.File public double height_offset_ = 0;
-  @Log.File public double angle_offset_ = 0;
+  @Log.File public Translation3d base_translation;
+  @Log.File public Translation3d current_translation;
   @Log.File public String name_;
 
-  public TargetData(double h, double a, ControlType t, String n) {
-    this.height_ = h;
-    this.angle_ = a;
-    this.type_ = t;
+  public TargetData(Translation3d t, String n) {
+    this.base_translation = t;
     this.name_ = n;
+    current_translation = base_translation;
+  }
+
+  public TargetData(Translation3d t) {
+    this.base_translation = t;
+    this.name_ = "Unset";
   }
 
   public TargetData() {
@@ -26,83 +28,22 @@ public class TargetData implements Logged {
     return this.name_;
   }
 
-  public enum ControlType {
-    PIVOT,
-    EFFECTOR
+  public Translation3d getTranslation() {
+    return current_translation;
   }
 
-  // Height Methods
-  /**
-   * Returns the current height including the active offset
-   *
-   * @return
-   */
-  public double getHeight() {
-    return height_ + height_offset_;
+  public void offSet(Translation3d t) {
+    current_translation = current_translation.plus(t);
+  }
+
+  public void resetOffsets() {
+    current_translation = base_translation;
   }
 
   /**
-   * Adjusts the height offset by the supplied increment
-   *
-   * @param offset
+   * @return the name of the target
    */
-  public void offsetHeight(double offset) {
-    height_offset_ += offset;
-  }
-
-  /**
-   * Returns the current stored angle offset
-   *
-   * @return
-   */
-  public double getHeightOffset() {
-    return height_offset_;
-  }
-
-  /** Reset the height offset to 0 */
-  public void resetHeightOffset() {
-    height_offset_ = 0;
-  }
-
-  // Angle Methods
-  /**
-   * Returns the current angle including the active offset
-   *
-   * @return target angle
-   */
-  public double getAngle() {
-    return angle_ + angle_offset_;
-  }
-
-  /**
-   * Adjusts the angle offset by the supplied increment
-   *
-   * @param offset
-   */
-  public void offsetAngle(double offset) {
-    angle_offset_ += offset;
-  }
-
-  /**
-   * Returns the current stored angle offset
-   *
-   * @return
-   */
-  public double getAngleOffset() {
-    return angle_offset_;
-  }
-
-  /** Resets the angle offset to 0 */
-  public void resetAngleOffset() {
-    angle_offset_ = 0;
-  }
-
-  /**
-   * Returns the control type associated with the target
-   *
-   * @return stored control type
-   */
-  public ControlType getControlType() {
-    return type_;
+  public String getName() {
+    return name_;
   }
 }

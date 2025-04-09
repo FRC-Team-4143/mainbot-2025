@@ -9,7 +9,6 @@ import frc.robot.subsystems.Claw;
 import frc.robot.subsystems.Claw.ClawMode;
 import frc.robot.subsystems.Claw.GamePiece;
 import frc.robot.subsystems.Elevator;
-import frc.robot.subsystems.Elevator.SpeedLimit;
 import frc.robot.subsystems.GameStateManager;
 import frc.robot.subsystems.GameStateManager.Column;
 import frc.robot.subsystems.GameStateManager.ReefScoringTarget;
@@ -27,7 +26,6 @@ public class AlgaeReefPickup extends Command {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    Elevator.getInstance().setSpeedLimit(SpeedLimit.CORAL);
     GameStateManager.getInstance().setRobotState(RobotState.TARGET_ACQUISITION);
     GameStateManager.getInstance().setScoringTarget(ReefScoringTarget.ALGAE, false);
     GameStateManager.getInstance().setScoringColum(Column.ALGAE, false);

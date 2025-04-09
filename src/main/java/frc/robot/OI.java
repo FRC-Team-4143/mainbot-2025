@@ -11,10 +11,13 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.commands.AlignWithTarget;
+import frc.robot.commands.CoralTractorBeam;
 import frc.robot.commands.ElevatorL1Target;
 import frc.robot.commands.ElevatorL2Target;
 import frc.robot.commands.ElevatorL3Target;
 import frc.robot.commands.ElevatorL4Target;
+import frc.robot.commands.GMSTargetLeft;
+import frc.robot.commands.GMSTargetRight;
 import frc.robot.commands.GamePieceEject;
 import frc.robot.commands.GamePieceLoad;
 import frc.robot.commands.OverrideFlush;
@@ -23,8 +26,6 @@ import frc.robot.subsystems.Claw;
 import frc.robot.subsystems.Climber;
 import frc.robot.subsystems.Elevator;
 import frc.robot.subsystems.Elevator.OffsetType;
-import frc.robot.subsystems.GameStateManager;
-import frc.robot.subsystems.GameStateManager.Column;
 import frc.robot.subsystems.PoseEstimator;
 import frc.robot.subsystems.SwerveDrivetrain;
 import frc.robot.subsystems.SwerveDrivetrain.DriveMode;
@@ -105,6 +106,8 @@ public abstract class OI {
             Commands.runOnce(() -> toggleIntakePreference())
                 .unless(Climber.getInstance()::lockOutControl));
 
+    driver_controller_.b().whileTrue(new CoralTractorBeam());
+
     // Swap Between Robot Centric and Field Centric
     driver_controller_
         .rightStick()
@@ -163,45 +166,35 @@ public abstract class OI {
                 .ignoringDisable(true));
 
     // Set GSM Target Column Left
-    operator_controller_
-        .leftBumper()
-        .onTrue(
-            Commands.runOnce(
-                    () -> GameStateManager.getInstance().setScoringColum(Column.LEFT, true))
-                .ignoringDisable(true));
+    operator_controller_.leftBumper().onTrue(new GMSTargetLeft().ignoringDisable(true));
 
     // Set GSM Target Column Right
-    operator_controller_
-        .rightBumper()
-        .onTrue(
-            Commands.runOnce(
-                    () -> GameStateManager.getInstance().setScoringColum(Column.RIGHT, true))
-                .ignoringDisable(true));
+    operator_controller_.rightBumper().onTrue(new GMSTargetRight().ignoringDisable(true));
 
     // Manual Adjust Elevator Setpoint Up
     operator_controller_
         .povUp()
         .onTrue(
-            Commands.runOnce(() -> Elevator.getInstance().setOffset(OffsetType.ELEVATOR_UP))
+            Commands.runOnce(() -> Elevator.getInstance().setOffset(OffsetType.UP))
                 .ignoringDisable(true));
 
     // Manual Adjust Elevator Setpoint Down
     operator_controller_
         .povDown()
         .onTrue(
-            Commands.runOnce(() -> Elevator.getInstance().setOffset(OffsetType.ELEVATOR_DOWN))
+            Commands.runOnce(() -> Elevator.getInstance().setOffset(OffsetType.DOWN))
                 .ignoringDisable(true));
     // Manual Adjust Arm Setpoint Counter Clockwise
     operator_controller_
         .povLeft()
         .onTrue(
-            Commands.runOnce(() -> Elevator.getInstance().setOffset(OffsetType.ARM_CCW))
+            Commands.runOnce(() -> Elevator.getInstance().setOffset(OffsetType.IN))
                 .ignoringDisable(true));
     // Manual Adjust Arm Setpoint Clockwise
     operator_controller_
         .povRight()
         .onTrue(
-            Commands.runOnce(() -> Elevator.getInstance().setOffset(OffsetType.ARM_CW))
+            Commands.runOnce(() -> Elevator.getInstance().setOffset(OffsetType.OUT))
                 .ignoringDisable(true));
 
     // Manual Override for loading

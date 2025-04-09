@@ -7,11 +7,14 @@ package frc.robot;
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.signals.GravityTypeValue;
 import com.ctre.phoenix6.signals.InvertedValue;
+import com.ctre.phoenix6.signals.SensorDirectionValue;
 import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Rotation3d;
+import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.math.util.Units;
@@ -196,12 +199,15 @@ public final class Constants {
 
     public static final double CENTER_OFFSET_X =
         Units.inchesToMeters(LOADER.getDoubleValue("drive", "com", "CENTER_OFFSET_X"));
+
+    public static final double FAILING_TO_REACH_TARGET_DEBOUNCE_TIME = 0.25;
+    public static final double FAILING_TO_REACH_TARGET_SPEEDS_TOLERANCE = 0.1;
   }
 
   public static final class ClawConstants {
     public static final double TIME_OF_FLIGHT_DIST = 50;
     public static final int WHEEL_MOTOR_ID = 11;
-    public static final double WHEEL_CORAL_SHOOT_SPEED = 0.3;
+    public static final double WHEEL_CORAL_SHOOT_SPEED = 0.6;
     public static final double WHEEL_CORAL_BLAST_SPEED = 0.6;
     public static final double WHEEL_ALGAE_SHOOT_SPEED = 0.5;
     public static final double WHEEL_ALGAE_BLAST_SPEED = 0.5;
@@ -211,7 +217,8 @@ public final class Constants {
     public static final double STATOR_CURRENT_LIMIT = 40;
     public static final String CORAL_COLOR = new Color(255, 255, 255).toHexString();
     public static final String ALGAE_COLOR = new Color(0, 255, 255).toHexString();
-    public static final InvertedValue WHEEL_MOTOR_INVERTED = InvertedValue.Clockwise_Positive;
+    public static final InvertedValue WHEEL_MOTOR_INVERTED =
+        InvertedValue.CounterClockwise_Positive;
     public static final double CORAL_IMP_OFFSET =
         Units.inchesToMeters(LOADER.getDoubleValue("imp", "coral_offset"));
     public static final double ALGAE_IMP_OFFSET =
@@ -256,17 +263,13 @@ public final class Constants {
         Units.inchesToMeters(1.751 * Math.PI)
             / LOADER.getDoubleValue("elevator", "ELEVATOR_GEAR_RATIO")
             * 2;
-    public static final double ELEVATOR_CRUISE_VELOCITY = 5.0 / ELEVATOR_ROTATIONS_TO_METERS;
-    public static final double ELEVATOR_ACCEL = 3.0 / ELEVATOR_ROTATIONS_TO_METERS;
-    public static final double ELEVATOR_EXPO_KV = 0.11733;
-    public static final double ELEVATOR_EXPO_KA = 0.0070285;
     public static final double ELEVATOR_ZERO_THRESHOLD = 0; // In m
     public static final double ELEVATOR_STATOR_CURRENT_LIMIT = 80.0;
     public static final double ELEVATOR_HEIGHT_PIVOT_MIN =
         Units.inchesToMeters(LOADER.getDoubleValue("elevator", "HEIGHT_PIVOT_MIN"));
     public static final double ELEVATOR_HEIGHT_PIVOT_MAX =
         Units.inchesToMeters(LOADER.getDoubleValue("elevator", "HEIGHT_PIVOT_MAX"))
-            - 0.1; // 0.1m of safety
+            - 0.05; // 0.05m of safety
     public static final double ELEVATOR_HEIGHT_PIVOT_SAFETY =
         ELEVATOR_HEIGHT_PIVOT_MIN + Units.inchesToMeters(6);
 
@@ -281,6 +284,9 @@ public final class Constants {
             .withKG(LOADER.getDoubleValue("elevator", "CONTROLLER_G"))
             .withGravityType(GravityTypeValue.Elevator_Static);
     public static final double ELEVATOR_SAFETY_BUMP = Units.inchesToMeters(2);
+
+    public static final double SUBDIVISION_PER_METER = 100;
+    public static final double SUBDIVISION_FOLLOW_DIST = Units.inchesToMeters(5);
   }
 
   public class ArmConstants {
@@ -288,20 +294,15 @@ public final class Constants {
     public static final int ARM_MOTOR_ID = 23;
     public static final int ARM_ENCODER_ID = 24;
     public static final double ARM_TARGET_THRESHOLD = 0.25; // In rads
-    public static final InvertedValue ARM_FOLLOWER_INVERSION =
-        InvertedValue.CounterClockwise_Positive;
-    public static final double CORAL_ARM_CRUISE_VELOCITY = 4;
-    public static final double CORAL_ARM_ACCELERATION = 2.5;
-    public static final double L4_ARM_ACCEL = 1.75;
-    public static final double ALGAE_ARM_CRUISE_VELOCITY = 4;
-    public static final double ALGAE_ARM_ACCELERATION = 0.65;
-    public static final double SAFETY_ARM_CRUISE_VELOCITY = 2;
-    public static final double SAFETY_ARM_ACCELERATION = 0.30;
+    public static final InvertedValue ARM_FOLLOWER_INVERSION = InvertedValue.Clockwise_Positive;
+    public static final SensorDirectionValue ABSOLUTE_ENCODER_INVERSION =
+        SensorDirectionValue.Clockwise_Positive;
     public static final double DANGER_ARM_ANGLE = Units.degreesToRadians(95);
     public static final double ARM_LENGTH =
-        Units.inchesToMeters(LOADER.getDoubleValue("arm", "LENGTH_PIVOT_TO_FUNNEL"));
+        Units.inchesToMeters(LOADER.getDoubleValue("arm", "LENGTH_PIVOT_TO_FUNNEL")); // 16.456 in
     public static final double ARM_WIDTH =
-        Units.inchesToMeters(LOADER.getDoubleValue("arm", "DEPTH_CORAL_POCKET"));
+        Units.inchesToMeters(LOADER.getDoubleValue("arm", "DEPTH_CORAL_POCKET")); // 0.053
+    // in
     // ((shaft sprocket / pivot sprocket) / gearbox) * rotations to radians ratio)
     public static final double SENSOR_TO_MECHANISM_RATIO = (1.0 / ((16.0 / 64.0) / 20.0));
     public static final double ARM_FORWARD_LIMIT = Units.radiansToRotations(30);
@@ -316,6 +317,11 @@ public final class Constants {
             .withKA(LOADER.getDoubleValue("arm", "CONTROLLER_A"))
             .withKG(LOADER.getDoubleValue("arm", "CONTROLLER_G"))
             .withGravityType(GravityTypeValue.Arm_Cosine);
+  }
+
+  public static final class IntakeConstants {
+    public static final double y_offset = Units.inchesToMeters(4.25);
+    public static final double width = Units.inchesToMeters(17);
   }
 
   public static final class PickupConstants {
@@ -337,5 +343,26 @@ public final class Constants {
 
   public class GameStateManagerConstants {
     public static final double REQUIRED_ROTATION_FOR_ELEVATOR = Units.degreesToRadians(45);
+    public static final double CORAL_BLOCKED_THRESHOLD = Units.inchesToMeters(6.5);
+  }
+
+  public class CoralDetectorConstants {
+    public static final Transform3d CAMERA_TRANSFORM =
+        new Transform3d(
+            Units.inchesToMeters(-8),
+            Units.inchesToMeters(6),
+            Units.inchesToMeters(28.25),
+            new Rotation3d(
+                Units.degreesToRadians(0),
+                Units.degreesToRadians(20),
+                Units.degreesToRadians(180 - 15)));
+    public static final double CORAL_HEIGHT_METERS = Units.inchesToMeters(4);
+    public static final double DETECTION_DISTANCE_LIMIT = 1.5;
+    public static final double DETECT_DEBOUNCE_TIME = 0.1;
+    public static final double CORAL_CLASS_ID = 1;
+
+    public static final double DISPLAY_Z_OFFSEET = Units.inchesToMeters(6);
+    public static final Rotation3d DISPLAY_ROTATION =
+        new Rotation3d(0, Units.degreesToRadians(90), 0);
   }
 }

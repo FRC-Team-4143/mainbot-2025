@@ -9,7 +9,6 @@ import frc.lib.ElevatorTargets.TargetType;
 import frc.robot.subsystems.Claw;
 import frc.robot.subsystems.Claw.GamePiece;
 import frc.robot.subsystems.Elevator;
-import frc.robot.subsystems.Elevator.SpeedLimit;
 
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
 public class ManualElevatorOverride extends Command {
@@ -37,9 +36,7 @@ public class ManualElevatorOverride extends Command {
     lastMode = Claw.getInstance().getGamePieceMode();
 
     if (Claw.getInstance().isCoralMode()) {
-      Elevator.getInstance().setSpeedLimit(SpeedLimit.CORAL);
     } else {
-      Elevator.getInstance().setSpeedLimit(SpeedLimit.ALGAE);
       Elevator.getInstance().setTarget(TargetType.ALGAE_PROCESSOR);
     }
   }
@@ -49,9 +46,7 @@ public class ManualElevatorOverride extends Command {
   public void execute() {
     if (lastMode != Claw.getInstance().getGamePieceMode()) {
       if (Claw.getInstance().isCoralMode()) {
-        Elevator.getInstance().setSpeedLimit(SpeedLimit.CORAL);
       } else {
-        Elevator.getInstance().setSpeedLimit(SpeedLimit.ALGAE);
         Elevator.getInstance().setTarget(TargetType.ALGAE_PROCESSOR);
       }
     }

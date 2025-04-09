@@ -1,89 +1,105 @@
 package frc.lib;
 
-import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Translation3d;
+import edu.wpi.first.wpilibj.DataLogManager;
 
 public class ElevatorKinematics {
-  private double arm_length_ = 0;
-  private double arm_width_ = 0;
+  private double virtual_arm_length_ = 0;
+  private double virtual_arm_angle_ = 0;
+  private double reachable_max_ = 0;
+  private double reachable_min_ = 0;
 
   /**
    * Elevator Kinematic's Constructor
    *
    * @param arm_length The Length of the robot's arm in meters
    */
-  public ElevatorKinematics(double arm_length, double arm_width_) {
-    arm_length_ = arm_length;
+  public ElevatorKinematics(
+      double arm_length, double arm_width, double elevator_max, double elevator_min) {
+    virtual_arm_length_ = Math.sqrt(Math.pow(arm_length, 2) + Math.pow(arm_width, 2));
+    virtual_arm_angle_ = Math.tan(arm_width / arm_length);
+    reachable_max_ = elevator_max + virtual_arm_length_;
+    reachable_min_ = elevator_min - virtual_arm_length_;
+    DataLogManager.log(
+        "Max Z: "
+            + reachable_max_
+            + " | Min Z: "
+            + reachable_min_
+            + " | Max X: "
+            + virtual_arm_length_);
   }
 
-  /**
-   * Calculates and returns the z position needed for the wanted z-position MUST HAVE ANGLE SET
-   * CORRECT FOR HEIGHT TO BE ACCURATE
-   *
-   * @param desiredZ the wanted z position of the Claw
-   * @param desiredAngle the current angle of the pivot arm
-   * @return the needed z for the wanted z position of the elevator
-   */
-  public double desiredElevatorZ(double desiredZ, Rotation2d desiredAngle) {
-    return desiredZ
-        - calZOffset(
-            desiredAngle.rotateBy(
-                Rotation2d.fromRadians(-(Math.cos(desiredAngle.getRadians()) * arm_width_))));
-  }
-
-  public double desiredElevatorZ(double desiredZ, double desiredAngle) {
-    return desiredZ - calZOffset(desiredAngle + (-(Math.cos(desiredAngle) * arm_width_)));
-  }
-
-  /**
-   * Calculates and returns the z position needed for the wanted z-position MUST HAVE ANGLE SET
-   * CORRECT FOR HEIGHT TO BE ACCURATE
-   *
-   * @param desiredZ the wanted z position of the Claw
-   * @param desiredAngle the current angle of the pivot arm
-   * @return the needed z for the wanted z position of the elevator
-   */
-  public double effectorZ(double current_z, Rotation2d current_angle) {
-    return current_z + calZOffset(current_angle);
-  }
-
-  public double effectorZ(double current_z, double current_angle) {
-    return current_z + calZOffset(current_angle);
-  }
-
-  /**
-   * Calculates and returns the pivot arm angle needed for the wanted x-position of the claw
-   *
-   * @param desiredX The wanted x position of the Claw
-   * @param isRightSide True for the angle to go right and False for left
-   * @return the joint angle needed for the desired x position
-   */
-  public double desiredJointAngle(double desiredX) {
-    if (desiredX > arm_length_) {
-      desiredX = arm_length_;
+  public JointSpaceSolution translationToJointSpace(Translation3d t) {
+    double x = t.getX();
+    if (Math.abs(x) > virtual_arm_length_) {
+      DataLogManager.log("WARNING: Inverse Kinematics X Value : " + x + "| Out of Reach");
+      x = Math.copySign(virtual_arm_length_, x);
     }
-    if (desiredX <= 0) {
-      return calAngleWithX(desiredX);
+    double z = t.getZ();
+    if (z > reachable_max_) {
+      // DataLogManager.log(
+      //     "WARNING: Inverse Kinematics Z Value : "
+      //         + z
+      //         + " | Out of Reach ("
+      //         + reachable_min_
+      //         + ")");
+      z = reachable_max_;
     }
-    return calAngleWithX(desiredX);
+    if (z < reachable_min_) {
+      // DataLogManager.log(
+      //     "WARNING: Inverse Kinematics Z Value : "
+      //         + z
+      //         + " | Out of Reach ("
+      //         + reachable_min_
+      //         + ")");
+      z = reachable_min_;
+    }
+
+    double angle = -Math.acos(x / virtual_arm_length_);
+    double height = -(Math.sin(angle) * virtual_arm_length_) + z;
+    return new JointSpaceSolution(height, angle);
   }
 
-  public double calXOffset(double angle) {
-    return arm_length_ * Math.cos(angle);
+  public Translation3d jointSpaceToTranslation(JointSpaceSolution j) {
+    double x = Math.cos(j.getPivotAngle()) * virtual_arm_length_;
+    double z = j.getPivotHeight() + (Math.sin(j.getPivotAngle()) * virtual_arm_length_);
+    if (Math.abs(x) > virtual_arm_length_)
+      DataLogManager.log("WARNING: Forward Kinematics X Value : Out of Reach");
+    if (z > reachable_max_)
+      DataLogManager.log("WARNING: Forward Kinematics Z Value : Out of Reach (+)");
+    if (z < reachable_min_)
+      DataLogManager.log("WARNING: Forward Kinematics Z Value : Out of Reach (-)");
+    return new Translation3d(x, 0, z);
   }
 
-  public double calZOffset(Rotation2d angle) {
-    return arm_length_ * Math.sin(angle.getRadians());
+  public Translation3d jointSpaceToTranslation(double pivot_height, double pivot_angle) {
+    return jointSpaceToTranslation(new JointSpaceSolution(pivot_height, pivot_angle));
   }
 
-  public double calZOffset(double angle) {
-    return arm_length_ * Math.sin(angle);
-  }
+  public static class JointSpaceSolution {
+    private double pivot_height_ = 0;
+    private double pivot_angle_ = 0;
 
-  public double calAngleWithX(double X) {
-    return Math.acos(X / arm_length_);
-  }
+    public JointSpaceSolution(double pivot_height, double pivot_angle) {
+      pivot_height_ = pivot_height;
+      pivot_angle_ = pivot_angle;
+    }
 
-  public double calAngleWithZ(double Z) {
-    return Math.asin(Z / arm_length_);
+    public String toString() {
+      return "pivot_height: " + pivot_height_ + " | pivot_angle: " + pivot_angle_;
+    }
+
+    public double getPivotHeight() {
+      return pivot_height_;
+    }
+
+    public double getPivotAngle() {
+      return pivot_angle_;
+    }
+
+    public void update(double height, double angle) {
+      pivot_height_ = height;
+      pivot_angle_ = angle;
+    }
   }
 }

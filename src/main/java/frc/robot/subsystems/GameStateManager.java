@@ -1,26 +1,32 @@
 package frc.robot.subsystems;
 
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.networktables.NetworkTableInstance;
+import edu.wpi.first.networktables.StructArrayPublisher;
 import edu.wpi.first.networktables.StructPublisher;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.lib.ElevatorTargets.TargetType;
 import frc.lib.FieldRegions;
 import frc.lib.ScoringPoses;
 import frc.mw_lib.subsystem.Subsystem;
 import frc.mw_lib.util.Util;
 import frc.robot.Constants;
-import frc.robot.subsystems.Elevator.SpeedLimit;
+import frc.robot.commands.CoralEject;
+import frc.robot.subsystems.Claw.ClawMode;
 import java.util.Optional;
 import monologue.Annotations.Log;
 import monologue.Logged;
 
 public class GameStateManager extends Subsystem {
 
-  private StructPublisher<Pose2d> reef_target_publisher =
-      NetworkTableInstance.getDefault().getStructTopic("ReefTarget", Pose2d.struct).publish();
+  private StructPublisher<Pose2d> reef_target_pub_;
+  private StructArrayPublisher<Pose3d> target_stages_pub_;
+  private StructPublisher<Pose3d> target_arm_pub_;
 
   // Singleton pattern
   private static GameStateManager instance_ = null;
@@ -47,7 +53,9 @@ public class GameStateManager extends Subsystem {
   public enum ReefScoringTarget {
     L1,
     L2,
+    L2_FAR,
     L3,
+    L3_FAR,
     L4,
     ALGAE,
     TURTLE,
@@ -63,6 +71,20 @@ public class GameStateManager extends Subsystem {
 
   private GameStateManager() {
     io_ = new GameStateManagerPeriodicIo();
+
+    // Mechanism Setup
+    reef_target_pub_ =
+        NetworkTableInstance.getDefault()
+            .getStructTopic("GameStateManager/Reef Target", Pose2d.struct)
+            .publish();
+    target_stages_pub_ =
+        NetworkTableInstance.getDefault()
+            .getStructArrayTopic("GameStateManager/Elevator Stages", Pose3d.struct)
+            .publish();
+    target_arm_pub_ =
+        NetworkTableInstance.getDefault()
+            .getStructTopic("GameStateManager/Arm", Pose3d.struct)
+            .publish();
   }
 
   /**
@@ -87,28 +109,32 @@ public class GameStateManager extends Subsystem {
    */
   @Override
   public void updateLogic(double timestamp) {
+    io_.reef_target_ = reefPose(io_.target_column_);
     switch (io_.robot_state_) {
       case TARGET_ACQUISITION:
-        io_.reef_target = reefPose(io_.target_column);
-        if (io_.reef_target.isPresent()) {
-          SwerveDrivetrain.getInstance().setTargetPose(io_.reef_target.get());
+        if (io_.reef_target_.isPresent()) {
+          SwerveDrivetrain.getInstance().setTargetPose(io_.reef_target_.get());
           if (FieldRegions.REEF_ENTER.contains(PoseEstimator.getInstance().getRobotPose())) {
             io_.robot_state_ = RobotState.APPROACHING_TARGET;
           }
         }
         break;
       case APPROACHING_TARGET:
+        updateCoralBlockLatch();
+        SwerveDrivetrain.getInstance().setTargetPose(io_.reef_target_.get());
         if (Util.epislonEquals(
             PoseEstimator.getInstance().getRobotPose().getRotation(),
-            io_.reef_target.get().getRotation(),
-            Constants.GameStateManagerConstants
-                .REQUIRED_ROTATION_FOR_ELEVATOR)) { // move elevator once within rotation
-          elevatorTargetSwitch();
+            io_.reef_target_.get().getRotation(),
+            Constants.GameStateManagerConstants.REQUIRED_ROTATION_FOR_ELEVATOR)) {
+          // move elevator once within rotation threshold
+          Elevator.getInstance().setTarget(elevatorTargetSwitch());
         }
         if (SwerveDrivetrain.getInstance().atTractorBeamPose()
             && Elevator.getInstance().isElevatorAndArmAtTarget()) {
           // Once at final target, hand off control
           SwerveDrivetrain.getInstance().restoreDefaultDriveMode();
+          CommandScheduler.getInstance()
+              .schedule(new WaitCommand(0.25).beforeStarting(new CoralEject().withTimeout(0.5)));
           io_.robot_state_ = RobotState.SCORING;
         }
         break;
@@ -121,13 +147,10 @@ public class GameStateManager extends Subsystem {
       case END:
         // clear saved vars and reset drive mode
         SwerveDrivetrain.getInstance().restoreDefaultDriveMode();
-        if (Claw.getInstance().isCoralMode()) {
-          Elevator.getInstance().setSpeedLimit(SpeedLimit.CORAL);
-        } else {
-          Elevator.getInstance().setSpeedLimit(SpeedLimit.ALGAE);
-        }
-        io_.robot_state_ = RobotState.TELEOP_CONTROL;
+        Claw.getInstance().setClawMode(ClawMode.IDLE);
         Claw.getInstance().disableBlastMode();
+        io_.coral_block_latch = false;
+        io_.robot_state_ = RobotState.TELEOP_CONTROL;
         break;
       case TELEOP_CONTROL:
         // normal control
@@ -152,26 +175,37 @@ public class GameStateManager extends Subsystem {
    */
   @Override
   public void outputTelemetry(double timestamp) {
+    SmartDashboard.putBoolean("Subsystems/GameStateManager/isRunning", isRunning());
     SmartDashboard.putString(
         "Subsystems/GameStateManager/Robot State", io_.robot_state_.toString());
     SmartDashboard.putString(
-        "Subsystems/GameStateManager/Target Colum", io_.target_column.toString());
+        "Subsystems/GameStateManager/Target Colum", io_.target_column_.toString());
     SmartDashboard.putString(
-        "Subsystems/GameStateManager/Saved Colum", io_.saved_target_column.toString());
+        "Subsystems/GameStateManager/Saved Colum", io_.saved_target_column_.toString());
     SmartDashboard.putString(
-        "Subsystems/GameStateManager/Target Level", io_.scoring_target.toString());
+        "Subsystems/GameStateManager/Target Level", io_.scoring_target_.toString());
     SmartDashboard.putString(
-        "Subsystems/GameStateManager/Saved Target Level", io_.saved_scoring_target.toString());
+        "Subsystems/GameStateManager/Saved Target Level", io_.saved_scoring_target_.toString());
+    SmartDashboard.putBoolean("Subsystems/GameStateManager/Ready to Score", isReadyToScore());
     SmartDashboard.putBoolean(
-        "Subsystems/GameStateManager/Ready to Score",
-        (SwerveDrivetrain.getInstance().atTractorBeamPose()
-            && Elevator.getInstance().isElevatorAndArmAtTarget()
-            && io_.robot_state_ == RobotState.SCORING));
-    if (io_.reef_target.isPresent()) {
-      reef_target_publisher.set(io_.reef_target.get());
-    } else {
-      reef_target_publisher.set(new Pose2d());
+        "Subsystems/GameStateManager/coral_block_latch", io_.coral_block_latch);
+
+    if (io_.reef_target_.isPresent()) {
+      reef_target_pub_.set(io_.reef_target_.get());
+      Elevator.getInstance()
+          .updateMechanism(
+              target_stages_pub_,
+              target_arm_pub_,
+              Elevator.getInstance()
+                  .getElevatorKinematics()
+                  .translationToJointSpace(elevatorTargetSwitch().getTarget().getTranslation()));
     }
+  }
+
+  public boolean isReadyToScore() {
+    return SwerveDrivetrain.getInstance().atTractorBeamPose()
+        && Elevator.getInstance().isElevatorAndArmAtTarget()
+        && io_.robot_state_ == RobotState.SCORING;
   }
 
   /**
@@ -179,9 +213,9 @@ public class GameStateManager extends Subsystem {
    * @param save weather or not to save the target
    */
   public void setScoringColum(Column col, boolean save) {
-    io_.target_column = col;
+    io_.target_column_ = col;
     if (save) {
-      io_.saved_target_column = col;
+      io_.saved_target_column_ = col;
     }
   }
 
@@ -190,9 +224,9 @@ public class GameStateManager extends Subsystem {
    * @param save weather or not to save the target
    */
   public void setScoringTarget(ReefScoringTarget target, boolean save) {
-    io_.scoring_target = target;
+    io_.scoring_target_ = target;
     if (save) {
-      io_.saved_scoring_target = target;
+      io_.saved_scoring_target_ = target;
     }
   }
 
@@ -206,11 +240,11 @@ public class GameStateManager extends Subsystem {
   }
 
   public ReefScoringTarget getSavedScoringTarget() {
-    return io_.saved_scoring_target;
+    return io_.saved_scoring_target_;
   }
 
   public Column getSavedScoringColum() {
-    return io_.saved_target_column;
+    return io_.saved_target_column_;
   }
 
   /**
@@ -220,46 +254,58 @@ public class GameStateManager extends Subsystem {
    * @return target pose
    */
   public Optional<Pose2d> reefPose(Column column) {
+    Pose2d newPose = Pose2d.kZero;
     for (int i = 0; i < FieldRegions.REEF_REGIONS.length; i++) {
       if (FieldRegions.REEF_REGIONS[i].contains(PoseEstimator.getInstance().getRobotPose())) {
-        if (io_.scoring_target == ReefScoringTarget.L1) {
-          return Optional.of(
+        if (io_.scoring_target_ == ReefScoringTarget.L1) {
+          newPose =
               FieldRegions.REGION_POSE_TABLE
                   .get(FieldRegions.REEF_REGIONS[i].getName())
-                  .transformBy(ScoringPoses.ALGAE_ALIGN_OFFSET));
-          // TODO: Make Coral Align Offset
+                  .transformBy(ScoringPoses.ALGAE_ALIGN_OFFSET);
         }
         if (column == Column.CENTER) {
-          return Optional.of(
-              FieldRegions.REGION_POSE_TABLE.get(FieldRegions.REEF_REGIONS[i].getName()));
+          newPose = FieldRegions.REGION_POSE_TABLE.get(FieldRegions.REEF_REGIONS[i].getName());
         }
         if (column == Column.LEFT) {
-          return Optional.of(
+          newPose =
               FieldRegions.REGION_POSE_TABLE
                   .get(FieldRegions.REEF_REGIONS[i].getName())
-                  .transformBy(ScoringPoses.LEFT_COLUMN_OFFSET));
+                  .transformBy(ScoringPoses.LEFT_COLUMN_OFFSET);
         }
         if (column == Column.RIGHT) {
-          return Optional.of(
+          newPose =
               FieldRegions.REGION_POSE_TABLE
                   .get(FieldRegions.REEF_REGIONS[i].getName())
-                  .transformBy(ScoringPoses.RIGHT_COLUMN_OFFSET));
+                  .transformBy(ScoringPoses.RIGHT_COLUMN_OFFSET);
         }
         if (column == Column.ALGAE) {
           io_.algae_level_high = ((i % 2) == 0); // this line prevents converting this method to use
-          return Optional.of(
+          newPose =
               FieldRegions.REGION_POSE_TABLE
                   .get(FieldRegions.REEF_REGIONS[i].getName())
-                  .transformBy(ScoringPoses.ALGAE_ALIGN_OFFSET));
+                  .transformBy(ScoringPoses.ALGAE_ALIGN_OFFSET);
         }
+        break;
       }
+    }
+
+    if (io_.scoring_target_ == ReefScoringTarget.L2 && io_.coral_block_latch) {
+      newPose = io_.reef_target_.get().transformBy(ScoringPoses.CORAL_OFFSET);
+      io_.scoring_target_ = ReefScoringTarget.L2_FAR;
+    } else if (io_.scoring_target_ == ReefScoringTarget.L3 && io_.coral_block_latch) {
+      newPose = io_.reef_target_.get().transformBy(ScoringPoses.CORAL_OFFSET);
+      io_.scoring_target_ = ReefScoringTarget.L3_FAR;
+    }
+
+    if (newPose != Pose2d.kZero) {
+      return Optional.of(newPose);
     }
     return Optional.empty();
   }
 
   public void setRobotState(RobotState state) {
     // sets the current state of the robot (should really only set to
-    // TARGET_ACQUISITION to preserve
+    // TARGET_ACQUISITION or END to preserve
     // structure of the switch case)
     io_.robot_state_ = state;
   }
@@ -268,32 +314,44 @@ public class GameStateManager extends Subsystem {
     return io_.robot_state_;
   }
 
-  public void elevatorTargetSwitch() {
-    switch (io_.scoring_target) {
+  public TargetType elevatorTargetSwitch() {
+    switch (io_.scoring_target_) {
       case L1:
-        Elevator.getInstance().setTarget(TargetType.L1);
-        break;
+        return TargetType.L1;
       case L2:
-        Elevator.getInstance().setTarget(TargetType.L2);
-        break;
+        return TargetType.L2;
+      case L2_FAR:
+        return TargetType.L2_FAR;
       case L3:
-        Elevator.getInstance().setTarget(TargetType.L3);
-        break;
+        return TargetType.L3;
+      case L3_FAR:
+        return TargetType.L3_FAR;
       case L4:
-        Elevator.getInstance().setTarget(TargetType.L4);
-        break;
+        return TargetType.L4;
       case ALGAE:
         if (io_.algae_level_high) {
-          Elevator.getInstance().setTarget(TargetType.ALGAE_HIGH);
+          return TargetType.ALGAE_HIGH;
         } else {
-          Elevator.getInstance().setTarget(TargetType.ALGAE_LOW);
+          return TargetType.ALGAE_LOW;
         }
-        break;
       case TELEOP_CONTROL:
       case TURTLE:
       default:
-        break;
+        return (Claw.getInstance().isCoralMode()) ? TargetType.CORAL_STOW : TargetType.ALGAE_STOW;
     }
+  }
+
+  public void updateCoralBlockLatch() {
+    if ((SwerveDrivetrain.getInstance().getFailingToReachTarget()
+            && SwerveDrivetrain.getInstance().getTractorBeamError()
+                <= Constants.GameStateManagerConstants.CORAL_BLOCKED_THRESHOLD)
+        || io_.coral_block_latch) {
+      io_.coral_block_latch = true;
+    }
+  }
+
+  public boolean isRunning() {
+    return !(io_.robot_state_ == RobotState.TELEOP_CONTROL || io_.robot_state_ == RobotState.END);
   }
 
   /**
@@ -302,12 +360,13 @@ public class GameStateManager extends Subsystem {
    * sensors should be read.
    */
   public class GameStateManagerPeriodicIo implements Logged {
-    @Log.File public ReefScoringTarget scoring_target = ReefScoringTarget.TURTLE;
-    @Log.File public ReefScoringTarget saved_scoring_target = ReefScoringTarget.L2;
+    @Log.File public ReefScoringTarget scoring_target_ = ReefScoringTarget.TURTLE;
+    @Log.File public ReefScoringTarget saved_scoring_target_ = ReefScoringTarget.L2;
     @Log.File public RobotState robot_state_ = RobotState.TELEOP_CONTROL;
-    @Log.File public Optional<Pose2d> reef_target = Optional.empty();
-    @Log.File public Column target_column = Column.LEFT;
-    @Log.File public Column saved_target_column = Column.LEFT;
+    @Log.File public Optional<Pose2d> reef_target_ = Optional.empty();
+    @Log.File public Column target_column_ = Column.LEFT;
+    @Log.File public Column saved_target_column_ = Column.LEFT;
+    @Log.File public boolean coral_block_latch = false;
 
     @Log.File
     public boolean algae_level_high = false; // false is low level and true is the higher level

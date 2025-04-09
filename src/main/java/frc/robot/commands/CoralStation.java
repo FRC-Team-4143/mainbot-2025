@@ -12,7 +12,6 @@ import frc.robot.subsystems.Claw;
 import frc.robot.subsystems.Claw.ClawMode;
 import frc.robot.subsystems.Claw.GamePiece;
 import frc.robot.subsystems.Elevator;
-import frc.robot.subsystems.Elevator.SpeedLimit;
 import frc.robot.subsystems.Pickup;
 import frc.robot.subsystems.Pickup.PickupMode;
 import frc.robot.subsystems.PoseEstimator;
@@ -34,7 +33,6 @@ public class CoralStation extends LazyCommand {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    Elevator.getInstance().setSpeedLimit(SpeedLimit.CORAL);
     Claw.getInstance().setGamePiece(GamePiece.CORAL);
     Claw.getInstance().setClawMode(ClawMode.LOAD);
     this.timerReset();

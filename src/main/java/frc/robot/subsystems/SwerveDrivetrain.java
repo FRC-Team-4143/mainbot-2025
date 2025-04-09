@@ -13,6 +13,8 @@ import com.ctre.phoenix6.BaseStatusSignal;
 import com.ctre.phoenix6.hardware.Pigeon2;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.math.filter.Debouncer;
+import edu.wpi.first.math.filter.Debouncer.DebounceType;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
@@ -138,6 +140,8 @@ public class SwerveDrivetrain extends Subsystem {
   private final PIDController y_pose_controller_;
   private final PIDController heading_pose_controller_;
 
+  private Debouncer stallingDebouncer;
+
   /**
    * Constructs a SwerveDrivetrain using the specified constants.
    *
@@ -147,6 +151,12 @@ public class SwerveDrivetrain extends Subsystem {
    * @param modules Constants for each specific module
    */
   public SwerveDrivetrain(SwerveModuleConstants... modules) {
+
+    // make a debouncer
+    stallingDebouncer =
+        new Debouncer(
+            Constants.DrivetrainConstants.FAILING_TO_REACH_TARGET_DEBOUNCE_TIME,
+            DebounceType.kRising);
 
     // make new io instance
     io_ = new SwerveDrivetrainPeriodicIo();
@@ -315,6 +325,12 @@ public class SwerveDrivetrain extends Subsystem {
 
   @Override
   public synchronized void updateLogic(double timestamp) {
+    io_.failing_to_reach_target =
+        stallingDebouncer.calculate(
+            !Util.epislonEquals(
+                io_.current_chassis_speeds_,
+                io_.requested_chassis_speeds_,
+                Constants.DrivetrainConstants.FAILING_TO_REACH_TARGET_SPEEDS_TOLERANCE));
     if (OI.use_vision.getAsBoolean() == true) {
       request_parameters_.currentPose = io_.current_pose_;
     } else {
@@ -493,7 +509,8 @@ public class SwerveDrivetrain extends Subsystem {
     requested_chassis_speeds_pub_.set(io_.requested_chassis_speeds_);
 
     SmartDashboard.putString("Subsystems/Swerve/Mode", io_.drive_mode_.toString());
-
+    SmartDashboard.putBoolean(
+        "Subsystems/Swerve/FailingToReachTarget", io_.failing_to_reach_target);
     SmartDashboard.putNumber(
         "Subsystems/Swerve/Controller POV", io_.joystick_pov.orElse(new Rotation2d()).getDegrees());
     SmartDashboard.putString(
@@ -514,6 +531,9 @@ public class SwerveDrivetrain extends Subsystem {
         "Subsystems/Swerve/BR Encoder",
         Units.rotationsToDegrees(swerve_modules_[3].getEncoderValue()));
     SmartDashboard.putNumber("Subsystems/Swerve/Active Max Speed", io_.active_max_speed);
+    SmartDashboard.putBoolean(
+        "Subsystems/Swerve/Failing To Reach Target", getFailingToReachTarget());
+    SmartDashboard.putNumber("Subsystems/Swerve/Tractor Beam Error", getTractorBeamError());
   }
 
   public Command applyRequest(Supplier<SwerveRequest> requestSupplier) {
@@ -685,6 +705,16 @@ public class SwerveDrivetrain extends Subsystem {
     io_.active_max_speed = DrivetrainConstants.MAX_DRIVE_SPEED * preset.speed_limit;
   }
 
+  public boolean getFailingToReachTarget() {
+    return io_.failing_to_reach_target;
+  }
+
+  public double getTractorBeamError() {
+    double yError = Math.abs(y_pose_controller_.getError());
+    double xError = Math.abs(x_pose_controller_.getError());
+    return Math.sqrt(Math.pow(xError, 2) + Math.pow(yError, 2));
+  }
+
   /**
    * Plain-Old-Data class holding the state of the swerve drivetrain. This encapsulates most data
    * that is relevant for telemetry or decision-making from the Swerve Drive.
@@ -707,6 +737,7 @@ public class SwerveDrivetrain extends Subsystem {
     @Log.File public double tractor_beam_scaling_factor_ = 0.0;
     @Log.File public Pose2d current_pose_ = new Pose2d();
     @Log.File public Pose2d target_pose_ = new Pose2d();
+    @Log.File public boolean failing_to_reach_target = false;
 
     @Log.File
     public TightRope tight_rope_ = new TightRope(new Pose2d(), new Pose2d(), "Default Drivetrain");
