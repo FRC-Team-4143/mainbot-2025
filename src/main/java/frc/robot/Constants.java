@@ -13,6 +13,7 @@ import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.math.util.Units;
@@ -316,6 +317,11 @@ public final class Constants {
             .withGravityType(GravityTypeValue.Arm_Cosine);
   }
 
+  public static final class IntakeConstants {
+    public static final double y_offset = Units.inchesToMeters(4.25);
+    public static final double width = Units.inchesToMeters(17);
+  }
+
   public static final class PickupConstants {
     public static final int TIME_OF_FLIGHT_ID = 3;
     public static final int INTAKE_ID = 41;
@@ -336,5 +342,13 @@ public final class Constants {
   public class GameStateManagerConstants {
     public static final double REQUIRED_ROTATION_FOR_ELEVATOR = Units.degreesToRadians(45);
     public static final double CORAL_BLOCKED_THRESHOLD = Units.inchesToMeters(6.5);
+  }
+
+  public class CoralDetectorConstants {
+    public static final Transform3d CAMERA_TRANSFORM = new Transform3d();
+    public static final double CORAL_HEIGHT_METERS = Units.inchesToMeters(2.25);
+    public static final double DETECTION_DISTANCE_LIMIT = 1.5;
+    public static final double DETECT_DEBOUNCE_TIME = 0.1;
+    public static final double CORAL_CLASS_ID = 1;
   }
 }
