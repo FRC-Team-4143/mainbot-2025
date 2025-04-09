@@ -114,7 +114,7 @@ public class GameStateManager extends Subsystem {
       case TARGET_ACQUISITION:
         if (io_.reef_target_.isPresent()) {
           SwerveDrivetrain.getInstance().setTargetPose(io_.reef_target_.get());
-          if (FieldRegions.REEF_ENTER.contains(PoseEstimator.getInstance().getRobotPose())) {
+          if (FieldRegions.REEF_ENTER_REGION.contains(PoseEstimator.getInstance().getRobotPose())) {
             io_.robot_state_ = RobotState.APPROACHING_TARGET;
           }
         }
@@ -146,7 +146,7 @@ public class GameStateManager extends Subsystem {
         }
         break;
       case SCORING:
-        if (!FieldRegions.REEF_EXIT.contains(PoseEstimator.getInstance().getRobotPose())) {
+        if (!FieldRegions.REEF_EXIT_REGION.contains(PoseEstimator.getInstance().getRobotPose())) {
           // wait until you leave the exit Circle
           io_.robot_state_ = RobotState.END;
         }
@@ -264,34 +264,34 @@ public class GameStateManager extends Subsystem {
    */
   public Optional<Pose2d> reefPose(Column column) {
     Pose2d newPose = Pose2d.kZero;
-    for (int i = 0; i < FieldRegions.REEF_REGIONS.length; i++) {
-      if (FieldRegions.REEF_REGIONS[i].contains(PoseEstimator.getInstance().getRobotPose())) {
+    for (int i = 0; i < FieldRegions.REEF_REGIONS.size(); i++) {
+      if (FieldRegions.REEF_REGIONS.get(i).contains(PoseEstimator.getInstance().getRobotPose())) {
         if (io_.scoring_target_ == ReefScoringTarget.L1) {
           newPose =
               FieldRegions.REGION_POSE_TABLE
-                  .get(FieldRegions.REEF_REGIONS[i].getName())
+                  .get(FieldRegions.REEF_REGIONS.get(i).getName())
                   .transformBy(ScoringPoses.ALGAE_ALIGN_OFFSET);
         }
         if (column == Column.CENTER) {
-          newPose = FieldRegions.REGION_POSE_TABLE.get(FieldRegions.REEF_REGIONS[i].getName());
+          newPose = FieldRegions.REGION_POSE_TABLE.get(FieldRegions.REEF_REGIONS.get(i).getName());
         }
         if (column == Column.LEFT) {
           newPose =
               FieldRegions.REGION_POSE_TABLE
-                  .get(FieldRegions.REEF_REGIONS[i].getName())
+                  .get(FieldRegions.REEF_REGIONS.get(i).getName())
                   .transformBy(ScoringPoses.LEFT_COLUMN_OFFSET);
         }
         if (column == Column.RIGHT) {
           newPose =
               FieldRegions.REGION_POSE_TABLE
-                  .get(FieldRegions.REEF_REGIONS[i].getName())
+                  .get(FieldRegions.REEF_REGIONS.get(i).getName())
                   .transformBy(ScoringPoses.RIGHT_COLUMN_OFFSET);
         }
         if (column == Column.ALGAE) {
           io_.algae_level_high = ((i % 2) == 0); // this line prevents converting this method to use
           newPose =
               FieldRegions.REGION_POSE_TABLE
-                  .get(FieldRegions.REEF_REGIONS[i].getName())
+                  .get(FieldRegions.REEF_REGIONS.get(i).getName())
                   .transformBy(ScoringPoses.ALGAE_ALIGN_OFFSET);
         }
         break;

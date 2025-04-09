@@ -16,6 +16,4 @@ public interface Region {
   public String getName();
 
   public void constructRegion();
-
-  public void allianceFlip();
 }
