@@ -89,7 +89,7 @@
     "elevator": {
         "CONTROLLER_P": 4.0,
         "CONTROLLER_I": 0.0,
-        "CONTROLLER_D": 0.08,
+        "CONTROLLER_D": 0.15,
         "CONTROLLER_S": 0.06766,
         "CONTROLLER_V": 0.11733,
         "CONTROLLER_A": 0.0070285,
@@ -101,7 +101,7 @@
     "arm": {
         "CONTROLLER_P": 80.0,
         "CONTROLLER_I": 0.0,
-        "CONTROLLER_D": 0.0,
+        "CONTROLLER_D": 4.0,
         "CONTROLLER_S": 0.024495,
         "CONTROLLER_V": 8.778,
         "CONTROLLER_A": 0.25148,

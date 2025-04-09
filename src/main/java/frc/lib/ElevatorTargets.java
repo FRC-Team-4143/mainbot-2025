@@ -29,12 +29,8 @@ public class ElevatorTargets {
                 0,
                 FieldConstants.ReefHeight.L3.HEIGHT + BRANCH_HEIGHT_BUMP),
             "L3"),
-        Arrays.asList(
-            new Translation3d(
-                IN_PERIMETER_X, 0, FieldConstants.ReefHeight.L3.HEIGHT + BRANCH_HEIGHT_BUMP)),
-        Arrays.asList(
-            new Translation3d(
-                IN_PERIMETER_X, 0, FieldConstants.ReefHeight.L3.HEIGHT + BRANCH_HEIGHT_BUMP))),
+        Arrays.asList(new Translation3d(IN_PERIMETER_X, 0, FieldConstants.ReefHeight.L3.HEIGHT)),
+        Arrays.asList(new Translation3d(IN_PERIMETER_X, 0, FieldConstants.ReefHeight.L3.HEIGHT))),
     L3_FAR(
         new TargetData(L3.getTarget().getTranslation(), "L3_FAR"),
         Arrays.asList(),
@@ -46,12 +42,8 @@ public class ElevatorTargets {
                 0,
                 FieldConstants.ReefHeight.L2.HEIGHT + BRANCH_HEIGHT_BUMP),
             "L2"),
-        Arrays.asList(
-            new Translation3d(
-                IN_PERIMETER_X, 0, FieldConstants.ReefHeight.L2.HEIGHT + BRANCH_HEIGHT_BUMP)),
-        Arrays.asList(
-            new Translation3d(
-                IN_PERIMETER_X, 0, FieldConstants.ReefHeight.L2.HEIGHT + BRANCH_HEIGHT_BUMP))),
+        Arrays.asList(new Translation3d(IN_PERIMETER_X, 0, FieldConstants.ReefHeight.L2.HEIGHT)),
+        Arrays.asList(new Translation3d(IN_PERIMETER_X, 0, FieldConstants.ReefHeight.L2.HEIGHT))),
     L2_FAR(
         new TargetData(L2.getTarget().getTranslation(), "L2_FAR"),
         Arrays.asList(),

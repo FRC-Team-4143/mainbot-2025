@@ -26,6 +26,7 @@ public class RobotContainer extends SubsystemManager {
     registerSubsystem(Climber.getInstance());
     registerSubsystem(GameStateManager.getInstance());
     registerSubsystem(Pickup.getInstance());
+    registerSubsystem(CoralDetector.getInstance());
 
     // !!!!! LEAVE THESE LINES AS THE LAST LINE IN THE CONSTRUCTOR !!!!!!
     reset();
