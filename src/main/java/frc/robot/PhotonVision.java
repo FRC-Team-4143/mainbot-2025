@@ -33,6 +33,7 @@ import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.wpilibj.DataLogManager;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.mw_lib.util.CamConstants;
+import frc.robot.Constants.Vision;
 import frc.robot.subsystems.PoseEstimator;
 import java.util.List;
 import java.util.Optional;
@@ -43,13 +44,13 @@ import org.photonvision.PhotonPoseEstimator.PoseStrategy;
 import org.photonvision.targeting.PhotonPipelineResult;
 import org.photonvision.targeting.PhotonTrackedTarget;
 
-public class Vision {
+public class PhotonVision {
   // Singleton pattern
-  private static Vision visionInstance = null;
+  private static PhotonVision visionInstance = null;
 
-  public static Vision getInstance() {
+  public static PhotonVision getInstance() {
     if (visionInstance == null) {
-      visionInstance = new Vision();
+      visionInstance = new PhotonVision();
     }
     return visionInstance;
   }
@@ -59,7 +60,7 @@ public class Vision {
   private Matrix<N3, N1> curStdDevs;
   private int numTags;
 
-  public Vision() {
+  public PhotonVision() {
     int cameras_size = Constants.Vision.CAMERAS.size();
 
     cameras = new PhotonCamera[cameras_size];

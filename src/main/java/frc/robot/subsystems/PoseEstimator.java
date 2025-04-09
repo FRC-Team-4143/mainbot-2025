@@ -16,7 +16,8 @@ import frc.mw_lib.geometry.PolygonRegion;
 import frc.mw_lib.geometry.Region;
 import frc.mw_lib.subsystem.Subsystem;
 import frc.robot.Constants;
-import frc.robot.Vision;
+import frc.robot.PhotonVision;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -75,15 +76,15 @@ public class PoseEstimator extends Subsystem {
 
   @Override
   public void readPeriodicInputs(double timestamp) {
-    if (io_.vision_data_packet_.size() < Vision.getInstance().getNumCameras()) {
-      io_.vision_data_packet_.ensureCapacity(Vision.getInstance().getNumCameras());
-      for (int i = 0; i < Vision.getInstance().getNumCameras(); i++) {
+    if (io_.vision_data_packet_.size() < PhotonVision.getInstance().getNumCameras()) {
+      io_.vision_data_packet_.ensureCapacity(PhotonVision.getInstance().getNumCameras());
+      for (int i = 0; i < PhotonVision.getInstance().getNumCameras(); i++) {
         io_.vision_data_packet_.add(null);
       }
     }
 
-    for (int i = 0; i < Vision.getInstance().getNumCameras(); i++) {
-      io_.vision_data_packet_.set(i, Vision.getInstance().getEstimatedGlobalPose(i));
+    for (int i = 0; i < PhotonVision.getInstance().getNumCameras(); i++) {
+      io_.vision_data_packet_.set(i, PhotonVision.getInstance().getEstimatedGlobalPose(i));
     }
   }
 
@@ -96,7 +97,7 @@ public class PoseEstimator extends Subsystem {
         var est = io_.vision_data_packet_.get(i).get();
 
         // Change our trust in the measurement based on the tags we can see
-        var estStdDevs = Vision.getInstance().getEstimationStdDevs();
+        var estStdDevs = PhotonVision.getInstance().getEstimationStdDevs();
 
         var est_timestamp = est.timestampSeconds;
         var latency = timestamp - est_timestamp;
