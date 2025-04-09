@@ -33,7 +33,6 @@ import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.wpilibj.DataLogManager;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.mw_lib.util.CamConstants;
-import frc.robot.Constants.Vision;
 import frc.robot.subsystems.PoseEstimator;
 import java.util.List;
 import java.util.Optional;

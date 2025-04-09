@@ -17,7 +17,6 @@ import frc.mw_lib.geometry.Region;
 import frc.mw_lib.subsystem.Subsystem;
 import frc.robot.Constants;
 import frc.robot.PhotonVision;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
