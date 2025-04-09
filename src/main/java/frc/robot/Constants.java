@@ -349,8 +349,7 @@ public final class Constants {
     public static final Transform3d CAMERA_TRANSFORM = new Transform3d();
     public static final double CORAL_HEIGHT_METERS = Units.inchesToMeters(2.25);
     public static final double DETECTION_DISTANCE_LIMIT = 1.5;
-    public static final double DETECT_RISING = 0.1;
-    public static final double DETECT_FALLING = 3.0;
+    public static final double DETECT_DEBOUNCE_TIME = 0.1;
     public static final double CORAL_CLASS_ID = 1;
   }
 }
