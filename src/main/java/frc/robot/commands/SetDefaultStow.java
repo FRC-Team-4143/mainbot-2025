@@ -31,19 +31,26 @@ public class SetDefaultStow extends Command {
       Elevator.getInstance().setTarget(TargetType.ALGAE_STOW);
       // If In Coral Mode + Vision is Enabled
     } else if (OI.use_vision.getAsBoolean()) {
-      // If in Coral Mode + Vision is Enabled + Robot in Station Zone + Pickup Preference is Station
-      if (PoseEstimator.getInstance().isStationZone()
-          && OI.intake_preference == IntakePreference.STATION) {
-        Elevator.getInstance().setTarget(TargetType.STATION);
-        // If in Coral Mode + Vision is Enabled + Robot Does Not Have Coral + Pickup Preference is
-        // Ground
-      } else if (!Claw.getInstance().isCoralPresent()
-          && OI.intake_preference == IntakePreference.GROUND) {
-        Elevator.getInstance().setTarget(TargetType.CORAL_INTAKE);
-        // If in Coral Mode + Vision is Enabled + Robot Has Coral + Pickup Preference is Ground
+      if (Elevator.getInstance().getTarget() == TargetType.L4
+          && PoseEstimator.getInstance().isInL4CollisionZone()) {
+            // DO NOTHING
       } else {
-        Elevator.getInstance().setTarget(TargetType.CORAL_STOW);
+        // If in Coral Mode + Vision is Enabled + Robot in Station Zone + Pickup Preference is
+        // Station
+        if (PoseEstimator.getInstance().isStationZone()
+            && OI.intake_preference == IntakePreference.STATION) {
+          Elevator.getInstance().setTarget(TargetType.STATION);
+          // If in Coral Mode + Vision is Enabled + Robot Does Not Have Coral + Pickup Preference is
+          // Ground
+        } else if (!Claw.getInstance().isCoralPresent()
+            && OI.intake_preference == IntakePreference.GROUND) {
+          Elevator.getInstance().setTarget(TargetType.CORAL_INTAKE);
+          // If in Coral Mode + Vision is Enabled + Robot Has Coral + Pickup Preference is Ground
+        } else {
+          Elevator.getInstance().setTarget(TargetType.CORAL_STOW);
+        }
       }
+
       // If In Coral Mode + Vision is Disabled
     } else {
       // If in Coral Mode + Vision is Disabled + Robot Has Coral + Pickup Preference is Ground

@@ -222,6 +222,10 @@ public class PoseEstimator extends Subsystem {
         || FieldRegions.RIGHT_CORAL_STATION_REGION.contains(getRobotPose());
   }
 
+  public boolean isInL4CollisionZone() {
+    return FieldRegions.L4_COLLISION_REGION.contains(getRobotPose());
+  }
+
   /**
    * Returns the robots current reef region or an empty optional if not in any.
    *
