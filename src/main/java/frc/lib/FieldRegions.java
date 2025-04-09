@@ -8,7 +8,6 @@ import frc.mw_lib.geometry.CircularRegion;
 import frc.mw_lib.geometry.PolygonRegion;
 import frc.mw_lib.geometry.Region;
 import frc.robot.Constants;
-
 import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.List;
@@ -174,21 +173,32 @@ public class FieldRegions {
           },
           "REEF_FACE5_REGION");
 
-    // Create Algae Stealing Regions
-    public static PolygonRegion OPP_REEF_FACE0_REGION =
-    new PolygonRegion(AllianceFlipUtil.apply(REEF_FACE0_REGION, FieldConstants.SYMMETRY_TYPE).getPoints(), "OPP_" + REEF_FACE0_REGION.getName());
-    public static PolygonRegion OPP_REEF_FACE1_REGION =
-    new PolygonRegion(AllianceFlipUtil.apply(REEF_FACE1_REGION, FieldConstants.SYMMETRY_TYPE).getPoints(), "OPP_" + REEF_FACE1_REGION.getName());
-    public static PolygonRegion OPP_REEF_FACE2_REGION =
-    new PolygonRegion(AllianceFlipUtil.apply(REEF_FACE2_REGION, FieldConstants.SYMMETRY_TYPE).getPoints(), "OPP_" + REEF_FACE2_REGION.getName());
-    public static PolygonRegion OPP_REEF_FACE3_REGION =
-    new PolygonRegion(AllianceFlipUtil.apply(REEF_FACE3_REGION, FieldConstants.SYMMETRY_TYPE).getPoints(), "OPP_" + REEF_FACE3_REGION.getName());
-    public static PolygonRegion OPP_REEF_FACE4_REGION =
-    new PolygonRegion(AllianceFlipUtil.apply(REEF_FACE4_REGION, FieldConstants.SYMMETRY_TYPE).getPoints(), "OPP_" + REEF_FACE4_REGION.getName());
-    public static PolygonRegion OPP_REEF_FACE5_REGION =
-    new PolygonRegion(AllianceFlipUtil.apply(REEF_FACE5_REGION, FieldConstants.SYMMETRY_TYPE).getPoints(), "OPP_" + REEF_FACE5_REGION.getName());
-  
-  
+  // Create Algae Stealing Regions
+  public static PolygonRegion OPP_REEF_FACE0_REGION =
+      new PolygonRegion(
+          AllianceFlipUtil.apply(REEF_FACE0_REGION, FieldConstants.SYMMETRY_TYPE).getPoints(),
+          "OPP_" + REEF_FACE0_REGION.getName());
+  public static PolygonRegion OPP_REEF_FACE1_REGION =
+      new PolygonRegion(
+          AllianceFlipUtil.apply(REEF_FACE1_REGION, FieldConstants.SYMMETRY_TYPE).getPoints(),
+          "OPP_" + REEF_FACE1_REGION.getName());
+  public static PolygonRegion OPP_REEF_FACE2_REGION =
+      new PolygonRegion(
+          AllianceFlipUtil.apply(REEF_FACE2_REGION, FieldConstants.SYMMETRY_TYPE).getPoints(),
+          "OPP_" + REEF_FACE2_REGION.getName());
+  public static PolygonRegion OPP_REEF_FACE3_REGION =
+      new PolygonRegion(
+          AllianceFlipUtil.apply(REEF_FACE3_REGION, FieldConstants.SYMMETRY_TYPE).getPoints(),
+          "OPP_" + REEF_FACE3_REGION.getName());
+  public static PolygonRegion OPP_REEF_FACE4_REGION =
+      new PolygonRegion(
+          AllianceFlipUtil.apply(REEF_FACE4_REGION, FieldConstants.SYMMETRY_TYPE).getPoints(),
+          "OPP_" + REEF_FACE4_REGION.getName());
+  public static PolygonRegion OPP_REEF_FACE5_REGION =
+      new PolygonRegion(
+          AllianceFlipUtil.apply(REEF_FACE5_REGION, FieldConstants.SYMMETRY_TYPE).getPoints(),
+          "OPP_" + REEF_FACE5_REGION.getName());
+
   public static PolygonRegion L4_COLLISION_REGION =
       new PolygonRegion(new Translation2d[] {}, "L4_COLLISION_REGION");
   public static CircularRegion REEF_ENTER_REGION =
@@ -197,52 +207,56 @@ public class FieldRegions {
       new CircularRegion(FieldConstants.Reef.CENTER, 2, "REEF_EXIT_REGION");
 
   // Region Lists
-  public static ArrayList<PolygonRegion> ALGAE_REGIONS = new ArrayList<>(List.of(BARGE_REGION, PROCESSOR_REGION));
-  public static ArrayList<PolygonRegion> STATION_REGIONS = new ArrayList<>(List.of(
-    RIGHT_CORAL_STATION_REGION,
-    LEFT_CORAL_STATION_REGION,
-    RIGHT_CORAL_STATION_SLOW_REGION,
-    LEFT_CORAL_STATION_SLOW_REGION
-  ));
-  public static ArrayList<PolygonRegion> REEF_REGIONS = new ArrayList<>(List.of(
-    REEF_FACE0_REGION,
-    REEF_FACE1_REGION,
-    REEF_FACE2_REGION,
-    REEF_FACE3_REGION,
-    REEF_FACE4_REGION,
-    REEF_FACE5_REGION,
-    OPP_REEF_FACE0_REGION,
-    OPP_REEF_FACE1_REGION,
-    OPP_REEF_FACE2_REGION,
-    OPP_REEF_FACE3_REGION,
-    OPP_REEF_FACE4_REGION,
-    OPP_REEF_FACE5_REGION
-  ));
+  public static ArrayList<PolygonRegion> ALGAE_REGIONS =
+      new ArrayList<>(List.of(BARGE_REGION, PROCESSOR_REGION));
+  public static ArrayList<PolygonRegion> STATION_REGIONS =
+      new ArrayList<>(
+          List.of(
+              RIGHT_CORAL_STATION_REGION,
+              LEFT_CORAL_STATION_REGION,
+              RIGHT_CORAL_STATION_SLOW_REGION,
+              LEFT_CORAL_STATION_SLOW_REGION));
+  public static ArrayList<PolygonRegion> REEF_REGIONS =
+      new ArrayList<>(
+          List.of(
+              REEF_FACE0_REGION,
+              REEF_FACE1_REGION,
+              REEF_FACE2_REGION,
+              REEF_FACE3_REGION,
+              REEF_FACE4_REGION,
+              REEF_FACE5_REGION,
+              OPP_REEF_FACE0_REGION,
+              OPP_REEF_FACE1_REGION,
+              OPP_REEF_FACE2_REGION,
+              OPP_REEF_FACE3_REGION,
+              OPP_REEF_FACE4_REGION,
+              OPP_REEF_FACE5_REGION));
 
-  private static ArrayList<Region> ALL_REGIONS = new ArrayList<>(List.of(
-    BARGE_REGION,
-    BARGE_ENTER,
-    PROCESSOR_REGION,
-    RIGHT_CORAL_STATION_REGION,
-    LEFT_CORAL_STATION_REGION,
-    RIGHT_CORAL_STATION_SLOW_REGION,
-    LEFT_CORAL_STATION_SLOW_REGION,
-    REEF_FACE0_REGION,
-    REEF_FACE1_REGION,
-    REEF_FACE2_REGION,
-    REEF_FACE3_REGION,
-    REEF_FACE4_REGION,
-    REEF_FACE5_REGION,
-    REEF_ENTER_REGION,
-    REEF_EXIT_REGION,
-    L4_COLLISION_REGION,
-    OPP_REEF_FACE0_REGION,
-    OPP_REEF_FACE1_REGION,
-    OPP_REEF_FACE2_REGION,
-    OPP_REEF_FACE3_REGION,
-    OPP_REEF_FACE4_REGION,
-    OPP_REEF_FACE5_REGION
-  ));
+  private static ArrayList<Region> ALL_REGIONS =
+      new ArrayList<>(
+          List.of(
+              BARGE_REGION,
+              BARGE_ENTER,
+              PROCESSOR_REGION,
+              RIGHT_CORAL_STATION_REGION,
+              LEFT_CORAL_STATION_REGION,
+              RIGHT_CORAL_STATION_SLOW_REGION,
+              LEFT_CORAL_STATION_SLOW_REGION,
+              REEF_FACE0_REGION,
+              REEF_FACE1_REGION,
+              REEF_FACE2_REGION,
+              REEF_FACE3_REGION,
+              REEF_FACE4_REGION,
+              REEF_FACE5_REGION,
+              REEF_ENTER_REGION,
+              REEF_EXIT_REGION,
+              L4_COLLISION_REGION,
+              OPP_REEF_FACE0_REGION,
+              OPP_REEF_FACE1_REGION,
+              OPP_REEF_FACE2_REGION,
+              OPP_REEF_FACE3_REGION,
+              OPP_REEF_FACE4_REGION,
+              OPP_REEF_FACE5_REGION));
 
   // Region to Target Pose Table
   // Poses are stored with a key equal to the name of the region
@@ -273,6 +287,18 @@ public class FieldRegions {
         AllianceFlipUtil.apply(ScoringPoses.REEF_FACE_4_POSE, FieldConstants.SYMMETRY_TYPE);
     ScoringPoses.REEF_FACE_5_POSE =
         AllianceFlipUtil.apply(ScoringPoses.REEF_FACE_5_POSE, FieldConstants.SYMMETRY_TYPE);
+    ScoringPoses.OPP_REEF_FACE_0_POSE =
+        AllianceFlipUtil.apply(ScoringPoses.OPP_REEF_FACE_0_POSE, FieldConstants.SYMMETRY_TYPE);
+    ScoringPoses.OPP_REEF_FACE_1_POSE =
+        AllianceFlipUtil.apply(ScoringPoses.OPP_REEF_FACE_1_POSE, FieldConstants.SYMMETRY_TYPE);
+    ScoringPoses.OPP_REEF_FACE_2_POSE =
+        AllianceFlipUtil.apply(ScoringPoses.OPP_REEF_FACE_2_POSE, FieldConstants.SYMMETRY_TYPE);
+    ScoringPoses.OPP_REEF_FACE_3_POSE =
+        AllianceFlipUtil.apply(ScoringPoses.OPP_REEF_FACE_3_POSE, FieldConstants.SYMMETRY_TYPE);
+    ScoringPoses.OPP_REEF_FACE_4_POSE =
+        AllianceFlipUtil.apply(ScoringPoses.OPP_REEF_FACE_4_POSE, FieldConstants.SYMMETRY_TYPE);
+    ScoringPoses.OPP_REEF_FACE_5_POSE =
+        AllianceFlipUtil.apply(ScoringPoses.OPP_REEF_FACE_5_POSE, FieldConstants.SYMMETRY_TYPE);
     ScoringPoses.BARGE_TIGHT_ROPE =
         AllianceFlipUtil.apply(ScoringPoses.BARGE_TIGHT_ROPE, FieldConstants.SYMMETRY_TYPE);
     ScoringPoses.PROCESSOR_TIGHT_ROPE =
