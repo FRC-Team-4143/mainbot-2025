@@ -12,6 +12,7 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import frc.mw_lib.geometry.CircularRegion;
 import frc.mw_lib.geometry.PolygonRegion;
+import frc.mw_lib.geometry.Region;
 import frc.mw_lib.geometry.TightRope;
 
 public class AllianceFlipUtil {
@@ -40,6 +41,14 @@ public class AllianceFlipUtil {
           pose.getRotation().rotateBy(Rotation2d.fromDegrees(180)));
     } else {
       return new Pose2d(apply(pose.getTranslation(), symmetry), pose.getRotation());
+    }
+  }
+
+  public static Region apply(Region region, SymmetryType symmetry) {
+    if (region instanceof PolygonRegion) {
+      return apply((PolygonRegion) region, symmetry);
+    } else {
+      return apply((CircularRegion) region, symmetry);
     }
   }
 
