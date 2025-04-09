@@ -33,7 +33,7 @@ public class SetDefaultStow extends Command {
     } else if (OI.use_vision.getAsBoolean()) {
       if (Elevator.getInstance().getTarget() == TargetType.L4
           && PoseEstimator.getInstance().isInL4CollisionZone()) {
-            // DO NOTHING
+        // DO NOTHING
       } else {
         // If in Coral Mode + Vision is Enabled + Robot in Station Zone + Pickup Preference is
         // Station
