@@ -37,21 +37,21 @@ public class ElevatorKinematics {
     }
     double z = t.getZ();
     if (z > reachable_max_) {
-      DataLogManager.log(
-          "WARNING: Inverse Kinematics Z Value : "
-              + z
-              + " | Out of Reach ("
-              + reachable_min_
-              + ")");
+      // DataLogManager.log(
+      //     "WARNING: Inverse Kinematics Z Value : "
+      //         + z
+      //         + " | Out of Reach ("
+      //         + reachable_min_
+      //         + ")");
       z = reachable_max_;
     }
     if (z < reachable_min_) {
-      DataLogManager.log(
-          "WARNING: Inverse Kinematics Z Value : "
-              + z
-              + " | Out of Reach ("
-              + reachable_min_
-              + ")");
+      // DataLogManager.log(
+      //     "WARNING: Inverse Kinematics Z Value : "
+      //         + z
+      //         + " | Out of Reach ("
+      //         + reachable_min_
+      //         + ")");
       z = reachable_min_;
     }
 

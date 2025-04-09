@@ -25,11 +25,12 @@ public class PieceDetectionPacket implements Packet {
   private static final int THETA_X = 18;
   private static final int THETA_Y = 26;
 
-  private static final double RESOLUTION = 100000000.0;
+  private static final double RESOLUTION = 10e6;
 
   private Timestamp timestamp_ = new Timestamp(0, 0);
 
   public void updateData(byte[] buffer) {
+
     Timestamp timestamp =
         new Timestamp(
             ByteBuffer.wrap(buffer, TIME_SEC_IDX, 4).getInt(),
@@ -41,7 +42,9 @@ public class PieceDetectionPacket implements Packet {
       piece_detection.detection_index_ = ByteBuffer.wrap(buffer, DETECTION_INDEX, 4).getInt();
       if (piece_detection.detection_count_ == 0 || piece_detection.detection_index_ == 0) {
         piece_detections_.clear();
-      } else {
+      }
+
+      if (piece_detection.detection_count_ != 0) {
         piece_detection.class_id_ = ByteBuffer.wrap(buffer, CLASS_ID, 1).get();
         piece_detection.theta_x_ = ByteBuffer.wrap(buffer, THETA_X, 8).getLong() / RESOLUTION;
         piece_detection.theta_y_ = ByteBuffer.wrap(buffer, THETA_Y, 8).getLong() / RESOLUTION;

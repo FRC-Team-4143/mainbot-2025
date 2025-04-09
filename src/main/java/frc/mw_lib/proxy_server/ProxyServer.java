@@ -22,7 +22,7 @@ public class ProxyServer {
 
   // Socket Config
   private static DatagramSocket socket_ = null;
-  private static final int PORT = 1180; // local port to bind server
+  private static final int PORT = 5809; // local port to bind server
   private static final int TIMEOUT = 1; // Server receive blocking timeout
 
   /**

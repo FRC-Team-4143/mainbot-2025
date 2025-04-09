@@ -76,7 +76,7 @@ public class CoralDetector extends Subsystem {
     if (ProxyServer.getLatestPieceDetections().size() > 0) {
       coral_detection_ = ProxyServer.getLatestPieceDetections().get(0);
       io_.can_see_coral_ = true;
-      io_.target_x_ = Units.degreesToRadians(coral_detection_.theta_x_);
+      io_.target_x_ = -Units.degreesToRadians(coral_detection_.theta_x_);
       io_.target_y_ = Units.degreesToRadians(coral_detection_.theta_y_);
     } else {
       io_.can_see_coral_ = false;
@@ -121,7 +121,7 @@ public class CoralDetector extends Subsystem {
     SmartDashboard.putNumber("CoralDetector/Target Y", Units.radiansToDegrees(io_.target_y_));
 
     if (io_.can_see_coral_) {
-      pose_pub_.set(new Pose3d(getCoralPose2d()));
+      pose_pub_.set(convertToPose3d(getCoralPose2d()));
     } else {
       pose_pub_.set(Pose3d.kZero);
     }
@@ -136,6 +136,14 @@ public class CoralDetector extends Subsystem {
     return (CoralDetectorConstants.CORAL_HEIGHT_METERS
             - CoralDetectorConstants.CAMERA_TRANSFORM.getZ())
         / Math.tan(angleToGoal);
+  }
+
+  public Pose3d convertToPose3d(Pose2d p) {
+    return new Pose3d(
+        p.getX(),
+        p.getY(),
+        Constants.CoralDetectorConstants.DISPLAY_Z_OFFSEET,
+        Constants.CoralDetectorConstants.DISPLAY_ROTATION);
   }
 
   /**
@@ -164,7 +172,7 @@ public class CoralDetector extends Subsystem {
             .transformBy(calculateCoralTransform2d(io_.target_distance_, io_.target_x_));
     Transform2d pickup_path_ =
         new Transform2d(PoseEstimator.getInstance().getRobotPose(), coralPose);
-    Rotation2d approuch_angle_ = pickup_path_.getRotation();
+    Rotation2d approuch_angle_ = pickup_path_.getRotation().rotateBy(Rotation2d.k180deg);
     Pose2d final_ = new Pose2d(coralPose.getX(), coralPose.getY(), approuch_angle_);
     return final_;
   }

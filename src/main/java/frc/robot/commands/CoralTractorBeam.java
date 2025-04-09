@@ -57,6 +57,7 @@ public class CoralTractorBeam extends Command {
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
+    SwerveDrivetrain.getInstance().restoreDefaultDriveMode();
     pickup_.setPickupMode(PickupMode.DEPLOYED);
     claw_.setClawMode(ClawMode.IDLE);
   }

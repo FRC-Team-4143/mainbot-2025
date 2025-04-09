@@ -13,6 +13,7 @@ import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
@@ -300,7 +301,8 @@ public final class Constants {
     public static final double ARM_LENGTH =
         Units.inchesToMeters(LOADER.getDoubleValue("arm", "LENGTH_PIVOT_TO_FUNNEL")); // 16.456 in
     public static final double ARM_WIDTH =
-        Units.inchesToMeters(LOADER.getDoubleValue("arm", "DEPTH_CORAL_POCKET")); // 0.053 in
+        Units.inchesToMeters(LOADER.getDoubleValue("arm", "DEPTH_CORAL_POCKET")); // 0.053
+    // in
     // ((shaft sprocket / pivot sprocket) / gearbox) * rotations to radians ratio)
     public static final double SENSOR_TO_MECHANISM_RATIO = (1.0 / ((16.0 / 64.0) / 20.0));
     public static final double ARM_FORWARD_LIMIT = Units.radiansToRotations(30);
@@ -345,10 +347,22 @@ public final class Constants {
   }
 
   public class CoralDetectorConstants {
-    public static final Transform3d CAMERA_TRANSFORM = new Transform3d();
-    public static final double CORAL_HEIGHT_METERS = Units.inchesToMeters(2.25);
+    public static final Transform3d CAMERA_TRANSFORM =
+        new Transform3d(
+            Units.inchesToMeters(-8),
+            Units.inchesToMeters(6),
+            Units.inchesToMeters(28.25),
+            new Rotation3d(
+                Units.degreesToRadians(0),
+                Units.degreesToRadians(20),
+                Units.degreesToRadians(180 - 15)));
+    public static final double CORAL_HEIGHT_METERS = Units.inchesToMeters(4);
     public static final double DETECTION_DISTANCE_LIMIT = 1.5;
     public static final double DETECT_DEBOUNCE_TIME = 0.1;
     public static final double CORAL_CLASS_ID = 1;
+
+    public static final double DISPLAY_Z_OFFSEET = Units.inchesToMeters(6);
+    public static final Rotation3d DISPLAY_ROTATION =
+        new Rotation3d(0, Units.degreesToRadians(90), 0);
   }
 }
