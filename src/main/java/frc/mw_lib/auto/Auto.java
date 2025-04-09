@@ -6,6 +6,7 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.lib.AllianceFlipUtil;
+import frc.lib.FieldConstants;
 import frc.mw_lib.command.NoReqSequentialCommandGroup;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
@@ -40,7 +41,7 @@ public class Auto extends NoReqSequentialCommandGroup {
             .ifPresentOrElse(
                 (alliance) -> {
                   if (alliance == Alliance.Red) {
-                    path_poses.add(AllianceFlipUtil.apply(pose));
+                    path_poses.add(AllianceFlipUtil.apply(pose, FieldConstants.SYMMETRY_TYPE));
                   } else {
                     path_poses.add(pose);
                   }
