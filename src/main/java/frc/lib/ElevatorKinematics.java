@@ -1,13 +1,16 @@
 package frc.lib;
 
 import edu.wpi.first.math.geometry.Translation3d;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DataLogManager;
+import frc.mw_lib.util.Util;
 
 public class ElevatorKinematics {
   private double virtual_arm_length_ = 0;
   private double virtual_arm_angle_ = 0;
   private double reachable_max_ = 0;
   private double reachable_min_ = 0;
+  private SolutionType current_saolution_type_ = SolutionType.BELOW_PIVOT;
 
   public enum SolutionType {
     ABOVE_PIVOT,
@@ -31,7 +34,7 @@ public class ElevatorKinematics {
     return virtual_arm_length_;
   }
 
-  public JointSpaceSolution translationToJointSpace(Translation3d t, SolutionType solution_type) {
+  public JointSpaceSolution translationToJointSpaceDisplay(Translation3d t, SolutionType display_solution_type) {
     double x = t.getX();
     if (Math.abs(x) > virtual_arm_length_) {
       x = Math.copySign(virtual_arm_length_, x);
@@ -47,7 +50,35 @@ public class ElevatorKinematics {
     double angle = -Math.acos(x / virtual_arm_length_);
     double height = 0;
     double arm_height_offset = Math.abs(Math.sin(angle) * virtual_arm_length_);
-    if (solution_type == SolutionType.ABOVE_PIVOT) {
+    if (display_solution_type == SolutionType.ABOVE_PIVOT) {
+      height = z - arm_height_offset;
+    } else {
+      height = z + arm_height_offset;
+    }
+    return new JointSpaceSolution(height, angle);
+  }
+
+  public JointSpaceSolution translationToJointSpace(Translation3d t, SolutionType requested_solution_type) {
+    double x = t.getX();
+    if (Math.abs(x) > virtual_arm_length_) {
+      x = Math.copySign(virtual_arm_length_, x);
+    }
+    double z = t.getZ();
+    if (z > reachable_max_) {
+      z = reachable_max_;
+    }
+    if (z < reachable_min_) {
+      z = reachable_min_;
+    }
+
+    if(Util.epislonEquals(Math.abs(t.getX()), virtual_arm_length_, Units.inchesToMeters(1))) {
+      current_saolution_type_ = requested_solution_type;
+    }
+
+    double angle = -Math.acos(x / virtual_arm_length_);
+    double height = 0;
+    double arm_height_offset = Math.abs(Math.sin(angle) * virtual_arm_length_);
+    if (current_saolution_type_ == SolutionType.ABOVE_PIVOT) {
       height = z - arm_height_offset;
     } else {
       height = z + arm_height_offset;
