@@ -7,7 +7,7 @@
       "height": 928,
       "state": {
         "sidebar": {
-          "width": 268,
+          "width": 442,
           "expanded": [
             "/NT/Robot/subsystems_ios",
             "/NT/Components/Elevator",
@@ -34,18 +34,17 @@
             "/DS",
             "/SmartDashboard/Subsystems/Pickup",
             "/Phoenix6/TalonFX-41",
-            "/TightRopes",
-            "/Swerve/Chassis Speeds",
             "/Swerve/Chassis Speeds/Current",
             "/Swerve/Chassis Speeds/Request",
-            "/Swerve",
             "/Components",
             "/Components/Arm",
-            "/Components/ElevatorGSM"
+            "/Components/ElevatorGSM",
+            "/Regions/REEF_FACE2_REGION/1",
+            "/Regions/REEF_FACE2_REGION/0"
           ]
         },
         "tabs": {
-          "selected": 3,
+          "selected": 2,
           "tabs": [
             {
               "type": 0,
@@ -61,86 +60,6 @@
               "controller": {
                 "sources": [
                   {
-                    "type": "trajectory",
-                    "logKey": "NT:Regions/ReefFace0",
-                    "logType": "Translation2d[]",
-                    "visible": true,
-                    "options": {
-                      "color": "#ff0000",
-                      "size": "bold"
-                    }
-                  },
-                  {
-                    "type": "trajectory",
-                    "logKey": "NT:Regions/ReefFace1",
-                    "logType": "Translation2d[]",
-                    "visible": true,
-                    "options": {
-                      "color": "#ff8c00",
-                      "size": "bold"
-                    }
-                  },
-                  {
-                    "type": "trajectory",
-                    "logKey": "NT:Regions/ReefFace2",
-                    "logType": "Translation2d[]",
-                    "visible": true,
-                    "options": {
-                      "color": "#ffff00",
-                      "size": "bold"
-                    }
-                  },
-                  {
-                    "type": "trajectory",
-                    "logKey": "NT:Regions/ReefFace3",
-                    "logType": "Translation2d[]",
-                    "visible": true,
-                    "options": {
-                      "color": "#00ff00",
-                      "size": "bold"
-                    }
-                  },
-                  {
-                    "type": "trajectory",
-                    "logKey": "NT:Regions/ReefFace4",
-                    "logType": "Translation2d[]",
-                    "visible": true,
-                    "options": {
-                      "color": "#0000ff",
-                      "size": "bold"
-                    }
-                  },
-                  {
-                    "type": "trajectory",
-                    "logKey": "NT:Regions/ReefFace5",
-                    "logType": "Translation2d[]",
-                    "visible": true,
-                    "options": {
-                      "color": "#ff00ff",
-                      "size": "bold"
-                    }
-                  },
-                  {
-                    "type": "trajectory",
-                    "logKey": "NT:Regions/Reef Enter",
-                    "logType": "Translation2d[]",
-                    "visible": true,
-                    "options": {
-                      "color": "#00ffff",
-                      "size": "bold"
-                    }
-                  },
-                  {
-                    "type": "trajectory",
-                    "logKey": "NT:Regions/Reef Exit",
-                    "logType": "Translation2d[]",
-                    "visible": true,
-                    "options": {
-                      "color": "#00ffff",
-                      "size": "normal"
-                    }
-                  },
-                  {
                     "type": "robot",
                     "logKey": "NT:PoseEstimation/Robot Pose",
                     "logType": "Pose2d",
@@ -148,12 +67,162 @@
                     "options": {}
                   },
                   {
-                    "type": "arrow",
+                    "type": "ghost",
                     "logKey": "NT:ReefTarget",
                     "logType": "Pose2d",
                     "visible": true,
                     "options": {
-                      "position": "center"
+                      "color": "#ff0000"
+                    }
+                  },
+                  {
+                    "type": "trajectory",
+                    "logKey": "NT:Regions/OPP_REEF_FACE0_REGION",
+                    "logType": "Translation2d[]",
+                    "visible": true,
+                    "options": {
+                      "color": "#ff0000",
+                      "size": "normal"
+                    }
+                  },
+                  {
+                    "type": "trajectory",
+                    "logKey": "NT:Regions/OPP_REEF_FACE1_REGION",
+                    "logType": "Translation2d[]",
+                    "visible": true,
+                    "options": {
+                      "color": "#ff0000",
+                      "size": "normal"
+                    }
+                  },
+                  {
+                    "type": "trajectory",
+                    "logKey": "NT:Regions/OPP_REEF_FACE2_REGION",
+                    "logType": "Translation2d[]",
+                    "visible": true,
+                    "options": {
+                      "color": "#ff0000",
+                      "size": "normal"
+                    }
+                  },
+                  {
+                    "type": "trajectory",
+                    "logKey": "NT:Regions/OPP_REEF_FACE3_REGION",
+                    "logType": "Translation2d[]",
+                    "visible": true,
+                    "options": {
+                      "color": "#ff0000",
+                      "size": "normal"
+                    }
+                  },
+                  {
+                    "type": "trajectory",
+                    "logKey": "NT:Regions/OPP_REEF_FACE4_REGION",
+                    "logType": "Translation2d[]",
+                    "visible": true,
+                    "options": {
+                      "color": "#ff0000",
+                      "size": "normal"
+                    }
+                  },
+                  {
+                    "type": "trajectory",
+                    "logKey": "NT:Regions/OPP_REEF_FACE5_REGION",
+                    "logType": "Translation2d[]",
+                    "visible": true,
+                    "options": {
+                      "color": "#ff0000",
+                      "size": "normal"
+                    }
+                  },
+                  {
+                    "type": "trajectory",
+                    "logKey": "NT:Regions/REEF_ENTER_REGION",
+                    "logType": "Translation2d[]",
+                    "visible": true,
+                    "options": {
+                      "color": "#0000ff",
+                      "size": "normal"
+                    }
+                  },
+                  {
+                    "type": "trajectory",
+                    "logKey": "NT:Regions/REEF_EXIT_REGION",
+                    "logType": "Translation2d[]",
+                    "visible": true,
+                    "options": {
+                      "color": "#0000ff",
+                      "size": "normal"
+                    }
+                  },
+                  {
+                    "type": "trajectory",
+                    "logKey": "NT:Regions/REEF_FACE0_REGION",
+                    "logType": "Translation2d[]",
+                    "visible": true,
+                    "options": {
+                      "color": "#00ff00",
+                      "size": "normal"
+                    }
+                  },
+                  {
+                    "type": "trajectory",
+                    "logKey": "NT:Regions/REEF_FACE1_REGION",
+                    "logType": "Translation2d[]",
+                    "visible": true,
+                    "options": {
+                      "color": "#00ff00",
+                      "size": "normal"
+                    }
+                  },
+                  {
+                    "type": "trajectory",
+                    "logKey": "NT:Regions/REEF_FACE1_REGION",
+                    "logType": "Translation2d[]",
+                    "visible": true,
+                    "options": {
+                      "color": "#00ff00",
+                      "size": "normal"
+                    }
+                  },
+                  {
+                    "type": "trajectory",
+                    "logKey": "NT:Regions/REEF_FACE2_REGION",
+                    "logType": "Translation2d[]",
+                    "visible": true,
+                    "options": {
+                      "color": "#00ff00",
+                      "size": "normal"
+                    }
+                  },
+                  {
+                    "type": "trajectory",
+                    "logKey": "NT:Regions/REEF_FACE3_REGION",
+                    "logType": "Translation2d[]",
+                    "visible": true,
+                    "options": {
+                      "color": "#00ff00",
+                      "size": "normal"
+                    }
+                  },
+                  {
+                    "type": "trajectory",
+                    "logKey": "NT:Regions/REEF_FACE4_REGION",
+                    "logType": "Translation2d[]",
+                    "visible": true,
+                    "options": {
+                      "color": "#00ff00",
+                      "size": "normal"
+                    }
+                  },
+                  {
+                    "type": "trajectory",
+                    "logKey": "NT:Regions/REEF_FACE5_REGION",
+                    "logType": "Translation2d[]",
+                    "visible": true,
+                    "options": {
+                      "color": "#00ff00",
+                      "size": "normal"
                     }
                   }
                 ],
@@ -165,7 +234,7 @@
               },
               "controllerUUID": "tito8v00t7dq5w81quqg06ie018dkrmo",
               "renderer": null,
-              "controlsHeight": 0
+              "controlsHeight": 339
             },
             {
               "type": 2,
@@ -173,24 +242,11 @@
               "controller": {
                 "sources": [
                   {
-                    "type": "trajectory",
-                    "logKey": "NT:Regions/Barge",
-                    "logType": "Translation2d[]",
+                    "type": "robot",
+                    "logKey": "NT:PoseEstimation/Robot Pose",
+                    "logType": "Pose2d",
                     "visible": true,
-                    "options": {
-                      "color": "#00ffff",
-                      "size": "normal"
-                    }
-                  },
-                  {
-                    "type": "trajectory",
-                    "logKey": "NT:Regions/BargeEnter",
-                    "logType": "Translation2d[]",
-                    "visible": true,
-                    "options": {
-                      "color": "#00ff00",
-                      "size": "normal"
-                    }
+                    "options": {}
                   },
                   {
                     "type": "trajectory",
@@ -204,56 +260,6 @@
                   },
                   {
                     "type": "trajectory",
-                    "logKey": "NT:Regions/LeftCoralStation",
-                    "logType": "Translation2d[]",
-                    "visible": true,
-                    "options": {
-                      "color": "#00ffff",
-                      "size": "normal"
-                    }
-                  },
-                  {
-                    "type": "trajectory",
-                    "logKey": "NT:Regions/LeftCoralStationSlow",
-                    "logType": "Translation2d[]",
-                    "visible": true,
-                    "options": {
-                      "color": "#00ff00",
-                      "size": "normal"
-                    }
-                  },
-                  {
-                    "type": "trajectory",
-                    "logKey": "NT:Regions/RightCoralStation",
-                    "logType": "Translation2d[]",
-                    "visible": true,
-                    "options": {
-                      "color": "#00ffff",
-                      "size": "normal"
-                    }
-                  },
-                  {
-                    "type": "trajectory",
-                    "logKey": "NT:Regions/RightCoralStationSlow",
-                    "logType": "Translation2d[]",
-                    "visible": true,
-                    "options": {
-                      "color": "#00ff00",
-                      "size": "normal"
-                    }
-                  },
-                  {
-                    "type": "trajectory",
-                    "logKey": "NT:Regions/Processor",
-                    "logType": "Translation2d[]",
-                    "visible": true,
-                    "options": {
-                      "color": "#00ff00",
-                      "size": "normal"
-                    }
-                  },
-                  {
-                    "type": "trajectory",
                     "logKey": "NT:TightRopes/Processor",
                     "logType": "Translation2d[]",
                     "visible": true,
@@ -263,11 +269,94 @@
                     }
                   },
                   {
-                    "type": "robot",
-                    "logKey": "NT:PoseEstimation/Robot Pose",
-                    "logType": "Pose2d",
+                    "type": "trajectory",
+                    "logKey": "NT:Regions/L4_COLLISION_REGION",
+                    "logType": "Translation2d[]",
                     "visible": true,
-                    "options": {}
+                    "options": {
+                      "color": "#00ffff",
+                      "size": "normal"
+                    }
+                  },
+                  {
+                    "type": "trajectory",
+                    "logKey": "NT:Regions/BARGE_REGION",
+                    "logType": "Translation2d[]",
+                    "visible": true,
+                    "options": {
+                      "color": "#0000ff",
+                      "size": "normal"
+                    }
+                  },
+                  {
+                    "type": "trajectory",
+                    "logKey": "NT:Regions/BARGE_ENTER",
+                    "logType": "Translation2d[]",
+                    "visible": true,
+                    "options": {
+                      "color": "#0000ff",
+                      "size": "normal"
+                    }
+                  },
+                  {
+                    "type": "trajectory",
+                    "logKey": "NT:Regions/LEFT_CORAL_STATION_REGION",
+                    "logType": "Translation2d[]",
+                    "visible": true,
+                    "options": {
+                      "color": "#00ff00",
+                      "size": "normal"
+                    }
+                  },
+                  {
+                    "type": "trajectory",
+                    "logKey": "NT:Regions/LEFT_CORAL_STATION_SLOW_REGION",
+                    "logType": "Translation2d[]",
+                    "visible": true,
+                    "options": {
+                      "color": "#00ff00",
+                      "size": "normal"
+                    }
+                  },
+                  {
+                    "type": "trajectory",
+                    "logKey": "NT:Regions/PROCESSOR_DEAD_REGION",
+                    "logType": "Translation2d[]",
+                    "visible": true,
+                    "options": {
+                      "color": "#ff0000",
+                      "size": "normal"
+                    }
+                  },
+                  {
+                    "type": "trajectory",
+                    "logKey": "NT:Regions/PROCESSOR_REGION",
+                    "logType": "Translation2d[]",
+                    "visible": true,
+                    "options": {
+                      "color": "#ff0000",
+                      "size": "normal"
+                    }
+                  },
+                  {
+                    "type": "trajectory",
+                    "logKey": "NT:Regions/RIGHT_CORAL_STATION_SLOW_REGION",
+                    "logType": "Translation2d[]",
+                    "visible": true,
+                    "options": {
+                      "color": "#00ff00",
+                      "size": "normal"
+                    }
+                  },
+                  {
+                    "type": "trajectory",
+                    "logKey": "NT:Regions/RIGHT_CORAL_STATION_REGION",
+                    "logType": "Translation2d[]",
+                    "visible": true,
+                    "options": {
+                      "color": "#00ff00",
+                      "size": "normal"
+                    }
                   }
                 ],
                 "game": "2025 Field (Welded)",
@@ -382,9 +471,9 @@
                 "cameraIndex": -2,
                 "orbitFov": 50,
                 "cameraPosition": [
-                  -0.4191252288023525,
+                  -0.4191252288023519,
                   0.8146052117698535,
-                  -1.354586079713291
+                  -1.3545860797132911
                 ],
                 "cameraTarget": [
                   0.13993363337576847,
