@@ -7,7 +7,7 @@
       "height": 928,
       "state": {
         "sidebar": {
-          "width": 442,
+          "width": 384,
           "expanded": [
             "/NT/Robot/subsystems_ios",
             "/NT/Components/Elevator",
@@ -40,11 +40,12 @@
             "/Components/Arm",
             "/Components/ElevatorGSM",
             "/Regions/REEF_FACE2_REGION/1",
-            "/Regions/REEF_FACE2_REGION/0"
+            "/Regions/REEF_FACE2_REGION/0",
+            "/GameStateManager"
           ]
         },
         "tabs": {
-          "selected": 2,
+          "selected": 1,
           "tabs": [
             {
               "type": 0,
@@ -65,15 +66,6 @@
                     "logType": "Pose2d",
                     "visible": true,
                     "options": {}
-                  },
-                  {
-                    "type": "ghost",
-                    "logKey": "NT:ReefTarget",
-                    "logType": "Pose2d",
-                    "visible": true,
-                    "options": {
-                      "color": "#ff0000"
-                    }
                   },
                   {
                     "type": "trajectory",
@@ -177,16 +169,6 @@
                   },
                   {
                     "type": "trajectory",
-                    "logKey": "NT:Regions/REEF_FACE1_REGION",
-                    "logType": "Translation2d[]",
-                    "visible": true,
-                    "options": {
-                      "color": "#00ff00",
-                      "size": "normal"
-                    }
-                  },
-                  {
-                    "type": "trajectory",
                     "logKey": "NT:Regions/REEF_FACE2_REGION",
                     "logType": "Translation2d[]",
                     "visible": true,
@@ -224,6 +206,15 @@
                       "color": "#00ff00",
                       "size": "normal"
                     }
+                  },
+                  {
+                    "type": "ghost",
+                    "logKey": "NT:GameStateManager/Reef Target",
+                    "logType": "Pose2d",
+                    "visible": true,
+                    "options": {
+                      "color": "#00ff00"
+                    }
                   }
                 ],
                 "game": "2025 Field (Welded)",
@@ -234,7 +225,7 @@
               },
               "controllerUUID": "tito8v00t7dq5w81quqg06ie018dkrmo",
               "renderer": null,
-              "controlsHeight": 339
+              "controlsHeight": 240
             },
             {
               "type": 2,

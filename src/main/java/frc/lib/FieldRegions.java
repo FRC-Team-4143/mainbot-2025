@@ -132,8 +132,7 @@ public class FieldRegions {
             new Translation2d(FieldConstants.FIELD_LENGTH / 2, FieldConstants.FIELD_WIDTH),
             Barge.MIDDLE_CAGE,
             FieldConstants.Reef.CENTER,
-          }, // FieldConstants.Reef.center cage
-          // constant
+          },
           "REEF_FACE2_REGION");
   public static PolygonRegion REEF_FACE3_REGION =
       new PolygonRegion(
@@ -200,7 +199,11 @@ public class FieldRegions {
           "OPP_" + REEF_FACE5_REGION.getName());
 
   public static PolygonRegion L4_COLLISION_REGION =
-      new PolygonRegion(new Translation2d[] {}, "L4_COLLISION_REGION");
+      new PolygonRegion(
+          new Translation2d[] {
+            new Translation2d(0, 0), new Translation2d(1, 0), new Translation2d(0, 1)
+          },
+          "L4_COLLISION_REGION");
   public static CircularRegion REEF_ENTER_REGION =
       new CircularRegion(FieldConstants.Reef.CENTER, 3, "REEF_ENTER_REGION");
   public static CircularRegion REEF_EXIT_REGION =
@@ -238,6 +241,7 @@ public class FieldRegions {
               BARGE_REGION,
               BARGE_ENTER,
               PROCESSOR_REGION,
+              PROCESSOR_DEAD_REGION,
               RIGHT_CORAL_STATION_REGION,
               LEFT_CORAL_STATION_REGION,
               RIGHT_CORAL_STATION_SLOW_REGION,
@@ -287,6 +291,7 @@ public class FieldRegions {
         AllianceFlipUtil.apply(ScoringPoses.REEF_FACE_4_POSE, FieldConstants.SYMMETRY_TYPE);
     ScoringPoses.REEF_FACE_5_POSE =
         AllianceFlipUtil.apply(ScoringPoses.REEF_FACE_5_POSE, FieldConstants.SYMMETRY_TYPE);
+
     ScoringPoses.OPP_REEF_FACE_0_POSE =
         AllianceFlipUtil.apply(ScoringPoses.OPP_REEF_FACE_0_POSE, FieldConstants.SYMMETRY_TYPE);
     ScoringPoses.OPP_REEF_FACE_1_POSE =
@@ -299,6 +304,7 @@ public class FieldRegions {
         AllianceFlipUtil.apply(ScoringPoses.OPP_REEF_FACE_4_POSE, FieldConstants.SYMMETRY_TYPE);
     ScoringPoses.OPP_REEF_FACE_5_POSE =
         AllianceFlipUtil.apply(ScoringPoses.OPP_REEF_FACE_5_POSE, FieldConstants.SYMMETRY_TYPE);
+
     ScoringPoses.BARGE_TIGHT_ROPE =
         AllianceFlipUtil.apply(ScoringPoses.BARGE_TIGHT_ROPE, FieldConstants.SYMMETRY_TYPE);
     ScoringPoses.PROCESSOR_TIGHT_ROPE =
@@ -312,6 +318,7 @@ public class FieldRegions {
         RIGHT_CORAL_STATION_REGION.getName(), ScoringPoses.RIGHT_CORAL_STATION_POSE);
     REGION_POSE_TABLE.put(
         LEFT_CORAL_STATION_REGION.getName(), ScoringPoses.LEFT_CORAL_STATION_POSE);
+
     REGION_POSE_TABLE.put(REEF_FACE0_REGION.getName(), ScoringPoses.REEF_FACE_0_POSE);
     REGION_POSE_TABLE.put(REEF_FACE1_REGION.getName(), ScoringPoses.REEF_FACE_1_POSE);
     REGION_POSE_TABLE.put(REEF_FACE2_REGION.getName(), ScoringPoses.REEF_FACE_2_POSE);
