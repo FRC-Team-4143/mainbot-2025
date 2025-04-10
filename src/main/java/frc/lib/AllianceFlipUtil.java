@@ -68,13 +68,13 @@ public class AllianceFlipUtil {
   public static TightRope apply(TightRope tightRope, SymmetryType symmetry) {
     if (symmetry == SymmetryType.DIAGONAL) {
       return new TightRope(
-          AllianceFlipUtil.apply(tightRope.poseA, symmetry),
           AllianceFlipUtil.apply(tightRope.poseB, symmetry),
+          AllianceFlipUtil.apply(tightRope.poseA, symmetry),
           tightRope.getName());
     } else {
       return new TightRope(
-          AllianceFlipUtil.apply(tightRope.poseA, symmetry),
           AllianceFlipUtil.apply(tightRope.poseB, symmetry),
+          AllianceFlipUtil.apply(tightRope.poseA, symmetry),
           tightRope.getName());
     }
   }
