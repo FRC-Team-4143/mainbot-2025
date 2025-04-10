@@ -2,6 +2,7 @@ package frc.lib;
 
 import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.util.Units;
+import frc.lib.ElevatorKinematics.SolutionType;
 import frc.robot.Constants;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -82,13 +83,16 @@ public class ElevatorTargets {
         Arrays.asList(),
         Arrays.asList()),
     ALGAE_PROCESSOR(
-        new TargetData(new Translation3d(0.33, 0, 0.5), "ALGAE_PROCESSOR"),
+        new TargetData(new Translation3d(), "ALGAE_PROCESSOR"), Arrays.asList(), Arrays.asList()),
+    BARGE(
+        new TargetData(L4.getTarget().getTranslation(), "BARGE"),
         Arrays.asList(),
-        Arrays.asList()),
-    BARGE(new TargetData(new Translation3d(), "BARGE"), Arrays.asList(), Arrays.asList()),
+        Arrays.asList(),
+        SolutionType.ABOVE_PIVOT),
     ALGAE_STOW(
         new TargetData(
-            new Translation3d(Units.inchesToMeters(16.593), 0, FieldConstants.ReefHeight.L2.HEIGHT),
+            new Translation3d(
+                IN_PERIMETER_X, 0, Constants.ElevatorConstants.ELEVATOR_HEIGHT_PIVOT_SAFETY),
             "ALGAE_STOW"),
         Arrays.asList(),
         Arrays.asList());
@@ -97,11 +101,25 @@ public class ElevatorTargets {
       this.target = target;
       this.enter_trj = new ArrayList<Translation3d>(enter);
       this.exit_trj = new ArrayList<Translation3d>(exit);
+      this.endfector_sulution = SolutionType.BELOW_PIVOT;
+    }
+
+    TargetType(
+        TargetData target, List<Translation3d> enter, List<Translation3d> exit, SolutionType es) {
+      this.target = target;
+      this.enter_trj = new ArrayList<Translation3d>(enter);
+      this.exit_trj = new ArrayList<Translation3d>(exit);
+      this.endfector_sulution = es;
     }
 
     private TargetData target;
+    private SolutionType endfector_sulution;
     private ArrayList<Translation3d> enter_trj;
     private ArrayList<Translation3d> exit_trj;
+
+    public SolutionType getEndfectorSulution() {
+      return endfector_sulution;
+    }
 
     public ArrayList<Translation3d> getEnterTrj() {
       return enter_trj;

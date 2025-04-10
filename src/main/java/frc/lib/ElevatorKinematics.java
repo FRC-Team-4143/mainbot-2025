@@ -9,6 +9,11 @@ public class ElevatorKinematics {
   private double reachable_max_ = 0;
   private double reachable_min_ = 0;
 
+  public enum SolutionType {
+    ABOVE_PIVOT,
+    BELOW_PIVOT
+  }
+
   /**
    * Elevator Kinematic's Constructor
    *
@@ -20,43 +25,33 @@ public class ElevatorKinematics {
     virtual_arm_angle_ = Math.tan(arm_width / arm_length);
     reachable_max_ = elevator_max + virtual_arm_length_;
     reachable_min_ = elevator_min - virtual_arm_length_;
-    DataLogManager.log(
-        "Max Z: "
-            + reachable_max_
-            + " | Min Z: "
-            + reachable_min_
-            + " | Max X: "
-            + virtual_arm_length_);
   }
 
-  public JointSpaceSolution translationToJointSpace(Translation3d t) {
+  public double getVirtualArmLength() {
+    return virtual_arm_length_;
+  }
+
+  public JointSpaceSolution translationToJointSpace(Translation3d t, SolutionType solution_type) {
     double x = t.getX();
     if (Math.abs(x) > virtual_arm_length_) {
-      DataLogManager.log("WARNING: Inverse Kinematics X Value : " + x + "| Out of Reach");
       x = Math.copySign(virtual_arm_length_, x);
     }
     double z = t.getZ();
     if (z > reachable_max_) {
-      // DataLogManager.log(
-      //     "WARNING: Inverse Kinematics Z Value : "
-      //         + z
-      //         + " | Out of Reach ("
-      //         + reachable_min_
-      //         + ")");
       z = reachable_max_;
     }
     if (z < reachable_min_) {
-      // DataLogManager.log(
-      //     "WARNING: Inverse Kinematics Z Value : "
-      //         + z
-      //         + " | Out of Reach ("
-      //         + reachable_min_
-      //         + ")");
       z = reachable_min_;
     }
 
     double angle = -Math.acos(x / virtual_arm_length_);
-    double height = -(Math.sin(angle) * virtual_arm_length_) + z;
+    double height = 0;
+    double arm_height_offset = Math.abs(Math.sin(angle) * virtual_arm_length_);
+    if (solution_type == SolutionType.ABOVE_PIVOT) {
+      height = z - arm_height_offset;
+    } else {
+      height = z + arm_height_offset;
+    }
     return new JointSpaceSolution(height, angle);
   }
 

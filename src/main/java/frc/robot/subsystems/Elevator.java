@@ -23,10 +23,12 @@ import edu.wpi.first.math.util.Units;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.networktables.StructArrayPublisher;
 import edu.wpi.first.networktables.StructPublisher;
+import edu.wpi.first.wpilibj.DataLogManager;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Commands;
 import frc.lib.ElevatorKinematics;
 import frc.lib.ElevatorKinematics.JointSpaceSolution;
+import frc.lib.ElevatorKinematics.SolutionType;
 import frc.lib.ElevatorPlanner;
 import frc.lib.ElevatorTargets.TargetType;
 import frc.mw_lib.controls.TalonFXTuner;
@@ -212,7 +214,8 @@ public class Elevator extends Subsystem {
   public void updateLogic(double timestamp) {
     io_.current_translation_ = kinematics_.jointSpaceToTranslation(io_.current_system_solution_);
     if (planner_.hasPath() && !systemAtTarget(io_.final_system_solution_)) {
-      io_.target_system_solution_ = planner_.nextTarget(io_.current_translation_);
+      io_.target_system_solution_ =
+          planner_.nextTarget(io_.current_translation_, io_.solution_type_);
     } else if (!planner_.hasPath()) {
       io_.target_system_solution_ = io_.final_system_solution_;
     }
@@ -230,12 +233,12 @@ public class Elevator extends Subsystem {
       // io_.target_elevator_height_ = ElevatorConstants.ELEVATOR_HEIGHT_PIVOT_MIN;
     }
     if (io_.target_elevator_height_ > ElevatorConstants.ELEVATOR_HEIGHT_PIVOT_MAX) {
-      // DataLogManager.log(
-      // "ERROR: Target Elevator Height: "
-      // + io_.target_elevator_height_
-      // + " Max Elevator Height: "
-      // + ElevatorConstants.ELEVATOR_HEIGHT_PIVOT_MAX);
-      // io_.target_elevator_height_ = ElevatorConstants.ELEVATOR_HEIGHT_PIVOT_MAX;
+      DataLogManager.log(
+      "ERROR: Target Elevator Height: "
+      + io_.target_elevator_height_
+      + " Max Elevator Height: "
+      + ElevatorConstants.ELEVATOR_HEIGHT_PIVOT_MAX);
+      io_.target_elevator_height_ = ElevatorConstants.ELEVATOR_HEIGHT_PIVOT_MAX;
     }
   }
 
@@ -274,6 +277,8 @@ public class Elevator extends Subsystem {
         "Subsystems/Arm/Current Height (Meters)", io_.current_translation_.getZ());
     SmartDashboard.putNumber("Subsystems/Arm/Current X (Meters)", io_.current_translation_.getX());
     SmartDashboard.putString("Subsystems/Elevator/Target", io_.final_target_.toString());
+    SmartDashboard.putString(
+        "Subsystems/Elevator/Target Solution Type ", getSolutionType().toString());
     SmartDashboard.putString(
         "Subsystems/Elevator/Pending Target", io_.target_system_solution_.toString());
     SmartDashboard.putBoolean("Subsystems/Elevator/At Target", isElevatorAtTarget());
@@ -424,7 +429,8 @@ public class Elevator extends Subsystem {
     }
 
     io_.final_system_solution_ =
-        kinematics_.translationToJointSpace(io_.final_target_.getTarget().getTranslation());
+        kinematics_.translationToJointSpace(
+            io_.final_target_.getTarget().getTranslation(), io_.solution_type_);
   }
 
   /** Removes any applied offsets to the currently selected target */
@@ -461,16 +467,29 @@ public class Elevator extends Subsystem {
     if (systemAtTarget(io_.final_system_solution_)) {
       waypoints.addAll(old_target.getExitTrj());
     }
-    waypoints.addAll(new_target.getEnterTrj());
+
+    if (io_.solution_type_ != new_target.getEndfectorSulution()) {
+      io_.solution_type_ = new_target.getEndfectorSulution();
+      double dif = new_target.getTarget().getTranslation().getZ() - io_.current_translation_.getZ();
+      double offset = dif / 2;
+      double z = io_.current_translation_.getZ() + offset;
+      if (new_target.getTarget().getTranslation().getX() > 0) {
+        waypoints.add(new Translation3d())
+      }
+    }
+
+    waypoints.addAll(new_target.getEnterTrj());    
     waypoints.add(new_target.getTarget().getTranslation());
 
     planner_.plan(waypoints);
 
     if (planner_.hasPath()) {
-      io_.target_system_solution_ = planner_.nextTarget(io_.current_translation_);
+      io_.target_system_solution_ =
+          planner_.nextTarget(io_.current_translation_, io_.solution_type_);
     }
     io_.final_system_solution_ =
-        kinematics_.translationToJointSpace(io_.final_target_.getTarget().getTranslation());
+        kinematics_.translationToJointSpace(
+            io_.final_target_.getTarget().getTranslation(), io_.solution_type_);
   }
 
   /**
@@ -518,6 +537,10 @@ public class Elevator extends Subsystem {
     tuner.bindQuasistaticReverse(OI.getOperatorJoystickYButtonTrigger());
   }
 
+  public SolutionType getSolutionType() {
+    return io_.solution_type_;
+  }
+
   public class ElevatorPeriodicIo implements Logged {
     // IO container for all variables
     @Log.File public double current_elevator_height_ = 0;
@@ -540,6 +563,8 @@ public class Elevator extends Subsystem {
     @Log.File public SpeedLimit current_speed_limit_ = SpeedLimit.CORAL;
     @Log.File public TargetType final_target_ = TargetType.CORAL_INTAKE;
     @Log.File public JointSpaceSolution final_system_solution_ = target_system_solution_;
+
+    @Log.File public SolutionType solution_type_ = SolutionType.BELOW_PIVOT;
   }
 
   /** Get logging object from subsystem */

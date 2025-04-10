@@ -6,6 +6,7 @@ import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.networktables.StructArrayPublisher;
 import edu.wpi.first.networktables.StructPublisher;
 import frc.lib.ElevatorKinematics.JointSpaceSolution;
+import frc.lib.ElevatorKinematics.SolutionType;
 import frc.mw_lib.geometry.spline.SplineUtil;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -60,7 +61,7 @@ public class ElevatorPlanner {
     return path_.size() > 1;
   }
 
-  public JointSpaceSolution nextTarget(Translation3d current_translation) {
+  public JointSpaceSolution nextTarget(Translation3d current_translation, SolutionType es) {
     Iterator<Translation3d> iterator = path_.iterator();
     int iterations = 0;
     while (iterator.hasNext()) {
@@ -77,6 +78,6 @@ public class ElevatorPlanner {
       }
     }
     target_publisher_.set(path_.get(0));
-    return kinematics_.translationToJointSpace(path_.get(0));
+    return kinematics_.translationToJointSpace(path_.get(0), es);
   }
 }
