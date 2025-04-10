@@ -212,8 +212,8 @@ public final class Constants {
     public static final double WHEEL_ALGAE_SHOOT_SPEED = 0.5;
     public static final double WHEEL_ALGAE_BLAST_SPEED = 0.5;
     public static final double CORAL_LOAD_SPEED = -0.5;
-    public static final double ALGAE_LOAD_SPEED = -0.3;
-    public static final double ALGAE_IDLE_SPEED = 0.1;
+    public static final double ALGAE_LOAD_SPEED = -0.5;
+    public static final double ALGAE_IDLE_SPEED = -0.05;
     public static final double STATOR_CURRENT_LIMIT = 40;
     public static final String CORAL_COLOR = new Color(255, 255, 255).toHexString();
     public static final String ALGAE_COLOR = new Color(0, 255, 255).toHexString();
