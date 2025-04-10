@@ -85,7 +85,9 @@ public class ElevatorTargets {
     ALGAE_PROCESSOR(
         new TargetData(new Translation3d(), "ALGAE_PROCESSOR"), Arrays.asList(), Arrays.asList()),
     BARGE(
-        new TargetData(L4.getTarget().getTranslation(), "BARGE"),
+        new TargetData(
+            new Translation3d(Units.inchesToMeters(12), 0, FieldConstants.ReefHeight.L3.HEIGHT),
+            "BARGE"),
         Arrays.asList(),
         Arrays.asList(),
         SolutionType.ABOVE_PIVOT),

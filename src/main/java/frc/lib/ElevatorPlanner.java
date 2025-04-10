@@ -61,7 +61,8 @@ public class ElevatorPlanner {
     return path_.size() > 1;
   }
 
-  public JointSpaceSolution nextTarget(Translation3d current_translation, SolutionType es) {
+  public synchronized JointSpaceSolution nextTarget(
+      Translation3d current_translation, SolutionType st) {
     Iterator<Translation3d> iterator = path_.iterator();
     int iterations = 0;
     while (iterator.hasNext()) {
@@ -77,7 +78,8 @@ public class ElevatorPlanner {
         break;
       }
     }
+
     target_publisher_.set(path_.get(0));
-    return kinematics_.translationToJointSpace(path_.get(0), es);
+    return kinematics_.translationToJointSpace(path_.get(0), st);
   }
 }

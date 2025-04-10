@@ -198,9 +198,9 @@ public class GameStateManager extends Subsystem {
               target_arm_pub_,
               Elevator.getInstance()
                   .getElevatorKinematics()
-                  .translationToJointSpaceDisplay(
+                  .translationToJointSpace(
                       elevatorTargetSwitch().getTarget().getTranslation(),
-                      Elevator.getInstance().getSolutionType()));
+                      elevatorTargetSwitch().getEndfectorSulution()));
     }
   }
 
