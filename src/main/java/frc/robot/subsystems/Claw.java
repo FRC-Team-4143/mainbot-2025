@@ -117,13 +117,13 @@ public class Claw extends Subsystem {
     } else {
       switch (io_.claw_mode_) {
         case BLAST:
-          io_.wheel_output_ = -ClawConstants.WHEEL_ALGAE_BLAST_SPEED;
+          io_.wheel_output_ = ClawConstants.WHEEL_ALGAE_BLAST_SPEED;
           break;
         case SHOOT:
-          io_.wheel_output_ = -ClawConstants.WHEEL_ALGAE_SHOOT_SPEED;
+          io_.wheel_output_ = ClawConstants.WHEEL_ALGAE_SHOOT_SPEED;
           break;
         case LOAD:
-          io_.wheel_output_ = -ClawConstants.ALGAE_LOAD_SPEED;
+          io_.wheel_output_ = ClawConstants.ALGAE_LOAD_SPEED;
           break;
         case IDLE:
         default:

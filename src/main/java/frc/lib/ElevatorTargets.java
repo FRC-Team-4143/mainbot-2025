@@ -69,12 +69,29 @@ public class ElevatorTargets {
         new TargetData(CORAL_INTAKE.getTarget().getTranslation(), "CORAL_STOW"),
         Arrays.asList(),
         Arrays.asList()),
-    ALGAE_LOW(new TargetData(new Translation3d(), "ALGAE_LOW"), Arrays.asList(), Arrays.asList()),
-    ALGAE_HIGH(new TargetData(new Translation3d(), "ALGAE_HIGH"), Arrays.asList(), Arrays.asList()),
+    ALGAE_LOW(
+        new TargetData(
+            new Translation3d(Units.inchesToMeters(16.593), 0, FieldConstants.ReefHeight.L2.HEIGHT),
+            "ALGAE_LOW"),
+        Arrays.asList(),
+        Arrays.asList()),
+    ALGAE_HIGH(
+        new TargetData(
+            new Translation3d(Units.inchesToMeters(16.593), 0, FieldConstants.ReefHeight.L3.HEIGHT),
+            "ALGAE_HIGH"),
+        Arrays.asList(),
+        Arrays.asList()),
     ALGAE_PROCESSOR(
-        new TargetData(new Translation3d(), "ALGAE_PROCESSOR"), Arrays.asList(), Arrays.asList()),
+        new TargetData(new Translation3d(0.33, 0, 0.5), "ALGAE_PROCESSOR"),
+        Arrays.asList(),
+        Arrays.asList()),
     BARGE(new TargetData(new Translation3d(), "BARGE"), Arrays.asList(), Arrays.asList()),
-    ALGAE_STOW(new TargetData(new Translation3d(), "ALGAE_STOW"), Arrays.asList(), Arrays.asList());
+    ALGAE_STOW(
+        new TargetData(
+            new Translation3d(Units.inchesToMeters(16.593), 0, FieldConstants.ReefHeight.L2.HEIGHT),
+            "ALGAE_STOW"),
+        Arrays.asList(),
+        Arrays.asList());
 
     TargetType(TargetData target, List<Translation3d> enter, List<Translation3d> exit) {
       this.target = target;
