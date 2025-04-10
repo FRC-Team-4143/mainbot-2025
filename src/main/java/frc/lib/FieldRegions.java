@@ -279,36 +279,38 @@ public class FieldRegions {
       ALL_REGIONS.set(i, AllianceFlipUtil.apply(ALL_REGIONS.get(i), FieldConstants.SYMMETRY_TYPE));
     }
 
-    ScoringPoses.REEF_FACE_0_POSE =
-        AllianceFlipUtil.apply(ScoringPoses.REEF_FACE_0_POSE, FieldConstants.SYMMETRY_TYPE);
-    ScoringPoses.REEF_FACE_1_POSE =
-        AllianceFlipUtil.apply(ScoringPoses.REEF_FACE_1_POSE, FieldConstants.SYMMETRY_TYPE);
-    ScoringPoses.REEF_FACE_2_POSE =
-        AllianceFlipUtil.apply(ScoringPoses.REEF_FACE_2_POSE, FieldConstants.SYMMETRY_TYPE);
-    ScoringPoses.REEF_FACE_3_POSE =
-        AllianceFlipUtil.apply(ScoringPoses.REEF_FACE_3_POSE, FieldConstants.SYMMETRY_TYPE);
-    ScoringPoses.REEF_FACE_4_POSE =
-        AllianceFlipUtil.apply(ScoringPoses.REEF_FACE_4_POSE, FieldConstants.SYMMETRY_TYPE);
-    ScoringPoses.REEF_FACE_5_POSE =
-        AllianceFlipUtil.apply(ScoringPoses.REEF_FACE_5_POSE, FieldConstants.SYMMETRY_TYPE);
+    // ScoringPoses.REEF_FACE_0_POSE =
+    //     AllianceFlipUtil.apply(ScoringPoses.REEF_FACE_0_POSE, FieldConstants.SYMMETRY_TYPE);
+    // ScoringPoses.REEF_FACE_1_POSE =
+    //     AllianceFlipUtil.apply(ScoringPoses.REEF_FACE_1_POSE, FieldConstants.SYMMETRY_TYPE);
+    // ScoringPoses.REEF_FACE_2_POSE =
+    //     AllianceFlipUtil.apply(ScoringPoses.REEF_FACE_2_POSE, FieldConstants.SYMMETRY_TYPE);
+    // ScoringPoses.REEF_FACE_3_POSE =
+    //     AllianceFlipUtil.apply(ScoringPoses.REEF_FACE_3_POSE, FieldConstants.SYMMETRY_TYPE);
+    // ScoringPoses.REEF_FACE_4_POSE =
+    //     AllianceFlipUtil.apply(ScoringPoses.REEF_FACE_4_POSE, FieldConstants.SYMMETRY_TYPE);
+    // ScoringPoses.REEF_FACE_5_POSE =
+    //     AllianceFlipUtil.apply(ScoringPoses.REEF_FACE_5_POSE, FieldConstants.SYMMETRY_TYPE);
 
-    ScoringPoses.OPP_REEF_FACE_0_POSE =
-        AllianceFlipUtil.apply(ScoringPoses.OPP_REEF_FACE_0_POSE, FieldConstants.SYMMETRY_TYPE);
-    ScoringPoses.OPP_REEF_FACE_1_POSE =
-        AllianceFlipUtil.apply(ScoringPoses.OPP_REEF_FACE_1_POSE, FieldConstants.SYMMETRY_TYPE);
-    ScoringPoses.OPP_REEF_FACE_2_POSE =
-        AllianceFlipUtil.apply(ScoringPoses.OPP_REEF_FACE_2_POSE, FieldConstants.SYMMETRY_TYPE);
-    ScoringPoses.OPP_REEF_FACE_3_POSE =
-        AllianceFlipUtil.apply(ScoringPoses.OPP_REEF_FACE_3_POSE, FieldConstants.SYMMETRY_TYPE);
-    ScoringPoses.OPP_REEF_FACE_4_POSE =
-        AllianceFlipUtil.apply(ScoringPoses.OPP_REEF_FACE_4_POSE, FieldConstants.SYMMETRY_TYPE);
-    ScoringPoses.OPP_REEF_FACE_5_POSE =
-        AllianceFlipUtil.apply(ScoringPoses.OPP_REEF_FACE_5_POSE, FieldConstants.SYMMETRY_TYPE);
+    // ScoringPoses.OPP_REEF_FACE_0_POSE =
+    //     AllianceFlipUtil.apply(ScoringPoses.OPP_REEF_FACE_0_POSE, FieldConstants.SYMMETRY_TYPE);
+    // ScoringPoses.OPP_REEF_FACE_1_POSE =
+    //     AllianceFlipUtil.apply(ScoringPoses.OPP_REEF_FACE_1_POSE, FieldConstants.SYMMETRY_TYPE);
+    // ScoringPoses.OPP_REEF_FACE_2_POSE =
+    //     AllianceFlipUtil.apply(ScoringPoses.OPP_REEF_FACE_2_POSE, FieldConstants.SYMMETRY_TYPE);
+    // ScoringPoses.OPP_REEF_FACE_3_POSE =
+    //     AllianceFlipUtil.apply(ScoringPoses.OPP_REEF_FACE_3_POSE, FieldConstants.SYMMETRY_TYPE);
+    // ScoringPoses.OPP_REEF_FACE_4_POSE =
+    //     AllianceFlipUtil.apply(ScoringPoses.OPP_REEF_FACE_4_POSE, FieldConstants.SYMMETRY_TYPE);
+    // ScoringPoses.OPP_REEF_FACE_5_POSE =
+    //     AllianceFlipUtil.apply(ScoringPoses.OPP_REEF_FACE_5_POSE, FieldConstants.SYMMETRY_TYPE);
 
     ScoringPoses.BARGE_TIGHT_ROPE =
         AllianceFlipUtil.apply(ScoringPoses.BARGE_TIGHT_ROPE, FieldConstants.SYMMETRY_TYPE);
     ScoringPoses.PROCESSOR_TIGHT_ROPE =
-        AllianceFlipUtil.apply(ScoringPoses.BARGE_TIGHT_ROPE, FieldConstants.SYMMETRY_TYPE);
+        AllianceFlipUtil.apply(ScoringPoses.PROCESSOR_TIGHT_ROPE, FieldConstants.SYMMETRY_TYPE);
+
+    System.out.println("Fliped all regions and tight ropes");
 
     populateTable();
   }
@@ -325,11 +327,14 @@ public class FieldRegions {
     REGION_POSE_TABLE.put(REEF_FACE3_REGION.getName(), ScoringPoses.REEF_FACE_3_POSE);
     REGION_POSE_TABLE.put(REEF_FACE4_REGION.getName(), ScoringPoses.REEF_FACE_4_POSE);
     REGION_POSE_TABLE.put(REEF_FACE5_REGION.getName(), ScoringPoses.REEF_FACE_5_POSE);
+
     REGION_POSE_TABLE.put(OPP_REEF_FACE0_REGION.getName(), ScoringPoses.OPP_REEF_FACE_0_POSE);
     REGION_POSE_TABLE.put(OPP_REEF_FACE1_REGION.getName(), ScoringPoses.OPP_REEF_FACE_1_POSE);
     REGION_POSE_TABLE.put(OPP_REEF_FACE2_REGION.getName(), ScoringPoses.OPP_REEF_FACE_2_POSE);
     REGION_POSE_TABLE.put(OPP_REEF_FACE3_REGION.getName(), ScoringPoses.OPP_REEF_FACE_3_POSE);
     REGION_POSE_TABLE.put(OPP_REEF_FACE4_REGION.getName(), ScoringPoses.OPP_REEF_FACE_4_POSE);
     REGION_POSE_TABLE.put(OPP_REEF_FACE5_REGION.getName(), ScoringPoses.OPP_REEF_FACE_5_POSE);
+
+    System.out.println("populated Table");
   }
 }
