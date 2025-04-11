@@ -1,13 +1,16 @@
 package frc.mw_lib.subsystem;
 
+import edu.wpi.first.wpilibj.DataLogManager;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Notifier;
 import edu.wpi.first.wpilibj.Timer;
+import frc.mw_lib.logging.GitLogger;
 import frc.mw_lib.util.ConstantsLoader;
 import java.util.ArrayList;
 import java.util.List;
 import monologue.Annotations.Log;
 import monologue.Logged;
+import monologue.Monologue;
 
 public abstract class SubsystemManager {
   private static final String subsystems_key_ = "subsystems";

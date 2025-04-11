@@ -7,6 +7,7 @@ import edu.wpi.first.networktables.BooleanPublisher;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.networktables.StructArrayPublisher;
 import edu.wpi.first.networktables.StructPublisher;
+import edu.wpi.first.wpilibj.DataLogManager;
 import frc.lib.ElevatorKinematics.JointSpaceSolution;
 import frc.lib.ElevatorKinematics.SolutionType;
 import frc.mw_lib.geometry.spline.SplineUtil;
@@ -59,7 +60,6 @@ public class ElevatorPlanner {
   }
 
   public void plan(ArrayList<Waypoint> waypoints) {
-    System.out.println("Started Plan build waypoints size:" + waypoints.size());
     Translation3d[] waypoint_translation_array = new Translation3d[waypoints.size()];
     for (int i = 0; i < waypoint_translation_array.length; i++) {
       waypoint_translation_array[i] = waypoints.get(i).translation;
@@ -76,8 +76,6 @@ public class ElevatorPlanner {
       path_.set(j, tmp);
     }
     path_publisher_.set(path_array);
-    System.out.println("path_array size:" + path_array.length);
-    System.out.println("waypoint_translation_array size:" + waypoint_translation_array.length);
   }
 
   public boolean hasPath() {
@@ -104,7 +102,7 @@ public class ElevatorPlanner {
       iterator.remove();
 
       if (iterations > MAX_ITERATIONS) {
-        System.out.println("Next Target Overrun!");
+        DataLogManager.log("WARNING: Next Target Overrun!");
         break;
       }
     }

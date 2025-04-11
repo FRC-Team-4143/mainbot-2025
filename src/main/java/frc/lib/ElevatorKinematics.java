@@ -1,6 +1,7 @@
 package frc.lib;
 
 import edu.wpi.first.math.geometry.Translation3d;
+import edu.wpi.first.wpilibj.DataLogManager;
 import frc.mw_lib.util.Util;
 
 public class ElevatorKinematics {
@@ -57,12 +58,12 @@ public class ElevatorKinematics {
   public Translation3d jointSpaceToTranslation(JointSpaceSolution j) {
     double x = Math.cos(j.getPivotAngle()) * virtual_arm_length_;
     double z = j.getPivotHeight() + (Math.sin(j.getPivotAngle()) * virtual_arm_length_);
-    // if (Math.abs(x) > virtual_arm_length_)
-    // DataLogManager.log("WARNING: Forward Kinematics X Value : Out of Reach");
-    // if (z > reachable_max_)
-    // DataLogManager.log("WARNING: Forward Kinematics Z Value : Out of Reach (+)");
-    // if (z < reachable_min_)
-    // DataLogManager.log("WARNING: Forward Kinematics Z Value : Out of Reach (-)");
+    if (Math.abs(x) > virtual_arm_length_)
+      DataLogManager.log("WARNING: Forward Kinematics X Value : Out of Reach");
+    if (z > reachable_max_)
+      DataLogManager.log("WARNING: Forward Kinematics Z Value : Out of Reach (+)");
+    if (z < reachable_min_)
+      DataLogManager.log("WARNING: Forward Kinematics Z Value : Out of Reach (-)");
     return new Translation3d(x, 0, z);
   }
 

@@ -23,6 +23,7 @@ import edu.wpi.first.math.util.Units;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.networktables.StructArrayPublisher;
 import edu.wpi.first.networktables.StructPublisher;
+import edu.wpi.first.wpilibj.DataLogManager;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Commands;
 import frc.lib.ElevatorKinematics;
@@ -477,7 +478,6 @@ public class Elevator extends Subsystem {
    * @param new_target
    */
   public synchronized void buildPlan(TargetType new_target) {
-    System.out.println("Started Plan build");
     TargetType old_target = io_.final_target_;
     io_.final_target_ = new_target;
     io_.final_solution_type_ = new_target.getEndfectorSulution();
