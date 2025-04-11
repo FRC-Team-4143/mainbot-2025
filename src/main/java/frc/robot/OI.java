@@ -41,7 +41,7 @@ public abstract class OI {
   private static BooleanSupplier pov_is_present_ = () -> getDriverJoystickPOV().isPresent();
   private static Trigger driver_pov_active_ = new Trigger(pov_is_present_);
   public static BooleanSupplier use_vision =
-      () -> SmartDashboard.getBoolean("Vision/Use Vision Features", true);
+      () -> SmartDashboard.getBoolean("Vision/Use Vision Features", false);
   public static IntakePreference intake_preference = IntakePreference.GROUND;
 
   public enum IntakePreference {
@@ -78,40 +78,45 @@ public abstract class OI {
      */
 
     // Driver Load
-    driver_controller_
-        .rightBumper()
-        .whileTrue(new GamePieceLoad().unless(Climber.getInstance()::lockOutControl));
+    //driver_controller_
+        //.rightBumper()
+        //.whileTrue(new GamePieceLoad().unless(Climber.getInstance()::lockOutControl));
     // Driver Score
-    driver_controller_
-        .rightTrigger()
-        .whileTrue(new GamePieceEject().unless(Climber.getInstance()::lockOutControl));
+    //driver_controller_
+        //.rightTrigger()
+        //.whileTrue(new GamePieceEject().unless(Climber.getInstance()::lockOutControl));
     // Robot Align
-    driver_controller_
-        .leftTrigger()
-        .whileTrue(
-            new AlignWithTarget().onlyIf(use_vision).unless(Climber.getInstance()::lockOutControl));
+    //driver_controller_
+        //.leftTrigger()
+        //.whileTrue(
+            //new AlignWithTarget().onlyIf(use_vision).unless(Climber.getInstance()::lockOutControl));
     // Toggle Game Piece
-    driver_controller_.leftBumper().onTrue(Claw.getInstance().toggleGamePieceCommand());
+    //driver_controller_.leftBumper().onTrue(Claw.getInstance().toggleGamePieceCommand());
 
-    if (Climber.getInstance().isEnabled()) {
+    //if (Climber.getInstance().isEnabled()) {
       // Increment Climb Sequence
-      driver_controller_.start().onTrue(Commands.runOnce(() -> Climber.getInstance().nextStage()));
+      //driver_controller_.start().onTrue(Commands.runOnce(() -> Climber.getInstance().nextStage()));
       // Decrement Climb Sequence
-      driver_controller_.back().onTrue(Commands.runOnce(() -> Climber.getInstance().backStage()));
-    }
+      //driver_controller_.back().onTrue(Commands.runOnce(() -> Climber.getInstance().backStage()));
+    //}
 
-    driver_controller_
-        .a()
-        .onTrue(
-            Commands.runOnce(() -> toggleIntakePreference())
-                .unless(Climber.getInstance()::lockOutControl));
+    //driver_controller_
+        //.a()
+        //.onTrue(
+            //Commands.runOnce(() -> toggleIntakePreference())
+                //.unless(Climber.getInstance()::lockOutControl));
 
-    driver_controller_.b().whileTrue(new CoralTractorBeam());
+    //driver_controller_.b().whileTrue(new CoralTractorBeam());
 
     // Swap Between Robot Centric and Field Centric
     driver_controller_
         .rightStick()
         .onTrue(SwerveDrivetrain.getInstance().toggleFieldCentric().ignoringDisable(true));
+
+        // Seed Feild Centric
+    driver_controller_
+        .rightTrigger(0.80)
+        .onTrue(SwerveDrivetrain.getInstance().seedFieldRelativeCommand().ignoringDisable(true));
 
     // Crawl
     driver_pov_active_.whileTrue(
