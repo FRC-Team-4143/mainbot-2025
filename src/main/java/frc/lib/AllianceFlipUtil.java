@@ -58,11 +58,18 @@ public class AllianceFlipUtil {
     for (int i = 0; i < points.length; i++) {
       points[i] = AllianceFlipUtil.apply(points[i], symmetry);
     }
+    System.out.println("Fliped: " + region.getName());
     return new PolygonRegion(points, region.getName());
   }
 
   public static CircularRegion apply(CircularRegion region, SymmetryType symmetry) {
-    return new CircularRegion(region.getCenter(), region.getRadius(), region.getName());
+    Translation2d newCenter;
+    if (symmetry == SymmetryType.DIAGONAL) {
+      newCenter = apply(region.getCenter(), SymmetryType.DIAGONAL);
+    } else {
+      newCenter = apply(region.getCenter(), SymmetryType.DIRECT);
+    }
+    return new CircularRegion(newCenter, region.getRadius(), region.getName());
   }
 
   public static TightRope apply(TightRope tightRope, SymmetryType symmetry) {

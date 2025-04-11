@@ -67,6 +67,7 @@ public class PolygonRegion implements Region {
   }
 
   public Translation2d[] getPoints() {
-    return points_;
+    Translation2d[] saftey = points_;
+    return saftey;
   }
 }
