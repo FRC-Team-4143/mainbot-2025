@@ -231,19 +231,19 @@ public class Elevator extends Subsystem {
 
     // Elevator Safety
     if (io_.target_elevator_height_ < ElevatorConstants.ELEVATOR_HEIGHT_PIVOT_MIN) {
-      // DataLogManager.log(
-      //     "ERROR: Target Elevator Height: "
-      //         + io_.target_elevator_height_
-      //         + " Min Elevator Height: "
-      //         + ElevatorConstants.ELEVATOR_HEIGHT_PIVOT_MIN);
+      DataLogManager.log(
+          "ERROR: Target Elevator Height: "
+              + io_.target_elevator_height_
+              + " Min Elevator Height: "
+              + ElevatorConstants.ELEVATOR_HEIGHT_PIVOT_MIN);
       io_.target_elevator_height_ = ElevatorConstants.ELEVATOR_HEIGHT_PIVOT_MIN;
     }
     if (io_.target_elevator_height_ > ElevatorConstants.ELEVATOR_HEIGHT_PIVOT_MAX) {
-      // DataLogManager.log(
-      //     "ERROR: Target Elevator Height: "
-      //         + io_.target_elevator_height_
-      //         + " Max Elevator Height: "
-      //         + ElevatorConstants.ELEVATOR_HEIGHT_PIVOT_MAX);
+      DataLogManager.log(
+          "ERROR: Target Elevator Height: "
+              + io_.target_elevator_height_
+              + " Max Elevator Height: "
+              + ElevatorConstants.ELEVATOR_HEIGHT_PIVOT_MAX);
       io_.target_elevator_height_ = ElevatorConstants.ELEVATOR_HEIGHT_PIVOT_MAX;
     }
   }

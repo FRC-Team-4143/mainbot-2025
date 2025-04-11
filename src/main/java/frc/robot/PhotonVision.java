@@ -67,7 +67,7 @@ public class PhotonVision {
     for (int i = 0; i < cameras_size; i++) {
       CamConstants config = Constants.Vision.CAMERAS.get(i);
       cameras[i] = new PhotonCamera(config.camera_name);
-      // DataLogManager.log("Registering camera " + config.camera_name);
+      DataLogManager.log("Registering camera " + config.camera_name);
       photonEstimators[i] =
           new PhotonPoseEstimator(
               TAG_LAYOUT, PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR, config.camera_transform);

@@ -27,7 +27,7 @@ public abstract class SubsystemManager {
     if (enabled_systems_ == null) {
       // Determine removable subsystems to load
       enabled_systems_ = ConstantsLoader.getInstance().getStringList(subsystems_key_);
-      // DataLogManager.log("Expecting subsystems: " + enabled_systems_.toString());
+      DataLogManager.log("Expecting subsystems: " + enabled_systems_.toString());
     }
 
     return enabled_systems_;
@@ -46,7 +46,7 @@ public abstract class SubsystemManager {
 
   public void registerSubsystem(Subsystem system) {
     if (system instanceof RemovableSubsystem && !((RemovableSubsystem) system).isEnabled()) {
-      // DataLogManager.log("Registered disabled subsystem: " + system.getClass().getSimpleName());
+      DataLogManager.log("Registered disabled subsystem: " + system.getClass().getSimpleName());
     } else {
       subsystems.add(system);
       ios.subsystems_ios.add(system.getLoggingObject());
@@ -62,7 +62,7 @@ public abstract class SubsystemManager {
         subsystem.readPeriodicInputs(timestamp);
       } catch (Exception e) {
         e.printStackTrace();
-        // DataLogManager.log(subsystem.getClass().getCanonicalName() + "failed to read inputs");
+        DataLogManager.log(subsystem.getClass().getCanonicalName() + "failed to read inputs");
       }
     }
 
@@ -73,7 +73,7 @@ public abstract class SubsystemManager {
         subsystem.updateLogic(timestamp);
       } catch (Exception e) {
         e.printStackTrace();
-        // DataLogManager.log(subsystem.getClass().getCanonicalName() + "failed to update logic");
+        DataLogManager.log(subsystem.getClass().getCanonicalName() + "failed to update logic");
       }
     }
 
@@ -84,7 +84,7 @@ public abstract class SubsystemManager {
         subsystem.writePeriodicOutputs(timestamp);
       } catch (Exception e) {
         e.printStackTrace();
-        // DataLogManager.log(subsystem.getClass().getCanonicalName() + "failed to write outputs");
+        DataLogManager.log(subsystem.getClass().getCanonicalName() + "failed to write outputs");
       }
     }
 
@@ -98,10 +98,10 @@ public abstract class SubsystemManager {
   protected void completeRegistration() {
     loopThread.startPeriodic(.01);
 
-    // Monologue.setupMonologue(ios, "Robot", true, false);
-    // DriverStation.startDataLog(DataLogManager.getLog());
-    // GitLogger.logGitData();
-    // GitLogger.putGitDataToDashboard();
+    Monologue.setupMonologue(ios, "Robot", true, false);
+    DriverStation.startDataLog(DataLogManager.getLog());
+    GitLogger.logGitData();
+    GitLogger.putGitDataToDashboard();
     log_init = true;
   }
 
@@ -117,11 +117,11 @@ public abstract class SubsystemManager {
       ios.subsystems_ios.add(subsystem.getLoggingObject());
     }
 
-    // try {
-    //   Monologue.updateAll();
-    // } catch (Exception e) {
-    //   DataLogManager.log("Monologue failed to log io");
-    // }
+    try {
+      Monologue.updateAll();
+    } catch (Exception e) {
+      DataLogManager.log("Monologue failed to log io");
+    }
   }
 
   /**
