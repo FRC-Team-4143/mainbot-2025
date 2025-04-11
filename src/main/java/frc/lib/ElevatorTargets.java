@@ -103,8 +103,7 @@ public class ElevatorTargets {
         SolutionType.ABOVE_PIVOT),
     ALGAE_STOW(
         new TargetData(
-            new Waypoint(
-                IN_PERIMETER_X, 0, Constants.ElevatorConstants.ELEVATOR_HEIGHT_PIVOT_SAFETY),
+            new Waypoint(Units.inchesToMeters(16.593), 0, FieldConstants.ReefHeight.L2.HEIGHT),
             "ALGAE_STOW"),
         Arrays.asList(),
         Arrays.asList());
