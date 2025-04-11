@@ -98,8 +98,8 @@ public class ElevatorTargets {
     BARGE(
         new TargetData(
             new Waypoint(Units.inchesToMeters(7.07), 0, Units.inchesToMeters(95.34)), "BARGE"),
-        Arrays.asList(),
-        Arrays.asList(),
+        Arrays.asList(new Waypoint(Units.inchesToMeters(1), 0, 2)),
+        Arrays.asList(new Waypoint(Units.inchesToMeters(1), 0, 2)),
         SolutionType.ABOVE_PIVOT),
     ALGAE_STOW(
         new TargetData(
