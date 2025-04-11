@@ -1,7 +1,7 @@
 package frc.lib;
 
 import edu.wpi.first.math.geometry.Translation3d;
-import edu.wpi.first.wpilibj.DataLogManager;
+import frc.mw_lib.util.Util;
 
 public class ElevatorKinematics {
   private double virtual_arm_length_ = 0;
@@ -44,31 +44,37 @@ public class ElevatorKinematics {
       z = reachable_min_;
     }
 
-    double angle = -Math.acos(x / virtual_arm_length_);
-    double height = 0;
-    double arm_height_offset = Math.abs(Math.sin(angle) * virtual_arm_length_);
+    double angle = 0;
     if (solution_type == SolutionType.ABOVE_PIVOT) {
-      height = z - arm_height_offset;
+      angle = Math.acos(x / virtual_arm_length_);
     } else {
-      height = z + arm_height_offset;
+      angle = -Math.acos(x / virtual_arm_length_);
     }
+    double height = z - (Math.sin(angle) * virtual_arm_length_);
     return new JointSpaceSolution(height, angle);
   }
 
   public Translation3d jointSpaceToTranslation(JointSpaceSolution j) {
     double x = Math.cos(j.getPivotAngle()) * virtual_arm_length_;
     double z = j.getPivotHeight() + (Math.sin(j.getPivotAngle()) * virtual_arm_length_);
-    if (Math.abs(x) > virtual_arm_length_)
-      DataLogManager.log("WARNING: Forward Kinematics X Value : Out of Reach");
-    if (z > reachable_max_)
-      DataLogManager.log("WARNING: Forward Kinematics Z Value : Out of Reach (+)");
-    if (z < reachable_min_)
-      DataLogManager.log("WARNING: Forward Kinematics Z Value : Out of Reach (-)");
+    // if (Math.abs(x) > virtual_arm_length_)
+    // DataLogManager.log("WARNING: Forward Kinematics X Value : Out of Reach");
+    // if (z > reachable_max_)
+    // DataLogManager.log("WARNING: Forward Kinematics Z Value : Out of Reach (+)");
+    // if (z < reachable_min_)
+    // DataLogManager.log("WARNING: Forward Kinematics Z Value : Out of Reach (-)");
     return new Translation3d(x, 0, z);
   }
 
   public Translation3d jointSpaceToTranslation(double pivot_height, double pivot_angle) {
     return jointSpaceToTranslation(new JointSpaceSolution(pivot_height, pivot_angle));
+  }
+
+  public Translation3d constrainReachableTranslation(Translation3d t) {
+    return new Translation3d(
+        Util.clamp(t.getX(), virtual_arm_length_),
+        t.getY(),
+        Util.clamp(t.getZ(), reachable_min_, reachable_max_));
   }
 
   public static class JointSpaceSolution {

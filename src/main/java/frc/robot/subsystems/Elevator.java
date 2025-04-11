@@ -23,7 +23,6 @@ import edu.wpi.first.math.util.Units;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.networktables.StructArrayPublisher;
 import edu.wpi.first.networktables.StructPublisher;
-import edu.wpi.first.wpilibj.DataLogManager;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Commands;
 import frc.lib.ElevatorKinematics;
@@ -32,6 +31,7 @@ import frc.lib.ElevatorKinematics.SolutionType;
 import frc.lib.ElevatorPlanner;
 import frc.lib.ElevatorTargets.TargetType;
 import frc.mw_lib.controls.TalonFXTuner;
+import frc.mw_lib.geometry.spline.Waypoint;
 import frc.mw_lib.subsystem.Subsystem;
 import frc.mw_lib.util.MWPreferences;
 import frc.mw_lib.util.Util;
@@ -190,8 +190,7 @@ public class Elevator extends Subsystem {
         readArmEncoder().getRotations()
             - (MWPreferences.getInstance().getPreferenceDouble("ArmEncoderOffset", 0)));
 
-    readPeriodicInputs(0);
-    buildPlan(io_.final_target_); // update final_target_to change default
+    // update final_target_to change default
   }
 
   /** Called to reset and configure the subsystem */
@@ -216,10 +215,8 @@ public class Elevator extends Subsystem {
 
     if (inSafeTypeSwitchRange()) {
       io_.current_solution_type_ = io_.final_solution_type_;
-    } else if (io_.current_arm_angle_ < 0) {
-      io_.current_solution_type_ = SolutionType.BELOW_PIVOT;
-    } else if (io_.current_arm_angle_ > 0) {
-      io_.current_solution_type_ = SolutionType.ABOVE_PIVOT;
+    } else {
+      forceSolutionType();
     }
 
     if (planner_.hasPath() && !systemAtTarget(io_.final_system_solution_)) {
@@ -234,19 +231,19 @@ public class Elevator extends Subsystem {
 
     // Elevator Safety
     if (io_.target_elevator_height_ < ElevatorConstants.ELEVATOR_HEIGHT_PIVOT_MIN) {
-      DataLogManager.log(
-          "ERROR: Target Elevator Height: "
-              + io_.target_elevator_height_
-              + " Min Elevator Height: "
-              + ElevatorConstants.ELEVATOR_HEIGHT_PIVOT_MIN);
+      // DataLogManager.log(
+      //     "ERROR: Target Elevator Height: "
+      //         + io_.target_elevator_height_
+      //         + " Min Elevator Height: "
+      //         + ElevatorConstants.ELEVATOR_HEIGHT_PIVOT_MIN);
       io_.target_elevator_height_ = ElevatorConstants.ELEVATOR_HEIGHT_PIVOT_MIN;
     }
     if (io_.target_elevator_height_ > ElevatorConstants.ELEVATOR_HEIGHT_PIVOT_MAX) {
-      DataLogManager.log(
-          "ERROR: Target Elevator Height: "
-              + io_.target_elevator_height_
-              + " Max Elevator Height: "
-              + ElevatorConstants.ELEVATOR_HEIGHT_PIVOT_MAX);
+      // DataLogManager.log(
+      //     "ERROR: Target Elevator Height: "
+      //         + io_.target_elevator_height_
+      //         + " Max Elevator Height: "
+      //         + ElevatorConstants.ELEVATOR_HEIGHT_PIVOT_MAX);
       io_.target_elevator_height_ = ElevatorConstants.ELEVATOR_HEIGHT_PIVOT_MAX;
     }
   }
@@ -292,14 +289,20 @@ public class Elevator extends Subsystem {
         "Subsystems/Elevator/Pending Target", io_.target_system_solution_.toString());
     SmartDashboard.putBoolean("Subsystems/Elevator/At Target", isElevatorAtTarget());
     SmartDashboard.putBoolean("Subsystems/Arm/At Target", isArmAtTarget());
+    SmartDashboard.putBoolean("Subsystems/Elevator/Safe To Switch", inSafeTypeSwitchRange());
     updateMechanism(current_stages_pub_, current_arm_pub_, io_.current_system_solution_);
   }
 
   public boolean inSafeTypeSwitchRange() {
-    return Util.epislonEquals(
-        Math.abs(io_.current_translation_.getX()),
-        kinematics_.getVirtualArmLength(),
-        Units.inchesToMeters(1));
+    return Util.epislonEquals(io_.current_arm_angle_, 0, Units.degreesToRadians(5));
+  }
+
+  public void forceSolutionType() {
+    if (io_.current_arm_angle_ < 0) {
+      io_.current_solution_type_ = SolutionType.BELOW_PIVOT;
+    } else if (io_.current_arm_angle_ > 0) {
+      io_.current_solution_type_ = SolutionType.ABOVE_PIVOT;
+    }
   }
 
   /**
@@ -474,28 +477,32 @@ public class Elevator extends Subsystem {
    * @param new_target
    */
   public synchronized void buildPlan(TargetType new_target) {
+    System.out.println("Started Plan build");
     TargetType old_target = io_.final_target_;
     io_.final_target_ = new_target;
+    io_.final_solution_type_ = new_target.getEndfectorSulution();
 
-    ArrayList<Translation3d> waypoints = new ArrayList<>();
-    waypoints.add(io_.current_translation_);
+    ArrayList<Waypoint> waypoints = new ArrayList<>();
+    waypoints.add(new Waypoint(io_.current_translation_));
     // Only add exit traj if system is at final target
     if (systemAtTarget(io_.final_system_solution_)) {
       waypoints.addAll(old_target.getExitTrj());
     }
 
-    if (io_.final_solution_type_ != new_target.getEndfectorSulution()) {
-      io_.final_solution_type_ = new_target.getEndfectorSulution();
+    forceSolutionType();
+
+    if (io_.current_solution_type_ != io_.final_solution_type_) {
       double dif = new_target.getTarget().getTranslation().getZ() - io_.current_translation_.getZ();
       double offset = dif / 2;
       double z = io_.current_translation_.getZ() + offset;
-      if (new_target.getTarget().getTranslation().getX() > 0) {
-        waypoints.add(new Translation3d(kinematics_.getVirtualArmLength(), 0, z));
+      if (z < Constants.ElevatorConstants.ELEVATOR_HEIGHT_PIVOT_SAFETY) {
+        z = Constants.ElevatorConstants.ELEVATOR_HEIGHT_PIVOT_SAFETY;
       }
+      waypoints.add(new Waypoint(kinematics_.getVirtualArmLength(), 0, z, true));
     }
 
     waypoints.addAll(new_target.getEnterTrj());
-    waypoints.add(new_target.getTarget().getTranslation());
+    waypoints.add(new Waypoint(new_target.getTarget().getTranslation()));
 
     planner_.plan(waypoints);
 

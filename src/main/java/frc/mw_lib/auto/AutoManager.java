@@ -1,7 +1,6 @@
 package frc.mw_lib.auto;
 
 import choreo.auto.AutoFactory;
-import edu.wpi.first.wpilibj.DataLogManager;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.subsystems.PoseEstimator;
@@ -56,7 +55,7 @@ public class AutoManager {
 
   public Auto getSelectedAuto() {
     Auto auto = auto_chooser_.getSelected();
-    DataLogManager.log("Selected auto routine: " + auto.getClass().getSimpleName());
+    // DataLogManager.log("Selected auto routine: " + auto.getClass().getSimpleName());
     return auto;
   }
 
