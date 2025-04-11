@@ -216,7 +216,10 @@ public class Claw extends Subsystem {
     return algae_debouncer_.calculate(
         isAlgaeMode()
             && wheel_motor_.getSupplyCurrent().getValueAsDouble() > 0
-            && Util.epislonEquals(wheel_motor_.getVelocity().getValueAsDouble(), 0, 2.5));
+            && Util.epislonEquals(
+                wheel_motor_.getVelocity().getValueAsDouble(),
+                0,
+                ClawConstants.ALGAE_SPEED_THRESHOLD));
   }
 
   public boolean isCoralPresent() {
