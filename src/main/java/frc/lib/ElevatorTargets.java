@@ -94,7 +94,9 @@ public class ElevatorTargets {
         Arrays.asList(),
         Arrays.asList()),
     ALGAE_PROCESSOR(
-        new TargetData(new Waypoint(), "ALGAE_PROCESSOR"), Arrays.asList(), Arrays.asList()),
+        new TargetData(new Waypoint(0.33, 0, 0.5), "ALGAE_PROCESSOR"),
+        Arrays.asList(),
+        Arrays.asList()),
     BARGE(
         new TargetData(
             new Waypoint(Units.inchesToMeters(7.07), 0, Units.inchesToMeters(95.34)), "BARGE"),
