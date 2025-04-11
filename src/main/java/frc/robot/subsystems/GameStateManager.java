@@ -133,8 +133,10 @@ public class GameStateManager extends Subsystem {
             && Elevator.getInstance().isElevatorAndArmAtTarget()) {
           // Once at final target, hand off control
           SwerveDrivetrain.getInstance().restoreDefaultDriveMode();
+          if (Claw.getInstance().isCoralMode()) {
           CommandScheduler.getInstance()
               .schedule(new WaitCommand(0.25).beforeStarting(new CoralEject().withTimeout(0.5)));
+          }
           io_.robot_state_ = RobotState.SCORING;
         }
         break;
