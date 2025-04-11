@@ -480,7 +480,7 @@ public class Elevator extends Subsystem {
   public synchronized void buildPlan(TargetType new_target) {
     TargetType old_target = io_.final_target_;
     io_.final_target_ = new_target;
-    io_.final_solution_type_ = new_target.getEndfectorSulution();
+    io_.final_solution_type_ = new_target.getJointSpaceSolution();
 
     ArrayList<Waypoint> waypoints = new ArrayList<>();
     waypoints.add(new Waypoint(io_.current_translation_));

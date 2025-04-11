@@ -113,23 +113,23 @@ public class ElevatorTargets {
       this.target = target;
       this.enter_trj = new ArrayList<Waypoint>(enter);
       this.exit_trj = new ArrayList<Waypoint>(exit);
-      this.endfector_sulution = SolutionType.BELOW_PIVOT;
+      this.soultion_type = SolutionType.BELOW_PIVOT;
     }
 
     TargetType(TargetData target, List<Waypoint> enter, List<Waypoint> exit, SolutionType es) {
       this.target = target;
       this.enter_trj = new ArrayList<Waypoint>(enter);
       this.exit_trj = new ArrayList<Waypoint>(exit);
-      this.endfector_sulution = es;
+      this.soultion_type = es;
     }
 
     private TargetData target;
-    private SolutionType endfector_sulution;
+    private SolutionType soultion_type;
     private ArrayList<Waypoint> enter_trj;
     private ArrayList<Waypoint> exit_trj;
 
-    public SolutionType getEndfectorSulution() {
-      return endfector_sulution;
+    public SolutionType getJointSpaceSolution() {
+      return soultion_type;
     }
 
     public ArrayList<Waypoint> getEnterTrj() {
