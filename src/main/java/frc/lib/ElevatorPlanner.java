@@ -20,7 +20,7 @@ public class ElevatorPlanner {
   private ElevatorKinematics kinematics_;
   private ArrayList<Waypoint> path_ = new ArrayList<>();
   private double subdivisions_per_unit_ = 0;
-  private double follow_distance_ = 0;
+  public double follow_distance_ = 0;
   private static final double REQUIRED_WAYPOIT_TOLERENCE = Units.inchesToMeters(1);
   private static double MAX_ITERATIONS;
 

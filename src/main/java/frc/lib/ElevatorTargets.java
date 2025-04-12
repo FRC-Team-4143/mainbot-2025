@@ -22,8 +22,8 @@ public class ElevatorTargets {
                 0,
                 FieldConstants.ReefHeight.L4.HEIGHT + Units.inchesToMeters(5.297)),
             "L4"),
-        Arrays.asList(new Waypoint(IN_PERIMETER_X, 0, Units.inchesToMeters(68.109))),
-        Arrays.asList(new Waypoint(IN_PERIMETER_X, 0, Units.inchesToMeters(68.109)))),
+        Arrays.asList(new Waypoint(IN_PERIMETER_X, 0, Units.inchesToMeters(60))),
+        Arrays.asList(new Waypoint(IN_PERIMETER_X, 0, Units.inchesToMeters(60)))),
     L3(
         new TargetData(
             new Waypoint(
@@ -99,9 +99,9 @@ public class ElevatorTargets {
         Arrays.asList()),
     BARGE(
         new TargetData(
-            new Waypoint(Units.inchesToMeters(7.07), 0, Units.inchesToMeters(95.34)), "BARGE"),
-        Arrays.asList(new Waypoint(Units.inchesToMeters(1), 0, 2)),
-        Arrays.asList(new Waypoint(Units.inchesToMeters(1), 0, 2)),
+            new Waypoint(Units.inchesToMeters(15.637), 0, Units.inchesToMeters(86.665)), "BARGE"),
+        Arrays.asList(),
+        Arrays.asList(),
         SolutionType.ABOVE_PIVOT),
     ALGAE_STOW(
         new TargetData(

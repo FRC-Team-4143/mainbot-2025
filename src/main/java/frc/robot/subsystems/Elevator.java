@@ -191,6 +191,9 @@ public class Elevator extends Subsystem {
         readArmEncoder().getRotations()
             - (MWPreferences.getInstance().getPreferenceDouble("ArmEncoderOffset", 0)));
 
+    SmartDashboard.putNumber(
+        "Elevator/Follow Distance in", Constants.ElevatorConstants.SUBDIVISION_FOLLOW_DIST);
+
     // update final_target_to change default
   }
 
@@ -240,12 +243,12 @@ public class Elevator extends Subsystem {
       io_.target_elevator_height_ = ElevatorConstants.ELEVATOR_HEIGHT_PIVOT_MIN;
     }
     if (io_.target_elevator_height_ > ElevatorConstants.ELEVATOR_HEIGHT_PIVOT_MAX) {
-      DataLogManager.log(
-          "ERROR: Target Elevator Height: "
-              + io_.target_elevator_height_
-              + " Max Elevator Height: "
-              + ElevatorConstants.ELEVATOR_HEIGHT_PIVOT_MAX);
-      io_.target_elevator_height_ = ElevatorConstants.ELEVATOR_HEIGHT_PIVOT_MAX;
+      // DataLogManager.log(
+      // "ERROR: Target Elevator Height: "
+      // + io_.target_elevator_height_
+      // + " Max Elevator Height: "
+      // + ElevatorConstants.ELEVATOR_HEIGHT_PIVOT_MAX);
+      // io_.target_elevator_height_ = ElevatorConstants.ELEVATOR_HEIGHT_PIVOT_MAX;
     }
   }
 
@@ -504,6 +507,9 @@ public class Elevator extends Subsystem {
     waypoints.addAll(new_target.getEnterTrj());
     waypoints.add(new Waypoint(new_target.getTarget().getTranslation()));
 
+    planner_.follow_distance_ =
+        SmartDashboard.getNumber(
+            "Elevator/Follow Distance in", Constants.ElevatorConstants.SUBDIVISION_FOLLOW_DIST);
     planner_.plan(waypoints);
 
     if (planner_.hasPath()) {
