@@ -222,6 +222,7 @@ public class Climber extends RemovableSubsystem {
         io_.current_mode_ = ClimberMode.RETRACTED;
         io_.target_strap_rotations_ = ClimberConstants.STRAP_RETRACTED_POSITION;
       case RETRACTED:
+        Pickup.getInstance().setPickupMode(PickupMode.CLIMB);
         io_.target_strap_rotations_ = ClimberConstants.STRAP_RETRACTED_POSITION;
         io_.strap_motor_target_offset += ClimberConstants.STRAP_SETPOINT_BUMP;
         break;
