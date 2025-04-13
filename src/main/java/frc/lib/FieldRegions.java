@@ -186,10 +186,10 @@ public class FieldRegions {
           "REEF_FACE5_REGION");
 
   // Create Algae Stealing Regions
-  public static PolygonRegion OPP_REEF_FACE0_REGION =
-      new PolygonRegion(
-          AllianceFlipUtil.apply(REEF_FACE0_REGION, FieldConstants.SYMMETRY_TYPE).getPoints(),
-          "OPP_" + REEF_FACE0_REGION.getName());
+  // public static PolygonRegion OPP_REEF_FACE0_REGION =
+  //     new PolygonRegion(
+  //         AllianceFlipUtil.apply(REEF_FACE0_REGION, FieldConstants.SYMMETRY_TYPE).getPoints(),
+  //         "OPP_" + REEF_FACE0_REGION.getName());
   // public static PolygonRegion OPP_REEF_FACE1_REGION =
   // new PolygonRegion(
   // AllianceFlipUtil.apply(REEF_FACE1_REGION,
@@ -239,8 +239,8 @@ public class FieldRegions {
               REEF_FACE2_REGION,
               REEF_FACE3_REGION,
               REEF_FACE4_REGION,
-              REEF_FACE5_REGION,
-              OPP_REEF_FACE0_REGION
+              REEF_FACE5_REGION
+              // OPP_REEF_FACE0_REGION
               // OPP_REEF_FACE1_REGION,
               // OPP_REEF_FACE2_REGION,
               // OPP_REEF_FACE3_REGION,
@@ -267,8 +267,8 @@ public class FieldRegions {
               REEF_FACE5_REGION,
               REEF_ENTER_REGION,
               REEF_EXIT_REGION,
-              L4_COLLISION_REGION,
-              OPP_REEF_FACE0_REGION
+              L4_COLLISION_REGION
+              // OPP_REEF_FACE0_REGION
               // OPP_REEF_FACE1_REGION,
               // OPP_REEF_FACE2_REGION,
               // OPP_REEF_FACE3_REGION,
@@ -347,7 +347,7 @@ public class FieldRegions {
     REGION_POSE_TABLE.put(REEF_FACE4_REGION.getName(), ScoringPoses.REEF_FACE_4_POSE);
     REGION_POSE_TABLE.put(REEF_FACE5_REGION.getName(), ScoringPoses.REEF_FACE_5_POSE);
 
-    REGION_POSE_TABLE.put(OPP_REEF_FACE0_REGION.getName(), ScoringPoses.OPP_REEF_FACE_0_POSE);
+    // REGION_POSE_TABLE.put(OPP_REEF_FACE0_REGION.getName(), ScoringPoses.OPP_REEF_FACE_0_POSE);
     // REGION_POSE_TABLE.put(OPP_REEF_FACE1_REGION.getName(),
     // ScoringPoses.OPP_REEF_FACE_1_POSE);
     // REGION_POSE_TABLE.put(OPP_REEF_FACE2_REGION.getName(),

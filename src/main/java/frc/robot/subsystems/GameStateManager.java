@@ -53,9 +53,7 @@ public class GameStateManager extends Subsystem {
   public enum ReefScoringTarget {
     L1,
     L2,
-    L2_FAR,
     L3,
-    L3_FAR,
     L4,
     ALGAE,
     TURTLE,
@@ -120,7 +118,6 @@ public class GameStateManager extends Subsystem {
         }
         break;
       case APPROACHING_TARGET:
-        updateCoralBlockLatch();
         SwerveDrivetrain.getInstance().setTargetPose(io_.reef_target_.get());
         if (Util.epislonEquals(
             PoseEstimator.getInstance().getRobotPose().getRotation(),
@@ -156,7 +153,6 @@ public class GameStateManager extends Subsystem {
         SwerveDrivetrain.getInstance().restoreDefaultDriveMode();
         Claw.getInstance().setClawMode(ClawMode.IDLE);
         Claw.getInstance().disableBlastMode();
-        io_.coral_block_latch = false;
         io_.robot_state_ = RobotState.TELEOP_CONTROL;
         break;
       case TELEOP_CONTROL:
@@ -194,8 +190,6 @@ public class GameStateManager extends Subsystem {
     SmartDashboard.putString(
         "Subsystems/GameStateManager/Saved Target Level", io_.saved_scoring_target_.toString());
     SmartDashboard.putBoolean("Subsystems/GameStateManager/Ready to Score", isReadyToScore());
-    SmartDashboard.putBoolean(
-        "Subsystems/GameStateManager/coral_block_latch", io_.coral_block_latch);
 
     if (io_.reef_target_.isPresent()) {
       reef_target_pub_.set(io_.reef_target_.get());
@@ -298,12 +292,9 @@ public class GameStateManager extends Subsystem {
       }
     }
 
-    if (io_.scoring_target_ == ReefScoringTarget.L2 && io_.coral_block_latch) {
-      newPose = io_.reef_target_.get().transformBy(ScoringPoses.CORAL_OFFSET);
-      io_.scoring_target_ = ReefScoringTarget.L2_FAR;
-    } else if (io_.scoring_target_ == ReefScoringTarget.L3 && io_.coral_block_latch) {
-      newPose = io_.reef_target_.get().transformBy(ScoringPoses.CORAL_OFFSET);
-      io_.scoring_target_ = ReefScoringTarget.L3_FAR;
+    if (io_.scoring_target_ == ReefScoringTarget.L2
+        || io_.scoring_target_ == ReefScoringTarget.L3) {
+      newPose = io_.reef_target_.get().transformBy(ScoringPoses.L2_L3_OFFSET);
     }
 
     if (newPose != Pose2d.kZero) {
@@ -329,12 +320,8 @@ public class GameStateManager extends Subsystem {
         return TargetType.L1;
       case L2:
         return TargetType.L2;
-      case L2_FAR:
-        return TargetType.L2_FAR;
       case L3:
         return TargetType.L3;
-      case L3_FAR:
-        return TargetType.L3_FAR;
       case L4:
         return TargetType.L4;
       case ALGAE:
@@ -347,15 +334,6 @@ public class GameStateManager extends Subsystem {
       case TURTLE:
       default:
         return (Claw.getInstance().isCoralMode()) ? TargetType.CORAL_STOW : TargetType.ALGAE_STOW;
-    }
-  }
-
-  public void updateCoralBlockLatch() {
-    if ((SwerveDrivetrain.getInstance().getFailingToReachTarget()
-            && SwerveDrivetrain.getInstance().getTractorBeamError()
-                <= Constants.GameStateManagerConstants.CORAL_BLOCKED_THRESHOLD)
-        || io_.coral_block_latch) {
-      io_.coral_block_latch = true;
     }
   }
 
@@ -375,7 +353,6 @@ public class GameStateManager extends Subsystem {
     @Log.File public Optional<Pose2d> reef_target_ = Optional.empty();
     @Log.File public Column target_column_ = Column.LEFT;
     @Log.File public Column saved_target_column_ = Column.LEFT;
-    @Log.File public boolean coral_block_latch = false;
 
     @Log.File
     public boolean algae_level_high = false; // false is low level and true is the higher level
