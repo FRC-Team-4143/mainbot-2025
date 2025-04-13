@@ -8,10 +8,13 @@ import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.networktables.StructArrayPublisher;
 import edu.wpi.first.networktables.StructPublisher;
 import edu.wpi.first.wpilibj.DataLogManager;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.lib.ElevatorKinematics.JointSpaceSolution;
 import frc.lib.ElevatorKinematics.SolutionType;
 import frc.mw_lib.geometry.spline.SplineUtil;
 import frc.mw_lib.geometry.spline.Waypoint;
+import frc.mw_lib.util.Util;
+import frc.robot.Constants.ElevatorConstants;
 import java.util.ArrayList;
 import java.util.Iterator;
 
@@ -20,7 +23,9 @@ public class ElevatorPlanner {
   private ElevatorKinematics kinematics_;
   private ArrayList<Waypoint> path_ = new ArrayList<>();
   private double subdivisions_per_unit_ = 0;
-  public double follow_distance_ = 0;
+  public double max_follow_distance_ = 0;
+  public double current_follow_distance_ = 0;
+  public double accel_rate_ = 0;
   private static final double REQUIRED_WAYPOIT_TOLERENCE = Units.inchesToMeters(1);
   private static double MAX_ITERATIONS;
 
@@ -35,7 +40,7 @@ public class ElevatorPlanner {
     kinematics_ = kinematics;
     subdivisions_per_unit_ = subdivisions_per_unit;
     MAX_ITERATIONS = subdivisions_per_unit * 5;
-    follow_distance_ = follow_distance;
+    max_follow_distance_ = follow_distance;
     path_publisher_ =
         NetworkTableInstance.getDefault()
             .getStructArrayTopic("ElevatorPlanner/Path", Translation3d.struct)
@@ -57,9 +62,25 @@ public class ElevatorPlanner {
             .getStructTopic("Components/Static Base", Pose2d.struct)
             .publish();
     base_publisher_.set(new Pose2d());
+
+    SmartDashboard.putNumber("Planner/accel_rate (%)", ElevatorConstants.PLANER_ACCEL_RATE);
+    SmartDashboard.putNumber(
+        "Planner/max_follow_distance_ (in)", ElevatorConstants.SUBDIVISION_FOLLOW_DIST);
+    SmartDashboard.putNumber(
+        "Planner/subdivisions_per_unit_ (m)", ElevatorConstants.SUBDIVISION_PER_METER);
   }
 
-  public void plan(ArrayList<Waypoint> waypoints) {
+  public synchronized void plan(ArrayList<Waypoint> waypoints) {
+    accel_rate_ =
+        SmartDashboard.getNumber("Planner/accel_rate (%)", ElevatorConstants.PLANER_ACCEL_RATE);
+    max_follow_distance_ =
+        SmartDashboard.getNumber(
+            "Planner/max_follow_distance_ (in)", ElevatorConstants.SUBDIVISION_FOLLOW_DIST);
+    subdivisions_per_unit_ =
+        SmartDashboard.getNumber(
+            "Planner/subdivisions_per_unit_ (m)", ElevatorConstants.SUBDIVISION_PER_METER);
+    current_follow_distance_ = 0;
+
     Translation3d[] waypoint_translation_array = new Translation3d[waypoints.size()];
     for (int i = 0; i < waypoint_translation_array.length; i++) {
       waypoint_translation_array[i] = waypoints.get(i).translation;
@@ -84,6 +105,11 @@ public class ElevatorPlanner {
 
   public synchronized JointSpaceSolution nextTarget(
       Translation3d current_translation, SolutionType st) {
+
+    current_follow_distance_ =
+        Util.clamp(
+            current_follow_distance_ + (max_follow_distance_ * accel_rate_), max_follow_distance_);
+
     Iterator<Waypoint> iterator = path_.iterator();
     int iterations = 0;
     while (iterator.hasNext()) {
@@ -95,7 +121,7 @@ public class ElevatorPlanner {
         break;
       }
 
-      if (dist_to_way >= follow_distance_ || path_.size() == 1) {
+      if (dist_to_way >= current_follow_distance_ || path_.size() == 1) {
         break;
       }
 

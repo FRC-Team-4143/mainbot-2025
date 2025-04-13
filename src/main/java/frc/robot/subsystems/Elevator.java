@@ -507,9 +507,6 @@ public class Elevator extends Subsystem {
     waypoints.addAll(new_target.getEnterTrj());
     waypoints.add(new Waypoint(new_target.getTarget().getTranslation()));
 
-    planner_.follow_distance_ =
-        SmartDashboard.getNumber(
-            "Elevator/Follow Distance in", Constants.ElevatorConstants.SUBDIVISION_FOLLOW_DIST);
     planner_.plan(waypoints);
 
     if (planner_.hasPath()) {

@@ -135,7 +135,8 @@ public class GameStateManager extends Subsystem {
           SwerveDrivetrain.getInstance().restoreDefaultDriveMode();
           if (Claw.getInstance().isCoralMode()) {
             double waitToScoreTime = 0.5;
-            if (io_.scoring_target_ == ReefScoringTarget.L2 || io_.scoring_target_ == ReefScoringTarget.L3) {
+            if (io_.scoring_target_ == ReefScoringTarget.L2
+                || io_.scoring_target_ == ReefScoringTarget.L3) {
               waitToScoreTime = 1.0;
             }
             CommandScheduler.getInstance()

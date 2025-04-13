@@ -4,8 +4,14 @@
 
 package frc.robot.commands;
 
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Transform2d;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.lib.ElevatorTargets.TargetType;
+import frc.robot.Constants.DrivetrainConstants;
+import frc.robot.Constants.PickupConstants;
 import frc.robot.subsystems.Claw;
 import frc.robot.subsystems.Claw.ClawMode;
 import frc.robot.subsystems.Claw.GamePiece;
@@ -22,12 +28,26 @@ public class CoralTractorBeam extends Command {
 
   static Claw claw_;
   static Elevator elevator_;
+  static Transform2d intake_off_set;
+  static Pose2d target_;
+  static Transform2d stageing_off_set_;
+  static boolean has_hit_staging_target_;
 
   public CoralTractorBeam() {
     // Use addRequirements() here to declare subsystem dependencies.
     pickup_ = Pickup.getInstance();
     elevator_ = Elevator.getInstance();
     claw_ = Claw.getInstance();
+    intake_off_set =
+        new Transform2d(
+            DrivetrainConstants.CENTER_OFFSET_X,
+            -PickupConstants.INTAKE_OFF_SET_Y,
+            Rotation2d.kZero);
+    stageing_off_set_ =
+        new Transform2d(
+            DrivetrainConstants.CENTER_OFFSET_X + Units.inchesToMeters(12),
+            -PickupConstants.INTAKE_OFF_SET_Y,
+            Rotation2d.kZero);
     addRequirements(pickup_);
     addRequirements(claw_);
     addRequirements(elevator_);
@@ -40,6 +60,8 @@ public class CoralTractorBeam extends Command {
     elevator_.setTarget(TargetType.CORAL_INTAKE);
     pickup_.setPickupMode(PickupMode.DEPLOYED);
     claw_.setGamePiece(GamePiece.CORAL);
+    target_ = CoralDetector.getInstance().getCoralPose2d().transformBy(intake_off_set);
+    has_hit_staging_target_ = false;
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -48,9 +70,15 @@ public class CoralTractorBeam extends Command {
     if (elevator_.isElevatorAndArmAtTarget() == true) {
       pickup_.setPickupMode(PickupMode.INTAKE);
       claw_.setClawMode(ClawMode.LOAD);
-    }
-    if (CoralDetector.getInstance().isValid()) {
-      SwerveDrivetrain.getInstance().setTargetPose(CoralDetector.getInstance().getCoralPose2d());
+      if (CoralDetector.getInstance().isValid()) {
+        if (false) {
+          has_hit_staging_target_ = SwerveDrivetrain.getInstance().atTractorBeamPose();
+          target_ = CoralDetector.getInstance().getCoralPose2d().transformBy(stageing_off_set_);
+        } else {
+          target_ = CoralDetector.getInstance().getCoralPose2d().transformBy(intake_off_set);
+        }
+        SwerveDrivetrain.getInstance().setTargetPose(target_);
+      }
     }
   }
 
