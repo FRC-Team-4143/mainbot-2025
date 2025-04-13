@@ -208,13 +208,14 @@ public final class Constants {
 
   public static final class ClawConstants {
     public static final double TIME_OF_FLIGHT_DIST = 50;
+    public static final int TIME_OF_FLIGHT_ID = 3;
     public static final int WHEEL_MOTOR_ID = 11;
     public static final double WHEEL_CORAL_SHOOT_SPEED = 0.6;
     public static final double WHEEL_CORAL_BLAST_SPEED = 1.0;
     public static final double WHEEL_ALGAE_SHOOT_SPEED = 0.5;
     public static final double WHEEL_ALGAE_BLAST_SPEED = 0.5;
     public static final double CORAL_LOAD_SPEED = -0.5;
-    public static final double ALGAE_LOAD_SPEED = -0.3;
+    public static final double ALGAE_LOAD_SPEED = -0.7;
     public static final double ALGAE_IDLE_SPEED = -0.05;
     public static final double STATOR_CURRENT_LIMIT = 40;
     public static final String CORAL_COLOR = new Color(255, 255, 255).toHexString();
@@ -324,7 +325,7 @@ public final class Constants {
   }
 
   public static final class PickupConstants {
-    public static final int TIME_OF_FLIGHT_ID = 3;
+    public static final int TIME_OF_FLIGHT_ID = 4;
     public static final int INTAKE_ID = 41;
     public static final int PIVOT_ID = 40;
     public static final double PIVOT_THRESHOLD = 0.5;
@@ -340,7 +341,7 @@ public final class Constants {
     public static final double StatorCurrentLimit = 80;
 
     public static final double INTAKE_OFF_SET_Y = -Units.inchesToMeters(5);
-    public static final double TOF_CORAL_DISTANCE = Units.inchesToMeters(INTAKE_ID) / 100;
+    public static final double TOF_CORAL_DISTANCE = Units.inchesToMeters(6.5) * 1000;
   }
 
   public class GameStateManagerConstants {

@@ -58,7 +58,7 @@ public class Claw extends Subsystem {
     // Create io object first in subsystem configuration
     io_ = new ClawPeriodicIo();
 
-    tof_ = new SimTof(3);
+    tof_ = new SimTof(ClawConstants.TIME_OF_FLIGHT_ID);
     wheel_motor_ = new TalonFX(ClawConstants.WHEEL_MOTOR_ID);
     wheel_config_ = new TalonFXConfiguration();
     wheel_config_.CurrentLimits.StatorCurrentLimit = ClawConstants.STATOR_CURRENT_LIMIT;

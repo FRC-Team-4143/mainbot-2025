@@ -74,15 +74,11 @@ public class ElevatorTargets {
         Arrays.asList(),
         Arrays.asList()),
     ALGAE_LOW(
-        new TargetData(
-            new Waypoint(Units.inchesToMeters(16.593), 0, FieldConstants.ReefHeight.L2.HEIGHT),
-            "ALGAE_LOW"),
+        new TargetData(new Waypoint(0.42189, 0, 1.262395), "ALGAE_LOW"),
         Arrays.asList(),
         Arrays.asList()),
     ALGAE_HIGH(
-        new TargetData(
-            new Waypoint(Units.inchesToMeters(16.593), 0, FieldConstants.ReefHeight.L3.HEIGHT),
-            "ALGAE_HIGH"),
+        new TargetData(new Waypoint(0.42189, 0, 1.262395), "ALGAE_HIGH"),
         Arrays.asList(),
         Arrays.asList()),
     ALGAE_PROCESSOR(

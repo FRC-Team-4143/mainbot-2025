@@ -9,6 +9,9 @@ import com.ctre.phoenix6.controls.PositionVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
+import com.playingwithfusion.TimeOfFlight.RangingMode;
+import edu.wpi.first.math.filter.Debouncer;
+import edu.wpi.first.math.filter.Debouncer.DebounceType;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Rotation3d;
@@ -32,6 +35,7 @@ public class Pickup extends Subsystem {
   private SimTof tof_;
 
   private PositionVoltage pivot_request_;
+  private Debouncer has_coral_debouncer_;
 
   private StructPublisher<Pose3d> pickup_pub_;
 
@@ -76,8 +80,10 @@ public class Pickup extends Subsystem {
     roller_motor_.getConfigurator().apply(config);
 
     tof_ = new SimTof(PickupConstants.TIME_OF_FLIGHT_ID);
+    tof_.setRangingMode(RangingMode.Short, 30);
 
     pivot_request_ = new PositionVoltage(0);
+    has_coral_debouncer_ = new Debouncer(0.25, DebounceType.kFalling);
 
     SmartDashboard.putData(
         "Subsystems/Pickup/Zero Ground",
@@ -171,7 +177,7 @@ public class Pickup extends Subsystem {
   @Override
   public void outputTelemetry(double timestamp) {
     SmartDashboard.putNumber("Subsystems/Pickup/TOF Distance (cm)", io_.tof_distance_);
-    SmartDashboard.putNumber("Subsystems/Pickup/Coral Present", io_.tof_distance_);
+    SmartDashboard.putBoolean("Subsystems/Pickup/Coral Present", io_.has_coral_);
     SmartDashboard.putString("Subsystems/Pickup/Mode", io_.current_mode_.toString());
     SmartDashboard.putNumber(
         "Subsystems/Pickup/Current Angle (Degrees)", io_.current_pivot_angle_.getDegrees());

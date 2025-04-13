@@ -43,7 +43,8 @@ public class Robot extends TimedRobot {
             new E4_RightStation_C4(),
             new H4_Algae(),
             new J4_LeftStation_L4_LeftStation_K4(),
-            new J4_LeftStation_L4());
+            new J4_LeftStation_L4(),
+            new Left_Ground_Test());
 
     RobotModeTriggers.disabled()
         .onFalse(
