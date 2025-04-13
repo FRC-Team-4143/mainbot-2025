@@ -18,6 +18,9 @@ import frc.mw_lib.util.Util;
 import frc.robot.Constants;
 import frc.robot.commands.CoralEject;
 import frc.robot.subsystems.Claw.ClawMode;
+import frc.robot.subsystems.GameStateManager.Column;
+import frc.robot.subsystems.GameStateManager.GameStateManagerPeriodicIo;
+import frc.robot.subsystems.GameStateManager.ReefScoringTarget;
 import java.util.Optional;
 import monologue.Annotations.Log;
 import monologue.Logged;
@@ -107,9 +110,15 @@ public class GameStateManager extends Subsystem {
    */
   @Override
   public void updateLogic(double timestamp) {
-    io_.reef_target_ = reefPose(io_.target_column_);
     switch (io_.robot_state_) {
       case TARGET_ACQUISITION:
+        io_.reef_target_ = reefPose(io_.target_column_);
+        if (io_.scoring_target_ == ReefScoringTarget.L1) {
+          SwerveDrivetrain.getInstance().setTargetRotation(io_.reef_target_.get().getRotation());
+          Elevator.getInstance().setTarget(elevatorTargetSwitch());
+          io_.robot_state_ = RobotState.SCORING;
+          break;
+        }
         if (io_.reef_target_.isPresent()) {
           SwerveDrivetrain.getInstance().setTargetPose(io_.reef_target_.get());
           if (FieldRegions.REEF_ENTER_REGION.contains(PoseEstimator.getInstance().getRobotPose())) {
@@ -131,18 +140,25 @@ public class GameStateManager extends Subsystem {
           // Once at final target, hand off control
           SwerveDrivetrain.getInstance().restoreDefaultDriveMode();
           if (Claw.getInstance().isCoralMode()) {
-            double waitToScoreTime = 0.5;
+            double waitToScoreTime = 0.0;
             if (io_.scoring_target_ == ReefScoringTarget.L2
                 || io_.scoring_target_ == ReefScoringTarget.L3) {
-              waitToScoreTime = 1.0;
+              Claw.getInstance().enableBlastMode();
+              waitToScoreTime = 0.25;
             }
             CommandScheduler.getInstance()
-                .schedule(new WaitCommand(0.5).beforeStarting(new CoralEject().withTimeout(0.5)));
+                .schedule(
+                    new CoralEject()
+                        .withTimeout(0.5)
+                        .beforeStarting(new WaitCommand(waitToScoreTime)));
           }
           io_.robot_state_ = RobotState.SCORING;
         }
         break;
       case SCORING:
+        if (io_.scoring_target_ == ReefScoringTarget.L1) {
+          break;
+        }
         if (!FieldRegions.REEF_EXIT_REGION.contains(PoseEstimator.getInstance().getRobotPose())) {
           // wait until you leave the exit Circle
           io_.robot_state_ = RobotState.END;
@@ -261,10 +277,7 @@ public class GameStateManager extends Subsystem {
     for (int i = 0; i < FieldRegions.REEF_REGIONS.size(); i++) {
       if (FieldRegions.REEF_REGIONS.get(i).contains(PoseEstimator.getInstance().getRobotPose())) {
         if (io_.scoring_target_ == ReefScoringTarget.L1) {
-          newPose =
-              FieldRegions.REGION_POSE_TABLE
-                  .get(FieldRegions.REEF_REGIONS.get(i).getName())
-                  .transformBy(ScoringPoses.ALGAE_ALIGN_OFFSET);
+          newPose = FieldRegions.REGION_POSE_TABLE.get(FieldRegions.REEF_REGIONS.get(i).getName());
         }
         if (column == Column.CENTER) {
           newPose = FieldRegions.REGION_POSE_TABLE.get(FieldRegions.REEF_REGIONS.get(i).getName());
@@ -294,7 +307,7 @@ public class GameStateManager extends Subsystem {
 
     if (io_.scoring_target_ == ReefScoringTarget.L2
         || io_.scoring_target_ == ReefScoringTarget.L3) {
-      newPose = io_.reef_target_.get().transformBy(ScoringPoses.L2_L3_OFFSET);
+      newPose = newPose.transformBy(ScoringPoses.L2_L3_OFFSET);
     }
 
     if (newPose != Pose2d.kZero) {

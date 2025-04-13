@@ -8,15 +8,16 @@ import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.Claw;
 import frc.robot.subsystems.Claw.ClawMode;
 import frc.robot.subsystems.Claw.GamePiece;
+import frc.robot.subsystems.Elevator;
 
 public class CoralEject extends Command {
 
   static Claw claw_;
+  static Elevator elevator_;
 
   /** Creates a new CoralEject. */
   public CoralEject() {
     claw_ = Claw.getInstance();
-    addRequirements(claw_);
     setName(this.getClass().getSimpleName());
   }
 
