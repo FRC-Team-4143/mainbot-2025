@@ -35,7 +35,7 @@ public class SetDefaultPickup extends Command {
       }
     } else {
       // Climb
-      Pickup.getInstance().setPickupMode(PickupMode.CLIMB);
+      // DO NOTHING (Let the Climber State Machine Handle Control)
     }
   }
 
