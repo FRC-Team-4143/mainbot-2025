@@ -4,14 +4,13 @@ import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.util.Units;
 import frc.lib.ElevatorKinematics.SolutionType;
 import frc.mw_lib.geometry.spline.Waypoint;
-import frc.robot.Constants;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
 public class ElevatorTargets {
   private static final double IN_PERIMETER_X = Units.inchesToMeters(9.246 - 2);
-  private static final double BRANCH_HEIGHT_BUMP = Units.inchesToMeters(5.921);
+  private static final double BRANCH_HEIGHT_BUMP = Units.inchesToMeters(7.315);
 
   public enum TargetType {
     SAFETY(new TargetData(new Waypoint(), "SAFETY"), Arrays.asList(), Arrays.asList()),
@@ -27,7 +26,7 @@ public class ElevatorTargets {
     L3(
         new TargetData(
             new Waypoint(
-                Units.inchesToMeters(16.593),
+                Units.inchesToMeters(17),
                 0,
                 FieldConstants.ReefHeight.L3.HEIGHT + BRANCH_HEIGHT_BUMP),
             "L3"),
@@ -36,7 +35,7 @@ public class ElevatorTargets {
     L2(
         new TargetData(
             new Waypoint(
-                Units.inchesToMeters(16.593),
+                Units.inchesToMeters(17),
                 0,
                 FieldConstants.ReefHeight.L2.HEIGHT + BRANCH_HEIGHT_BUMP),
             "L2"),
@@ -45,13 +44,13 @@ public class ElevatorTargets {
 
     L1(
         new TargetData(
+            new Waypoint(Units.inchesToMeters(15.616), 0, Units.inchesToMeters(27.688)), "L1"),
+        Arrays.asList(new Waypoint(Units.inchesToMeters(0), 0, Units.inchesToMeters(27.688))),
+        Arrays.asList(
             new Waypoint(
-                Constants.DrivetrainConstants.CENTER_OFFSET_X - 0.1,
+                Units.inchesToMeters(17),
                 0,
-                FieldConstants.ReefHeight.L1.HEIGHT),
-            "L1"),
-        Arrays.asList(),
-        Arrays.asList()),
+                FieldConstants.ReefHeight.L2.HEIGHT + BRANCH_HEIGHT_BUMP))),
     STATION(
         new TargetData(
             new Waypoint(Units.inchesToMeters(-16.287), 0, Units.inchesToMeters(41.147)),
@@ -66,7 +65,7 @@ public class ElevatorTargets {
         SolutionType.ABOVE_PIVOT),
     CORAL_INTAKE(
         new TargetData(
-            new Waypoint(-0.206312455806457, 0, 0.36658133576115 + Units.inchesToMeters(2)),
+            new Waypoint(Units.inchesToMeters(-8.077), 0, Units.inchesToMeters(14.662)),
             "CORAL_INTAKE"),
         Arrays.asList(),
         Arrays.asList()),

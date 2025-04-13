@@ -209,7 +209,7 @@ public final class Constants {
     public static final double TIME_OF_FLIGHT_DIST = 50;
     public static final int WHEEL_MOTOR_ID = 11;
     public static final double WHEEL_CORAL_SHOOT_SPEED = 0.6;
-    public static final double WHEEL_CORAL_BLAST_SPEED = 0.6;
+    public static final double WHEEL_CORAL_BLAST_SPEED = 1.0;
     public static final double WHEEL_ALGAE_SHOOT_SPEED = 0.5;
     public static final double WHEEL_ALGAE_BLAST_SPEED = 0.5;
     public static final double CORAL_LOAD_SPEED = -0.5;

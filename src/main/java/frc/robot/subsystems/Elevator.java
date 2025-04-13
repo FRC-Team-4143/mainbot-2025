@@ -302,11 +302,15 @@ public class Elevator extends Subsystem {
   }
 
   public void forceSolutionType() {
-    if (io_.current_arm_angle_ < 0) {
-      io_.current_solution_type_ = SolutionType.BELOW_PIVOT;
-    } else if (io_.current_arm_angle_ > 0) {
+    if (io_.current_arm_angle_ > 0) {
       io_.current_solution_type_ = SolutionType.ABOVE_PIVOT;
+    } else if (io_.current_arm_angle_ < 0) {
+      io_.current_solution_type_ = SolutionType.BELOW_PIVOT;
     }
+  }
+
+  public boolean targetIsL1() {
+    return io_.final_target_ == TargetType.L1;
   }
 
   /**
