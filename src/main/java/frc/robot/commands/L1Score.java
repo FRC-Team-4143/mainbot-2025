@@ -18,12 +18,10 @@ public class L1Score extends NoReqSequentialCommandGroup {
   public L1Score() {
     // Use addRequirements() here to declare subsystem dependencies.
     super(
-        Commands.runOnce(() -> Elevator.getInstance().setTarget(TargetType.L1)),
-        Commands.runOnce(() -> Claw.getInstance().setClawMode(ClawMode.SHOOT)),
+        Commands.runOnce(() -> Elevator.getInstance().setTarget(TargetType.L1), Elevator.getInstance()),
+        Commands.runOnce(() -> Claw.getInstance().setClawMode(ClawMode.SHOOT), Claw.getInstance()),
         new WaitCommand(0.25),
-        Commands.runOnce(() -> Claw.getInstance().setClawMode(ClawMode.IDLE)));
-    addRequirements(Elevator.getInstance());
-    addRequirements(Claw.getInstance());
+        Commands.runOnce(() -> Claw.getInstance().setClawMode(ClawMode.IDLE), Claw.getInstance()));
     setName(this.getClass().getSimpleName());
   }
 }
