@@ -100,7 +100,13 @@ public class FieldRegions {
   public static PolygonRegion L4_COLLISION_REGION =
       new PolygonRegion(
           new Translation2d[] {
-            new Translation2d(0, 0), new Translation2d(1, 0), new Translation2d(0, 1)
+            new Translation2d(3.102, 4.827),
+            new Translation2d(4.489, 5.628),
+            new Translation2d(5.877, 4.827),
+            new Translation2d(5.877, 3.225),
+            new Translation2d(4.489, 2.424),
+            new Translation2d(3.102, 3.225),
+            new Translation2d(3.102, 4.827)
           },
           "L4_COLLISION_REGION");
 
@@ -185,25 +191,30 @@ public class FieldRegions {
           AllianceFlipUtil.apply(REEF_FACE0_REGION, FieldConstants.SYMMETRY_TYPE).getPoints(),
           "OPP_" + REEF_FACE0_REGION.getName());
   // public static PolygonRegion OPP_REEF_FACE1_REGION =
-  //     new PolygonRegion(
-  //         AllianceFlipUtil.apply(REEF_FACE1_REGION, FieldConstants.SYMMETRY_TYPE).getPoints(),
-  //         "OPP_" + REEF_FACE1_REGION.getName());
+  // new PolygonRegion(
+  // AllianceFlipUtil.apply(REEF_FACE1_REGION,
+  // FieldConstants.SYMMETRY_TYPE).getPoints(),
+  // "OPP_" + REEF_FACE1_REGION.getName());
   // public static PolygonRegion OPP_REEF_FACE2_REGION =
-  //     new PolygonRegion(
-  //         AllianceFlipUtil.apply(REEF_FACE2_REGION, FieldConstants.SYMMETRY_TYPE).getPoints(),
-  //         "OPP_" + REEF_FACE2_REGION.getName());
+  // new PolygonRegion(
+  // AllianceFlipUtil.apply(REEF_FACE2_REGION,
+  // FieldConstants.SYMMETRY_TYPE).getPoints(),
+  // "OPP_" + REEF_FACE2_REGION.getName());
   // public static PolygonRegion OPP_REEF_FACE3_REGION =
-  //     new PolygonRegion(
-  //         AllianceFlipUtil.apply(REEF_FACE3_REGION, FieldConstants.SYMMETRY_TYPE).getPoints(),
-  //         "OPP_" + REEF_FACE3_REGION.getName());
+  // new PolygonRegion(
+  // AllianceFlipUtil.apply(REEF_FACE3_REGION,
+  // FieldConstants.SYMMETRY_TYPE).getPoints(),
+  // "OPP_" + REEF_FACE3_REGION.getName());
   // public static PolygonRegion OPP_REEF_FACE4_REGION =
-  //     new PolygonRegion(
-  //         AllianceFlipUtil.apply(REEF_FACE4_REGION, FieldConstants.SYMMETRY_TYPE).getPoints(),
-  //         "OPP_" + REEF_FACE4_REGION.getName());
+  // new PolygonRegion(
+  // AllianceFlipUtil.apply(REEF_FACE4_REGION,
+  // FieldConstants.SYMMETRY_TYPE).getPoints(),
+  // "OPP_" + REEF_FACE4_REGION.getName());
   // public static PolygonRegion OPP_REEF_FACE5_REGION =
-  //     new PolygonRegion(
-  //         AllianceFlipUtil.apply(REEF_FACE5_REGION, FieldConstants.SYMMETRY_TYPE).getPoints(),
-  //         "OPP_" + REEF_FACE5_REGION.getName());
+  // new PolygonRegion(
+  // AllianceFlipUtil.apply(REEF_FACE5_REGION,
+  // FieldConstants.SYMMETRY_TYPE).getPoints(),
+  // "OPP_" + REEF_FACE5_REGION.getName());
 
   public static CircularRegion REEF_ENTER_REGION =
       new CircularRegion(FieldConstants.Reef.CENTER, 3, "REEF_ENTER_REGION");
@@ -298,15 +309,20 @@ public class FieldRegions {
     ScoringPoses.OPP_REEF_FACE_0_POSE =
         AllianceFlipUtil.apply(ScoringPoses.OPP_REEF_FACE_0_POSE, FieldConstants.SYMMETRY_TYPE);
     // ScoringPoses.OPP_REEF_FACE_1_POSE =
-    //     AllianceFlipUtil.apply(ScoringPoses.OPP_REEF_FACE_1_POSE, FieldConstants.SYMMETRY_TYPE);
+    // AllianceFlipUtil.apply(ScoringPoses.OPP_REEF_FACE_1_POSE,
+    // FieldConstants.SYMMETRY_TYPE);
     // ScoringPoses.OPP_REEF_FACE_2_POSE =
-    //     AllianceFlipUtil.apply(ScoringPoses.OPP_REEF_FACE_2_POSE, FieldConstants.SYMMETRY_TYPE);
+    // AllianceFlipUtil.apply(ScoringPoses.OPP_REEF_FACE_2_POSE,
+    // FieldConstants.SYMMETRY_TYPE);
     // ScoringPoses.OPP_REEF_FACE_3_POSE =
-    //     AllianceFlipUtil.apply(ScoringPoses.OPP_REEF_FACE_3_POSE, FieldConstants.SYMMETRY_TYPE);
+    // AllianceFlipUtil.apply(ScoringPoses.OPP_REEF_FACE_3_POSE,
+    // FieldConstants.SYMMETRY_TYPE);
     // ScoringPoses.OPP_REEF_FACE_4_POSE =
-    //     AllianceFlipUtil.apply(ScoringPoses.OPP_REEF_FACE_4_POSE, FieldConstants.SYMMETRY_TYPE);
+    // AllianceFlipUtil.apply(ScoringPoses.OPP_REEF_FACE_4_POSE,
+    // FieldConstants.SYMMETRY_TYPE);
     // ScoringPoses.OPP_REEF_FACE_5_POSE =
-    //     AllianceFlipUtil.apply(ScoringPoses.OPP_REEF_FACE_5_POSE, FieldConstants.SYMMETRY_TYPE);
+    // AllianceFlipUtil.apply(ScoringPoses.OPP_REEF_FACE_5_POSE,
+    // FieldConstants.SYMMETRY_TYPE);
 
     ScoringPoses.BARGE_TIGHT_ROPE =
         AllianceFlipUtil.apply(ScoringPoses.BARGE_TIGHT_ROPE, FieldConstants.SYMMETRY_TYPE);
@@ -332,11 +348,16 @@ public class FieldRegions {
     REGION_POSE_TABLE.put(REEF_FACE5_REGION.getName(), ScoringPoses.REEF_FACE_5_POSE);
 
     REGION_POSE_TABLE.put(OPP_REEF_FACE0_REGION.getName(), ScoringPoses.OPP_REEF_FACE_0_POSE);
-    // REGION_POSE_TABLE.put(OPP_REEF_FACE1_REGION.getName(), ScoringPoses.OPP_REEF_FACE_1_POSE);
-    // REGION_POSE_TABLE.put(OPP_REEF_FACE2_REGION.getName(), ScoringPoses.OPP_REEF_FACE_2_POSE);
-    // REGION_POSE_TABLE.put(OPP_REEF_FACE3_REGION.getName(), ScoringPoses.OPP_REEF_FACE_3_POSE);
-    // REGION_POSE_TABLE.put(OPP_REEF_FACE4_REGION.getName(), ScoringPoses.OPP_REEF_FACE_4_POSE);
-    // REGION_POSE_TABLE.put(OPP_REEF_FACE5_REGION.getName(), ScoringPoses.OPP_REEF_FACE_5_POSE);
+    // REGION_POSE_TABLE.put(OPP_REEF_FACE1_REGION.getName(),
+    // ScoringPoses.OPP_REEF_FACE_1_POSE);
+    // REGION_POSE_TABLE.put(OPP_REEF_FACE2_REGION.getName(),
+    // ScoringPoses.OPP_REEF_FACE_2_POSE);
+    // REGION_POSE_TABLE.put(OPP_REEF_FACE3_REGION.getName(),
+    // ScoringPoses.OPP_REEF_FACE_3_POSE);
+    // REGION_POSE_TABLE.put(OPP_REEF_FACE4_REGION.getName(),
+    // ScoringPoses.OPP_REEF_FACE_4_POSE);
+    // REGION_POSE_TABLE.put(OPP_REEF_FACE5_REGION.getName(),
+    // ScoringPoses.OPP_REEF_FACE_5_POSE);
 
     System.out.println("populated Table");
   }
