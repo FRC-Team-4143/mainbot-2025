@@ -339,6 +339,7 @@ public final class Constants {
     public static final double StatorCurrentLimit = 80;
 
     public static final double INTAKE_OFF_SET_Y = -Units.inchesToMeters(5);
+    public static final double TOF_CORAL_DISTANCE = Units.inchesToMeters(INTAKE_ID) / 100;
   }
 
   public class GameStateManagerConstants {

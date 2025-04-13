@@ -17,6 +17,7 @@ import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.networktables.StructPublisher;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Commands;
+import frc.mw_lib.drivers.SimTof;
 import frc.mw_lib.subsystem.Subsystem;
 import frc.mw_lib.util.Util;
 import frc.robot.Constants.PickupConstants;
@@ -28,6 +29,7 @@ public class Pickup extends Subsystem {
 
   private TalonFX roller_motor_;
   private TalonFX pivot_motor_;
+  private SimTof tof_;
 
   private PositionVoltage pivot_request_;
 
@@ -73,6 +75,8 @@ public class Pickup extends Subsystem {
     config.MotorOutput.NeutralMode = NeutralModeValue.Brake;
     roller_motor_.getConfigurator().apply(config);
 
+    tof_ = new SimTof(PickupConstants.TIME_OF_FLIGHT_ID);
+
     pivot_request_ = new PositionVoltage(0);
 
     SmartDashboard.putData(
@@ -108,6 +112,7 @@ public class Pickup extends Subsystem {
         Rotation2d.fromRotations(pivot_motor_.getPosition().getValueAsDouble())
             .minus(PickupConstants.PIVOT_OFFSET);
     io_.current_roller_outout_ = roller_motor_.getDutyCycle().getValueAsDouble();
+    io_.tof_distance_ = tof_.getRange();
   }
 
   /**
@@ -117,6 +122,7 @@ public class Pickup extends Subsystem {
    */
   @Override
   public void updateLogic(double timestamp) {
+    io_.has_coral_ = io_.tof_distance_ < PickupConstants.TOF_CORAL_DISTANCE;
     switch (io_.current_mode_) {
       case INTAKE:
         io_.target_roller_output_ = PickupConstants.INTAKE_IN_SPEED;
@@ -164,6 +170,8 @@ public class Pickup extends Subsystem {
    */
   @Override
   public void outputTelemetry(double timestamp) {
+    SmartDashboard.putNumber("Subsystems/Pickup/TOF Distance (cm)", io_.tof_distance_);
+    SmartDashboard.putNumber("Subsystems/Pickup/Coral Present", io_.tof_distance_);
     SmartDashboard.putString("Subsystems/Pickup/Mode", io_.current_mode_.toString());
     SmartDashboard.putNumber(
         "Subsystems/Pickup/Current Angle (Degrees)", io_.current_pivot_angle_.getDegrees());
@@ -207,12 +215,18 @@ public class Pickup extends Subsystem {
     pivot_motor_.setPosition(value.getRotations());
   }
 
+  public boolean isCoralPresent() {
+    return io_.has_coral_;
+  }
+
   public class PickupPeriodicIo implements Logged {
     @Log.File public PickupMode current_mode_ = PickupMode.DEPLOYED;
     @Log.File public double target_roller_output_ = 0;
     @Log.File public double current_roller_outout_ = 0;
     @Log.File public Rotation2d current_pivot_angle_ = new Rotation2d();
     @Log.File public Rotation2d target_pivot_angle_ = new Rotation2d();
+    @Log.File public double tof_distance_ = 0;
+    @Log.File public boolean has_coral_ = false;
   }
 
   @Override
