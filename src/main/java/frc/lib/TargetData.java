@@ -1,6 +1,7 @@
 package frc.lib;
 
 import edu.wpi.first.math.geometry.Translation3d;
+import frc.mw_lib.geometry.spline.Waypoint;
 import monologue.Annotations.Log;
 import monologue.Logged;
 
@@ -11,6 +12,12 @@ public class TargetData implements Logged {
 
   public TargetData(Translation3d t, String n) {
     this.base_translation = t;
+    this.name_ = n;
+    current_translation = base_translation;
+  }
+
+  public TargetData(Waypoint t, String n) {
+    this.base_translation = t.translation;
     this.name_ = n;
     current_translation = base_translation;
   }

@@ -133,8 +133,15 @@ public class GameStateManager extends Subsystem {
             && Elevator.getInstance().isElevatorAndArmAtTarget()) {
           // Once at final target, hand off control
           SwerveDrivetrain.getInstance().restoreDefaultDriveMode();
-          CommandScheduler.getInstance()
-              .schedule(new WaitCommand(0.25).beforeStarting(new CoralEject().withTimeout(0.5)));
+          if (Claw.getInstance().isCoralMode()) {
+            double waitToScoreTime = 0.5;
+            if (io_.scoring_target_ == ReefScoringTarget.L2
+                || io_.scoring_target_ == ReefScoringTarget.L3) {
+              waitToScoreTime = 1.0;
+            }
+            CommandScheduler.getInstance()
+                .schedule(new WaitCommand(0.5).beforeStarting(new CoralEject().withTimeout(0.5)));
+          }
           io_.robot_state_ = RobotState.SCORING;
         }
         break;
@@ -198,7 +205,9 @@ public class GameStateManager extends Subsystem {
               target_arm_pub_,
               Elevator.getInstance()
                   .getElevatorKinematics()
-                  .translationToJointSpace(elevatorTargetSwitch().getTarget().getTranslation()));
+                  .translationToJointSpace(
+                      elevatorTargetSwitch().getTarget().getTranslation(),
+                      elevatorTargetSwitch().getJointSpaceSolution()));
     }
   }
 

@@ -15,6 +15,7 @@ import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform3d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.math.util.Units;
@@ -106,7 +107,7 @@ public final class Constants {
 
     public static final double CRAWL_DRIVE_SPEED = MAX_DRIVE_SPEED * 0.1;
     public static final double MAX_TARGET_SPEED = 1;
-    public static final double MAX_TRACTOR_BEAM_VELOCITY_SPEED = MAX_DRIVE_SPEED * 0.35;
+    public static final double MAX_TRACTOR_BEAM_VELOCITY_SPEED = MAX_DRIVE_SPEED * 0.25;
     public static final double MAX_TRACTOR_BEAM_OMEGA_SPEED = MAX_DRIVE_ANGULAR_RATE * 0.6;
     public static final double TRACTOR_BEAM_ROTATION_THRESHOLD = Units.degreesToRadians(2);
     public static final double TRACTOR_BEAM_TARGET_DISTANCE = Units.inchesToMeters(1);
@@ -212,7 +213,7 @@ public final class Constants {
     public static final double WHEEL_ALGAE_SHOOT_SPEED = 0.5;
     public static final double WHEEL_ALGAE_BLAST_SPEED = 0.5;
     public static final double CORAL_LOAD_SPEED = -0.5;
-    public static final double ALGAE_LOAD_SPEED = -0.5;
+    public static final double ALGAE_LOAD_SPEED = -0.3;
     public static final double ALGAE_IDLE_SPEED = -0.05;
     public static final double STATOR_CURRENT_LIMIT = 40;
     public static final String CORAL_COLOR = new Color(255, 255, 255).toHexString();
@@ -224,6 +225,7 @@ public final class Constants {
     public static final double ALGAE_IMP_OFFSET =
         Units.inchesToMeters(LOADER.getDoubleValue("imp", "algae_offset"));
     public static final double CORAL_CURRENT_THRESHOLD = 4.25;
+    public static final double ALGAE_SPEED_THRESHOLD = 2.0;
   }
 
   public class ClimberConstants {
@@ -240,7 +242,7 @@ public final class Constants {
     public static final double ARM_DEPLOY_SPEED = 0.2;
     public static final double ARM_HOLD_SPEED = 0.08;
     public static final double ARM_SUPPLY_CURRENT_LIMIT = 10;
-    public static final double STRAP_RETRACTED_POSITION = 100;
+    public static final double STRAP_RETRACTED_POSITION = 80;
     public static final double STRAP_SETPOINT_BUMP = (STRAP_RETRACTED_POSITION / 25.0);
     public static final double PRONG_PRESET_COUNT = 17;
     public static final double DEPLOYING_TIME = 1.2;
@@ -285,7 +287,8 @@ public final class Constants {
             .withGravityType(GravityTypeValue.Elevator_Static);
     public static final double ELEVATOR_SAFETY_BUMP = Units.inchesToMeters(2);
 
-    public static final double SUBDIVISION_PER_METER = 100;
+    public static final double PLANER_ACCEL_RATE = 0.1;
+    public static final double SUBDIVISION_PER_METER = 200;
     public static final double SUBDIVISION_FOLLOW_DIST = Units.inchesToMeters(5);
   }
 
@@ -319,11 +322,6 @@ public final class Constants {
             .withGravityType(GravityTypeValue.Arm_Cosine);
   }
 
-  public static final class IntakeConstants {
-    public static final double y_offset = Units.inchesToMeters(4.25);
-    public static final double width = Units.inchesToMeters(17);
-  }
-
   public static final class PickupConstants {
     public static final int TIME_OF_FLIGHT_ID = 3;
     public static final int INTAKE_ID = 41;
@@ -339,6 +337,8 @@ public final class Constants {
     public static final Slot0Configs PICKUP_GAINS =
         new Slot0Configs().withKP(42.857).withKI(0.00).withKD(0.00);
     public static final double StatorCurrentLimit = 80;
+
+    public static final double INTAKE_OFF_SET_Y = -Units.inchesToMeters(5);
   }
 
   public class GameStateManagerConstants {
@@ -347,7 +347,7 @@ public final class Constants {
   }
 
   public class CoralDetectorConstants {
-    public static final Transform3d CAMERA_TRANSFORM =
+    public static final Transform3d BOT_TO_CAM_TRANSFORM =
         new Transform3d(
             Units.inchesToMeters(-8),
             Units.inchesToMeters(6),
@@ -355,9 +355,11 @@ public final class Constants {
             new Rotation3d(
                 Units.degreesToRadians(0),
                 Units.degreesToRadians(20),
-                Units.degreesToRadians(180 - 15)));
+                Units.degreesToRadians(180 + 15)));
+    public static final Translation2d BOT_TO_CAM_TRANSLATION =
+        BOT_TO_CAM_TRANSFORM.getTranslation().toTranslation2d();
     public static final double CORAL_HEIGHT_METERS = Units.inchesToMeters(4);
-    public static final double DETECTION_DISTANCE_LIMIT = 1.5;
+    public static final double DETECTION_DISTANCE_LIMIT = 2.5;
     public static final double DETECT_DEBOUNCE_TIME = 0.1;
     public static final double CORAL_CLASS_ID = 1;
 

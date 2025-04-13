@@ -8,8 +8,8 @@ import edu.wpi.first.math.filter.Debouncer;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform2d;
-import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.networktables.NetworkTableInstance;
@@ -53,8 +53,6 @@ public class CoralDetector extends Subsystem {
             .getStructTopic("CoralDetector/Coral Pose", Pose3d.struct)
             .publish();
 
-    // coral_detection_ = new PieceDetection();
-
     // Call reset last in subsystem configuration
     reset();
   }
@@ -92,6 +90,7 @@ public class CoralDetector extends Subsystem {
   public void updateLogic(double timestamp) {
     if (io_.can_see_coral_) {
       io_.target_distance_ = calculateDist(io_.target_y_);
+      io_.bot_to_coral_transform_ = calculateCoralTransform2d(io_.target_distance_, io_.target_x_);
       io_.coral_pose_ = calculateCoralPose2d();
     }
 
@@ -132,18 +131,22 @@ public class CoralDetector extends Subsystem {
    * @return the distance in meters the coral is from the lens of the cam along the floor
    */
   public double calculateDist(double y) {
-    double angleToGoal = CoralDetectorConstants.CAMERA_TRANSFORM.getRotation().getY() + y;
-    return (CoralDetectorConstants.CORAL_HEIGHT_METERS
-            - CoralDetectorConstants.CAMERA_TRANSFORM.getZ())
-        / Math.tan(angleToGoal);
+    double angle_to_goal = CoralDetectorConstants.BOT_TO_CAM_TRANSFORM.getRotation().getY() + y;
+    double height_offset =
+        (CoralDetectorConstants.BOT_TO_CAM_TRANSFORM.getZ()
+            - CoralDetectorConstants.CORAL_HEIGHT_METERS);
+    return height_offset / Math.tan(angle_to_goal);
   }
 
   public Pose3d convertToPose3d(Pose2d p) {
     return new Pose3d(
         p.getX(),
         p.getY(),
-        Constants.CoralDetectorConstants.DISPLAY_Z_OFFSEET,
-        Constants.CoralDetectorConstants.DISPLAY_ROTATION);
+        0, // Constants.CoralDetectorConstants.DISPLAY_Z_OFFSEET,
+        new Rotation3d(
+            0,
+            0,
+            p.getRotation().getRadians())); // Constants.CoralDetectorConstants.DISPLAY_ROTATION);
   }
 
   /**
@@ -151,30 +154,31 @@ public class CoralDetector extends Subsystem {
    * @param x the rotation in rads horizontally that the coal is from the center of the cam screen
    * @return the Translation2d from the robot to the coal
    */
-  private Transform2d calculateCoralTransform2d(double dist, double x) {
-    Transform3d camTransform = CoralDetectorConstants.CAMERA_TRANSFORM;
-    Transform2d coralToCam =
-        new Transform2d(new Translation2d(dist, Rotation2d.fromRadians(x)), Rotation2d.kZero);
-    Transform2d botToCam =
-        new Transform2d(
-            camTransform.getX(), camTransform.getY(), camTransform.getRotation().toRotation2d());
-    Transform2d finalTransform = coralToCam.plus(botToCam);
-    return finalTransform;
+  private Transform2d calculateCoralTransform2d(double dist, double angle) {
+    Translation2d camera_to_coral_translation = new Translation2d(dist, angle);
+    camera_to_coral_translation =
+        camera_to_coral_translation.rotateBy(
+            Rotation2d.fromRadians(
+                CoralDetectorConstants.BOT_TO_CAM_TRANSFORM.getRotation().getZ()));
+
+    return new Transform2d(
+        camera_to_coral_translation.plus(CoralDetectorConstants.BOT_TO_CAM_TRANSLATION),
+        Rotation2d.kZero);
   }
 
   /**
    * @return the Pose2d of the coal on the field
    */
   private Pose2d calculateCoralPose2d() {
-    Pose2d coralPose =
-        PoseEstimator.getInstance()
-            .getRobotPose()
-            .transformBy(calculateCoralTransform2d(io_.target_distance_, io_.target_x_));
-    Transform2d pickup_path_ =
-        new Transform2d(PoseEstimator.getInstance().getRobotPose(), coralPose);
-    Rotation2d approuch_angle_ = pickup_path_.getRotation().rotateBy(Rotation2d.k180deg);
-    Pose2d final_ = new Pose2d(coralPose.getX(), coralPose.getY(), approuch_angle_);
-    return final_;
+    Pose2d coral_pose =
+        PoseEstimator.getInstance().getRobotPose().transformBy(io_.bot_to_coral_transform_);
+    Translation2d bot_translation = PoseEstimator.getInstance().getRobotPose().getTranslation();
+    Rotation2d attack_angle =
+        Rotation2d.fromRadians(
+            Math.atan2(
+                bot_translation.getY() - coral_pose.getY(),
+                bot_translation.getX() - coral_pose.getX()));
+    return new Pose2d(coral_pose.getX(), coral_pose.getY(), attack_angle);
   }
 
   public Pose2d getCoralPose2d() {
@@ -204,6 +208,7 @@ public class CoralDetector extends Subsystem {
     @Log.File double target_distance_ = 0.0;
     @Log.File boolean can_see_coral_ = false;
     @Log.File Pose2d coral_pose_ = new Pose2d();
+    @Log.File Transform2d bot_to_coral_transform_ = new Transform2d();
   }
 
   public Logged getLoggingObject() {

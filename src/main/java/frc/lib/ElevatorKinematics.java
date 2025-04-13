@@ -2,12 +2,18 @@ package frc.lib;
 
 import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.wpilibj.DataLogManager;
+import frc.mw_lib.util.Util;
 
 public class ElevatorKinematics {
   private double virtual_arm_length_ = 0;
   private double virtual_arm_angle_ = 0;
   private double reachable_max_ = 0;
   private double reachable_min_ = 0;
+
+  public enum SolutionType {
+    ABOVE_PIVOT,
+    BELOW_PIVOT
+  }
 
   /**
    * Elevator Kinematic's Constructor
@@ -20,43 +26,32 @@ public class ElevatorKinematics {
     virtual_arm_angle_ = Math.tan(arm_width / arm_length);
     reachable_max_ = elevator_max + virtual_arm_length_;
     reachable_min_ = elevator_min - virtual_arm_length_;
-    DataLogManager.log(
-        "Max Z: "
-            + reachable_max_
-            + " | Min Z: "
-            + reachable_min_
-            + " | Max X: "
-            + virtual_arm_length_);
   }
 
-  public JointSpaceSolution translationToJointSpace(Translation3d t) {
+  public double getVirtualArmLength() {
+    return virtual_arm_length_;
+  }
+
+  public JointSpaceSolution translationToJointSpace(Translation3d t, SolutionType solution_type) {
     double x = t.getX();
     if (Math.abs(x) > virtual_arm_length_) {
-      DataLogManager.log("WARNING: Inverse Kinematics X Value : " + x + "| Out of Reach");
       x = Math.copySign(virtual_arm_length_, x);
     }
     double z = t.getZ();
     if (z > reachable_max_) {
-      // DataLogManager.log(
-      //     "WARNING: Inverse Kinematics Z Value : "
-      //         + z
-      //         + " | Out of Reach ("
-      //         + reachable_min_
-      //         + ")");
       z = reachable_max_;
     }
     if (z < reachable_min_) {
-      // DataLogManager.log(
-      //     "WARNING: Inverse Kinematics Z Value : "
-      //         + z
-      //         + " | Out of Reach ("
-      //         + reachable_min_
-      //         + ")");
       z = reachable_min_;
     }
 
-    double angle = -Math.acos(x / virtual_arm_length_);
-    double height = -(Math.sin(angle) * virtual_arm_length_) + z;
+    double angle = 0;
+    if (solution_type == SolutionType.ABOVE_PIVOT) {
+      angle = Math.acos(x / virtual_arm_length_);
+    } else {
+      angle = -Math.acos(x / virtual_arm_length_);
+    }
+    double height = z - (Math.sin(angle) * virtual_arm_length_);
     return new JointSpaceSolution(height, angle);
   }
 
@@ -74,6 +69,13 @@ public class ElevatorKinematics {
 
   public Translation3d jointSpaceToTranslation(double pivot_height, double pivot_angle) {
     return jointSpaceToTranslation(new JointSpaceSolution(pivot_height, pivot_angle));
+  }
+
+  public Translation3d constrainReachableTranslation(Translation3d t) {
+    return new Translation3d(
+        Util.clamp(t.getX(), virtual_arm_length_),
+        t.getY(),
+        Util.clamp(t.getZ(), reachable_min_, reachable_max_));
   }
 
   public static class JointSpaceSolution {

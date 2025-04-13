@@ -110,7 +110,7 @@ public abstract class OI {
 
     // Swap Between Robot Centric and Field Centric
     driver_controller_
-        .rightStick()
+        .y()
         .onTrue(SwerveDrivetrain.getInstance().toggleFieldCentric().ignoringDisable(true));
 
     // Crawl

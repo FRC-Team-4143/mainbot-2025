@@ -10,7 +10,7 @@
             "COUPLE_RATIO": 3.5,
             "WHEEL_RADIUS_INCH": 1.8,
             "MAX_DRIVE_SPEED": 5.0,
-            "MAX_DRIVE_ANGULAR_RATE": 6.28,
+            "MAX_DRIVE_ANGULAR_RATE": 10,
             "STEER_MOTOR_REVERSED": true,
             "DRIVE_GAINS_P": 0.5,
             "DRIVE_GAINS_I": 0,
@@ -74,9 +74,9 @@
             "HEADING_D": 0.0
         },
         "pose_controller": {
-            "TRANSLATION_P": 5,
+            "TRANSLATION_P": 5.0,
             "TRANSLATION_I": 0.0,
-            "TRANSLATION_D": 0.0,
+            "TRANSLATION_D": 0.1,
             "HEADING_P": 3.0,
             "HEADING_I": 0.0,
             "HEADING_D": 0.0
@@ -87,7 +87,7 @@
         "algae_offset": 0
     },
     "elevator": {
-        "CONTROLLER_P": 4.0,
+        "CONTROLLER_P": 10.0,
         "CONTROLLER_I": 0.0,
         "CONTROLLER_D": 0.15,
         "CONTROLLER_S": 0.06766,
@@ -95,13 +95,13 @@
         "CONTROLLER_A": 0.0070285,
         "CONTROLLER_G": 0.43,
         "HEIGHT_PIVOT_MIN": 28.5,
-        "HEIGHT_PIVOT_MAX": 81.811,
+        "HEIGHT_PIVOT_MAX": 84,
         "ELEVATOR_GEAR_RATIO": 5
     },
     "arm": {
-        "CONTROLLER_P": 80.0,
+        "CONTROLLER_P": 150.0,
         "CONTROLLER_I": 0.0,
-        "CONTROLLER_D": 4.0,
+        "CONTROLLER_D": 6.0,
         "CONTROLLER_S": 0.024495,
         "CONTROLLER_V": 8.778,
         "CONTROLLER_A": 0.25148,
@@ -115,7 +115,7 @@
             "location": {
                 "X": 0,
                 "Y": -11.75,
-                "Z": 7.25,
+                "Z": 8.25,
                 "ROLL": 0,
                 "PITCH": -5,
                 "YAW": 25

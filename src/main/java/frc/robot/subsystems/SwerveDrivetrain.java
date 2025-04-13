@@ -131,6 +131,7 @@ public class SwerveDrivetrain extends Subsystem {
   private StructArrayPublisher<SwerveModuleState> requested_state_pub_;
   private StructPublisher<ChassisSpeeds> current_chassis_speeds_pub_;
   private StructPublisher<ChassisSpeeds> requested_chassis_speeds_pub_;
+  private StructPublisher<Pose2d> tractorbeam_pose_;
 
   // PID Controllers
   private final PIDController x_traj_controller_;
@@ -219,6 +220,11 @@ public class SwerveDrivetrain extends Subsystem {
         NetworkTableInstance.getDefault()
             .getStructTopic("Swerve/Chassis Speeds/Current", ChassisSpeeds.struct)
             .publish();
+    tractorbeam_pose_ =
+        NetworkTableInstance.getDefault()
+            .getStructTopic("Swerve/Tractor Beam/Pose", Pose2d.struct)
+            .publish();
+
     SmartDashboard.putData(
         "Subsystems/Swerve/Overview",
         new Sendable() {
@@ -507,6 +513,7 @@ public class SwerveDrivetrain extends Subsystem {
     requested_state_pub_.set(io_.requested_module_states_);
     current_chassis_speeds_pub_.set(io_.current_chassis_speeds_);
     requested_chassis_speeds_pub_.set(io_.requested_chassis_speeds_);
+    tractorbeam_pose_.set(io_.target_pose_);
 
     SmartDashboard.putString("Subsystems/Swerve/Mode", io_.drive_mode_.toString());
     SmartDashboard.putBoolean(

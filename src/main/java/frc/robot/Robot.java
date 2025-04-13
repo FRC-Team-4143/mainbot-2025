@@ -49,6 +49,9 @@ public class Robot extends TimedRobot {
         .onFalse(
             Commands.runOnce(
                 () -> Elevator.getInstance().buildPlan(Elevator.getInstance().getTarget())));
+
+    Elevator.getInstance().readPeriodicInputs(0);
+    Elevator.getInstance().buildPlan(Elevator.getInstance().getTarget());
   }
 
   @Override
