@@ -15,48 +15,44 @@ import frc.robot.subsystems.Pickup.PickupMode;
 
 public class IntakeHandoff extends Command {
 
-  static Pickup pickup_;
-  static Claw claw_;
-  static Elevator elevator_;
-
   /** Creates a new CoralEject. */
   public IntakeHandoff() {
-    pickup_ = Pickup.getInstance();
-    elevator_ = Elevator.getInstance();
-    claw_ = Claw.getInstance();
-    addRequirements(pickup_);
-    addRequirements(claw_);
-    addRequirements(elevator_);
+    addRequirements(Pickup.getInstance());
+    addRequirements(Claw.getInstance());
+    addRequirements(Elevator.getInstance());
     setName(this.getClass().getSimpleName());
   }
 
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    elevator_.setTarget(TargetType.CORAL_INTAKE);
-    pickup_.setPickupMode(PickupMode.DEPLOYED);
-    claw_.setGamePiece(GamePiece.CORAL);
+    Elevator.getInstance().setTarget(TargetType.CORAL_INTAKE);
+    Pickup.getInstance().setPickupMode(PickupMode.DEPLOYED);
+    Claw.getInstance().setGamePiece(GamePiece.CORAL);
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    if (elevator_.isElevatorAndArmAtTarget() == true) {
-      pickup_.setPickupMode(PickupMode.INTAKE);
-      claw_.setClawMode(ClawMode.LOAD);
+    if (Elevator.getInstance().isElevatorAndArmAtTarget() == true) {
+      Pickup.getInstance().setPickupMode(PickupMode.INTAKE);
+      Claw.getInstance().setClawMode(ClawMode.LOAD);
     }
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    pickup_.setPickupMode(PickupMode.DEPLOYED);
-    claw_.setClawMode(ClawMode.IDLE);
+    Pickup.getInstance().setPickupMode(PickupMode.DEPLOYED);
+    Claw.getInstance().setClawMode(ClawMode.IDLE);
   }
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return claw_.hasCoral();
+    return (Claw.getInstance().hasCoral()
+        || (Pickup.getInstance().isCoralPresent()
+            && !(Elevator.getInstance().getTarget() == TargetType.CORAL_INTAKE
+                && Elevator.getInstance().isElevatorAndArmAtTarget())));
   }
 }
