@@ -266,13 +266,7 @@ public class FieldRegions {
           REEF_FACE2_REGION,
           REEF_FACE3_REGION,
           REEF_FACE4_REGION,
-          REEF_FACE5_REGION,
-          OPP_REEF_FACE0_REGION,
-          OPP_REEF_FACE1_REGION,
-          OPP_REEF_FACE2_REGION,
-          OPP_REEF_FACE3_REGION,
-          OPP_REEF_FACE4_REGION,
-          OPP_REEF_FACE5_REGION));
+          REEF_FACE5_REGION));
 
   public static ArrayList<PolygonRegion> OPP_REEF_REGIONS = new ArrayList<>(
       List.of(
