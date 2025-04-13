@@ -8,28 +8,35 @@ import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.Claw;
 import frc.robot.subsystems.Claw.ClawMode;
 import frc.robot.subsystems.Claw.GamePiece;
+import frc.robot.subsystems.Pickup;
+import frc.robot.subsystems.Pickup.PickupMode;
 
 public class AlgaeLoad extends Command {
-  static Claw claw_;
 
   public AlgaeLoad() {
-    claw_ = Claw.getInstance();
-    addRequirements(claw_);
+    addRequirements(Claw.getInstance());
     setName(this.getClass().getSimpleName());
   }
 
   @Override
   public void initialize() {
-    claw_.setGamePiece(GamePiece.ALGAE);
-    claw_.setClawMode(ClawMode.LOAD);
+    Claw.getInstance().setGamePiece(GamePiece.ALGAE);
+    Claw.getInstance().setClawMode(ClawMode.LOAD);
   }
 
   @Override
-  public void execute() {}
+  public void execute() {
+    if (!Pickup.getInstance().isCoralPresent()) {
+      Pickup.getInstance().setPickupMode(PickupMode.INTAKE);
+    } else {
+      Pickup.getInstance().setPickupMode(PickupMode.DEPLOYED);
+    }
+  }
 
   @Override
   public void end(boolean interrupted) {
-    claw_.setClawMode(ClawMode.IDLE);
+    Claw.getInstance().setClawMode(ClawMode.IDLE);
+    Pickup.getInstance().setPickupMode(PickupMode.DEPLOYED);
   }
 
   @Override
