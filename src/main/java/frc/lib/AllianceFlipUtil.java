@@ -43,7 +43,9 @@ public class AllianceFlipUtil {
           apply(pose.getTranslation(), symmetry),
           pose.getRotation().rotateBy(Rotation2d.fromDegrees(180)));
     } else {
-      return new Pose2d(apply(pose.getTranslation(), symmetry), pose.getRotation());
+      return new Pose2d(
+          apply(pose.getTranslation(), symmetry),
+          pose.getRotation().rotateBy(Rotation2d.fromDegrees(180)));
     }
   }
 
@@ -81,8 +83,8 @@ public class AllianceFlipUtil {
           tightRope.getName());
     } else {
       return new TightRope(
-          AllianceFlipUtil.apply(tightRope.poseB, symmetry),
           AllianceFlipUtil.apply(tightRope.poseA, symmetry),
+          AllianceFlipUtil.apply(tightRope.poseB, symmetry),
           tightRope.getName());
     }
   }

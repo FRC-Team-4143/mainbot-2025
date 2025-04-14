@@ -476,7 +476,7 @@ public class FieldRegions {
     ScoringPoses.BARGE_TIGHT_ROPE =
         AllianceFlipUtil.apply(ScoringPoses.BARGE_TIGHT_ROPE, FieldConstants.SYMMETRY_TYPE);
     ScoringPoses.OPP_BARGE_TIGHT_ROPE =
-        AllianceFlipUtil.apply(ScoringPoses.OPP_BARGE_TIGHT_ROPE, SymmetryType.DIRECT);
+        AllianceFlipUtil.apply(ScoringPoses.OPP_BARGE_TIGHT_ROPE, FieldConstants.SYMMETRY_TYPE);
     ScoringPoses.PROCESSOR_TIGHT_ROPE =
         AllianceFlipUtil.apply(ScoringPoses.PROCESSOR_TIGHT_ROPE, FieldConstants.SYMMETRY_TYPE);
 
