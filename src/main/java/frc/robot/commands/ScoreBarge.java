@@ -7,13 +7,10 @@ package frc.robot.commands;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.lib.ElevatorTargets.TargetType;
 import frc.lib.FieldRegions;
-import frc.mw_lib.geometry.Region;
 import frc.robot.subsystems.Claw;
-import frc.robot.subsystems.Claw.GamePiece;
 import frc.robot.subsystems.Elevator;
 import frc.robot.subsystems.PoseEstimator;
 import frc.robot.subsystems.SwerveDrivetrain;
-import java.util.Optional;
 
 public class ScoreBarge extends Command {
 
@@ -40,7 +37,8 @@ public class ScoreBarge extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    if (FieldRegions.BARGE_ENTER.contains(poseEstimator_.getRobotPose()) || FieldRegions.OPP_BARGE_ENTER.contains(poseEstimator_.getRobotPose())) {
+    if (FieldRegions.BARGE_ENTER.contains(poseEstimator_.getRobotPose())
+        || FieldRegions.OPP_BARGE_ENTER.contains(poseEstimator_.getRobotPose())) {
       elevator_.setTarget(TargetType.BARGE);
     } else {
       elevator_.setTarget(TargetType.ALGAE_STOW);
