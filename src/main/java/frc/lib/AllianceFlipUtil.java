@@ -58,7 +58,6 @@ public class AllianceFlipUtil {
     for (int i = 0; i < points.length; i++) {
       points[i] = AllianceFlipUtil.apply(points[i], symmetry);
     }
-    System.out.println("Fliped: " + region.getName());
     return new PolygonRegion(points, region.getName());
   }
 

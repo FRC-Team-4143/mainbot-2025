@@ -78,7 +78,6 @@ public class Robot extends TimedRobot {
     if (alliance.isPresent()) {
       // Alliance Has Changed
       if (alliance.get() != alliance_) {
-        System.out.println("alliance changed");
         alliance_ = alliance.get();
         // Update Driver Perspective
         SwerveDrivetrain.getInstance()
@@ -88,7 +87,6 @@ public class Robot extends TimedRobot {
                     : SwerveDrivetrain.getInstance().BLUE_ALLIANCE_HEADING);
         // Flip Field Regions
         FieldRegions.flipRegions();
-        System.out.println("done");
       }
     }
   }
