@@ -61,7 +61,6 @@ public class CoralTractorBeam extends Command {
     pickup_.setPickupMode(PickupMode.DEPLOYED);
     claw_.setGamePiece(GamePiece.CORAL);
     target_ = CoralDetector.getInstance().getCoralPose2d().transformBy(intake_off_set);
-    has_hit_staging_target_ = false;
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -71,12 +70,7 @@ public class CoralTractorBeam extends Command {
       pickup_.setPickupMode(PickupMode.INTAKE);
       claw_.setClawMode(ClawMode.LOAD);
       if (CoralDetector.getInstance().isValid()) {
-        if (false) {
-          has_hit_staging_target_ = SwerveDrivetrain.getInstance().atTractorBeamPose();
-          target_ = CoralDetector.getInstance().getCoralPose2d().transformBy(stageing_off_set_);
-        } else {
-          target_ = CoralDetector.getInstance().getCoralPose2d().transformBy(intake_off_set);
-        }
+        target_ = CoralDetector.getInstance().getCoralPose2d().transformBy(intake_off_set);
         SwerveDrivetrain.getInstance().setTargetPose(target_);
       }
     }
