@@ -59,9 +59,9 @@ public class ElevatorTargets {
         Arrays.asList(new Waypoint(0, 0, Units.inchesToMeters(41.147)))),
     CLIMB(
         new TargetData(
-            new Waypoint(Units.inchesToMeters(-8.848), 0, Units.inchesToMeters(47.579)), "CLIMB"),
-        Arrays.asList(new Waypoint(Units.inchesToMeters(1.956), 0, Units.inchesToMeters(44.809))),
-        Arrays.asList(new Waypoint(Units.inchesToMeters(1.956), 0, Units.inchesToMeters(44.809))),
+            new Waypoint(Units.inchesToMeters(-8.848), 0, Units.inchesToMeters(50)), "CLIMB"),
+        Arrays.asList(new Waypoint(Units.inchesToMeters(1.956), 0, Units.inchesToMeters(60))),
+        Arrays.asList(new Waypoint(Units.inchesToMeters(1.956), 0, Units.inchesToMeters(60))),
         SolutionType.ABOVE_PIVOT),
     CORAL_INTAKE(
         new TargetData(new Waypoint(-0.20, 0, 0.410693), "CORAL_INTAKE"),
