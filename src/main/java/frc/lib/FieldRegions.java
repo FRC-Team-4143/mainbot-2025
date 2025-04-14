@@ -3,6 +3,7 @@ package frc.lib;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.util.Units;
+import frc.lib.AllianceFlipUtil.SymmetryType;
 import frc.mw_lib.geometry.PolygonRegion;
 import frc.mw_lib.geometry.Region;
 import frc.robot.Constants;
@@ -58,6 +59,32 @@ public class FieldRegions {
             new Translation2d((FieldConstants.FIELD_LENGTH / 2) - 0.737, FieldConstants.FIELD_WIDTH)
           },
           "BARGE_ENTER");
+  public static PolygonRegion OPP_BARGE_REGION =
+      new PolygonRegion(
+          new Translation2d[] {
+            new Translation2d(
+                (FieldConstants.FIELD_LENGTH / 2) - 0.737, FieldConstants.FIELD_WIDTH),
+            new Translation2d((FieldConstants.FIELD_LENGTH / 2) - 3, FieldConstants.FIELD_WIDTH),
+            new Translation2d(
+                (FieldConstants.FIELD_LENGTH / 2) - 3, FieldConstants.FIELD_WIDTH / 2),
+            new Translation2d(
+                (FieldConstants.FIELD_LENGTH / 2) - 0.737, FieldConstants.FIELD_WIDTH / 2),
+            new Translation2d((FieldConstants.FIELD_LENGTH / 2) - 0.737, FieldConstants.FIELD_WIDTH)
+          },
+          "OPP_BARGE_REGION");
+  public static PolygonRegion OPP_BARGE_ENTER =
+      new PolygonRegion(
+          new Translation2d[] {
+            new Translation2d(
+                (FieldConstants.FIELD_LENGTH / 2) - 0.737, FieldConstants.FIELD_WIDTH),
+            new Translation2d((FieldConstants.FIELD_LENGTH / 2) - 3, FieldConstants.FIELD_WIDTH),
+            new Translation2d(
+                (FieldConstants.FIELD_LENGTH / 2) - 3, FieldConstants.FIELD_WIDTH / 2),
+            new Translation2d(
+                (FieldConstants.FIELD_LENGTH / 2) - 0.737, FieldConstants.FIELD_WIDTH / 2),
+            new Translation2d((FieldConstants.FIELD_LENGTH / 2) - 0.737, FieldConstants.FIELD_WIDTH)
+          },
+          "OPP_BARGE_ENTER");
   public static PolygonRegion RIGHT_CORAL_STATION_REGION =
       new PolygonRegion(
           new Translation2d[] {
@@ -317,8 +344,6 @@ public class FieldRegions {
           "OPP_REEF_EXIT_REGION");
 
   // Region Lists
-  public static ArrayList<PolygonRegion> ALGAE_REGIONS =
-      new ArrayList<>(List.of(BARGE_REGION, PROCESSOR_REGION));
   public static ArrayList<PolygonRegion> STATION_REGIONS =
       new ArrayList<>(
           List.of(
@@ -335,7 +360,6 @@ public class FieldRegions {
               REEF_FACE3_REGION,
               REEF_FACE4_REGION,
               REEF_FACE5_REGION));
-
   public static ArrayList<PolygonRegion> OPP_REEF_REGIONS =
       new ArrayList<>(
           List.of(
@@ -351,6 +375,8 @@ public class FieldRegions {
           List.of(
               BARGE_REGION,
               BARGE_ENTER,
+              // OPP_BARGE_REGION, not included because it needs a direct flip
+              // OPP_BARGE_ENTER, not included because it needs a direct flip
               PROCESSOR_REGION,
               PROCESSOR_DEAD_REGION,
               RIGHT_CORAL_STATION_REGION,
@@ -388,12 +414,10 @@ public class FieldRegions {
       OPP_REEF_REGIONS.set(
           i, AllianceFlipUtil.apply(OPP_REEF_REGIONS.get(i), FieldConstants.SYMMETRY_TYPE));
     }
-
     OPP_REEF_ENTER_REGION =
         AllianceFlipUtil.apply(OPP_REEF_ENTER_REGION, FieldConstants.SYMMETRY_TYPE);
     OPP_REEF_EXIT_REGION =
         AllianceFlipUtil.apply(OPP_REEF_EXIT_REGION, FieldConstants.SYMMETRY_TYPE);
-
     ScoringPoses.OPP_REEF_FACE_0_POSE =
         AllianceFlipUtil.apply(ScoringPoses.OPP_REEF_FACE_0_POSE, FieldConstants.SYMMETRY_TYPE);
     ScoringPoses.OPP_REEF_FACE_1_POSE =
@@ -406,6 +430,11 @@ public class FieldRegions {
         AllianceFlipUtil.apply(ScoringPoses.OPP_REEF_FACE_4_POSE, FieldConstants.SYMMETRY_TYPE);
     ScoringPoses.OPP_REEF_FACE_5_POSE =
         AllianceFlipUtil.apply(ScoringPoses.OPP_REEF_FACE_5_POSE, FieldConstants.SYMMETRY_TYPE);
+
+    OPP_BARGE_REGION = AllianceFlipUtil.apply(OPP_BARGE_REGION, SymmetryType.DIRECT);
+    OPP_BARGE_ENTER = AllianceFlipUtil.apply(OPP_BARGE_ENTER, SymmetryType.DIRECT);
+    ScoringPoses.OPP_BARGE_TIGHT_ROPE =
+        AllianceFlipUtil.apply(ScoringPoses.OPP_BARGE_TIGHT_ROPE, SymmetryType.DIRECT);
 
     populateTable();
   }
@@ -442,8 +471,12 @@ public class FieldRegions {
     ScoringPoses.OPP_REEF_FACE_5_POSE =
         AllianceFlipUtil.apply(ScoringPoses.OPP_REEF_FACE_5_POSE, FieldConstants.SYMMETRY_TYPE);
 
+    OPP_BARGE_REGION = AllianceFlipUtil.apply(OPP_BARGE_REGION, FieldConstants.SYMMETRY_TYPE);
+    OPP_BARGE_ENTER = AllianceFlipUtil.apply(OPP_BARGE_ENTER, FieldConstants.SYMMETRY_TYPE);
     ScoringPoses.BARGE_TIGHT_ROPE =
         AllianceFlipUtil.apply(ScoringPoses.BARGE_TIGHT_ROPE, FieldConstants.SYMMETRY_TYPE);
+    ScoringPoses.OPP_BARGE_TIGHT_ROPE =
+        AllianceFlipUtil.apply(ScoringPoses.OPP_BARGE_TIGHT_ROPE, SymmetryType.DIRECT);
     ScoringPoses.PROCESSOR_TIGHT_ROPE =
         AllianceFlipUtil.apply(ScoringPoses.PROCESSOR_TIGHT_ROPE, FieldConstants.SYMMETRY_TYPE);
 

@@ -113,6 +113,8 @@ public class ScoringPoses {
   // Tight Ropes
   public static TightRope BARGE_TIGHT_ROPE =
       new TightRope(BARGE_TIGHT_ROPE_POSE_A, BARGE_TIGHT_ROPE_POSE_B, "Barge");
+  public static TightRope OPP_BARGE_TIGHT_ROPE =
+      new TightRope(BARGE_TIGHT_ROPE_POSE_A, BARGE_TIGHT_ROPE_POSE_B, "OPP_Barge");
   public static TightRope PROCESSOR_TIGHT_ROPE =
       new TightRope(PROCESSOR_TIGHT_ROPE_POSE_A, PROCESSOR_TIGHT_ROPE_POSE_B, "Processor");
 }
