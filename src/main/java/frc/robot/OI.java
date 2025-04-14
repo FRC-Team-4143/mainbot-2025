@@ -5,7 +5,9 @@
 package frc.robot;
 
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.wpilibj.GenericHID.RumbleType;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
@@ -262,6 +264,10 @@ public abstract class OI {
   public static Optional<Rotation2d> getDriverJoystickPOV() {
     int pov = driver_controller_.getHID().getPOV();
     return (pov != -1) ? Optional.of(Rotation2d.fromDegrees(pov)) : Optional.empty();
+  }
+
+  public static Command setRumble(double duration){
+    return Commands.startEnd(() -> driver_controller_.setRumble(RumbleType.kBothRumble, 1), () -> driver_controller_.setRumble(RumbleType.kBothRumble, 0)).withTimeout(duration);
   }
 
   /*
