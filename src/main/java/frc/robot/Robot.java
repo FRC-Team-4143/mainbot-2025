@@ -37,13 +37,6 @@ public class Robot extends TimedRobot {
 
     AutoManager.getInstance()
         .registerAutos(
-            new Bump_E4_RightStation_C4_RightStation_D4(),
-            new Bump_J4_LeftStation_L4_LeftStation_K4(),
-            new E4_RightStation_C4_RightStation_D4(),
-            new E4_RightStation_C4(),
-            new H4_Algae(),
-            new J4_LeftStation_L4_LeftStation_K4(),
-            new J4_LeftStation_L4(),
             new Left_Ground_Test());
 
     RobotModeTriggers.disabled()
