@@ -21,7 +21,6 @@ public class ScoreBarge extends Command {
   static SwerveDrivetrain drivetrain_;
   static PoseEstimator poseEstimator_;
   static Claw claw_;
-  static Optional<Region> current_region = Optional.empty();
 
   /** Creates a new CoralStationLoad. */
   public ScoreBarge() {
@@ -36,14 +35,12 @@ public class ScoreBarge extends Command {
 
   // Called when the command is initially scheduled.
   @Override
-  public void initialize() {
-    claw_.setGamePiece(GamePiece.ALGAE);
-  }
+  public void initialize() {}
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    if (FieldRegions.BARGE_ENTER.contains(poseEstimator_.getRobotPose())) {
+    if (FieldRegions.BARGE_ENTER.contains(poseEstimator_.getRobotPose()) || FieldRegions.OPP_BARGE_ENTER.contains(poseEstimator_.getRobotPose())) {
       elevator_.setTarget(TargetType.BARGE);
     } else {
       elevator_.setTarget(TargetType.ALGAE_STOW);
