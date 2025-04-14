@@ -85,6 +85,7 @@ public class SwerveDrivetrain extends Subsystem {
     TARGET_FACING,
     TRAJECTORY,
     TRACTOR_BEAM,
+    FOLLOW_POINT,
     TIGHT_ROPE,
     CRAWL,
     IDLE,
@@ -132,7 +133,7 @@ public class SwerveDrivetrain extends Subsystem {
   private StructArrayPublisher<SwerveModuleState> requested_state_pub_;
   private StructPublisher<ChassisSpeeds> current_chassis_speeds_pub_;
   private StructPublisher<ChassisSpeeds> requested_chassis_speeds_pub_;
-  private StructPublisher<Pose2d> tractorbeam_pose_;
+  private StructPublisher<Pose2d> target_pose_pub_;
 
   // PID Controllers
   private final PIDController x_traj_controller_;
@@ -141,6 +142,9 @@ public class SwerveDrivetrain extends Subsystem {
   private final PIDController x_pose_controller_;
   private final PIDController y_pose_controller_;
   private final PIDController heading_pose_controller_;
+  private final PIDController x_follow_controller_;
+  private final PIDController y_follow_controller_;
+  private final PIDController heading_follow_controller_;
 
   private Debouncer stallingDebouncer;
 
@@ -195,6 +199,10 @@ public class SwerveDrivetrain extends Subsystem {
     y_pose_controller_ = Constants.DrivetrainConstants.Y_POSE_TRANSLATION;
     heading_pose_controller_ = Constants.DrivetrainConstants.POSE_HEADING;
     heading_pose_controller_.enableContinuousInput(-Math.PI, Math.PI);
+    x_follow_controller_ = Constants.DrivetrainConstants.X_FOLLOW_TRANSLATION;
+    y_follow_controller_ = Constants.DrivetrainConstants.Y_FOLLOW_TRANSLATION;
+    heading_follow_controller_ = Constants.DrivetrainConstants.FOLLOW_HEADING;
+    heading_follow_controller_.enableContinuousInput(-Math.PI, Math.PI);
 
     // Allow PID Configuration for Traj / Pose Control on the Dashboard
     SmartDashboard.putData("Tuning/Swerve/X Traj Controller", x_traj_controller_);
@@ -221,11 +229,10 @@ public class SwerveDrivetrain extends Subsystem {
         NetworkTableInstance.getDefault()
             .getStructTopic("Swerve/Chassis Speeds/Current", ChassisSpeeds.struct)
             .publish();
-    tractorbeam_pose_ =
+    target_pose_pub_ =
         NetworkTableInstance.getDefault()
-            .getStructTopic("Swerve/Tractor Beam/Pose", Pose2d.struct)
+            .getStructTopic("Swerve/Target/Pose", Pose2d.struct)
             .publish();
-
     SmartDashboard.putData(
         "Subsystems/Swerve/Overview",
         new Sendable() {
@@ -439,6 +446,38 @@ public class SwerveDrivetrain extends Subsystem {
                       Util.clamp(omega, DrivetrainConstants.MAX_TRACTOR_BEAM_OMEGA_SPEED)));
         }
         break;
+      case FOLLOW_POINT:
+        {
+          io_.tractor_beam_scaling_factor_ =
+              Math.sqrt(
+                      Math.pow(io_.joystick_left_x_, 2)
+                          + Math.pow(io_.joystick_left_y_, 2)
+                          + Math.pow(io_.joystick_right_x_, 2))
+                  * io_.active_max_speed;
+          double x_velocity =
+              // Util.clamp(
+              x_follow_controller_.calculate(io_.current_pose_.getX(), io_.target_pose_.getX());
+          // io_.tractor_beam_scaling_factor_);
+          double y_velocity =
+              // Util.clamp(
+              y_follow_controller_.calculate(io_.current_pose_.getY(), io_.target_pose_.getY());
+          // io_.tractor_beam_scaling_factor_);
+          double omega =
+              // Util.clamp(
+              heading_follow_controller_.calculate(
+                  io_.current_pose_.getRotation().getRadians(),
+                  io_.target_pose_.getRotation().getRadians());
+          // io_.tractor_beam_scaling_factor_);
+          this.setControl(
+              auto_request_
+                  .withVelocityX(
+                      Util.clamp(x_velocity, DrivetrainConstants.MAX_TRACTOR_BEAM_VELOCITY_SPEED))
+                  .withVelocityY(
+                      Util.clamp(y_velocity, DrivetrainConstants.MAX_TRACTOR_BEAM_VELOCITY_SPEED))
+                  .withRotationalRate(
+                      Util.clamp(omega, DrivetrainConstants.MAX_TRACTOR_BEAM_OMEGA_SPEED)));
+        }
+        break;
       case TIGHT_ROPE:
         {
           double ropeEndHandOffThreshold = 0.05;
@@ -514,7 +553,7 @@ public class SwerveDrivetrain extends Subsystem {
     requested_state_pub_.set(io_.requested_module_states_);
     current_chassis_speeds_pub_.set(io_.current_chassis_speeds_);
     requested_chassis_speeds_pub_.set(io_.requested_chassis_speeds_);
-    tractorbeam_pose_.set(io_.target_pose_);
+    target_pose_pub_.set(io_.target_pose_);
 
     SmartDashboard.putString("Subsystems/Swerve/Mode", io_.drive_mode_.toString());
     SmartDashboard.putBoolean(
@@ -668,6 +707,16 @@ public class SwerveDrivetrain extends Subsystem {
    */
   public void setTargetPose(Pose2d target_pose) {
     io_.drive_mode_ = DriveMode.TRACTOR_BEAM;
+    io_.target_pose_ = clampTargetPose(target_pose);
+  }
+
+  /**
+   * Updates the internal target for the robot to reach and begins FOLLOW_POINT mode
+   *
+   * @param target_pose target pose for the robot to reach
+   */
+  public void setTargetFollow(Pose2d target_pose) {
+    io_.drive_mode_ = DriveMode.FOLLOW_POINT;
     io_.target_pose_ = clampTargetPose(target_pose);
   }
 

@@ -198,6 +198,11 @@ public final class Constants {
             LOADER.getDoubleValue("drive", "pose_controller", "HEADING_P"),
             LOADER.getDoubleValue("drive", "pose_controller", "HEADING_I"),
             LOADER.getDoubleValue("drive", "pose_controller", "HEADING_D"));
+    public static final PIDController X_FOLLOW_TRANSLATION = new PIDController(3.0, 0, 0.1);
+
+    public static final PIDController Y_FOLLOW_TRANSLATION = new PIDController(3.0, 0, 0.1);
+
+    public static final PIDController FOLLOW_HEADING = new PIDController(3.0, 0, 0.1);
 
     public static final double CENTER_OFFSET_X =
         Units.inchesToMeters(LOADER.getDoubleValue("drive", "com", "CENTER_OFFSET_X"));
@@ -368,7 +373,7 @@ public final class Constants {
 
     public static final double DISPLAY_Z_OFFSEET = Units.inchesToMeters(6);
     // public static final Rotation3d DISPLAY_ROTATION =
-    //     new Rotation3d(0, Units.degreesToRadians(90), 0);
+    // new Rotation3d(0, Units.degreesToRadians(90), 0);
     public static final Rotation3d DISPLAY_ROTATION =
         new Rotation3d(0, Units.degreesToRadians(0), 0);
   }

@@ -58,29 +58,17 @@ public class ScoringPoses {
 
   // Poses used for Stealing Algae from Opposing Reef
   public static Pose2d OPP_REEF_FACE_0_POSE =
-      AllianceFlipUtil.apply(
-          FieldConstants.Reef.CENTER_FACES[0].transformBy(REEF_FACE_OFFSET),
-          FieldConstants.SYMMETRY_TYPE);
+      FieldConstants.Reef.CENTER_FACES[0].transformBy(REEF_FACE_OFFSET);
   public static Pose2d OPP_REEF_FACE_1_POSE =
-      AllianceFlipUtil.apply(
-          FieldConstants.Reef.CENTER_FACES[1].transformBy(REEF_FACE_OFFSET),
-          FieldConstants.SYMMETRY_TYPE);
+      FieldConstants.Reef.CENTER_FACES[1].transformBy(REEF_FACE_OFFSET);
   public static Pose2d OPP_REEF_FACE_2_POSE =
-      AllianceFlipUtil.apply(
-          FieldConstants.Reef.CENTER_FACES[2].transformBy(REEF_FACE_OFFSET),
-          FieldConstants.SYMMETRY_TYPE);
+      FieldConstants.Reef.CENTER_FACES[2].transformBy(REEF_FACE_OFFSET);
   public static Pose2d OPP_REEF_FACE_3_POSE =
-      AllianceFlipUtil.apply(
-          FieldConstants.Reef.CENTER_FACES[3].transformBy(REEF_FACE_OFFSET),
-          FieldConstants.SYMMETRY_TYPE);
+      FieldConstants.Reef.CENTER_FACES[3].transformBy(REEF_FACE_OFFSET);
   public static Pose2d OPP_REEF_FACE_4_POSE =
-      AllianceFlipUtil.apply(
-          FieldConstants.Reef.CENTER_FACES[4].transformBy(REEF_FACE_OFFSET),
-          FieldConstants.SYMMETRY_TYPE);
+      FieldConstants.Reef.CENTER_FACES[4].transformBy(REEF_FACE_OFFSET);
   public static Pose2d OPP_REEF_FACE_5_POSE =
-      AllianceFlipUtil.apply(
-          FieldConstants.Reef.CENTER_FACES[5].transformBy(REEF_FACE_OFFSET),
-          FieldConstants.SYMMETRY_TYPE);
+      FieldConstants.Reef.CENTER_FACES[5].transformBy(REEF_FACE_OFFSET);
 
   // Coral Station Poses
   public static Pose2d LEFT_CORAL_STATION_POSE =

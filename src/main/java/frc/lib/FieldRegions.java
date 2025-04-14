@@ -5,7 +5,6 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.util.Units;
 import frc.lib.AllianceFlipUtil.SymmetryType;
 import frc.mw_lib.geometry.PolygonRegion;
-import frc.mw_lib.geometry.Region;
 import frc.robot.Constants;
 import java.util.ArrayList;
 import java.util.Hashtable;
@@ -359,65 +358,53 @@ public class FieldRegions {
               REEF_FACE2_REGION,
               REEF_FACE3_REGION,
               REEF_FACE4_REGION,
-              REEF_FACE5_REGION));
-  public static ArrayList<PolygonRegion> OPP_REEF_REGIONS =
-      new ArrayList<>(
-          List.of(
+              REEF_FACE5_REGION,
               OPP_REEF_FACE0_REGION,
               OPP_REEF_FACE1_REGION,
               OPP_REEF_FACE2_REGION,
               OPP_REEF_FACE3_REGION,
               OPP_REEF_FACE4_REGION,
               OPP_REEF_FACE5_REGION));
-
-  private static ArrayList<Region> ALL_REGIONS =
+  public static ArrayList<PolygonRegion> REEF_ENTER_EXIT_REGIONS =
       new ArrayList<>(
           List.of(
-              BARGE_REGION,
-              BARGE_ENTER,
+              REEF_ENTER_REGION,
+              OPP_REEF_ENTER_REGION,
+              REEF_EXIT_REGION,
+              OPP_REEF_EXIT_REGION,
+              L4_COLLISION_REGION));
+
+  public static ArrayList<PolygonRegion> ALGAE_REGIONS =
+      new ArrayList<>(
+          List.of(
+              PROCESSOR_REGION, PROCESSOR_DEAD_REGION, BARGE_REGION, BARGE_ENTER
               // OPP_BARGE_REGION, not included because it needs a direct flip
               // OPP_BARGE_ENTER, not included because it needs a direct flip
-              PROCESSOR_REGION,
-              PROCESSOR_DEAD_REGION,
-              RIGHT_CORAL_STATION_REGION,
-              LEFT_CORAL_STATION_REGION,
-              RIGHT_CORAL_STATION_SLOW_REGION,
-              LEFT_CORAL_STATION_SLOW_REGION,
-              REEF_FACE0_REGION,
-              REEF_FACE1_REGION,
-              REEF_FACE2_REGION,
-              REEF_FACE3_REGION,
-              REEF_FACE4_REGION,
-              REEF_FACE5_REGION,
-              REEF_ENTER_REGION,
-              REEF_EXIT_REGION,
-              OPP_REEF_ENTER_REGION,
-              OPP_REEF_EXIT_REGION,
-              L4_COLLISION_REGION,
-              OPP_REEF_FACE0_REGION,
-              OPP_REEF_FACE1_REGION,
-              OPP_REEF_FACE2_REGION,
-              OPP_REEF_FACE3_REGION,
-              OPP_REEF_FACE4_REGION,
-              OPP_REEF_FACE5_REGION));
+              ));
+
+  private static ArrayList<ArrayList<PolygonRegion>> ALL_REGIONS =
+      new ArrayList<>(
+          List.of(ALGAE_REGIONS, REEF_ENTER_EXIT_REGIONS, REEF_REGIONS, STATION_REGIONS));
 
   // Region to Target Pose Table
   // Poses are stored with a key equal to the name of the region
   public static Hashtable<String, Pose2d> REGION_POSE_TABLE = new Hashtable<>();
 
   public static void makeRegions() {
-    for (Region region : ALL_REGIONS) {
-      region.constructRegion();
+    for (int i = 0; i < ALL_REGIONS.size(); i++) {
+      for (int j = 0; j < ALL_REGIONS.get(i).size(); j++) {
+        ALL_REGIONS.get(i).get(j).constructRegion();
+        if (ALL_REGIONS.get(i).get(j).getName().substring(0, 5).equals("OPP_R")) {
+          System.out.println(ALL_REGIONS.get(i).get(j).getName());
+          ALL_REGIONS
+              .get(i)
+              .set(
+                  j,
+                  AllianceFlipUtil.apply(ALL_REGIONS.get(i).get(j), FieldConstants.SYMMETRY_TYPE));
+        }
+      }
     }
 
-    for (int i = 0; i < OPP_REEF_REGIONS.size(); i++) {
-      OPP_REEF_REGIONS.set(
-          i, AllianceFlipUtil.apply(OPP_REEF_REGIONS.get(i), FieldConstants.SYMMETRY_TYPE));
-    }
-    OPP_REEF_ENTER_REGION =
-        AllianceFlipUtil.apply(OPP_REEF_ENTER_REGION, FieldConstants.SYMMETRY_TYPE);
-    OPP_REEF_EXIT_REGION =
-        AllianceFlipUtil.apply(OPP_REEF_EXIT_REGION, FieldConstants.SYMMETRY_TYPE);
     ScoringPoses.OPP_REEF_FACE_0_POSE =
         AllianceFlipUtil.apply(ScoringPoses.OPP_REEF_FACE_0_POSE, FieldConstants.SYMMETRY_TYPE);
     ScoringPoses.OPP_REEF_FACE_1_POSE =
@@ -442,7 +429,12 @@ public class FieldRegions {
   /** Rotates all regions about the field center. */
   public static void flipRegions() {
     for (int i = 0; i < ALL_REGIONS.size(); i++) {
-      ALL_REGIONS.set(i, AllianceFlipUtil.apply(ALL_REGIONS.get(i), FieldConstants.SYMMETRY_TYPE));
+      for (int j = 0; j < ALL_REGIONS.get(i).size(); j++) {
+        ALL_REGIONS
+            .get(i)
+            .set(
+                j, AllianceFlipUtil.apply(ALL_REGIONS.get(i).get(j), FieldConstants.SYMMETRY_TYPE));
+      }
     }
 
     ScoringPoses.REEF_FACE_0_POSE =

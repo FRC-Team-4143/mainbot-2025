@@ -71,8 +71,15 @@ public class CoralTractorBeam extends Command {
       claw_.setClawMode(ClawMode.LOAD);
       if (CoralDetector.getInstance().isValid()) {
         target_ = CoralDetector.getInstance().getCoralPose2d().transformBy(intake_off_set);
-        SwerveDrivetrain.getInstance().setTargetPose(target_);
+        if (!pickup_.isCoralPresent()) {
+          SwerveDrivetrain.getInstance().setTargetFollow(target_);
+        } else {
+          SwerveDrivetrain.getInstance().restoreDefaultDriveMode();
+        }
       }
+    }
+    if (pickup_.isCoralPresent()) {
+      SwerveDrivetrain.getInstance().restoreDefaultDriveMode();
     }
   }
 

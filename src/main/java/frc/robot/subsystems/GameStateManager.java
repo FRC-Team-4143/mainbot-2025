@@ -283,59 +283,49 @@ public class GameStateManager extends Subsystem {
    * @return target pose
    */
   public Optional<Pose2d> reefPose(Column column) {
-    Pose2d newPose = Pose2d.kZero;
     for (int i = 0; i < FieldRegions.REEF_REGIONS.size(); i++) {
+      System.out.println(FieldRegions.REEF_REGIONS.get(i).getName());
       if (FieldRegions.REEF_REGIONS.get(i).contains(PoseEstimator.getInstance().getRobotPose())) {
+        System.out.println(FieldRegions.REEF_REGIONS.get(i).getName());
         if (io_.scoring_target_ == ReefScoringTarget.L1) {
-          newPose = FieldRegions.REGION_POSE_TABLE.get(FieldRegions.REEF_REGIONS.get(i).getName());
+          return Optional.of(
+              FieldRegions.REGION_POSE_TABLE.get(FieldRegions.REEF_REGIONS.get(i).getName()));
         }
         if (column == Column.CENTER) {
-          newPose = FieldRegions.REGION_POSE_TABLE.get(FieldRegions.REEF_REGIONS.get(i).getName());
+          return Optional.of(
+              FieldRegions.REGION_POSE_TABLE.get(FieldRegions.REEF_REGIONS.get(i).getName()));
         }
         if (column == Column.LEFT) {
-          newPose =
+          Pose2d newPose =
               FieldRegions.REGION_POSE_TABLE
                   .get(FieldRegions.REEF_REGIONS.get(i).getName())
                   .transformBy(ScoringPoses.LEFT_COLUMN_OFFSET);
+          if (io_.scoring_target_ == ReefScoringTarget.L2
+              || io_.scoring_target_ == ReefScoringTarget.L3) {
+            return Optional.of(newPose.transformBy(ScoringPoses.L2_L3_OFFSET));
+          }
         }
         if (column == Column.RIGHT) {
-          newPose =
+          Pose2d newPose =
               FieldRegions.REGION_POSE_TABLE
                   .get(FieldRegions.REEF_REGIONS.get(i).getName())
                   .transformBy(ScoringPoses.RIGHT_COLUMN_OFFSET);
+          if (io_.scoring_target_ == ReefScoringTarget.L2
+              || io_.scoring_target_ == ReefScoringTarget.L3) {
+            return Optional.of(newPose.transformBy(ScoringPoses.L2_L3_OFFSET));
+          }
         }
         if (column == Column.ALGAE) {
           io_.algae_level_high = ((i % 2) == 0);
-          newPose =
+          return Optional.of(
               FieldRegions.REGION_POSE_TABLE
                   .get(FieldRegions.REEF_REGIONS.get(i).getName())
-                  .transformBy(ScoringPoses.ALGAE_ALIGN_OFFSET);
+                  .transformBy(ScoringPoses.ALGAE_ALIGN_OFFSET));
         }
         break;
       }
     }
 
-    if (newPose == Pose2d.kZero && column == Column.ALGAE) {
-      for (int i = 0; i < FieldRegions.OPP_REEF_REGIONS.size(); i++) {
-        if (FieldRegions.REEF_REGIONS.get(i).contains(PoseEstimator.getInstance().getRobotPose())) {
-          io_.algae_level_high = ((i % 2) == 0);
-          newPose =
-              FieldRegions.REGION_POSE_TABLE
-                  .get(FieldRegions.REEF_REGIONS.get(i).getName())
-                  .transformBy(ScoringPoses.ALGAE_ALIGN_OFFSET);
-          break;
-        }
-      }
-    }
-
-    if (io_.scoring_target_ == ReefScoringTarget.L2
-        || io_.scoring_target_ == ReefScoringTarget.L3) {
-      newPose = newPose.transformBy(ScoringPoses.L2_L3_OFFSET);
-    }
-
-    if (newPose != Pose2d.kZero) {
-      return Optional.of(newPose);
-    }
     return Optional.empty();
   }
 
