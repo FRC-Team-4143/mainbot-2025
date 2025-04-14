@@ -447,8 +447,6 @@ public class FieldRegions {
     ScoringPoses.PROCESSOR_TIGHT_ROPE =
         AllianceFlipUtil.apply(ScoringPoses.PROCESSOR_TIGHT_ROPE, FieldConstants.SYMMETRY_TYPE);
 
-    System.out.println("Fliped all regions and tight ropes");
-
     populateTable();
   }
 
@@ -471,7 +469,5 @@ public class FieldRegions {
     REGION_POSE_TABLE.put(OPP_REEF_FACE3_REGION.getName(), ScoringPoses.OPP_REEF_FACE_3_POSE);
     REGION_POSE_TABLE.put(OPP_REEF_FACE4_REGION.getName(), ScoringPoses.OPP_REEF_FACE_4_POSE);
     REGION_POSE_TABLE.put(OPP_REEF_FACE5_REGION.getName(), ScoringPoses.OPP_REEF_FACE_5_POSE);
-
-    System.out.println("populated Table");
   }
 }
