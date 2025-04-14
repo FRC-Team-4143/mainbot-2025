@@ -266,8 +266,11 @@ public abstract class OI {
     return (pov != -1) ? Optional.of(Rotation2d.fromDegrees(pov)) : Optional.empty();
   }
 
-  public static Command setRumble(double duration){
-    return Commands.startEnd(() -> driver_controller_.setRumble(RumbleType.kBothRumble, 1), () -> driver_controller_.setRumble(RumbleType.kBothRumble, 0)).withTimeout(duration);
+  public static Command setRumble(double duration) {
+    return Commands.startEnd(
+            () -> driver_controller_.setRumble(RumbleType.kBothRumble, 1),
+            () -> driver_controller_.setRumble(RumbleType.kBothRumble, 0))
+        .withTimeout(duration);
   }
 
   /*

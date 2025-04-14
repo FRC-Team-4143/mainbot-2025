@@ -270,6 +270,10 @@ public class Elevator extends Subsystem {
     SmartDashboard.putNumber(
         "Subsystems/Elevator/Current Height (Meters)", io_.current_elevator_height_);
     SmartDashboard.putNumber(
+        "Subsystems/Elevator/Current Height (F) (Meters)",
+        io_.elevator_follower_rotations_ * ElevatorConstants.ELEVATOR_ROTATIONS_TO_METERS
+            + ElevatorConstants.ELEVATOR_HEIGHT_PIVOT_MIN);
+    SmartDashboard.putNumber(
         "Subsystems/Elevator/Distance from Zero (Inches)",
         Units.metersToInches(
             io_.current_elevator_height_ - ElevatorConstants.ELEVATOR_HEIGHT_PIVOT_MIN));

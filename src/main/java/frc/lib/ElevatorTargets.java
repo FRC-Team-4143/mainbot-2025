@@ -68,11 +68,9 @@ public class ElevatorTargets {
         Arrays.asList(),
         Arrays.asList()),
     CORAL_STOW(
-        new TargetData(CORAL_INTAKE.getTarget().getTranslation(), "CORAL_STOW"),
-        Arrays.asList(),
-        Arrays.asList()),
+        new TargetData(new Waypoint(0.15, 0, 0.4), "CORAL_STOW"), Arrays.asList(), Arrays.asList()),
     ALGAE_LOW(
-        new TargetData(new Waypoint(0.42189, 0, 1.262395), "ALGAE_LOW"),
+        new TargetData(new Waypoint(0.42189, 0, 0.81216), "ALGAE_LOW"),
         Arrays.asList(),
         Arrays.asList()),
     ALGAE_HIGH(

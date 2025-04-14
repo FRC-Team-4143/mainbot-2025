@@ -8,6 +8,7 @@ import frc.robot.subsystems.Claw;
 import frc.robot.subsystems.Climber;
 import frc.robot.subsystems.Climber.ClimberMode;
 import frc.robot.subsystems.Elevator;
+import frc.robot.subsystems.Pickup;
 import frc.robot.subsystems.PoseEstimator;
 
 public class SetDefaultStow extends Command {
@@ -40,14 +41,18 @@ public class SetDefaultStow extends Command {
         if (PoseEstimator.getInstance().isStationZone()
             && OI.intake_preference == IntakePreference.STATION) {
           Elevator.getInstance().setTarget(TargetType.STATION);
+          // Waiting on Intake to get to position
+        } else if (!Pickup.getInstance().isAtTarget()
+            && OI.intake_preference == IntakePreference.GROUND) {
+          Elevator.getInstance().setTarget(TargetType.CORAL_STOW);
           // If in Coral Mode + Vision is Enabled + Robot Does Not Have Coral + Pickup Preference is
           // Ground
         } else if (!Claw.getInstance().isCoralPresent()
             && OI.intake_preference == IntakePreference.GROUND) {
           Elevator.getInstance().setTarget(TargetType.CORAL_INTAKE);
-          // If in Coral Mode + Vision is Enabled + Robot Has Coral + Pickup Preference is Ground
+
         } else {
-          Elevator.getInstance().setTarget(TargetType.CORAL_STOW);
+          Elevator.getInstance().setTarget(TargetType.CORAL_INTAKE);
         }
       }
 
