@@ -26,18 +26,16 @@ public class IntakeHandoff extends Command {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    Elevator.getInstance().setTarget(TargetType.CORAL_INTAKE);
-    Pickup.getInstance().setPickupMode(PickupMode.DEPLOYED);
     Claw.getInstance().setGamePiece(GamePiece.CORAL);
+    Elevator.getInstance().setTarget(TargetType.CORAL_INTAKE);
+    Pickup.getInstance().setPickupMode(PickupMode.INTAKE);
+    Claw.getInstance().setClawMode(ClawMode.LOAD);
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    if (Elevator.getInstance().isElevatorAndArmAtTarget() == true) {
-      Pickup.getInstance().setPickupMode(PickupMode.INTAKE);
-      Claw.getInstance().setClawMode(ClawMode.LOAD);
-    }
+      
   }
 
   // Called once the command ends or is interrupted.
