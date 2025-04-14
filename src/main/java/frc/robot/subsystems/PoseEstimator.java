@@ -70,14 +70,15 @@ public class PoseEstimator extends Subsystem {
             SwerveDrivetrain.getInstance().kinematics_,
             new Rotation2d(),
             SwerveDrivetrain.getInstance().getModulePositions(),
-            new Pose2d());
+            new Pose2d(2, 4, Rotation2d.fromDegrees(180)));
   }
 
   @Override
   public void readPeriodicInputs(double timestamp) {
-    if (io_.vision_data_packet_.size() < PhotonVision.getInstance().getNumCameras()) {
+    int num_packets = io_.vision_data_packet_.size();
+    if (num_packets < PhotonVision.getInstance().getNumCameras()) {
       io_.vision_data_packet_.ensureCapacity(PhotonVision.getInstance().getNumCameras());
-      for (int i = 0; i < PhotonVision.getInstance().getNumCameras(); i++) {
+      for (int i = num_packets; i < PhotonVision.getInstance().getNumCameras(); i++) {
         io_.vision_data_packet_.add(null);
       }
     }
@@ -112,7 +113,9 @@ public class PoseEstimator extends Subsystem {
             io_.raw_vision_pose_.get(), est_timestamp, estStdDevs);
 
         if (io_.detected_tags_.size() <= i) {
-          io_.detected_tags_.add(new ArrayList<>());
+          for (int j = io_.detected_tags_.size(); j <= i; j++) {
+            io_.detected_tags_.add(new ArrayList<>());
+          }
         }
         io_.detected_tags_.get(i).clear();
         for (var target : est.targetsUsed) {
@@ -188,20 +191,6 @@ public class PoseEstimator extends Subsystem {
    */
   public Optional<Region> loadStationRegion() {
     for (PolygonRegion region : FieldRegions.STATION_REGIONS) {
-      if (region.contains(getRobotPose())) {
-        return Optional.of(region);
-      }
-    }
-    return Optional.empty();
-  }
-
-  /**
-   * Returns the robots current algae region or an empty optional if not in any.
-   *
-   * @return current region
-   */
-  public Optional<Region> algaeRegion() {
-    for (PolygonRegion region : FieldRegions.ALGAE_REGIONS) {
       if (region.contains(getRobotPose())) {
         return Optional.of(region);
       }

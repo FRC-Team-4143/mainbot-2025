@@ -1,5 +1,9 @@
 package frc.mw_lib.proxy_server;
 
+import edu.wpi.first.hal.SimBoolean;
+import edu.wpi.first.hal.SimDevice;
+import edu.wpi.first.hal.SimDevice.Direction;
+import edu.wpi.first.hal.SimDouble;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Twist2d;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
@@ -25,6 +29,15 @@ public class ProxyServer {
   private static final int PORT = 5809; // local port to bind server
   private static final int TIMEOUT = 1; // Server receive blocking timeout
 
+  // Sim stuff
+  private static SimDevice sim_cam_;
+  private static SimBoolean use_sim_vals_;
+
+  // Coral detection sim
+  private static SimDouble sim_tx_;
+  private static SimDouble sim_ty_;
+  private static SimBoolean sim_is_present_;
+
   /**
    * Binds the server socket to the set port to begin communication. This must be called once before
    * you can attempt to {@link #updateData()}.
@@ -34,6 +47,14 @@ public class ProxyServer {
    *     specified local port.
    */
   public static boolean configureServer() {
+    sim_cam_ = SimDevice.create("Sim Camera");
+    if (sim_cam_ != null) {
+      use_sim_vals_ = sim_cam_.createBoolean("sim_detections", Direction.kInput, true);
+      sim_is_present_ = sim_cam_.createBoolean("piece present", Direction.kInput, true);
+      sim_tx_ = sim_cam_.createDouble("tx", Direction.kInput, 0);
+      sim_ty_ = sim_cam_.createDouble("ty", Direction.kInput, 0);
+    }
+
     // check if socket is already bound
     if (socket_ == null || !socket_.isBound()) {
       try {
@@ -92,15 +113,34 @@ public class ProxyServer {
           return false;
       }
 
+      if (sim_cam_ != null && use_sim_vals_.get()) updateSimDetections();
+
     } catch (SocketTimeoutException e) {
+      if (sim_cam_ != null && use_sim_vals_.get()) updateSimDetections();
+
       // Timeout occurred
       return false;
     } catch (IOException e) {
       e.printStackTrace();
       return false;
     }
+
     // packet was processed correctly
     return true;
+  }
+
+  private static void updateSimDetections() {
+    piece_detection_packet_.piece_detections_.clear();
+
+    if (sim_is_present_.get()) {
+      var detection = piece_detection_packet_.new PieceDetection();
+      detection.class_id_ = 0;
+      detection.theta_x_ = sim_tx_.get();
+      detection.theta_y_ = sim_ty_.get();
+      detection.detection_index_ = 0;
+      detection.detection_count_ = 1;
+      piece_detection_packet_.piece_detections_.add(detection);
+    }
   }
 
   /**

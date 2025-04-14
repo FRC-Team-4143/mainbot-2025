@@ -78,7 +78,7 @@ public class CoralDetector extends Subsystem {
     if (ProxyServer.getLatestPieceDetections().size() > 0) {
       coral_detection_ = ProxyServer.getLatestPieceDetections().get(0);
       io_.can_see_coral_ = true;
-      // Tested 4/13 OK (CJT)
+      // Validated 4/13 OK (CJT)
       io_.target_x_ = -Units.degreesToRadians(coral_detection_.theta_x_);
       io_.target_y_ = Units.degreesToRadians(coral_detection_.theta_y_);
     } else {
@@ -98,19 +98,18 @@ public class CoralDetector extends Subsystem {
       io_.cam_to_coral_transform_ = getCamToCoralTf(io_.target_distance_, io_.target_x_);
       io_.bot_to_coral_transform_ = bot_to_cam_tf_.plus(io_.cam_to_coral_transform_);
 
+      // Validated 4/13 (CJT) working as expected
       Pose2d robot_pose = PoseEstimator.getInstance().getRobotPose();
       Pose2d coral_pose =
-          new Pose2d(
-              robot_pose.getTranslation().plus(io_.bot_to_coral_transform_.getTranslation()),
-              robot_pose.getRotation());
-      // robot_pose.transformBy(
-      //     new Transform2d(io_.bot_to_coral_transform_.getTranslation(), Rotation2d.kZero));
+          robot_pose.transformBy(
+              new Transform2d(io_.bot_to_coral_transform_.getTranslation(), Rotation2d.kZero));
 
-      // io_.attack_angle_ =
-      //     new Rotation2d(io_.bot_to_coral_transform_.getX(), io_.bot_to_coral_transform_.getY())
-      //         .plus(Rotation2d.kPi);
-      io_.coral_pose_ = coral_pose;
-      // new Pose2d(coral_pose.getTranslation(), coral_pose.getRotation().plus(io_.attack_angle_));
+      // Validated 4/13 (CJT) coral points to center of robot
+      io_.attack_angle_ =
+          new Rotation2d(io_.bot_to_coral_transform_.getX(), io_.bot_to_coral_transform_.getY())
+              .plus(Rotation2d.kPi);
+      io_.coral_pose_ = // coral_pose;
+          new Pose2d(coral_pose.getTranslation(), coral_pose.getRotation().plus(io_.attack_angle_));
     }
 
     updateValidity();
