@@ -35,9 +35,7 @@ public class Robot extends TimedRobot {
     FieldRegions.makeRegions();
     ProxyServer.configureServer();
 
-    AutoManager.getInstance()
-        .registerAutos(
-            new Left_Ground_Test());
+    AutoManager.getInstance().registerAutos(new Left_Ground_Test());
 
     RobotModeTriggers.disabled()
         .onFalse(
