@@ -64,9 +64,7 @@ public class ElevatorTargets {
         Arrays.asList(new Waypoint(Units.inchesToMeters(1.956), 0, Units.inchesToMeters(44.809))),
         SolutionType.ABOVE_PIVOT),
     CORAL_INTAKE(
-        new TargetData(
-            new Waypoint(Units.inchesToMeters(-8.077), 0, Units.inchesToMeters(14.662)),
-            "CORAL_INTAKE"),
+        new TargetData(new Waypoint(-0.20, 0, 0.410693), "CORAL_INTAKE"),
         Arrays.asList(),
         Arrays.asList()),
     CORAL_STOW(
