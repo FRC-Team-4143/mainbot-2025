@@ -4,6 +4,9 @@
 
 package frc.robot.subsystems;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+
 import edu.wpi.first.math.filter.Debouncer;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
@@ -21,6 +24,8 @@ import frc.mw_lib.subsystem.Subsystem;
 import frc.mw_lib.util.Util;
 import frc.robot.Constants;
 import frc.robot.Constants.CoralDetectorConstants;
+import frc.robot.LimelightHelpers;
+import frc.robot.LimelightHelpers.LimelightTarget_Detector;
 import monologue.Annotations.Log;
 import monologue.Logged;
 
@@ -29,7 +34,8 @@ public class CoralDetector extends Subsystem {
   // Singleton pattern
   private static CoralDetector coral_detector_instance_ = null;
 
-  private PieceDetection coral_detection_;
+  private ArrayList<LimelightTarget_Detector> detections_;
+  private LimelightTarget_Detector active_detection_;
   private StructPublisher<Pose3d> pose_pub_;
   private Debouncer validity_debouncer_;
   private Transform2d bot_to_cam_tf_;
@@ -57,6 +63,7 @@ public class CoralDetector extends Subsystem {
 
     bot_to_cam_tf_ = Util.flatten(CoralDetectorConstants.BOT_TO_CAM_TRANSFORM);
 
+    active_detection_ = new LimelightTarget_Detector();
     // Call reset last in subsystem configuration
     reset();
   }
@@ -75,14 +82,22 @@ public class CoralDetector extends Subsystem {
    */
   @Override
   public void readPeriodicInputs(double timestamp) {
-    if (ProxyServer.getLatestPieceDetections().size() > 0) {
-      coral_detection_ = ProxyServer.getLatestPieceDetections().get(0);
-      io_.can_see_coral_ = true;
-      // Validated 4/13 OK (CJT)
-      io_.target_x_ = -Units.degreesToRadians(coral_detection_.theta_x_);
-      io_.target_y_ = Units.degreesToRadians(coral_detection_.theta_y_);
-    } else {
-      io_.can_see_coral_ = false;
+    detections_ = new ArrayList<>(Arrays.asList((LimelightHelpers.getLatestResults(Constants.CoralDetectorConstants.CAM_NAME)).targets_Detector));
+    for (LimelightTarget_Detector d : detections_) 
+      if (!d.className.equals("Coral"))
+        detections_.remove(d);
+
+    io_.can_see_coral_ = detections_.size() > 0;
+
+    if (io_.can_see_coral_) {
+      //pick the best option 
+      //rn just the first one but could use ta or ty 
+      active_detection_ = detections_.get(0);
+
+      io_.target_x_ = Units.degreesToRadians(active_detection_.tx);
+      io_.target_y_ = Units.degreesToRadians(active_detection_.ty);
+      io_.target_a_ = active_detection_.ta;
+      io_.target_c_ = active_detection_.confidence;
     }
   }
 
@@ -202,12 +217,15 @@ public class CoralDetector extends Subsystem {
         validity_debouncer_.calculate(
             io_.can_see_coral_
                 && (io_.target_distance_
-                    < Constants.CoralDetectorConstants.DETECTION_DISTANCE_LIMIT));
+                    < Constants.CoralDetectorConstants.DETECTION_DISTANCE_LIMIT) 
+                    && (io_.target_a_ >= Constants.CoralDetectorConstants.ACCUARCY_THRESHOLD));
   }
 
   public class CoralDetectorPeriodicIo implements Logged {
     @Log.File double target_x_ = 0.0; // Cross robot angle
     @Log.File double target_y_ = 0.0; // down track angle
+    @Log.File double target_a_ = 0.0;
+    @Log.File double target_c_ = 0.0;
     @Log.File boolean target_valid_ = false;
     @Log.File double target_distance_ = 0.0;
     @Log.File boolean can_see_coral_ = false;

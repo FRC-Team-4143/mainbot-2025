@@ -355,6 +355,8 @@ public final class Constants {
   }
 
   public class CoralDetectorConstants {
+    public static final double ACCUARCY_THRESHOLD = 0.5;
+    public static final String CAM_NAME = "limelight";
     public static final Transform3d BOT_TO_CAM_TRANSFORM =
         new Transform3d(
             Units.inchesToMeters(-8),
