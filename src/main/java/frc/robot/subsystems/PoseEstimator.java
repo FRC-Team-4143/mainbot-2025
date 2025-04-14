@@ -195,20 +195,6 @@ public class PoseEstimator extends Subsystem {
     return Optional.empty();
   }
 
-  /**
-   * Returns the robots current algae region or an empty optional if not in any.
-   *
-   * @return current region
-   */
-  public Optional<Region> algaeRegion() {
-    for (PolygonRegion region : FieldRegions.ALGAE_REGIONS) {
-      if (region.contains(getRobotPose())) {
-        return Optional.of(region);
-      }
-    }
-    return Optional.empty();
-  }
-
   public boolean isBargeZone() {
     return FieldRegions.BARGE_REGION.contains(getRobotPose());
   }

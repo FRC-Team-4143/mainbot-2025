@@ -26,12 +26,14 @@ public class AllianceFlipUtil {
     if (symmetry == SymmetryType.DIAGONAL) {
       return translation.rotateAround(FieldConstants.FIELD_CENTER, Rotation2d.fromDegrees(180));
     } else {
-      return translation.plus(
-          new Translation2d(
-              translation.getDistance(
-                      new Translation2d(FieldConstants.FIELD_CENTER.getX(), translation.getY()))
-                  * 2,
-              translation.getY()));
+      double distToMid = Math.abs(translation.getX() - FieldConstants.FIELD_CENTER.getX());
+      double offset = 0;
+      if (translation.getX() < FieldConstants.FIELD_CENTER.getX()) {
+        offset = distToMid * 2;
+      } else {
+        offset = -(distToMid * 2);
+      }
+      return new Translation2d(translation.getX() + offset, translation.getY());
     }
   }
 
