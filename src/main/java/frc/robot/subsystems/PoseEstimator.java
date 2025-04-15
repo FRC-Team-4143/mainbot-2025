@@ -199,7 +199,8 @@ public class PoseEstimator extends Subsystem {
   }
 
   public boolean isBargeZone() {
-    return FieldRegions.BARGE_REGION.contains(getRobotPose());
+    return FieldRegions.BARGE_REGION.contains(getRobotPose())
+        || FieldRegions.OPP_BARGE_REGION.contains(getRobotPose());
   }
 
   public boolean isProcessorZone() {

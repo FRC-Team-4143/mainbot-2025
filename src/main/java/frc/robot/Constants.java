@@ -369,8 +369,8 @@ public final class Constants {
         BOT_TO_CAM_TRANSFORM.getTranslation().toTranslation2d();
     public static final double CORAL_HEIGHT_METERS = Units.inchesToMeters(5);
     public static final double DETECTION_DISTANCE_LIMIT = 2.5;
-    public static final double DETECT_DEBOUNCE_TIME = 0.1;
-    public static final double CORAL_CLASS_ID = 1;
+    public static final double DETECT_DEBOUNCE_TIME_RISING = 0.1;
+    public static final double DETECT_DEBOUNCE_TIME_FALLING = 0.5;
 
     public static final double DISPLAY_Z_OFFSEET = Units.inchesToMeters(6);
     // public static final Rotation3d DISPLAY_ROTATION =

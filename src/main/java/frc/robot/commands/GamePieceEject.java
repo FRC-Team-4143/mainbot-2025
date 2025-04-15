@@ -4,11 +4,11 @@
 
 package frc.robot.commands;
 
-import edu.wpi.first.wpilibj2.command.ConditionalCommand;
+import frc.mw_lib.command.NoReqConditionalCommand;
 import frc.robot.subsystems.Claw;
 
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
-public class GamePieceEject extends ConditionalCommand {
+public class GamePieceEject extends NoReqConditionalCommand {
   /** Creates a new ElevatorL4Target. */
   public GamePieceEject() {
     // Use addRequirements() here to declare subsystem dependencies.

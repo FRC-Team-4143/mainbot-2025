@@ -31,7 +31,8 @@ public class CoralDetector extends Subsystem {
 
   private PieceDetection coral_detection_;
   private StructPublisher<Pose3d> pose_pub_;
-  private Debouncer validity_debouncer_;
+  private Debouncer validity_debouncer_rising_;
+  private Debouncer validity_debouncer_falling_;
   private Transform2d bot_to_cam_tf_;
 
   public static CoralDetector getInstance() {
@@ -48,8 +49,12 @@ public class CoralDetector extends Subsystem {
     // Create io object first in subsystem configuration
     io_ = new CoralDetectorPeriodicIo();
 
-    validity_debouncer_ =
-        new Debouncer(CoralDetectorConstants.DETECT_DEBOUNCE_TIME, Debouncer.DebounceType.kBoth);
+    validity_debouncer_rising_ =
+        new Debouncer(
+            CoralDetectorConstants.DETECT_DEBOUNCE_TIME_RISING, Debouncer.DebounceType.kRising);
+    validity_debouncer_falling_ =
+        new Debouncer(
+            CoralDetectorConstants.DETECT_DEBOUNCE_TIME_FALLING, Debouncer.DebounceType.kFalling);
     pose_pub_ =
         NetworkTableInstance.getDefault()
             .getStructTopic("CoralDetector/Coral Pose", Pose3d.struct)
@@ -158,7 +163,8 @@ public class CoralDetector extends Subsystem {
     // Height = cam_z - coral_height
     // Distance = tan(theta) * Height
 
-    // Validated 4/13 (CJT) mostly works. seems to under / over represent based on perspective as
+    // Validated 4/13 (CJT) mostly works. seems to under / over represent based on
+    // perspective as
     // center shifts
 
     double theta =
@@ -198,11 +204,11 @@ public class CoralDetector extends Subsystem {
   }
 
   private void updateValidity() {
+    boolean check =
+        io_.can_see_coral_
+            && (io_.target_distance_ < Constants.CoralDetectorConstants.DETECTION_DISTANCE_LIMIT);
     io_.target_valid_ =
-        validity_debouncer_.calculate(
-            io_.can_see_coral_
-                && (io_.target_distance_
-                    < Constants.CoralDetectorConstants.DETECTION_DISTANCE_LIMIT));
+        validity_debouncer_falling_.calculate(validity_debouncer_rising_.calculate(check));
   }
 
   public class CoralDetectorPeriodicIo implements Logged {

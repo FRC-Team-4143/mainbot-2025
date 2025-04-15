@@ -1,6 +1,5 @@
 package frc.robot.autos;
 
-import edu.wpi.first.wpilibj2.command.Commands;
 import frc.mw_lib.auto.Auto;
 import frc.robot.commands.AutoCoralReefScore;
 import frc.robot.commands.CoralTractorBeam;
@@ -9,8 +8,6 @@ import frc.robot.subsystems.CoralDetector;
 import frc.robot.subsystems.GameStateManager;
 import frc.robot.subsystems.GameStateManager.Column;
 import frc.robot.subsystems.GameStateManager.ReefScoringTarget;
-import frc.robot.subsystems.Pickup;
-import frc.robot.subsystems.Pickup.PickupMode;
 
 public class Left_Ground_Test extends Auto {
 
@@ -35,19 +32,18 @@ public class Left_Ground_Test extends Auto {
         new CoralTractorBeam(),
 
         // Score game Piece 2
-        this.getTrajectoryCmd("Left Ground to KL"),
+        this.getTrajectoryCmd("Left Ground to KL").alongWith(new IntakeHandoff()),
         GameStateManager.setScoringCommand(Column.LEFT, ReefScoringTarget.L4),
         new AutoCoralReefScore(),
 
         // Get game Piece 3
-        Commands.runOnce(() -> Pickup.getInstance().setPickupMode(PickupMode.INTAKE)),
         this.getTrajectoryCmd("KL to Left Ground")
             .until(CoralDetector.getInstance()::isValid)
             .raceWith(new IntakeHandoff()),
         new CoralTractorBeam(),
 
         // Score game Piece 3
-        this.getTrajectoryCmd("Left Ground to KL"),
+        this.getTrajectoryCmd("Left Ground to KL").alongWith(new IntakeHandoff()),
         GameStateManager.setScoringCommand(Column.RIGHT, ReefScoringTarget.L4),
         new AutoCoralReefScore());
   }
