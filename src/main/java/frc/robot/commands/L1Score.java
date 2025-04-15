@@ -6,7 +6,6 @@ package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
-import frc.lib.ElevatorTargets.TargetType;
 import frc.mw_lib.command.NoReqSequentialCommandGroup;
 import frc.robot.subsystems.Claw;
 import frc.robot.subsystems.Claw.ClawMode;
@@ -18,11 +17,7 @@ public class L1Score extends NoReqSequentialCommandGroup {
   public L1Score() {
     // Use addRequirements() here to declare subsystem dependencies.
     super(
-        Commands.runOnce(
-            () -> Elevator.getInstance().setTarget(TargetType.L1),
-            Claw.getInstance(),
-            Elevator.getInstance()),
-        Commands.runOnce(
+        Commands.run(
             () -> Claw.getInstance().setClawMode(ClawMode.SHOOT),
             Claw.getInstance(),
             Elevator.getInstance()),

@@ -90,7 +90,7 @@ public class ElevatorPlanner {
     path_ = SplineUtil.subdividePoints(waypoints, subdivisions_per_unit_);
 
     Translation3d[] path_array = new Translation3d[path_.size()];
-    for (int j = 0; j < path_array.length - 1; j++) {
+    for (int j = 0; j < path_array.length; j++) {
       Waypoint tmp = path_.get(j);
       tmp.translation = kinematics_.constrainReachableTranslation(tmp.translation);
       path_array[j] = tmp.translation;

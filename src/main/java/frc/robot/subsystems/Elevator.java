@@ -194,6 +194,7 @@ public class Elevator extends Subsystem {
     SmartDashboard.putNumber(
         "Elevator/Follow Distance in", Constants.ElevatorConstants.SUBDIVISION_FOLLOW_DIST);
 
+    elevatorPosReset();
     // update final_target_to change default
   }
 

@@ -87,7 +87,7 @@
         "algae_offset": 0
     },
     "elevator": {
-        "CONTROLLER_P": 10.0,
+        "CONTROLLER_P": 7.0,
         "CONTROLLER_I": 0.0,
         "CONTROLLER_D": 0.15,
         "CONTROLLER_S": 0.06766,

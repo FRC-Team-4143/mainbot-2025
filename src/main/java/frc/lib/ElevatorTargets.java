@@ -48,7 +48,7 @@ public class ElevatorTargets {
         Arrays.asList(new Waypoint(Units.inchesToMeters(0), 0, Units.inchesToMeters(27.688))),
         Arrays.asList(
             new Waypoint(
-                Units.inchesToMeters(17),
+                Units.inchesToMeters(16),
                 0,
                 FieldConstants.ReefHeight.L2.HEIGHT + BRANCH_HEIGHT_BUMP))),
     STATION(

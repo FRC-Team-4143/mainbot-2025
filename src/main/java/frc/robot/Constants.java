@@ -202,7 +202,7 @@ public final class Constants {
 
     public static final PIDController Y_FOLLOW_TRANSLATION = new PIDController(3.0, 0, 0.1);
 
-    public static final PIDController FOLLOW_HEADING = new PIDController(3.0, 0, 0.1);
+    public static final PIDController FOLLOW_HEADING = new PIDController(3.0, 0, 0.0);
 
     public static final double CENTER_OFFSET_X =
         Units.inchesToMeters(LOADER.getDoubleValue("drive", "com", "CENTER_OFFSET_X"));
@@ -345,13 +345,14 @@ public final class Constants {
         new Slot0Configs().withKP(42.857).withKI(0.00).withKD(0.00);
     public static final double StatorCurrentLimit = 80;
 
-    public static final double INTAKE_OFF_SET_Y = -Units.inchesToMeters(5);
+    public static final double INTAKE_OFF_SET_Y = -Units.inchesToMeters(8);
     public static final double TOF_CORAL_DISTANCE = Units.inchesToMeters(6.5) * 1000;
   }
 
   public class GameStateManagerConstants {
     public static final double REQUIRED_ROTATION_FOR_ELEVATOR = Units.degreesToRadians(45);
     public static final double CORAL_BLOCKED_THRESHOLD = Units.inchesToMeters(6.5);
+    public static final double L2_L3_WAIT_TIME = 0.125;
   }
 
   public class CoralDetectorConstants {
@@ -363,10 +364,10 @@ public final class Constants {
             new Rotation3d(
                 Units.degreesToRadians(0),
                 Units.degreesToRadians(18),
-                Units.degreesToRadians(180 + 12)));
+                Units.degreesToRadians(180 + 14)));
     public static final Translation2d BOT_TO_CAM_TRANSLATION =
         BOT_TO_CAM_TRANSFORM.getTranslation().toTranslation2d();
-    public static final double CORAL_HEIGHT_METERS = Units.inchesToMeters(4);
+    public static final double CORAL_HEIGHT_METERS = Units.inchesToMeters(5);
     public static final double DETECTION_DISTANCE_LIMIT = 2.5;
     public static final double DETECT_DEBOUNCE_TIME = 0.1;
     public static final double CORAL_CLASS_ID = 1;

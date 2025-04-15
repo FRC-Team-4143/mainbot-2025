@@ -16,6 +16,7 @@ import frc.lib.ScoringPoses;
 import frc.mw_lib.subsystem.Subsystem;
 import frc.mw_lib.util.Util;
 import frc.robot.Constants;
+import frc.robot.Constants.GameStateManagerConstants;
 import frc.robot.commands.CoralEject;
 import frc.robot.subsystems.Claw.ClawMode;
 import frc.robot.subsystems.GameStateManager.Column;
@@ -144,7 +145,7 @@ public class GameStateManager extends Subsystem {
             if (io_.scoring_target_ == ReefScoringTarget.L2
                 || io_.scoring_target_ == ReefScoringTarget.L3) {
               Claw.getInstance().enableBlastMode();
-              waitToScoreTime = 0.25;
+              waitToScoreTime = GameStateManagerConstants.L2_L3_WAIT_TIME;
             }
             CommandScheduler.getInstance()
                 .schedule(
@@ -156,9 +157,6 @@ public class GameStateManager extends Subsystem {
         }
         break;
       case SCORING:
-        if (io_.scoring_target_ == ReefScoringTarget.L1) {
-          break;
-        }
         if (!inExitRegion()) {
           // wait until you leave the exit Circle
           io_.robot_state_ = RobotState.END;
@@ -284,9 +282,7 @@ public class GameStateManager extends Subsystem {
    */
   public Optional<Pose2d> reefPose(Column column) {
     for (int i = 0; i < FieldRegions.REEF_REGIONS.size(); i++) {
-      System.out.println(FieldRegions.REEF_REGIONS.get(i).getName());
       if (FieldRegions.REEF_REGIONS.get(i).contains(PoseEstimator.getInstance().getRobotPose())) {
-        System.out.println(FieldRegions.REEF_REGIONS.get(i).getName());
         if (io_.scoring_target_ == ReefScoringTarget.L1) {
           return Optional.of(
               FieldRegions.REGION_POSE_TABLE.get(FieldRegions.REEF_REGIONS.get(i).getName()));
@@ -304,6 +300,7 @@ public class GameStateManager extends Subsystem {
               || io_.scoring_target_ == ReefScoringTarget.L3) {
             return Optional.of(newPose.transformBy(ScoringPoses.L2_L3_OFFSET));
           }
+          return Optional.of(newPose);
         }
         if (column == Column.RIGHT) {
           Pose2d newPose =
@@ -314,6 +311,7 @@ public class GameStateManager extends Subsystem {
               || io_.scoring_target_ == ReefScoringTarget.L3) {
             return Optional.of(newPose.transformBy(ScoringPoses.L2_L3_OFFSET));
           }
+          return Optional.of(newPose);
         }
         if (column == Column.ALGAE) {
           io_.algae_level_high = ((i % 2) == 0);
@@ -325,7 +323,6 @@ public class GameStateManager extends Subsystem {
         break;
       }
     }
-
     return Optional.empty();
   }
 
