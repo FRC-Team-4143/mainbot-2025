@@ -7,6 +7,8 @@ import edu.wpi.first.hal.SimDouble;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Twist2d;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import frc.mw_lib.proxy_server.PieceDetectionPacket.PieceDetection;
 import frc.mw_lib.proxy_server.TagSolutionPacket.TagSolution;
 import java.io.IOException;
@@ -15,6 +17,7 @@ import java.net.DatagramSocket;
 import java.net.SocketException;
 import java.net.SocketTimeoutException;
 import java.util.ArrayList;
+import java.util.OptionalInt;
 
 public class ProxyServer {
 
@@ -188,5 +191,62 @@ public class ProxyServer {
    */
   public static ArrayList<PieceDetection> getLatestPieceDetections() {
     return piece_detection_packet_.piece_detections_;
+  }
+  public static void syncMatchData() {
+    String event_name = DriverStation.getEventName();
+    byte[] buffer = new byte[5 + event_name.length()];
+    buffer[0] = 50; // Message ID
+    buffer[1] = (byte) DriverStation.getMatchNumber();
+    buffer[2] = serializeMatchType();
+    buffer[3] = serializeAllianceStation();
+    buffer[4] = (byte) event_name.length();
+    for (int i = 0; i < event_name.length(); i++) {
+      buffer[i + 5] = (byte) Character.getNumericValue(event_name.charAt(i));
+    }
+
+    try {
+      socket_.send(new DatagramPacket(buffer, buffer.length));
+    } catch (IOException e) {
+      // TODO Auto-generated catch block
+      e.printStackTrace();
+    }
+  }
+
+  private static byte serializeMatchType() {
+    switch (DriverStation.getMatchType()) {
+      case Practice:
+        {
+          return 1;
+        }
+      case Qualification:
+        {
+          return 2;
+        }
+      case Elimination:
+        {
+          return 3;
+        }
+      case None:
+      default:
+        return 0;
+    }
+  }
+
+  private static byte serializeAllianceStation() {
+    OptionalInt optional = DriverStation.getLocation();
+    if (optional.isPresent()) {
+      int station = optional.getAsInt();
+      if (DriverStation.getAlliance().get() == Alliance.Blue) {
+        // If on Blue Alliance apply no offset {1, 2, 3}
+        return (byte) station;
+      } else {
+        // If on Red Alliance offset by 3 {4, 5, 6}
+        return (byte) (station + 3);
+      }
+    } else {
+      // Drivers Station Not Connected.
+      // This should not occur since this will only be TeleOp Init
+      return 0;
+    }
   }
 }
