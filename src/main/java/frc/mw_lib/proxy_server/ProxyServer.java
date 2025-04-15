@@ -194,6 +194,10 @@ public class ProxyServer {
     return piece_detection_packet_.piece_detections_;
   }
 
+  /**
+   * Sends snapshot trigger packet for log location flagging
+   * @param tag_name flag name to record in log
+   */
   public static void snapshot(String tag_name) {
     int tag_name_length = (int) Util.clamp(tag_name.length(), 400);
     byte[] buffer = new byte[1 + tag_name_length];
@@ -210,6 +214,9 @@ public class ProxyServer {
     }
   }
 
+  /**
+   * Sends match data packet for log name syncing 
+   */
   public static void syncMatchData() {
     String event_name = DriverStation.getEventName();
     byte[] buffer = new byte[5 + event_name.length()];
@@ -230,6 +237,11 @@ public class ProxyServer {
     }
   }
 
+  /**
+   * Serializes {@link DriverStation.MatchType} to byte value
+   * {None, Practice, Qualification, Elimination}
+   * @return byte value representing match type
+   */
   private static byte serializeMatchType() {
     switch (DriverStation.getMatchType()) {
       case Practice:
@@ -250,6 +262,12 @@ public class ProxyServer {
     }
   }
 
+  /**
+   * Serializes DriverStation Location to byte value
+   * {Blue1, Blue2, Blue3, Red1, Red2, Red3}
+   * Will return 0 if no DriverStation is Present
+   * @return byte value representing station location
+   */
   private static byte serializeAllianceStation() {
     OptionalInt optional = DriverStation.getLocation();
     if (optional.isPresent()) {
