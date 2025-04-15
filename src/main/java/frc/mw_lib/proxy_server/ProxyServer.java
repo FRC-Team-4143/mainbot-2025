@@ -11,6 +11,7 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import frc.mw_lib.proxy_server.PieceDetectionPacket.PieceDetection;
 import frc.mw_lib.proxy_server.TagSolutionPacket.TagSolution;
+import frc.mw_lib.util.Util;
 import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
@@ -192,6 +193,23 @@ public class ProxyServer {
   public static ArrayList<PieceDetection> getLatestPieceDetections() {
     return piece_detection_packet_.piece_detections_;
   }
+
+  public static void snapshot(String tag_name) {
+    int tag_name_length = (int) Util.clamp(tag_name.length(), 400);
+    byte[] buffer = new byte[1 + tag_name_length];
+    buffer[0] = 52; // Message ID
+    for (int i = 0; i < tag_name_length; i++) {
+      buffer[i + 1] = (byte) Character.getNumericValue(tag_name.charAt(i));
+    }
+
+    try {
+      socket_.send(new DatagramPacket(buffer, buffer.length));
+    } catch (IOException e) {
+      // TODO Auto-generated catch block
+      e.printStackTrace();
+    }
+  }
+
   public static void syncMatchData() {
     String event_name = DriverStation.getEventName();
     byte[] buffer = new byte[5 + event_name.length()];
