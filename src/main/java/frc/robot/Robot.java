@@ -95,6 +95,7 @@ public class Robot extends TimedRobot {
 
   @Override
   public void teleopInit() {
+    ProxyServer.syncMatchData();
     SwerveDrivetrain.getInstance().restoreDefaultDriveMode();
     CommandScheduler.getInstance().cancelAll();
     Elastic.selectTab("Teleop");
