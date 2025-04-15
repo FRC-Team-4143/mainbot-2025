@@ -395,7 +395,6 @@ public class FieldRegions {
       for (int j = 0; j < ALL_REGIONS.get(i).size(); j++) {
         ALL_REGIONS.get(i).get(j).constructRegion();
         if (ALL_REGIONS.get(i).get(j).getName().substring(0, 5).equals("OPP_R")) {
-          System.out.println(ALL_REGIONS.get(i).get(j).getName());
           ALL_REGIONS
               .get(i)
               .set(
