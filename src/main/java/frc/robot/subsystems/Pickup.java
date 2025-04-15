@@ -71,7 +71,7 @@ public class Pickup extends Subsystem {
     config.MotorOutput.NeutralMode = NeutralModeValue.Brake;
     config.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
     config.Slot0 = PickupConstants.PICKUP_GAINS;
-    config.CurrentLimits.StatorCurrentLimit = PickupConstants.StatorCurrentLimit;
+    config.CurrentLimits.StatorCurrentLimit = PickupConstants.STATOR_CURRENT_LIMIT;
     config.Feedback.SensorToMechanismRatio = PickupConstants.SENSOR_TO_MECHANISM_RATIO;
     pivot_motor_.getConfigurator().apply(config);
 

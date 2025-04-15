@@ -9,15 +9,12 @@ import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
-import edu.wpi.first.wpilibj2.command.Commands;
-import edu.wpi.first.wpilibj2.command.button.RobotModeTriggers;
 import frc.lib.FieldRegions;
 import frc.mw_lib.auto.Auto;
 import frc.mw_lib.auto.AutoManager;
 import frc.mw_lib.logging.Elastic;
 import frc.mw_lib.proxy_server.ProxyServer;
 import frc.robot.autos.*;
-import frc.robot.subsystems.Elevator;
 import frc.robot.subsystems.GameStateManager;
 import frc.robot.subsystems.GameStateManager.RobotState;
 import frc.robot.subsystems.SwerveDrivetrain;
@@ -36,14 +33,6 @@ public class Robot extends TimedRobot {
     ProxyServer.configureServer();
 
     AutoManager.getInstance().registerAutos(new Left_Ground_Test());
-
-    RobotModeTriggers.disabled()
-        .onFalse(
-            Commands.runOnce(
-                () -> Elevator.getInstance().buildPlan(Elevator.getInstance().getTarget())));
-
-    Elevator.getInstance().readPeriodicInputs(0);
-    Elevator.getInstance().buildPlan(Elevator.getInstance().getTarget());
   }
 
   @Override

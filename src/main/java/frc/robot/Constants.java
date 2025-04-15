@@ -4,6 +4,7 @@
 
 package frc.robot;
 
+import com.ctre.phoenix6.configs.MotionMagicConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.signals.GravityTypeValue;
 import com.ctre.phoenix6.signals.InvertedValue;
@@ -292,11 +293,13 @@ public final class Constants {
             .withKA(LOADER.getDoubleValue("elevator", "CONTROLLER_A"))
             .withKG(LOADER.getDoubleValue("elevator", "CONTROLLER_G"))
             .withGravityType(GravityTypeValue.Elevator_Static);
+    public static final MotionMagicConfigs ELEVATOR_MAGIC_CONFIG = 
+        new MotionMagicConfigs()
+            .withMotionMagicCruiseVelocity(5.0 / ELEVATOR_ROTATIONS_TO_METERS)
+            .withMotionMagicAcceleration(3.0 / ELEVATOR_ROTATIONS_TO_METERS)
+            .withMotionMagicJerk(10.0 / ELEVATOR_ROTATIONS_TO_METERS);
     public static final double ELEVATOR_SAFETY_BUMP = Units.inchesToMeters(2);
 
-    public static final double PLANER_ACCEL_RATE = 0.1;
-    public static final double SUBDIVISION_PER_METER = 200;
-    public static final double SUBDIVISION_FOLLOW_DIST = Units.inchesToMeters(5);
   }
 
   public class ArmConstants {
@@ -307,12 +310,6 @@ public final class Constants {
     public static final InvertedValue ARM_FOLLOWER_INVERSION = InvertedValue.Clockwise_Positive;
     public static final SensorDirectionValue ABSOLUTE_ENCODER_INVERSION =
         SensorDirectionValue.Clockwise_Positive;
-    public static final double DANGER_ARM_ANGLE = Units.degreesToRadians(95);
-    public static final double ARM_LENGTH =
-        Units.inchesToMeters(LOADER.getDoubleValue("arm", "LENGTH_PIVOT_TO_FUNNEL")); // 16.456 in
-    public static final double ARM_WIDTH =
-        Units.inchesToMeters(LOADER.getDoubleValue("arm", "DEPTH_CORAL_POCKET")); // 0.053
-    // in
     // ((shaft sprocket / pivot sprocket) / gearbox) * rotations to radians ratio)
     public static final double SENSOR_TO_MECHANISM_RATIO = (1.0 / ((16.0 / 64.0) / 20.0));
     public static final double ARM_FORWARD_LIMIT = Units.radiansToRotations(30);
@@ -327,6 +324,11 @@ public final class Constants {
             .withKA(LOADER.getDoubleValue("arm", "CONTROLLER_A"))
             .withKG(LOADER.getDoubleValue("arm", "CONTROLLER_G"))
             .withGravityType(GravityTypeValue.Arm_Cosine);
+            public static final MotionMagicConfigs ARM_MAGIC_CONFIG = 
+            new MotionMagicConfigs()
+                .withMotionMagicCruiseVelocity(4)
+                .withMotionMagicAcceleration(1.75)
+                .withMotionMagicJerk(0.5);
   }
 
   public static final class PickupConstants {
@@ -343,7 +345,7 @@ public final class Constants {
     public static final double INTAKE_OUT_SPEED = -0.50;
     public static final Slot0Configs PICKUP_GAINS =
         new Slot0Configs().withKP(42.857).withKI(0.00).withKD(0.00);
-    public static final double StatorCurrentLimit = 80;
+    public static final double SOR_CURRENT_LIMIT = 80;
 
     public static final double INTAKE_OFF_SET_Y = -Units.inchesToMeters(8);
     public static final double TOF_CORAL_DISTANCE = Units.inchesToMeters(6.5) * 1000;

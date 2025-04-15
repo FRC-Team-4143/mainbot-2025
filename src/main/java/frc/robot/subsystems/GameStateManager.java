@@ -208,14 +208,7 @@ public class GameStateManager extends Subsystem {
     if (io_.reef_target_.isPresent()) {
       reef_target_pub_.set(io_.reef_target_.get());
       Elevator.getInstance()
-          .updateMechanism(
-              target_stages_pub_,
-              target_arm_pub_,
-              Elevator.getInstance()
-                  .getElevatorKinematics()
-                  .translationToJointSpace(
-                      elevatorTargetSwitch().getTarget().getTranslation(),
-                      elevatorTargetSwitch().getJointSpaceSolution()));
+          .updateMechanism(target_stages_pub_, target_arm_pub_, Elevator.getInstance().getTarget());
     }
   }
 
