@@ -295,11 +295,10 @@ public final class Constants {
             .withGravityType(GravityTypeValue.Elevator_Static);
     public static final MotionMagicConfigs ELEVATOR_MAGIC_CONFIG = 
         new MotionMagicConfigs()
-            .withMotionMagicCruiseVelocity(5.0 / ELEVATOR_ROTATIONS_TO_METERS)
-            .withMotionMagicAcceleration(3.0 / ELEVATOR_ROTATIONS_TO_METERS)
+            .withMotionMagicCruiseVelocity(300.0)
+            .withMotionMagicAcceleration(400.0)
             .withMotionMagicJerk(10.0 / ELEVATOR_ROTATIONS_TO_METERS);
     public static final double ELEVATOR_SAFETY_BUMP = Units.inchesToMeters(2);
-
   }
 
   public class ArmConstants {
@@ -326,9 +325,9 @@ public final class Constants {
             .withGravityType(GravityTypeValue.Arm_Cosine);
             public static final MotionMagicConfigs ARM_MAGIC_CONFIG = 
             new MotionMagicConfigs()
-                .withMotionMagicCruiseVelocity(4)
-                .withMotionMagicAcceleration(1.75)
-                .withMotionMagicJerk(0.5);
+            .withMotionMagicCruiseVelocity(1.5)
+            .withMotionMagicAcceleration(10.0)
+            .withMotionMagicJerk(30.0);
   }
 
   public static final class PickupConstants {
@@ -345,7 +344,7 @@ public final class Constants {
     public static final double INTAKE_OUT_SPEED = -0.50;
     public static final Slot0Configs PICKUP_GAINS =
         new Slot0Configs().withKP(42.857).withKI(0.00).withKD(0.00);
-    public static final double SOR_CURRENT_LIMIT = 80;
+    public static final double STATOR_CURRENT_LIMIT = 80;
 
     public static final double INTAKE_OFF_SET_Y = -Units.inchesToMeters(8);
     public static final double TOF_CORAL_DISTANCE = Units.inchesToMeters(6.5) * 1000;

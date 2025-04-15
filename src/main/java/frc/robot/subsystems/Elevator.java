@@ -8,7 +8,6 @@ import static edu.wpi.first.units.Units.Rotations;
 import com.ctre.phoenix6.configs.CANcoderConfiguration;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.MotionMagicVoltage;
-import com.ctre.phoenix6.controls.PositionVoltage;
 import com.ctre.phoenix6.controls.StrictFollower;
 import com.ctre.phoenix6.controls.VoltageOut;
 import com.ctre.phoenix6.hardware.CANcoder;
@@ -18,7 +17,6 @@ import com.ctre.phoenix6.signals.NeutralModeValue;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Rotation3d;
-import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.networktables.StructArrayPublisher;
@@ -193,10 +191,9 @@ public class Elevator extends Subsystem {
     io_.target_arm_angle_ = io_.final_target_.getAngle().getRadians();
 
     // If Elevator is not at final target position set arm to staging angle
-    if(!isElevatorAtTarget() && io_.final_target_.getStagingAngle().isPresent()){
+    if (!isElevatorAtTarget() && io_.final_target_.getStagingAngle().isPresent()) {
       io_.target_arm_angle_ = io_.final_target_.getStagingAngle().get().getRadians();
     }
-
 
     // Elevator Safety
     if (io_.target_elevator_height_ < ElevatorConstants.ELEVATOR_HEIGHT_PIVOT_MIN) {
@@ -234,10 +231,6 @@ public class Elevator extends Subsystem {
         "Subsystems/Elevator/Target Height (Meters)", io_.target_elevator_height_);
     SmartDashboard.putNumber(
         "Subsystems/Elevator/Current Height (Meters)", io_.current_elevator_height_);
-    SmartDashboard.putNumber(
-        "Subsystems/Elevator/Current Height (F) (Meters)",
-        io_.elevator_follower_rotations_ * ElevatorConstants.ELEVATOR_ROTATIONS_TO_METERS
-            + ElevatorConstants.ELEVATOR_HEIGHT_PIVOT_MIN);
     SmartDashboard.putNumber(
         "Subsystems/Elevator/Distance from Zero (Inches)",
         Units.metersToInches(

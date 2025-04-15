@@ -44,7 +44,7 @@ public class SetDefaultStow extends Command {
           // Waiting on Intake to get to position
         } else if (!Pickup.getInstance().isAtTarget()
             && OI.intake_preference == IntakePreference.GROUND) {
-          Elevator.getInstance().setTarget(TargetType.CORAL_STOW);
+          Elevator.getInstance().setTarget(TargetType.SAFETY);
           // If in Coral Mode + Vision is Enabled + Robot Does Not Have Coral + Pickup Preference is
           // Ground
         } else if (!Claw.getInstance().isCoralPresent()
@@ -60,7 +60,7 @@ public class SetDefaultStow extends Command {
     } else {
       // If in Coral Mode + Vision is Disabled + Robot Has Coral + Pickup Preference is Ground
       if (OI.intake_preference == IntakePreference.GROUND && Claw.getInstance().isCoralPresent()) {
-        Elevator.getInstance().setTarget(TargetType.CORAL_STOW);
+        Elevator.getInstance().setTarget(TargetType.SAFETY);
         // If in Coral Mode + Vision is Disabled + Robot Does Not Have Coral + Pickup Preference is
         // Ground
       } else if (OI.intake_preference == IntakePreference.GROUND) {

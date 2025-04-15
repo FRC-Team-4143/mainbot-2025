@@ -349,7 +349,7 @@ public class GameStateManager extends Subsystem {
       case TELEOP_CONTROL:
       case TURTLE:
       default:
-        return (Claw.getInstance().isCoralMode()) ? TargetType.CORAL_STOW : TargetType.ALGAE_STOW;
+        return (Claw.getInstance().isCoralMode()) ? TargetType.CORAL_INTAKE : TargetType.ALGAE_STOW;
     }
   }
 

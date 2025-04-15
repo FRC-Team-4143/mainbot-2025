@@ -1,45 +1,46 @@
 package frc.lib;
 
-import java.util.Optional;
-
 import edu.wpi.first.math.geometry.Rotation2d;
+import java.util.Optional;
 import monologue.Annotations.Log;
 
 public class ElevatorTargets {
 
   public enum TargetType {
-    SAFETY(0, Rotation2d.kZero),
-    CLIMB(0.90041, Rotation2d.fromDegrees(121.201)),
-    CORAL_INTAKE(0.826318, Rotation2d.fromDegrees(-117)),
-    L4(2.109, Rotation2d.fromDegrees(-19.599)),
-    L3(1.423500, Rotation2d.fromDegrees(-3.515)),
-    L2(1.0235, Rotation2d.fromDegrees(-3.515)),
-    L1(0, Rotation2d.kZero),
-    L1_FLICK(0, Rotation2d.kZero),
-    STATION(0, Rotation2d.kZero),
-    ALGAE_STOW(0.90769, Rotation2d.fromDegrees(-12.9199)),
-    ALGAE_LOW(0.90848, Rotation2d.fromDegrees(-12.9199)),
-    ALGAE_HIGH(1.35857, Rotation2d.fromDegrees(-12.9199)),
-    ALGAE_PROCESSOR(0.780144, Rotation2d.fromDegrees(-40.1660)),
-    BARGE(2.02979, Rotation2d.fromDegrees(23.3789));
+    SAFETY(0.90041, Rotation2d.fromDegrees(-45), "SAFETY"),
+    CLIMB(0.90041, Rotation2d.fromDegrees(121.201), "CLIMB"),
+    CORAL_INTAKE(0.75, Rotation2d.fromDegrees(-117), "CORAL_INTAKE"),
+    L4(2.109, Rotation2d.fromDegrees(-19.599), Rotation2d.fromDegrees(-63), "L4"),
+    L3(1.423500, Rotation2d.fromDegrees(-3.515), "L3"),
+    L2(1.0235, Rotation2d.fromDegrees(-3.515), "L2"),
+    L1(0, Rotation2d.kZero, "L1"),
+    L1_FLICK(0, Rotation2d.kZero, "L1_FLICK"),
+    ALGAE_STOW(0.90769, Rotation2d.fromDegrees(-12.9199), "ALGAE_STOW"),
+    ALGAE_LOW(0.90848, Rotation2d.fromDegrees(-12.9199), "ALGAE_LOW"),
+    ALGAE_HIGH(1.35857, Rotation2d.fromDegrees(-12.9199), "ALGAE_HIGH"),
+    ALGAE_PROCESSOR(0.7829, Rotation2d.fromDegrees(-40.1660), "ALGAE_PROCESSOR"),
+    BARGE(2.08, Rotation2d.fromDegrees(23.3789), "BARGE"),
+    STATION(0.90041, Rotation2d.fromDegrees(135), "STATION");
 
-    @Log.File private double elevator_height_;
-    @Log.File private double elevator_offset_;
-    @Log.File private Optional<Rotation2d> staging_arm_angle_;
-    @Log.File private Rotation2d arm_angle_;
-    @Log.File private Rotation2d arm_offset_;
-    @Log.File private String name_;
+    @Log.File private double elevator_height_ = 0;
+    @Log.File private double elevator_offset_ = 0;
+    @Log.File private Optional<Rotation2d> staging_arm_angle_ = Optional.empty();
+    @Log.File private Rotation2d arm_angle_ = Rotation2d.kZero;
+    @Log.File private Rotation2d arm_offset_ = Rotation2d.kZero;
+    @Log.File private String name_ = "";
 
-    TargetType(double elevator_height, Rotation2d arm_angle) {
-      elevator_height = elevator_height_;
+    TargetType(double elevator_height, Rotation2d arm_angle, String name) {
+      elevator_height_ = elevator_height;
       arm_angle_ = arm_angle;
-      staging_arm_angle_ = Optional.empty();
+      name_ = name;
     }
 
-    TargetType(double elevator_height, Rotation2d arm_angle, Rotation2d staging_arm_angle) {
-      elevator_height = elevator_height_;
+    TargetType(
+        double elevator_height, Rotation2d arm_angle, Rotation2d staging_arm_angle, String name) {
+      elevator_height_ = elevator_height;
       arm_angle_ = arm_angle;
-      staging_arm_angle_ = Optional.of(staging_arm_angle); 
+      staging_arm_angle_ = Optional.of(staging_arm_angle);
+      name_ = name;
     }
 
     public String toString() {
@@ -91,9 +92,10 @@ public class ElevatorTargets {
 
     /**
      * Returns an optional angle for staging while traveling
+     *
      * @return
      */
-    public Optional<Rotation2d> getStagingAngle(){
+    public Optional<Rotation2d> getStagingAngle() {
       return staging_arm_angle_;
     }
 
