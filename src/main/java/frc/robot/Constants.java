@@ -111,7 +111,7 @@ public final class Constants {
     public static final double MAX_TRACTOR_BEAM_VELOCITY_SPEED = MAX_DRIVE_SPEED * 0.25;
     public static final double MAX_TRACTOR_BEAM_OMEGA_SPEED = MAX_DRIVE_ANGULAR_RATE * 0.6;
     public static final double TRACTOR_BEAM_ROTATION_THRESHOLD = Units.degreesToRadians(2);
-    public static final double TRACTOR_BEAM_TARGET_DISTANCE = Units.inchesToMeters(1);
+    public static final double TRACTOR_BEAM_TARGET_DISTANCE = Units.inchesToMeters(0.75);
     public static final double TRACTOR_BEAM_SAFETY_DISTANCE = Units.inchesToMeters(34);
 
     private static final SwerveModuleConstantsFactory ConstantCreator =
@@ -293,11 +293,11 @@ public final class Constants {
             .withKA(LOADER.getDoubleValue("elevator", "CONTROLLER_A"))
             .withKG(LOADER.getDoubleValue("elevator", "CONTROLLER_G"))
             .withGravityType(GravityTypeValue.Elevator_Static);
-    public static final MotionMagicConfigs ELEVATOR_MAGIC_CONFIG = 
+    public static final MotionMagicConfigs ELEVATOR_MAGIC_CONFIG =
         new MotionMagicConfigs()
             .withMotionMagicCruiseVelocity(300.0)
             .withMotionMagicAcceleration(400.0)
-            .withMotionMagicJerk(10.0 / ELEVATOR_ROTATIONS_TO_METERS);
+            .withMotionMagicJerk(1000.0);
     public static final double ELEVATOR_SAFETY_BUMP = Units.inchesToMeters(2);
   }
 
@@ -323,8 +323,8 @@ public final class Constants {
             .withKA(LOADER.getDoubleValue("arm", "CONTROLLER_A"))
             .withKG(LOADER.getDoubleValue("arm", "CONTROLLER_G"))
             .withGravityType(GravityTypeValue.Arm_Cosine);
-            public static final MotionMagicConfigs ARM_MAGIC_CONFIG = 
-            new MotionMagicConfigs()
+    public static final MotionMagicConfigs ARM_MAGIC_CONFIG =
+        new MotionMagicConfigs()
             .withMotionMagicCruiseVelocity(1.5)
             .withMotionMagicAcceleration(10.0)
             .withMotionMagicJerk(30.0);
