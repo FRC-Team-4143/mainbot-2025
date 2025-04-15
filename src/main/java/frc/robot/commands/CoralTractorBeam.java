@@ -94,6 +94,6 @@ public class CoralTractorBeam extends Command {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return pickup_.isCoralPresent();
+    return pickup_.isCoralPresent() || claw_.isCoralPresent();
   }
 }
