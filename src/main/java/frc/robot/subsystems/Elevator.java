@@ -187,12 +187,28 @@ public class Elevator extends Subsystem {
 
   /** Computes updated outputs for the actuators */
   public void updateLogic(double timestamp) {
+
+    // Default Behavior
     io_.target_elevator_height_ = io_.final_target_.getHeight();
     io_.target_arm_angle_ = io_.final_target_.getAngle().getRadians();
 
-    // If Elevator is not at final target position set arm to staging angle
-    if (!isElevatorCloseToTarget() && io_.final_target_.getStagingAngle().isPresent()) {
-      io_.target_arm_angle_ = io_.final_target_.getStagingAngle().get().getRadians();
+    // If Leaving collision Behavior
+    if (io_.leaving_collision_target) {
+      io_.target_arm_angle_ = TargetType.L4.getStagingAngle().get().getRadians();
+      io_.target_elevator_height_ = io_.current_elevator_height_;
+      if (isArmAtCurrentTarget()) {
+        io_.target_elevator_height_ = io_.final_target_.getHeight();
+      }
+      if (isElevatorCloseToCurrentTarget() && isArmAtCurrentTarget()) {
+        io_.target_arm_angle_ = io_.final_target_.getHeight();
+        io_.leaving_collision_target = false;
+      }
+      // Behavior if Target has Staging Angle
+    } else {
+      // If Elevator is not at final target position set arm to staging angle
+      if (!isElevatorCloseToTarget() && io_.final_target_.getStagingAngle().isPresent()) {
+        io_.target_arm_angle_ = io_.final_target_.getStagingAngle().get().getRadians();
+      }
     }
 
     // Elevator Safety
@@ -304,7 +320,9 @@ public class Elevator extends Subsystem {
    */
   public boolean isArmAtTarget() {
     return Util.epislonEquals(
-        io_.current_arm_angle_, io_.target_arm_angle_, ArmConstants.ARM_TARGET_THRESHOLD);
+        io_.current_arm_angle_,
+        io_.final_target_.getAngle().getRadians(),
+        ArmConstants.ARM_TARGET_THRESHOLD);
   }
 
   /**
@@ -313,14 +331,40 @@ public class Elevator extends Subsystem {
   public boolean isElevatorAtTarget() {
     return Util.epislonEquals(
         io_.current_elevator_height_,
+        io_.final_target_.getHeight(),
+        ElevatorConstants.ELEVATOR_TARGET_THRESHOLD);
+  }
+
+  /**
+   * @return If the elevator is within the threshold of its final target
+   */
+  public boolean isElevatorCloseToTarget() {
+    return Util.epislonEquals(
+        io_.current_elevator_height_,
+        io_.final_target_.getHeight(),
+        ElevatorConstants.ELEVATOR_TARGET_THRESHOLD_CLOSE);
+  }
+
+  /**
+   * @return If both the arm and elevator are at there targets
+   */
+  public boolean isElevatorAndArmAtTarget() {
+    return isElevatorAtTarget() && isArmAtTarget();
+  }
+
+  public boolean isArmAtCurrentTarget() {
+    return Util.epislonEquals(
+        io_.current_arm_angle_, io_.target_arm_angle_, ArmConstants.ARM_TARGET_THRESHOLD);
+  }
+
+  public boolean isElevatorAtCurrentTarget() {
+    return Util.epislonEquals(
+        io_.current_elevator_height_,
         io_.target_elevator_height_,
         ElevatorConstants.ELEVATOR_TARGET_THRESHOLD);
   }
 
-    /**
-   * @return If the elevator is within the threshold of its final target
-   */
-  public boolean isElevatorCloseToTarget() {
+  public boolean isElevatorCloseToCurrentTarget() {
     return Util.epislonEquals(
         io_.current_elevator_height_,
         io_.target_elevator_height_,
@@ -330,8 +374,24 @@ public class Elevator extends Subsystem {
   /**
    * @return If both the arm and elevator are at there targets
    */
-  public boolean isElevatorAndArmAtTarget() {
-    return isElevatorAtTarget() && isArmAtTarget();
+  public boolean isElevatorAndArmAtCurrentTarget() {
+    return isElevatorAtCurrentTarget() && isArmAtCurrentTarget();
+  }
+
+  public boolean isArmHung() {
+    return io_.current_arm_angle_ > Units.degreesToRadians(-60);
+  }
+
+  public double getCurrentAngle() {
+    return io_.current_arm_angle_;
+  }
+
+  public boolean isElevatorHung() {
+    return io_.current_elevator_height_ > 1.51;
+  }
+
+  public boolean isElevatorAndArmHung() {
+    return isArmHung() && isElevatorHung();
   }
 
   /** Reset the elevator pos to zero */
@@ -386,6 +446,13 @@ public class Elevator extends Subsystem {
     if (new_target == io_.final_target_) {
       return;
     }
+    if (io_.final_target_.getCollision()
+        && new_target != TargetType.L1
+        && new_target != TargetType.L4_SAFETY) {
+      io_.leaving_collision_target = true;
+    } else {
+      io_.leaving_collision_target = false;
+    }
     io_.final_target_ = new_target;
   }
 
@@ -425,6 +492,7 @@ public class Elevator extends Subsystem {
     @Log.File public double elevator_master_rotations_ = 0;
     @Log.File public double elevator_follower_rotations_ = 0;
     @Log.File public TargetType final_target_ = TargetType.CORAL_INTAKE;
+    @Log.File public boolean leaving_collision_target = false;
   }
 
   /** Get logging object from subsystem */

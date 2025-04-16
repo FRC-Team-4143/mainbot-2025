@@ -6,9 +6,7 @@ package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
-import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.lib.ElevatorTargets.TargetType;
-import frc.mw_lib.command.NoReqSequentialCommandGroup;
 import frc.robot.subsystems.Claw;
 import frc.robot.subsystems.Claw.ClawMode;
 import frc.robot.subsystems.Elevator;
@@ -19,9 +17,10 @@ public class L1Score extends SequentialCommandGroup {
   public L1Score() {
     // Use addRequirements() here to declare subsystem dependencies.
     super(
-      Commands.run(() -> Claw.getInstance().setClawMode(ClawMode.SHOOT)).withTimeout(0.25),
-      Commands.run(() -> Elevator.getInstance().setTarget(TargetType.L1_FLICK))
-      .until(Elevator.getInstance()::isElevatorAndArmAtTarget));
+        Commands.run(() -> Claw.getInstance().setClawMode(ClawMode.SHOOT)).withTimeout(0.25),
+        Commands.run(() -> Elevator.getInstance().setTarget(TargetType.L1_FLICK))
+            .until(Elevator.getInstance()::isElevatorAndArmAtTarget),
+        Commands.run(() -> Claw.getInstance().setClawMode(ClawMode.IDLE)));
     this.addRequirements(Elevator.getInstance(), Claw.getInstance());
     setName(this.getClass().getSimpleName());
   }

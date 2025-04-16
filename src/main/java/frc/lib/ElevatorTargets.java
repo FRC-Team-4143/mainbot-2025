@@ -10,11 +10,12 @@ public class ElevatorTargets {
     SAFETY(0.90041, Rotation2d.fromDegrees(-45), "SAFETY"),
     CLIMB(0.90041, Rotation2d.fromDegrees(121.201), "CLIMB"),
     CORAL_INTAKE(0.75, Rotation2d.fromDegrees(-117), "CORAL_INTAKE"),
-    L4(2.109, Rotation2d.fromDegrees(-19.599), Rotation2d.fromDegrees(-63), "L4"),
+    L4(2.109, Rotation2d.fromDegrees(-19.599), Rotation2d.fromDegrees(-65), "L4", true),
+    L4_SAFETY(2.109, Rotation2d.fromDegrees(-19.599), "L4_SAFETY"),
     L3(1.423500, Rotation2d.fromDegrees(-3.515), "L3"),
     L2(1.0235, Rotation2d.fromDegrees(-3.515), "L2"),
-    L1(0, Rotation2d.kZero, "L1"),
-    L1_FLICK(0,Rotation2d.kZero, "L1_FLICK"),
+    L1(0.824, Rotation2d.fromDegrees(-21.703), Rotation2d.fromDegrees(0), "L1", true),
+    L1_FLICK(0.919, Rotation2d.fromDegrees(0), "L1_FLICK"),
     ALGAE_STOW(0.90769, Rotation2d.fromDegrees(-12.9199), "ALGAE_STOW"),
     ALGAE_LOW(0.90848, Rotation2d.fromDegrees(-12.9199), "ALGAE_LOW"),
     ALGAE_HIGH(1.35857, Rotation2d.fromDegrees(-12.9199), "ALGAE_HIGH"),
@@ -22,17 +23,25 @@ public class ElevatorTargets {
     BARGE(2.08, Rotation2d.fromDegrees(23.3789), "BARGE"),
     STATION(0.90041, Rotation2d.fromDegrees(135), "STATION");
 
-    @Log.File private double elevator_height_ = 0;
+    @Log.File public double elevator_height_ = 0;
     @Log.File private double elevator_offset_ = 0;
-    @Log.File private Optional<Rotation2d> staging_arm_angle_ = Optional.empty();
-    @Log.File private Rotation2d arm_angle_ = Rotation2d.kZero;
+    @Log.File public Optional<Rotation2d> staging_arm_angle_ = Optional.empty();
+    @Log.File public Rotation2d arm_angle_ = Rotation2d.kZero;
     @Log.File private Rotation2d arm_offset_ = Rotation2d.kZero;
     @Log.File private String name_ = "";
+    @Log.File private boolean collision_ = false;
 
     TargetType(double elevator_height, Rotation2d arm_angle, String name) {
       elevator_height_ = elevator_height;
       arm_angle_ = arm_angle;
       name_ = name;
+    }
+
+    TargetType(double elevator_height, Rotation2d arm_angle, String name, boolean c) {
+      elevator_height_ = elevator_height;
+      arm_angle_ = arm_angle;
+      name_ = name;
+      collision_ = c;
     }
 
     TargetType(
@@ -43,8 +52,25 @@ public class ElevatorTargets {
       name_ = name;
     }
 
+    TargetType(
+        double elevator_height,
+        Rotation2d arm_angle,
+        Rotation2d staging_arm_angle,
+        String name,
+        boolean c) {
+      elevator_height_ = elevator_height;
+      arm_angle_ = arm_angle;
+      staging_arm_angle_ = Optional.of(staging_arm_angle);
+      name_ = name;
+      collision_ = c;
+    }
+
     public String toString() {
       return this.name_;
+    }
+
+    public boolean getCollision() {
+      return collision_;
     }
 
     // Height Methods
