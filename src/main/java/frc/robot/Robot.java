@@ -9,6 +9,7 @@ import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import edu.wpi.first.wpilibj2.command.Commands;
 import frc.lib.FieldRegions;
 import frc.mw_lib.auto.Auto;
 import frc.mw_lib.auto.AutoManager;
@@ -33,6 +34,10 @@ public class Robot extends TimedRobot {
     ProxyServer.configureServer();
 
     AutoManager.getInstance().registerAutos(new Left_Ground_Test());
+
+    SmartDashboard.putData(
+        "Snapshot", Commands.runOnce(() -> ProxyServer.snapshot("Test Snapshot")));
+    SmartDashboard.putData("Sync Match Data", Commands.runOnce(() -> ProxyServer.syncMatchData()));
   }
 
   @Override

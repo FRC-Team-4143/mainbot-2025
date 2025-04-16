@@ -15,8 +15,12 @@ import frc.mw_lib.util.Util;
 import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
+import java.net.InetAddress;
+import java.net.InetSocketAddress;
+import java.net.SocketAddress;
 import java.net.SocketException;
 import java.net.SocketTimeoutException;
+import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.OptionalInt;
 
@@ -29,8 +33,10 @@ public class ProxyServer {
   private static PieceDetectionPacket piece_detection_packet_ = new PieceDetectionPacket();
 
   // Socket Config
-  private static DatagramSocket socket_ = null;
   private static final int PORT = 5809; // local port to bind server
+  private static final String ADDR = "10.41.43.200";
+  private static DatagramSocket socket_ = null;
+  private static SocketAddress socket_addr_ = null;
   private static final int TIMEOUT = 1; // Server receive blocking timeout
 
   // Sim stuff
@@ -65,6 +71,13 @@ public class ProxyServer {
         socket_ = new DatagramSocket(PORT);
         // set receive blocking timeout (ms)
         socket_.setSoTimeout(TIMEOUT);
+        InetAddress addr;
+        // try {
+        //   addr = InetAddress.getByName(ADDR);
+        //   socket_addr_ = new InetSocketAddress(addr, PORT);
+        // } catch (UnknownHostException e) {
+        //   e.printStackTrace();
+        // }
       } catch (SocketException e) {
         e.printStackTrace();
         return false;
@@ -196,6 +209,7 @@ public class ProxyServer {
 
   /**
    * Sends snapshot trigger packet for log location flagging
+   *
    * @param tag_name flag name to record in log
    */
   public static void snapshot(String tag_name) {
@@ -206,17 +220,14 @@ public class ProxyServer {
       buffer[i + 1] = (byte) Character.getNumericValue(tag_name.charAt(i));
     }
 
-    try {
-      socket_.send(new DatagramPacket(buffer, buffer.length));
-    } catch (IOException e) {
-      // TODO Auto-generated catch block
-      e.printStackTrace();
-    }
+    // try {
+    //   socket_.send(new DatagramPacket(buffer, buffer.length, socket_addr_));
+    // } catch (IOException e) {
+    //   e.printStackTrace();
+    // }
   }
 
-  /**
-   * Sends match data packet for log name syncing 
-   */
+  /** Sends match data packet for log name syncing */
   public static void syncMatchData() {
     String event_name = DriverStation.getEventName();
     byte[] buffer = new byte[5 + event_name.length()];
@@ -229,17 +240,17 @@ public class ProxyServer {
       buffer[i + 5] = (byte) Character.getNumericValue(event_name.charAt(i));
     }
 
-    try {
-      socket_.send(new DatagramPacket(buffer, buffer.length));
-    } catch (IOException e) {
-      // TODO Auto-generated catch block
-      e.printStackTrace();
-    }
+    // try {
+    //   socket_.send(new DatagramPacket(buffer, buffer.length, socket_addr_));
+    // } catch (IOException e) {
+    //   e.printStackTrace();
+    // }
   }
 
   /**
-   * Serializes {@link DriverStation.MatchType} to byte value
-   * {None, Practice, Qualification, Elimination}
+   * Serializes {@link DriverStation.MatchType} to byte value {None, Practice, Qualification,
+   * Elimination}
+   *
    * @return byte value representing match type
    */
   private static byte serializeMatchType() {
@@ -263,9 +274,9 @@ public class ProxyServer {
   }
 
   /**
-   * Serializes DriverStation Location to byte value
-   * {Blue1, Blue2, Blue3, Red1, Red2, Red3}
-   * Will return 0 if no DriverStation is Present
+   * Serializes DriverStation Location to byte value {Blue1, Blue2, Blue3, Red1, Red2, Red3} Will
+   * return 0 if no DriverStation is Present
+   *
    * @return byte value representing station location
    */
   private static byte serializeAllianceStation() {

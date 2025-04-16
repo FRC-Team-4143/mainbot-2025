@@ -26,6 +26,7 @@ import frc.robot.subsystems.SwerveDrivetrain;
 public class CoralTractorBeam extends Command {
   /** Creates a new CoralTractorBeam. */
   static Transform2d intake_off_set;
+
   static Pose2d target_;
   static Transform2d stageing_off_set_;
   static boolean has_hit_staging_target_;
