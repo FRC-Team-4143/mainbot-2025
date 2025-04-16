@@ -19,20 +19,7 @@ public class CoralScore extends NoReqConditionalCommand {
   /** Creates a new ElevatorL4Target. */
   public CoralScore() {
     // Use addRequirements() here to declare subsystem dependencies.
-    super(
-        Commands.run(
-                () -> Claw.getInstance().setClawMode(ClawMode.SHOOT),
-                Claw.getInstance(),
-                Elevator.getInstance())
-            .withTimeout(0.5)
-            .andThen(
-                Commands.runOnce(
-                    () -> Elevator.getInstance().setTarget(TargetType.CORAL_INTAKE),
-                    Elevator.getInstance()))
-            .andThen(new WaitCommand(0.5))
-            .andThen(
-                Commands.runOnce(
-                    () -> GameStateManager.getInstance().setRobotState(RobotState.END))),
+    super(new L1Score(),
         new CoralEject(),
         Elevator.getInstance()::targetIsL1);
     setName(this.getClass().getSimpleName());

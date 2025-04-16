@@ -102,11 +102,11 @@ public abstract class OI {
       driver_controller_.back().onTrue(Commands.runOnce(() -> Climber.getInstance().backStage()));
     }
 
-    driver_controller_
-        .a()
-        .onTrue(
-            Commands.runOnce(() -> toggleIntakePreference())
-                .unless(Climber.getInstance()::lockOutControl));
+    // driver_controller_
+    //     .a()
+    //     .onTrue(
+    //         Commands.runOnce(() -> toggleIntakePreference())
+    //             .unless(Climber.getInstance()::lockOutControl));
 
     driver_controller_.b().whileTrue(new CoralTractorBeam());
 

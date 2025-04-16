@@ -14,7 +14,7 @@ public class ElevatorTargets {
     L3(1.423500, Rotation2d.fromDegrees(-3.515), "L3"),
     L2(1.0235, Rotation2d.fromDegrees(-3.515), "L2"),
     L1(0, Rotation2d.kZero, "L1"),
-    L1_FLICK(0, Rotation2d.kZero, "L1_FLICK"),
+    L1_FLICK(0,Rotation2d.kZero, "L1_FLICK"),
     ALGAE_STOW(0.90769, Rotation2d.fromDegrees(-12.9199), "ALGAE_STOW"),
     ALGAE_LOW(0.90848, Rotation2d.fromDegrees(-12.9199), "ALGAE_LOW"),
     ALGAE_HIGH(1.35857, Rotation2d.fromDegrees(-12.9199), "ALGAE_HIGH"),
