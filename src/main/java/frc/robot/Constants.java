@@ -263,6 +263,7 @@ public final class Constants {
     public static final int ELEVATOR_MASTER_ID = 21;
     public static final int ELEVATOR_FOLLOWER_ID = 22;
     public static final double ELEVATOR_TARGET_THRESHOLD = Units.inchesToMeters(1); // In m
+    public static final double ELEVATOR_TARGET_THRESHOLD_CLOSE = Units.inchesToMeters(6); // In m
     public static final InvertedValue ELEVATOR_MASTER_INVERSION =
         InvertedValue.CounterClockwise_Positive;
     public static final InvertedValue ELEVATOR_FOLLOWER_INVERSION =

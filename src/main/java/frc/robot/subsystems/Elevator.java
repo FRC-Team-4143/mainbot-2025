@@ -191,7 +191,7 @@ public class Elevator extends Subsystem {
     io_.target_arm_angle_ = io_.final_target_.getAngle().getRadians();
 
     // If Elevator is not at final target position set arm to staging angle
-    if (!isElevatorAtTarget() && io_.final_target_.getStagingAngle().isPresent()) {
+    if (!isElevatorCloseToTarget() && io_.final_target_.getStagingAngle().isPresent()) {
       io_.target_arm_angle_ = io_.final_target_.getStagingAngle().get().getRadians();
     }
 
@@ -315,6 +315,16 @@ public class Elevator extends Subsystem {
         io_.current_elevator_height_,
         io_.target_elevator_height_,
         ElevatorConstants.ELEVATOR_TARGET_THRESHOLD);
+  }
+
+    /**
+   * @return If the elevator is within the threshold of its final target
+   */
+  public boolean isElevatorCloseToTarget() {
+    return Util.epislonEquals(
+        io_.current_elevator_height_,
+        io_.target_elevator_height_,
+        ElevatorConstants.ELEVATOR_TARGET_THRESHOLD_CLOSE);
   }
 
   /**
