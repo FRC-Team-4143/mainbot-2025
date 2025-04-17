@@ -16,9 +16,11 @@ import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
+import java.net.InetSocketAddress;
 import java.net.SocketAddress;
 import java.net.SocketException;
 import java.net.SocketTimeoutException;
+import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.OptionalInt;
 
@@ -32,7 +34,7 @@ public class ProxyServer {
 
   // Socket Config
   private static final int PORT = 5809; // local port to bind server
-  private static final String ADDR = "10.41.43.200";
+  private static final String ADDR = "10.41.43.201";
   private static DatagramSocket socket_ = null;
   private static SocketAddress socket_addr_ = null;
   private static final int TIMEOUT = 1; // Server receive blocking timeout
@@ -70,12 +72,12 @@ public class ProxyServer {
         // set receive blocking timeout (ms)
         socket_.setSoTimeout(TIMEOUT);
         InetAddress addr;
-        // try {
-        //   addr = InetAddress.getByName(ADDR);
-        //   socket_addr_ = new InetSocketAddress(addr, PORT);
-        // } catch (UnknownHostException e) {
-        //   e.printStackTrace();
-        // }
+        try {
+          addr = InetAddress.getByName(ADDR);
+          socket_addr_ = new InetSocketAddress(addr, PORT);
+        } catch (UnknownHostException e) {
+          e.printStackTrace();
+        }
       } catch (SocketException e) {
         e.printStackTrace();
         return false;
@@ -218,11 +220,11 @@ public class ProxyServer {
       buffer[i + 1] = (byte) Character.getNumericValue(tag_name.charAt(i));
     }
 
-    // try {
-    //   socket_.send(new DatagramPacket(buffer, buffer.length, socket_addr_));
-    // } catch (IOException e) {
-    //   e.printStackTrace();
-    // }
+    try {
+      socket_.send(new DatagramPacket(buffer, buffer.length, socket_addr_));
+    } catch (IOException e) {
+      e.printStackTrace();
+    }
   }
 
   /** Sends match data packet for log name syncing */
@@ -238,11 +240,11 @@ public class ProxyServer {
       buffer[i + 5] = (byte) Character.getNumericValue(event_name.charAt(i));
     }
 
-    // try {
-    //   socket_.send(new DatagramPacket(buffer, buffer.length, socket_addr_));
-    // } catch (IOException e) {
-    //   e.printStackTrace();
-    // }
+    try {
+      socket_.send(new DatagramPacket(buffer, buffer.length, socket_addr_));
+    } catch (IOException e) {
+      e.printStackTrace();
+    }
   }
 
   /**
