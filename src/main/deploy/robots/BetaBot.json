@@ -77,13 +77,13 @@
             "TRANSLATION_P": 5.0,
             "TRANSLATION_I": 0.0,
             "TRANSLATION_D": 0.75,
-            "HEADING_P": 3.0,
+            "HEADING_P": 4.0,
             "HEADING_I": 0.0,
             "HEADING_D": 0.0
         }
     },
     "imp": {
-        "coral_offset": 0,
+        "coral_offset": -1,
         "algae_offset": 0
     },
     "elevator": {

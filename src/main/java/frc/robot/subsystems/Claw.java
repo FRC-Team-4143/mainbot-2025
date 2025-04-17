@@ -67,6 +67,7 @@ public class Claw extends Subsystem {
     wheel_config_.MotorOutput.Inverted = ClawConstants.WHEEL_MOTOR_INVERTED;
 
     wheel_motor_.getConfigurator().apply(wheel_config_);
+    // SmartDashboard.putNumber("Blast Power", 1.0);
 
     // Call reset last in subsystem configuration
     reset();

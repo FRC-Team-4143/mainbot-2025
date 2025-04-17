@@ -110,7 +110,7 @@ public final class Constants {
     public static final double MAX_TARGET_SPEED = 1;
     public static final double MAX_TRACTOR_BEAM_VELOCITY_SPEED = MAX_DRIVE_SPEED * 0.25;
     public static final double MAX_TRACTOR_BEAM_OMEGA_SPEED = MAX_DRIVE_ANGULAR_RATE * 0.6;
-    public static final double TRACTOR_BEAM_ROTATION_THRESHOLD = Units.degreesToRadians(2);
+    public static final double TRACTOR_BEAM_ROTATION_THRESHOLD = Units.degreesToRadians(0.5);
     public static final double TRACTOR_BEAM_TARGET_DISTANCE = Units.inchesToMeters(0.75);
     public static final double TRACTOR_BEAM_SAFETY_DISTANCE = Units.inchesToMeters(34);
 
@@ -217,7 +217,7 @@ public final class Constants {
     public static final int TIME_OF_FLIGHT_ID = 3;
     public static final int WHEEL_MOTOR_ID = 11;
     public static final double WHEEL_CORAL_SHOOT_SPEED = 0.6;
-    public static final double WHEEL_CORAL_BLAST_SPEED = 1.0;
+    public static final double WHEEL_CORAL_BLAST_SPEED = 0.9;
     public static final double WHEEL_ALGAE_SHOOT_SPEED = 0.5;
     public static final double WHEEL_ALGAE_BLAST_SPEED = 0.5;
     public static final double CORAL_LOAD_SPEED = -0.5;

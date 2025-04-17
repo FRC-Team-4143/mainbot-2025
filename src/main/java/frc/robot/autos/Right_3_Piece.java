@@ -22,7 +22,7 @@ public class Right_3_Piece extends Auto {
     this.addCommands(
         // Score game Piece 1
         this.getTrajectoryCmd("Right Start to EF"),
-        GameStateManager.setScoringCommand(Column.RIGHT, ReefScoringTarget.L4),
+        GameStateManager.setScoringCommand(Column.LEFT, ReefScoringTarget.L4),
         new AutoCoralReefScore(),
 
         // Get game Piece 2
