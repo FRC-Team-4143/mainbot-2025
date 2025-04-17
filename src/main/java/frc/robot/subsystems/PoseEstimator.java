@@ -184,20 +184,6 @@ public class PoseEstimator extends Subsystem {
     setRobotOdometry(getRobotPose().plus(disturbance));
   }
 
-  /**
-   * Returns the robots current load station region or an empty optional if not in any.
-   *
-   * @return current region
-   */
-  public Optional<Region> loadStationRegion() {
-    for (PolygonRegion region : FieldRegions.STATION_REGIONS) {
-      if (region.contains(getRobotPose())) {
-        return Optional.of(region);
-      }
-    }
-    return Optional.empty();
-  }
-
   public boolean isBargeZone() {
     return FieldRegions.BARGE_REGION.contains(getRobotPose())
         || FieldRegions.OPP_BARGE_REGION.contains(getRobotPose());
