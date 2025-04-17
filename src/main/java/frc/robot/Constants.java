@@ -110,7 +110,7 @@ public final class Constants {
     public static final double MAX_TARGET_SPEED = 1;
     public static final double MAX_TRACTOR_BEAM_VELOCITY_SPEED = MAX_DRIVE_SPEED * 0.25;
     public static final double MAX_TRACTOR_BEAM_OMEGA_SPEED = MAX_DRIVE_ANGULAR_RATE * 0.6;
-    public static final double TRACTOR_BEAM_ROTATION_THRESHOLD = Units.degreesToRadians(0.5);
+    public static final double TRACTOR_BEAM_ROTATION_THRESHOLD = Units.degreesToRadians(1);
     public static final double TRACTOR_BEAM_TARGET_DISTANCE = Units.inchesToMeters(0.75);
     public static final double TRACTOR_BEAM_SAFETY_DISTANCE = Units.inchesToMeters(34);
 

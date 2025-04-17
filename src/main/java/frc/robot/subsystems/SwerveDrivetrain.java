@@ -742,6 +742,18 @@ public class SwerveDrivetrain extends Subsystem {
    * @return if robot at its target tractor Beam Pose
    */
   public boolean atTractorBeamPose() {
+    SmartDashboard.putBoolean(
+        "TractorBeam In translation",
+        Util.epislonEquals(
+            io_.current_pose_.getTranslation(),
+            io_.target_pose_.getTranslation(),
+            DrivetrainConstants.TRACTOR_BEAM_TARGET_DISTANCE));
+    SmartDashboard.putBoolean(
+        "TractorBeam In rotation",
+        Util.epislonEquals(
+            io_.current_pose_.getRotation(),
+            io_.target_pose_.getRotation(),
+            DrivetrainConstants.TRACTOR_BEAM_ROTATION_THRESHOLD));
     return Util.epislonEquals(
         io_.current_pose_,
         io_.target_pose_,

@@ -447,7 +447,6 @@ public class Elevator extends Subsystem {
       return;
     }
     if (io_.final_target_.getCollision()
-        && new_target != TargetType.L1
         && new_target != TargetType.L4_SAFETY) {
       io_.leaving_collision_target = true;
     } else {
