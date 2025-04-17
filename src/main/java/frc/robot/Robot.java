@@ -36,7 +36,8 @@ public class Robot extends TimedRobot {
     FieldRegions.makeRegions();
     ProxyServer.configureServer();
 
-    AutoManager.getInstance().registerAutos(new Left_Ground_Test());
+    AutoManager.getInstance().registerAutos(new Right_3_Piece());
+    AutoManager.getInstance().registerAutos(new Left_3_Piece());
 
     SmartDashboard.putData(
         "Snapshot", Commands.runOnce(() -> ProxyServer.snapshot("Test Snapshot")));

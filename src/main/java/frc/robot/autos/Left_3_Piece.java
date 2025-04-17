@@ -9,9 +9,9 @@ import frc.robot.subsystems.GameStateManager;
 import frc.robot.subsystems.GameStateManager.Column;
 import frc.robot.subsystems.GameStateManager.ReefScoringTarget;
 
-public class Left_Ground_Test extends Auto {
+public class Left_3_Piece extends Auto {
 
-  public Left_Ground_Test() {
+  public Left_3_Piece() {
     // Register the paths first
     this.loadTrajectory("Left Start to IJ");
     this.loadTrajectory("IJ to Left Ground");
