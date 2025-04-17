@@ -4,7 +4,6 @@ import frc.mw_lib.auto.Auto;
 import frc.robot.commands.AutoCoralReefScore;
 import frc.robot.commands.CoralTractorBeam;
 import frc.robot.commands.IntakeHandoff;
-import frc.robot.subsystems.Claw;
 import frc.robot.subsystems.CoralDetector;
 import frc.robot.subsystems.GameStateManager;
 import frc.robot.subsystems.GameStateManager.Column;
