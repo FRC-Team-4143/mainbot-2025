@@ -52,7 +52,7 @@ public class CoralTractorBeam extends Command {
   public void initialize() {
     ProxyServer.snapshot("Coral Tractor Beam Enabled");
     Elevator.getInstance().setTarget(TargetType.CORAL_INTAKE);
-    Pickup.getInstance().setPickupMode(PickupMode.DEPLOYED);
+    Pickup.getInstance().setPickupMode(PickupMode.INTAKE);
     Claw.getInstance().setGamePiece(GamePiece.CORAL);
     target_ = CoralDetector.getInstance().getCoralPose2d().transformBy(intake_off_set);
   }

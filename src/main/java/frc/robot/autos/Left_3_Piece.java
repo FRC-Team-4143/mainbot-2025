@@ -30,22 +30,22 @@ public class Left_3_Piece extends Auto {
         this.getTrajectoryCmd("IJ to Left Ground")
             .until(CoralDetector.getInstance()::isValid)
             .raceWith(new IntakeHandoff()),
-        new CoralTractorBeam().withTimeout(3),
+        new CoralTractorBeam(),
 
         // Score game Piece 2
         this.getTrajectoryCmd("Left Ground to KL").alongWith(new IntakeHandoff()),
         GameStateManager.setScoringCommand(Column.LEFT, ReefScoringTarget.L4),
-        new AutoCoralReefScore().onlyIf(Claw.getInstance()::isCoralPresent),
+        new AutoCoralReefScore(),
 
         // Get game Piece 3
         this.getTrajectoryCmd("KL to Left Ground")
             .until(CoralDetector.getInstance()::isValid)
             .raceWith(new IntakeHandoff()),
-        new CoralTractorBeam().withTimeout(3),
+        new CoralTractorBeam(),
 
         // Score game Piece 3
         this.getTrajectoryCmd("Left Ground to KL").alongWith(new IntakeHandoff()),
         GameStateManager.setScoringCommand(Column.RIGHT, ReefScoringTarget.L4),
-        new AutoCoralReefScore().onlyIf(Claw.getInstance()::isCoralPresent));
+        new AutoCoralReefScore());
   }
 }
