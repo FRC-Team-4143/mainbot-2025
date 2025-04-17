@@ -27,8 +27,6 @@ package frc.robot;
 import static frc.robot.Constants.Vision.*;
 
 import edu.wpi.first.hal.SimDevice;
-import edu.wpi.first.hal.SimDevice.Direction;
-import edu.wpi.first.hal.SimDouble;
 import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.geometry.Pose3d;
@@ -37,8 +35,10 @@ import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.wpilibj.DataLogManager;
 import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.mw_lib.util.CamConstants;
+import frc.robot.Constants.DrivetrainConstants;
 import frc.robot.subsystems.PoseEstimator;
 import java.util.ArrayList;
 import java.util.List;
@@ -68,9 +68,14 @@ public class PhotonVision {
   private int numTags;
 
   private SimDevice vision_sim_;
-  private SimDouble sim_pose_x_;
-  private SimDouble sim_pose_y_;
-  private SimDouble sim_pose_t_;
+  private double sim_pose_t_;
+  private double sim_pose_x_;
+  private double sim_pose_y_;
+  private XboxController sim_pose_controller_;
+  private static final double POSE_TRANSLATION_SCALAR =
+      (DrivetrainConstants.MAX_DRIVE_SPEED / 2) * 0.01;
+  private static final double POSE_ROTATION_SCALAR =
+      (DrivetrainConstants.MAX_DRIVE_ANGULAR_RATE / 2) * 0.01;
 
   public PhotonVision() {
     num_cameras_ = Constants.Vision.CAMERAS.size();
@@ -91,10 +96,8 @@ public class PhotonVision {
     vision_sim_ = SimDevice.create("Pose Sim");
     if (vision_sim_ != null) {
       DataLogManager.log("Using simulated camera!");
-      sim_pose_x_ = vision_sim_.createDouble("pose x", Direction.kInput, 0);
-      sim_pose_y_ = vision_sim_.createDouble("pose y", Direction.kInput, 0);
-      sim_pose_t_ = vision_sim_.createDouble("pose t", Direction.kInput, 0);
       num_cameras_ += 1;
+      sim_pose_controller_ = new XboxController(2);
     }
   }
 
@@ -110,9 +113,10 @@ public class PhotonVision {
    */
   public Optional<EstimatedRobotPose> getEstimatedGlobalPose(int index) {
     if (index == num_cameras_ - 1 && vision_sim_ != null) {
-      Pose3d sim_pose =
-          new Pose3d(
-              sim_pose_x_.get(), sim_pose_y_.get(), 0, new Rotation3d(0, 0, sim_pose_t_.get()));
+      sim_pose_x_ += sim_pose_controller_.getRawAxis(0) * POSE_TRANSLATION_SCALAR;
+      sim_pose_y_ += sim_pose_controller_.getRawAxis(1) * POSE_TRANSLATION_SCALAR;
+      sim_pose_t_ += sim_pose_controller_.getRawAxis(2) * POSE_ROTATION_SCALAR;
+      Pose3d sim_pose = new Pose3d(sim_pose_x_, sim_pose_y_, 0, new Rotation3d(0, 0, sim_pose_t_));
       List<PhotonTrackedTarget> targets = new ArrayList<>();
       EstimatedRobotPose p =
           new EstimatedRobotPose(

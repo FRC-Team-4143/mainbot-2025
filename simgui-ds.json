@@ -79,11 +79,15 @@
           "incKey": 262
         },
         {
-          "decKey": 265,
-          "incKey": 264
+          "decKey": 264,
+          "incKey": 265
+        },
+        {
+          "decKey": 46,
+          "incKey": 44
         }
       ],
-      "axisCount": 2,
+      "axisCount": 3,
       "buttonCount": 6,
       "buttonKeys": [
         260,
@@ -107,6 +111,9 @@
     },
     {
       "guid": "Keyboard1"
+    },
+    {
+      "guid": "Keyboard2"
     }
   ]
 }
