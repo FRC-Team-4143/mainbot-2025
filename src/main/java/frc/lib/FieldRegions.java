@@ -376,7 +376,7 @@ public class FieldRegions {
         AllianceFlipUtil.apply(OPP_REEF_FACE3_REGION, FieldConstants.SYMMETRY_TYPE);
     OPP_REEF_FACE4_REGION =
         AllianceFlipUtil.apply(OPP_REEF_FACE4_REGION, FieldConstants.SYMMETRY_TYPE);
-    OPP_REEF_FACE4_REGION =
+    OPP_REEF_FACE5_REGION =
         AllianceFlipUtil.apply(OPP_REEF_FACE5_REGION, FieldConstants.SYMMETRY_TYPE);
     OPP_REEF_ENTER_REGION =
         AllianceFlipUtil.apply(OPP_REEF_ENTER_REGION, FieldConstants.SYMMETRY_TYPE);
@@ -415,7 +415,7 @@ public class FieldRegions {
     REEF_FACE2_REGION = AllianceFlipUtil.apply(REEF_FACE2_REGION, FieldConstants.SYMMETRY_TYPE);
     REEF_FACE3_REGION = AllianceFlipUtil.apply(REEF_FACE3_REGION, FieldConstants.SYMMETRY_TYPE);
     REEF_FACE4_REGION = AllianceFlipUtil.apply(REEF_FACE4_REGION, FieldConstants.SYMMETRY_TYPE);
-    REEF_FACE4_REGION = AllianceFlipUtil.apply(REEF_FACE5_REGION, FieldConstants.SYMMETRY_TYPE);
+    REEF_FACE5_REGION = AllianceFlipUtil.apply(REEF_FACE5_REGION, FieldConstants.SYMMETRY_TYPE);
     REEF_ENTER_REGION = AllianceFlipUtil.apply(REEF_ENTER_REGION, FieldConstants.SYMMETRY_TYPE);
     REEF_EXIT_REGION = AllianceFlipUtil.apply(REEF_EXIT_REGION, FieldConstants.SYMMETRY_TYPE);
     L4_COLLISION_REGION = AllianceFlipUtil.apply(L4_COLLISION_REGION, FieldConstants.SYMMETRY_TYPE);
