@@ -150,7 +150,7 @@ public class GameStateManager extends Subsystem {
             CommandScheduler.getInstance()
                 .schedule(
                     new CoralEject()
-                        .withTimeout(0.5)
+                        .withTimeout(0.125)
                         .beforeStarting(new WaitCommand(waitToScoreTime)));
           }
           io_.robot_state_ = RobotState.SCORING;
