@@ -4,6 +4,7 @@ import frc.mw_lib.auto.Auto;
 import frc.robot.commands.AutoCoralReefScore;
 import frc.robot.commands.CoralTractorBeam;
 import frc.robot.commands.IntakeHandoff;
+import frc.robot.subsystems.Claw;
 import frc.robot.subsystems.CoralDetector;
 import frc.robot.subsystems.GameStateManager;
 import frc.robot.subsystems.GameStateManager.Column;
@@ -29,22 +30,22 @@ public class Right_3_Piece extends Auto {
         this.getTrajectoryCmd("EF to Right Ground")
             .until(CoralDetector.getInstance()::isValid)
             .raceWith(new IntakeHandoff()),
-        new CoralTractorBeam(),
+        new CoralTractorBeam().withTimeout(3),
 
         // Score game Piece 2
         this.getTrajectoryCmd("Right Ground to CD").alongWith(new IntakeHandoff()),
         GameStateManager.setScoringCommand(Column.LEFT, ReefScoringTarget.L4),
-        new AutoCoralReefScore(),
+        new AutoCoralReefScore().onlyIf(Claw.getInstance()::isCoralPresent),
 
         // Get game Piece 3
         this.getTrajectoryCmd("CD to Right Ground")
             .until(CoralDetector.getInstance()::isValid)
             .raceWith(new IntakeHandoff()),
-        new CoralTractorBeam(),
+        new CoralTractorBeam().withTimeout(3),
 
         // Score game Piece 3
         this.getTrajectoryCmd("Right Ground to CD").alongWith(new IntakeHandoff()),
         GameStateManager.setScoringCommand(Column.RIGHT, ReefScoringTarget.L4),
-        new AutoCoralReefScore());
+        new AutoCoralReefScore().onlyIf(Claw.getInstance()::isCoralPresent));
   }
 }
