@@ -38,7 +38,7 @@ public class Robot extends TimedRobot {
 
     AutoManager.getInstance().registerAutos(new Right_3_Piece());
     AutoManager.getInstance().registerAutos(new Left_3_Piece());
-
+    AutoManager.getInstance().registerAutos(new H4_Algae());
     SmartDashboard.putData(
         "Snapshot", Commands.runOnce(() -> ProxyServer.snapshot("Test Snapshot")));
     SmartDashboard.putData("Sync Match Data", Commands.runOnce(() -> ProxyServer.syncMatchData()));
