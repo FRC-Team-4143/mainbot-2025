@@ -17,14 +17,14 @@ public class H4_Algae extends Auto {
     this.addCommands(
         // Score game Piece 1
         GameStateManager.setScoringCommand(Column.RIGHT, ReefScoringTarget.L4),
-        this.getTrajectoryCmd("Mid Start to GH"),
+        // this.getTrajectoryCmd("Mid Start to GH"),
         new AutoCoralReefScore(),
 
         // Get game piece 2
-        this.getTrajectoryCmd("GH to GH"),
+        this.getTrajectoryCmd("GH to GH Forward"),
         new AutoAlgaeReefPickup(),
 
-        // back up
-        this.getTrajectoryCmd("GH to GH"));
+        // Go to barge
+        this.getTrajectoryCmd("GH To Barge"));
   }
 }
