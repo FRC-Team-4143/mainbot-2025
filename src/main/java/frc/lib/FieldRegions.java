@@ -17,21 +17,21 @@ public class FieldRegions {
   public static PolygonRegion PROCESSOR_REGION =
       new PolygonRegion(
           new Translation2d[] {
-            new Translation2d(4, 0),
+            new Translation2d(4, -5),
             new Translation2d(4, 3),
             new Translation2d(8, 3),
-            new Translation2d(8, 0),
-            new Translation2d(4, 0),
+            new Translation2d(8, -5),
+            new Translation2d(4, -5),
           },
           "PROCESSOR_REGION");
   public static PolygonRegion PROCESSOR_DEAD_REGION =
       new PolygonRegion(
           new Translation2d[] {
-            new Translation2d(4, 0),
+            new Translation2d(4, -5),
             new Translation2d(4, Constants.DrivetrainConstants.CENTER_OFFSET_X),
             new Translation2d(8, Constants.DrivetrainConstants.CENTER_OFFSET_X),
-            new Translation2d(8, 0),
-            new Translation2d(4, 0),
+            new Translation2d(8, -5),
+            new Translation2d(4, -5),
           },
           "PROCESSOR_DEAD_REGION");
   public static PolygonRegion BARGE_REGION =
