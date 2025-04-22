@@ -58,7 +58,7 @@ public class Claw extends Subsystem {
     // Create io object first in subsystem configuration
     io_ = new ClawPeriodicIo();
 
-    tof_ = new SimTof(3);
+    tof_ = new SimTof(ClawConstants.TIME_OF_FLIGHT_ID);
     wheel_motor_ = new TalonFX(ClawConstants.WHEEL_MOTOR_ID);
     wheel_config_ = new TalonFXConfiguration();
     wheel_config_.CurrentLimits.StatorCurrentLimit = ClawConstants.STATOR_CURRENT_LIMIT;
@@ -67,6 +67,7 @@ public class Claw extends Subsystem {
     wheel_config_.MotorOutput.Inverted = ClawConstants.WHEEL_MOTOR_INVERTED;
 
     wheel_motor_.getConfigurator().apply(wheel_config_);
+    // SmartDashboard.putNumber("Blast Power", 1.0);
 
     // Call reset last in subsystem configuration
     reset();

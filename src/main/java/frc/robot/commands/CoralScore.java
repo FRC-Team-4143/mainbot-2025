@@ -5,14 +5,14 @@
 package frc.robot.commands;
 
 import frc.mw_lib.command.NoReqConditionalCommand;
-import frc.robot.subsystems.Claw;
+import frc.robot.subsystems.Elevator;
 
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
-public class GamePieceEject extends NoReqConditionalCommand {
+public class CoralScore extends NoReqConditionalCommand {
   /** Creates a new ElevatorL4Target. */
-  public GamePieceEject() {
+  public CoralScore() {
     // Use addRequirements() here to declare subsystem dependencies.
-    super(new CoralScore(), new AlgaeEject(), Claw.getInstance()::isCoralMode);
+    super(new L1Score(), new CoralEject(), Elevator.getInstance()::targetIsL1);
     setName(this.getClass().getSimpleName());
   }
 }

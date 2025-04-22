@@ -379,7 +379,7 @@ public interface SwerveRequest {
         toApplyX = tmp.getX();
         toApplyY = tmp.getY();
         /* And rotate the direction we want to face by the angle */
-        angleToFace = angleToFace.rotateBy(parameters.operatorForwardDirection);
+        // angleToFace = angleToFace.rotateBy(parameters.operatorForwardDirection);
       }
 
       Pose2d currentRobotPose = parameters.currentPose;

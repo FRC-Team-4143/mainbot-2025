@@ -127,7 +127,6 @@ public class Climber extends RemovableSubsystem {
     switch (io_.current_mode_) {
       case PRECLIMB:
         io_.deploying_start_time_ = 0;
-        Pickup.getInstance().setPickupMode(PickupMode.CLIMB);
         break;
       case STAGING:
         io_.target_prong_rotations_ = ClimberConstants.PRONG_PRESET_COUNT;
@@ -210,8 +209,7 @@ public class Climber extends RemovableSubsystem {
         Elastic.selectTab("Climb");
         break;
       case PRECLIMB:
-        if (Pickup.getInstance().isAtTarget()
-            && Elevator.getInstance().isElevatorAndArmAtTarget()) {
+        if (Elevator.getInstance().isElevatorAndArmAtTarget()) {
           io_.current_mode_ = ClimberMode.STAGING;
         }
         break;
@@ -222,6 +220,7 @@ public class Climber extends RemovableSubsystem {
         io_.current_mode_ = ClimberMode.RETRACTED;
         io_.target_strap_rotations_ = ClimberConstants.STRAP_RETRACTED_POSITION;
       case RETRACTED:
+        Pickup.getInstance().setPickupMode(PickupMode.CLIMB);
         io_.target_strap_rotations_ = ClimberConstants.STRAP_RETRACTED_POSITION;
         io_.strap_motor_target_offset += ClimberConstants.STRAP_SETPOINT_BUMP;
         break;

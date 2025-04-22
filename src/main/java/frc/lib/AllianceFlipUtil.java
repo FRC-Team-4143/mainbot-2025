@@ -10,25 +10,82 @@ package frc.lib;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
+import frc.mw_lib.geometry.CircularRegion;
+import frc.mw_lib.geometry.PolygonRegion;
+import frc.mw_lib.geometry.Region;
 import frc.mw_lib.geometry.TightRope;
 
 public class AllianceFlipUtil {
 
-  public static Translation2d apply(Translation2d translation) {
-    return translation.rotateAround(FieldConstants.FIELD_CENTER, Rotation2d.fromDegrees(180));
+  public enum SymmetryType {
+    DIAGONAL,
+    DIRECT
   }
 
-  public static Pose2d apply(Pose2d pose) {
-    return new Pose2d(
-        apply(pose.getTranslation()), pose.getRotation().rotateBy(Rotation2d.fromDegrees(180)));
+  public static Translation2d apply(Translation2d translation, SymmetryType symmetry) {
+    if (symmetry == SymmetryType.DIAGONAL) {
+      return translation.rotateAround(FieldConstants.FIELD_CENTER, Rotation2d.fromDegrees(180));
+    } else {
+      double distToMid = Math.abs(translation.getX() - FieldConstants.FIELD_CENTER.getX());
+      double offset = 0;
+      if (translation.getX() < FieldConstants.FIELD_CENTER.getX()) {
+        offset = distToMid * 2;
+      } else {
+        offset = -(distToMid * 2);
+      }
+      return new Translation2d(translation.getX() + offset, translation.getY());
+    }
   }
 
-  public static TightRope apply(TightRope tightRope) {
-    tightRope.poseA = apply(tightRope.poseA);
-    tightRope.poseB = apply(tightRope.poseB);
-    Pose2d temp = tightRope.poseA;
-    tightRope.poseA = tightRope.poseB;
-    tightRope.poseB = temp;
-    return tightRope;
+  public static Pose2d apply(Pose2d pose, SymmetryType symmetry) {
+    if (symmetry == SymmetryType.DIAGONAL) {
+      return new Pose2d(
+          apply(pose.getTranslation(), symmetry),
+          pose.getRotation().rotateBy(Rotation2d.fromDegrees(180)));
+    } else {
+      return new Pose2d(
+          apply(pose.getTranslation(), symmetry),
+          pose.getRotation().rotateBy(Rotation2d.fromDegrees(180)));
+    }
+  }
+
+  public static Region apply(Region region, SymmetryType symmetry) {
+    if (region instanceof PolygonRegion) {
+      return apply((PolygonRegion) region, symmetry);
+    } else {
+      return apply((CircularRegion) region, symmetry);
+    }
+  }
+
+  public static PolygonRegion apply(PolygonRegion region, SymmetryType symmetry) {
+    Translation2d[] points = region.getPoints();
+    for (int i = 0; i < points.length; i++) {
+      points[i] = AllianceFlipUtil.apply(points[i], symmetry);
+    }
+    return new PolygonRegion(points, region.getName());
+  }
+
+  public static CircularRegion apply(CircularRegion region, SymmetryType symmetry) {
+    Translation2d newCenter;
+    if (symmetry == SymmetryType.DIAGONAL) {
+      newCenter = apply(region.getCenter(), SymmetryType.DIAGONAL);
+    } else {
+      newCenter = apply(region.getCenter(), SymmetryType.DIRECT);
+    }
+    return new CircularRegion(newCenter, region.getRadius(), region.getName());
+  }
+
+  public static TightRope apply(TightRope tightRope, SymmetryType symmetry) {
+    if (symmetry == SymmetryType.DIAGONAL) {
+      return new TightRope(
+          AllianceFlipUtil.apply(tightRope.poseB, symmetry),
+          AllianceFlipUtil.apply(tightRope.poseA, symmetry),
+          tightRope.getName());
+    } else {
+      return new TightRope(
+          AllianceFlipUtil.apply(tightRope.poseA, symmetry),
+          AllianceFlipUtil.apply(tightRope.poseB, symmetry),
+          tightRope.getName());
+    }
   }
 }

@@ -45,8 +45,8 @@ public class AutoAlgaeReefPickup extends Command {
   public void end(boolean interrupted) {
     GameStateManager.getInstance().setRobotState(RobotState.END);
     Claw.getInstance().setClawMode(ClawMode.IDLE);
-    for (int i = 0; i < FieldRegions.REEF_REGIONS.length; i++) {
-      if (FieldRegions.REEF_REGIONS[i].contains(PoseEstimator.getInstance().getRobotPose())) {
+    for (int i = 0; i < FieldRegions.REEF_REGIONS.size(); i++) {
+      if (FieldRegions.REEF_REGIONS.get(i).contains(PoseEstimator.getInstance().getRobotPose())) {
         if ((i % 2) == 0) {
           Elevator.getInstance().setTarget(TargetType.ALGAE_HIGH);
           break;

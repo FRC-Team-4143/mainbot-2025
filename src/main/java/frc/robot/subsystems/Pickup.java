@@ -9,6 +9,9 @@ import com.ctre.phoenix6.controls.PositionVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
+import com.playingwithfusion.TimeOfFlight.RangingMode;
+import edu.wpi.first.math.filter.Debouncer;
+import edu.wpi.first.math.filter.Debouncer.DebounceType;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Rotation3d;
@@ -17,6 +20,7 @@ import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.networktables.StructPublisher;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Commands;
+import frc.mw_lib.drivers.SimTof;
 import frc.mw_lib.subsystem.Subsystem;
 import frc.mw_lib.util.Util;
 import frc.robot.Constants.PickupConstants;
@@ -28,8 +32,10 @@ public class Pickup extends Subsystem {
 
   private TalonFX roller_motor_;
   private TalonFX pivot_motor_;
+  private SimTof tof_;
 
   private PositionVoltage pivot_request_;
+  private Debouncer has_coral_debouncer_;
 
   private StructPublisher<Pose3d> pickup_pub_;
 
@@ -65,7 +71,7 @@ public class Pickup extends Subsystem {
     config.MotorOutput.NeutralMode = NeutralModeValue.Brake;
     config.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
     config.Slot0 = PickupConstants.PICKUP_GAINS;
-    config.CurrentLimits.StatorCurrentLimit = PickupConstants.StatorCurrentLimit;
+    config.CurrentLimits.StatorCurrentLimit = PickupConstants.STATOR_CURRENT_LIMIT;
     config.Feedback.SensorToMechanismRatio = PickupConstants.SENSOR_TO_MECHANISM_RATIO;
     pivot_motor_.getConfigurator().apply(config);
 
@@ -73,7 +79,11 @@ public class Pickup extends Subsystem {
     config.MotorOutput.NeutralMode = NeutralModeValue.Brake;
     roller_motor_.getConfigurator().apply(config);
 
+    tof_ = new SimTof(PickupConstants.TIME_OF_FLIGHT_ID);
+    tof_.setRangingMode(RangingMode.Short, 30);
+
     pivot_request_ = new PositionVoltage(0);
+    has_coral_debouncer_ = new Debouncer(0.25, DebounceType.kFalling);
 
     SmartDashboard.putData(
         "Subsystems/Pickup/Zero Ground",
@@ -108,6 +118,7 @@ public class Pickup extends Subsystem {
         Rotation2d.fromRotations(pivot_motor_.getPosition().getValueAsDouble())
             .minus(PickupConstants.PIVOT_OFFSET);
     io_.current_roller_outout_ = roller_motor_.getDutyCycle().getValueAsDouble();
+    io_.tof_distance_ = tof_.getRange();
   }
 
   /**
@@ -117,6 +128,7 @@ public class Pickup extends Subsystem {
    */
   @Override
   public void updateLogic(double timestamp) {
+    io_.has_coral_ = io_.tof_distance_ < PickupConstants.TOF_CORAL_DISTANCE;
     switch (io_.current_mode_) {
       case INTAKE:
         io_.target_roller_output_ = PickupConstants.INTAKE_IN_SPEED;
@@ -164,6 +176,8 @@ public class Pickup extends Subsystem {
    */
   @Override
   public void outputTelemetry(double timestamp) {
+    SmartDashboard.putNumber("Subsystems/Pickup/TOF Distance (cm)", io_.tof_distance_);
+    SmartDashboard.putBoolean("Subsystems/Pickup/Coral Present", io_.has_coral_);
     SmartDashboard.putString("Subsystems/Pickup/Mode", io_.current_mode_.toString());
     SmartDashboard.putNumber(
         "Subsystems/Pickup/Current Angle (Degrees)", io_.current_pivot_angle_.getDegrees());
@@ -207,12 +221,18 @@ public class Pickup extends Subsystem {
     pivot_motor_.setPosition(value.getRotations());
   }
 
+  public boolean isCoralPresent() {
+    return io_.has_coral_;
+  }
+
   public class PickupPeriodicIo implements Logged {
     @Log.File public PickupMode current_mode_ = PickupMode.DEPLOYED;
     @Log.File public double target_roller_output_ = 0;
     @Log.File public double current_roller_outout_ = 0;
     @Log.File public Rotation2d current_pivot_angle_ = new Rotation2d();
     @Log.File public Rotation2d target_pivot_angle_ = new Rotation2d();
+    @Log.File public double tof_distance_ = 0;
+    @Log.File public boolean has_coral_ = false;
   }
 
   @Override

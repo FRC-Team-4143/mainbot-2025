@@ -9,6 +9,7 @@ package frc.lib;
 
 import edu.wpi.first.math.geometry.*;
 import edu.wpi.first.math.util.Units;
+import frc.lib.AllianceFlipUtil.SymmetryType;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -21,6 +22,7 @@ import java.util.Map;
 public class FieldConstants {
   public static final double FIELD_LENGTH = Units.inchesToMeters(690.876);
   public static final double FIELD_WIDTH = Units.inchesToMeters(317);
+  public static final SymmetryType SYMMETRY_TYPE = SymmetryType.DIAGONAL;
   public static final Translation2d FIELD_CENTER =
       new Translation2d(FIELD_LENGTH / 2, FIELD_WIDTH / 2);
   public static final double STARTING_LINE_X =

@@ -26,14 +26,21 @@ package frc.robot;
 
 import static frc.robot.Constants.Vision.*;
 
+import edu.wpi.first.hal.SimDevice;
 import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.VecBuilder;
+import edu.wpi.first.math.geometry.Pose3d;
+import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.wpilibj.DataLogManager;
+import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.mw_lib.util.CamConstants;
+import frc.robot.Constants.DrivetrainConstants;
 import frc.robot.subsystems.PoseEstimator;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import org.photonvision.EstimatedRobotPose;
@@ -54,18 +61,29 @@ public class PhotonVision {
     return visionInstance;
   }
 
+  private int num_cameras_;
   private final PhotonCamera[] cameras;
   private final PhotonPoseEstimator[] photonEstimators;
   private Matrix<N3, N1> curStdDevs;
   private int numTags;
 
+  private SimDevice vision_sim_;
+  private double sim_pose_t_;
+  private double sim_pose_x_;
+  private double sim_pose_y_;
+  private XboxController sim_pose_controller_;
+  private static final double POSE_TRANSLATION_SCALAR =
+      (DrivetrainConstants.MAX_DRIVE_SPEED / 2) * 0.01;
+  private static final double POSE_ROTATION_SCALAR =
+      (DrivetrainConstants.MAX_DRIVE_ANGULAR_RATE / 2) * 0.01;
+
   public PhotonVision() {
-    int cameras_size = Constants.Vision.CAMERAS.size();
+    num_cameras_ = Constants.Vision.CAMERAS.size();
 
-    cameras = new PhotonCamera[cameras_size];
-    photonEstimators = new PhotonPoseEstimator[cameras_size];
+    cameras = new PhotonCamera[num_cameras_];
+    photonEstimators = new PhotonPoseEstimator[num_cameras_];
 
-    for (int i = 0; i < cameras_size; i++) {
+    for (int i = 0; i < num_cameras_; i++) {
       CamConstants config = Constants.Vision.CAMERAS.get(i);
       cameras[i] = new PhotonCamera(config.camera_name);
       DataLogManager.log("Registering camera " + config.camera_name);
@@ -73,6 +91,13 @@ public class PhotonVision {
           new PhotonPoseEstimator(
               TAG_LAYOUT, PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR, config.camera_transform);
       photonEstimators[i].setMultiTagFallbackStrategy(PoseStrategy.LOWEST_AMBIGUITY);
+    }
+
+    vision_sim_ = SimDevice.create("Pose Sim");
+    if (vision_sim_ != null) {
+      DataLogManager.log("Using simulated camera!");
+      num_cameras_ += 1;
+      sim_pose_controller_ = new XboxController(2);
     }
   }
 
@@ -87,6 +112,23 @@ public class PhotonVision {
    *     used for estimation.
    */
   public Optional<EstimatedRobotPose> getEstimatedGlobalPose(int index) {
+    if (index == num_cameras_ - 1 && vision_sim_ != null) {
+      sim_pose_x_ += sim_pose_controller_.getRawAxis(0) * POSE_TRANSLATION_SCALAR;
+      sim_pose_y_ += sim_pose_controller_.getRawAxis(1) * POSE_TRANSLATION_SCALAR;
+      sim_pose_t_ += sim_pose_controller_.getRawAxis(2) * POSE_ROTATION_SCALAR;
+      Pose3d sim_pose = new Pose3d(sim_pose_x_, sim_pose_y_, 0, new Rotation3d(0, 0, sim_pose_t_));
+      List<PhotonTrackedTarget> targets = new ArrayList<>();
+      EstimatedRobotPose p =
+          new EstimatedRobotPose(
+              sim_pose,
+              Timer.getFPGATimestamp(),
+              targets,
+              PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR);
+
+      updateEstimationStdDevs(Optional.of(p), targets, index);
+      return Optional.of(p);
+    }
+
     Optional<EstimatedRobotPose> visionEst = Optional.empty();
     for (PhotonPipelineResult change : cameras[index].getAllUnreadResults()) {
       SmartDashboard.putBoolean("Vision/MultiTag" + index, change.getMultiTagResult().isPresent());
@@ -118,7 +160,7 @@ public class PhotonVision {
   }
 
   public int getNumCameras() {
-    return cameras.length;
+    return num_cameras_;
   }
 
   /**
@@ -130,6 +172,10 @@ public class PhotonVision {
    */
   private void updateEstimationStdDevs(
       Optional<EstimatedRobotPose> estimatedPose, List<PhotonTrackedTarget> targets, int index) {
+    if (index == num_cameras_ - 1 && vision_sim_ != null) {
+      curStdDevs = MULTI_TAG_STD_DEVS;
+    }
+
     if (estimatedPose.isEmpty()) {
       // No pose input. Default to single-tag std devs
       curStdDevs = SINGLE_TAG_STD_DEVS;

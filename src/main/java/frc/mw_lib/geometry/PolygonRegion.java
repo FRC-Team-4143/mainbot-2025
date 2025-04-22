@@ -4,7 +4,6 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.networktables.StructArrayPublisher;
-import frc.lib.AllianceFlipUtil;
 import java.awt.geom.*;
 
 /**
@@ -31,13 +30,6 @@ public class PolygonRegion implements Region {
         NetworkTableInstance.getDefault()
             .getStructArrayTopic("Regions/" + name_, Translation2d.struct)
             .publish();
-    constructRegion();
-  }
-
-  public void allianceFlip() {
-    for (int i = 0; i < points_.length; i++) {
-      points_[i] = AllianceFlipUtil.apply(points_[i]);
-    }
     constructRegion();
   }
 
@@ -72,5 +64,10 @@ public class PolygonRegion implements Region {
 
   public String getName() {
     return name_;
+  }
+
+  public Translation2d[] getPoints() {
+    Translation2d[] saftey = points_;
+    return saftey;
   }
 }

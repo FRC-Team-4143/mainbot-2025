@@ -8,15 +8,16 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj2.command.Command.InterruptionBehavior;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.Commands;
-import edu.wpi.first.wpilibj2.command.button.RobotModeTriggers;
 import frc.lib.FieldRegions;
 import frc.mw_lib.auto.Auto;
 import frc.mw_lib.auto.AutoManager;
 import frc.mw_lib.logging.Elastic;
 import frc.mw_lib.proxy_server.ProxyServer;
 import frc.robot.autos.*;
+import frc.robot.commands.L4Hang;
 import frc.robot.subsystems.Elevator;
 import frc.robot.subsystems.GameStateManager;
 import frc.robot.subsystems.GameStateManager.RobotState;
@@ -35,23 +36,12 @@ public class Robot extends TimedRobot {
     FieldRegions.makeRegions();
     ProxyServer.configureServer();
 
-    AutoManager.getInstance()
-        .registerAutos(
-            new Bump_E4_RightStation_C4_RightStation_D4(),
-            new Bump_J4_LeftStation_L4_LeftStation_K4(),
-            new E4_RightStation_C4_RightStation_D4(),
-            new E4_RightStation_C4(),
-            new H4_Algae(),
-            new J4_LeftStation_L4_LeftStation_K4(),
-            new J4_LeftStation_L4());
+    AutoManager.getInstance().registerAutos(new Right_3_Piece());
+    AutoManager.getInstance().registerAutos(new Left_3_Piece());
 
-    RobotModeTriggers.disabled()
-        .onFalse(
-            Commands.runOnce(
-                () -> Elevator.getInstance().buildPlan(Elevator.getInstance().getTarget())));
-
-    Elevator.getInstance().readPeriodicInputs(0);
-    Elevator.getInstance().buildPlan(Elevator.getInstance().getTarget());
+    SmartDashboard.putData(
+        "Snapshot", Commands.runOnce(() -> ProxyServer.snapshot("Test Snapshot")));
+    SmartDashboard.putData("Sync Match Data", Commands.runOnce(() -> ProxyServer.syncMatchData()));
   }
 
   @Override
@@ -114,8 +104,13 @@ public class Robot extends TimedRobot {
 
   @Override
   public void teleopInit() {
+    ProxyServer.syncMatchData();
     SwerveDrivetrain.getInstance().restoreDefaultDriveMode();
     CommandScheduler.getInstance().cancelAll();
+    if (Elevator.getInstance().isElevatorAndArmHung()) {
+      CommandScheduler.getInstance()
+          .schedule(new L4Hang().withInterruptBehavior(InterruptionBehavior.kCancelIncoming));
+    }
     Elastic.selectTab("Teleop");
   }
 

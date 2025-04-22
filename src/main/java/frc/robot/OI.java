@@ -5,7 +5,9 @@
 package frc.robot;
 
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.wpilibj.GenericHID.RumbleType;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
@@ -100,11 +102,11 @@ public abstract class OI {
       driver_controller_.back().onTrue(Commands.runOnce(() -> Climber.getInstance().backStage()));
     }
 
-    driver_controller_
-        .a()
-        .onTrue(
-            Commands.runOnce(() -> toggleIntakePreference())
-                .unless(Climber.getInstance()::lockOutControl));
+    // driver_controller_
+    //     .a()
+    //     .onTrue(
+    //         Commands.runOnce(() -> toggleIntakePreference())
+    //             .unless(Climber.getInstance()::lockOutControl));
 
     driver_controller_.b().whileTrue(new CoralTractorBeam());
 
@@ -188,13 +190,13 @@ public abstract class OI {
     operator_controller_
         .povLeft()
         .onTrue(
-            Commands.runOnce(() -> Elevator.getInstance().setOffset(OffsetType.IN))
+            Commands.runOnce(() -> Elevator.getInstance().setOffset(OffsetType.CW))
                 .ignoringDisable(true));
     // Manual Adjust Arm Setpoint Clockwise
     operator_controller_
         .povRight()
         .onTrue(
-            Commands.runOnce(() -> Elevator.getInstance().setOffset(OffsetType.OUT))
+            Commands.runOnce(() -> Elevator.getInstance().setOffset(OffsetType.CCW))
                 .ignoringDisable(true));
 
     // Manual Override for loading
@@ -262,6 +264,13 @@ public abstract class OI {
   public static Optional<Rotation2d> getDriverJoystickPOV() {
     int pov = driver_controller_.getHID().getPOV();
     return (pov != -1) ? Optional.of(Rotation2d.fromDegrees(pov)) : Optional.empty();
+  }
+
+  public static Command setRumble(double duration) {
+    return Commands.startEnd(
+            () -> driver_controller_.setRumble(RumbleType.kBothRumble, 1),
+            () -> driver_controller_.setRumble(RumbleType.kBothRumble, 0))
+        .withTimeout(duration);
   }
 
   /*

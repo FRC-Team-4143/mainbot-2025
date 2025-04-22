@@ -16,8 +16,12 @@ import frc.lib.ScoringPoses;
 import frc.mw_lib.subsystem.Subsystem;
 import frc.mw_lib.util.Util;
 import frc.robot.Constants;
+import frc.robot.Constants.GameStateManagerConstants;
 import frc.robot.commands.CoralEject;
 import frc.robot.subsystems.Claw.ClawMode;
+import frc.robot.subsystems.GameStateManager.Column;
+import frc.robot.subsystems.GameStateManager.GameStateManagerPeriodicIo;
+import frc.robot.subsystems.GameStateManager.ReefScoringTarget;
 import java.util.Optional;
 import monologue.Annotations.Log;
 import monologue.Logged;
@@ -53,9 +57,7 @@ public class GameStateManager extends Subsystem {
   public enum ReefScoringTarget {
     L1,
     L2,
-    L2_FAR,
     L3,
-    L3_FAR,
     L4,
     ALGAE,
     TURTLE,
@@ -109,18 +111,23 @@ public class GameStateManager extends Subsystem {
    */
   @Override
   public void updateLogic(double timestamp) {
-    io_.reef_target_ = reefPose(io_.target_column_);
     switch (io_.robot_state_) {
       case TARGET_ACQUISITION:
+        io_.reef_target_ = reefPose(io_.target_column_);
+        if (io_.scoring_target_ == ReefScoringTarget.L1) {
+          SwerveDrivetrain.getInstance().setTargetRotation(io_.reef_target_.get().getRotation());
+          Elevator.getInstance().setTarget(elevatorTargetSwitch());
+          io_.robot_state_ = RobotState.SCORING;
+          break;
+        }
         if (io_.reef_target_.isPresent()) {
           SwerveDrivetrain.getInstance().setTargetPose(io_.reef_target_.get());
-          if (FieldRegions.REEF_ENTER.contains(PoseEstimator.getInstance().getRobotPose())) {
+          if (inEnterRegion()) {
             io_.robot_state_ = RobotState.APPROACHING_TARGET;
           }
         }
         break;
       case APPROACHING_TARGET:
-        updateCoralBlockLatch();
         SwerveDrivetrain.getInstance().setTargetPose(io_.reef_target_.get());
         if (Util.epislonEquals(
             PoseEstimator.getInstance().getRobotPose().getRotation(),
@@ -134,19 +141,23 @@ public class GameStateManager extends Subsystem {
           // Once at final target, hand off control
           SwerveDrivetrain.getInstance().restoreDefaultDriveMode();
           if (Claw.getInstance().isCoralMode()) {
-            double waitToScoreTime = 0.5;
+            double waitToScoreTime = 0.0;
             if (io_.scoring_target_ == ReefScoringTarget.L2
                 || io_.scoring_target_ == ReefScoringTarget.L3) {
-              waitToScoreTime = 1.0;
+              Claw.getInstance().enableBlastMode();
+              waitToScoreTime = GameStateManagerConstants.L2_L3_WAIT_TIME;
             }
             CommandScheduler.getInstance()
-                .schedule(new WaitCommand(0.5).beforeStarting(new CoralEject().withTimeout(0.5)));
+                .schedule(
+                    new CoralEject()
+                        .withTimeout(0.25)
+                        .beforeStarting(new WaitCommand(waitToScoreTime)));
           }
           io_.robot_state_ = RobotState.SCORING;
         }
         break;
       case SCORING:
-        if (!FieldRegions.REEF_EXIT.contains(PoseEstimator.getInstance().getRobotPose())) {
+        if (!inExitRegion()) {
           // wait until you leave the exit Circle
           io_.robot_state_ = RobotState.END;
         }
@@ -156,7 +167,6 @@ public class GameStateManager extends Subsystem {
         SwerveDrivetrain.getInstance().restoreDefaultDriveMode();
         Claw.getInstance().setClawMode(ClawMode.IDLE);
         Claw.getInstance().disableBlastMode();
-        io_.coral_block_latch = false;
         io_.robot_state_ = RobotState.TELEOP_CONTROL;
         break;
       case TELEOP_CONTROL:
@@ -194,21 +204,22 @@ public class GameStateManager extends Subsystem {
     SmartDashboard.putString(
         "Subsystems/GameStateManager/Saved Target Level", io_.saved_scoring_target_.toString());
     SmartDashboard.putBoolean("Subsystems/GameStateManager/Ready to Score", isReadyToScore());
-    SmartDashboard.putBoolean(
-        "Subsystems/GameStateManager/coral_block_latch", io_.coral_block_latch);
 
     if (io_.reef_target_.isPresent()) {
       reef_target_pub_.set(io_.reef_target_.get());
       Elevator.getInstance()
-          .updateMechanism(
-              target_stages_pub_,
-              target_arm_pub_,
-              Elevator.getInstance()
-                  .getElevatorKinematics()
-                  .translationToJointSpace(
-                      elevatorTargetSwitch().getTarget().getTranslation(),
-                      elevatorTargetSwitch().getJointSpaceSolution()));
+          .updateMechanism(target_stages_pub_, target_arm_pub_, Elevator.getInstance().getTarget());
     }
+  }
+
+  public boolean inExitRegion() {
+    return FieldRegions.REEF_EXIT_REGION.contains(PoseEstimator.getInstance().getRobotPose())
+        || FieldRegions.OPP_REEF_EXIT_REGION.contains(PoseEstimator.getInstance().getRobotPose());
+  }
+
+  public boolean inEnterRegion() {
+    return FieldRegions.REEF_ENTER_REGION.contains(PoseEstimator.getInstance().getRobotPose())
+        || FieldRegions.OPP_REEF_ENTER_REGION.contains(PoseEstimator.getInstance().getRobotPose());
   }
 
   public boolean isReadyToScore() {
@@ -263,51 +274,47 @@ public class GameStateManager extends Subsystem {
    * @return target pose
    */
   public Optional<Pose2d> reefPose(Column column) {
-    Pose2d newPose = Pose2d.kZero;
-    for (int i = 0; i < FieldRegions.REEF_REGIONS.length; i++) {
-      if (FieldRegions.REEF_REGIONS[i].contains(PoseEstimator.getInstance().getRobotPose())) {
+    for (int i = 0; i < FieldRegions.REEF_REGIONS.size(); i++) {
+      if (FieldRegions.REEF_REGIONS.get(i).contains(PoseEstimator.getInstance().getRobotPose())) {
         if (io_.scoring_target_ == ReefScoringTarget.L1) {
-          newPose =
-              FieldRegions.REGION_POSE_TABLE
-                  .get(FieldRegions.REEF_REGIONS[i].getName())
-                  .transformBy(ScoringPoses.ALGAE_ALIGN_OFFSET);
+          return Optional.of(
+              FieldRegions.REGION_POSE_TABLE.get(FieldRegions.REEF_REGIONS.get(i).getName()));
         }
         if (column == Column.CENTER) {
-          newPose = FieldRegions.REGION_POSE_TABLE.get(FieldRegions.REEF_REGIONS[i].getName());
+          return Optional.of(
+              FieldRegions.REGION_POSE_TABLE.get(FieldRegions.REEF_REGIONS.get(i).getName()));
         }
         if (column == Column.LEFT) {
-          newPose =
+          Pose2d newPose =
               FieldRegions.REGION_POSE_TABLE
-                  .get(FieldRegions.REEF_REGIONS[i].getName())
+                  .get(FieldRegions.REEF_REGIONS.get(i).getName())
                   .transformBy(ScoringPoses.LEFT_COLUMN_OFFSET);
+          if (io_.scoring_target_ == ReefScoringTarget.L2
+              || io_.scoring_target_ == ReefScoringTarget.L3) {
+            return Optional.of(newPose.transformBy(ScoringPoses.L2_L3_OFFSET));
+          }
+          return Optional.of(newPose);
         }
         if (column == Column.RIGHT) {
-          newPose =
+          Pose2d newPose =
               FieldRegions.REGION_POSE_TABLE
-                  .get(FieldRegions.REEF_REGIONS[i].getName())
+                  .get(FieldRegions.REEF_REGIONS.get(i).getName())
                   .transformBy(ScoringPoses.RIGHT_COLUMN_OFFSET);
+          if (io_.scoring_target_ == ReefScoringTarget.L2
+              || io_.scoring_target_ == ReefScoringTarget.L3) {
+            return Optional.of(newPose.transformBy(ScoringPoses.L2_L3_OFFSET));
+          }
+          return Optional.of(newPose);
         }
         if (column == Column.ALGAE) {
-          io_.algae_level_high = ((i % 2) == 0); // this line prevents converting this method to use
-          newPose =
+          io_.algae_level_high = ((i % 2) == 0);
+          return Optional.of(
               FieldRegions.REGION_POSE_TABLE
-                  .get(FieldRegions.REEF_REGIONS[i].getName())
-                  .transformBy(ScoringPoses.ALGAE_ALIGN_OFFSET);
+                  .get(FieldRegions.REEF_REGIONS.get(i).getName())
+                  .transformBy(ScoringPoses.ALGAE_ALIGN_OFFSET));
         }
         break;
       }
-    }
-
-    if (io_.scoring_target_ == ReefScoringTarget.L2 && io_.coral_block_latch) {
-      newPose = io_.reef_target_.get().transformBy(ScoringPoses.CORAL_OFFSET);
-      io_.scoring_target_ = ReefScoringTarget.L2_FAR;
-    } else if (io_.scoring_target_ == ReefScoringTarget.L3 && io_.coral_block_latch) {
-      newPose = io_.reef_target_.get().transformBy(ScoringPoses.CORAL_OFFSET);
-      io_.scoring_target_ = ReefScoringTarget.L3_FAR;
-    }
-
-    if (newPose != Pose2d.kZero) {
-      return Optional.of(newPose);
     }
     return Optional.empty();
   }
@@ -329,12 +336,8 @@ public class GameStateManager extends Subsystem {
         return TargetType.L1;
       case L2:
         return TargetType.L2;
-      case L2_FAR:
-        return TargetType.L2_FAR;
       case L3:
         return TargetType.L3;
-      case L3_FAR:
-        return TargetType.L3_FAR;
       case L4:
         return TargetType.L4;
       case ALGAE:
@@ -346,16 +349,7 @@ public class GameStateManager extends Subsystem {
       case TELEOP_CONTROL:
       case TURTLE:
       default:
-        return (Claw.getInstance().isCoralMode()) ? TargetType.CORAL_STOW : TargetType.ALGAE_STOW;
-    }
-  }
-
-  public void updateCoralBlockLatch() {
-    if ((SwerveDrivetrain.getInstance().getFailingToReachTarget()
-            && SwerveDrivetrain.getInstance().getTractorBeamError()
-                <= Constants.GameStateManagerConstants.CORAL_BLOCKED_THRESHOLD)
-        || io_.coral_block_latch) {
-      io_.coral_block_latch = true;
+        return (Claw.getInstance().isCoralMode()) ? TargetType.CORAL_INTAKE : TargetType.ALGAE_STOW;
     }
   }
 
@@ -375,7 +369,6 @@ public class GameStateManager extends Subsystem {
     @Log.File public Optional<Pose2d> reef_target_ = Optional.empty();
     @Log.File public Column target_column_ = Column.LEFT;
     @Log.File public Column saved_target_column_ = Column.LEFT;
-    @Log.File public boolean coral_block_latch = false;
 
     @Log.File
     public boolean algae_level_high = false; // false is low level and true is the higher level

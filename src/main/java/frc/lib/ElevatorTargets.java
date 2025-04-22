@@ -1,160 +1,164 @@
 package frc.lib;
 
-import edu.wpi.first.math.geometry.Translation3d;
-import edu.wpi.first.math.util.Units;
-import frc.lib.ElevatorKinematics.SolutionType;
-import frc.mw_lib.geometry.spline.Waypoint;
-import frc.robot.Constants;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import edu.wpi.first.math.geometry.Rotation2d;
+import java.util.Optional;
+import monologue.Annotations.Log;
 
 public class ElevatorTargets {
-  private static final double IN_PERIMETER_X = Units.inchesToMeters(9.246 - 2);
-  private static final double BRANCH_HEIGHT_BUMP = Units.inchesToMeters(5.921);
 
   public enum TargetType {
-    SAFETY(new TargetData(new Waypoint(), "SAFETY"), Arrays.asList(), Arrays.asList()),
-    L4(
-        new TargetData(
-            new Waypoint(
-                Units.inchesToMeters(16.031),
-                0,
-                FieldConstants.ReefHeight.L4.HEIGHT + Units.inchesToMeters(5.297)),
-            "L4"),
-        Arrays.asList(new Waypoint(IN_PERIMETER_X, 0, Units.inchesToMeters(60))),
-        Arrays.asList(new Waypoint(IN_PERIMETER_X, 0, Units.inchesToMeters(60)))),
-    L3(
-        new TargetData(
-            new Waypoint(
-                Units.inchesToMeters(16.593),
-                0,
-                FieldConstants.ReefHeight.L3.HEIGHT + BRANCH_HEIGHT_BUMP),
-            "L3"),
-        Arrays.asList(new Waypoint(IN_PERIMETER_X, 0, FieldConstants.ReefHeight.L3.HEIGHT)),
-        Arrays.asList(new Waypoint(IN_PERIMETER_X, 0, FieldConstants.ReefHeight.L3.HEIGHT))),
-    L3_FAR(
-        new TargetData(L3.getTarget().getTranslation(), "L3_FAR"),
-        Arrays.asList(),
-        Arrays.asList()),
-    L2(
-        new TargetData(
-            new Waypoint(
-                Units.inchesToMeters(16.593),
-                0,
-                FieldConstants.ReefHeight.L2.HEIGHT + BRANCH_HEIGHT_BUMP),
-            "L2"),
-        Arrays.asList(new Waypoint(IN_PERIMETER_X, 0, FieldConstants.ReefHeight.L2.HEIGHT)),
-        Arrays.asList(new Waypoint(IN_PERIMETER_X, 0, FieldConstants.ReefHeight.L2.HEIGHT))),
-    L2_FAR(
-        new TargetData(L2.getTarget().getTranslation(), "L2_FAR"),
-        Arrays.asList(),
-        Arrays.asList()),
-    L1(
-        new TargetData(
-            new Waypoint(
-                Constants.DrivetrainConstants.CENTER_OFFSET_X - 0.1,
-                0,
-                FieldConstants.ReefHeight.L1.HEIGHT),
-            "L1"),
-        Arrays.asList(),
-        Arrays.asList()),
-    STATION(
-        new TargetData(
-            new Waypoint(Units.inchesToMeters(-16.287), 0, Units.inchesToMeters(41.147)),
-            "STATION"),
-        Arrays.asList(new Waypoint(0, 0, Units.inchesToMeters(41.147))),
-        Arrays.asList(new Waypoint(0, 0, Units.inchesToMeters(41.147)))),
-    CLIMB(
-        new TargetData(
-            new Waypoint(Units.inchesToMeters(-8.848), 0, Units.inchesToMeters(47.579)), "CLIMB"),
-        Arrays.asList(new Waypoint(Units.inchesToMeters(1.956), 0, Units.inchesToMeters(44.809))),
-        Arrays.asList(new Waypoint(Units.inchesToMeters(1.956), 0, Units.inchesToMeters(44.809))),
-        SolutionType.ABOVE_PIVOT),
-    CORAL_INTAKE(
-        new TargetData(
-            new Waypoint(-0.206312455806457, 0, 0.36658133576115 + Units.inchesToMeters(2)),
-            "CORAL_INTAKE"),
-        Arrays.asList(),
-        Arrays.asList()),
-    CORAL_STOW(
-        new TargetData(CORAL_INTAKE.getTarget().getTranslation(), "CORAL_STOW"),
-        Arrays.asList(),
-        Arrays.asList()),
-    ALGAE_LOW(
-        new TargetData(
-            new Waypoint(Units.inchesToMeters(16.593), 0, FieldConstants.ReefHeight.L2.HEIGHT),
-            "ALGAE_LOW"),
-        Arrays.asList(),
-        Arrays.asList()),
-    ALGAE_HIGH(
-        new TargetData(
-            new Waypoint(Units.inchesToMeters(16.593), 0, FieldConstants.ReefHeight.L3.HEIGHT),
-            "ALGAE_HIGH"),
-        Arrays.asList(),
-        Arrays.asList()),
-    ALGAE_PROCESSOR(
-        new TargetData(new Waypoint(0.33, 0, 0.5), "ALGAE_PROCESSOR"),
-        Arrays.asList(),
-        Arrays.asList()),
-    BARGE(
-        new TargetData(
-            new Waypoint(Units.inchesToMeters(15.637), 0, Units.inchesToMeters(86.665)), "BARGE"),
-        Arrays.asList(),
-        Arrays.asList(),
-        SolutionType.ABOVE_PIVOT),
-    ALGAE_STOW(
-        new TargetData(
-            new Waypoint(Units.inchesToMeters(16.593), 0, FieldConstants.ReefHeight.L2.HEIGHT),
-            "ALGAE_STOW"),
-        Arrays.asList(),
-        Arrays.asList());
+    SAFETY(0.90041, Rotation2d.fromDegrees(-45), "SAFETY"),
+    CLIMB(0.90041, Rotation2d.fromDegrees(121.201), "CLIMB"),
+    CORAL_INTAKE(0.75, Rotation2d.fromDegrees(-117), "CORAL_INTAKE"),
+    L4(2.109, Rotation2d.fromDegrees(-19.599), Rotation2d.fromDegrees(-65), "L4", true),
+    L4_SAFETY(2.109, Rotation2d.fromDegrees(-19.599), "L4_SAFETY"),
+    L3(1.423500, Rotation2d.fromDegrees(-4.515), "L3"),
+    L2(1.0235, Rotation2d.fromDegrees(-4.515), "L2"),
+    L1(0.824, Rotation2d.fromDegrees(-23.703), Rotation2d.fromDegrees(0), "L1"),
+    L1_FLICK(0.919, Rotation2d.fromDegrees(0), "L1_FLICK"),
+    ALGAE_STOW(0.90769, Rotation2d.fromDegrees(-12.9199), "ALGAE_STOW"),
+    ALGAE_LOW(0.90848, Rotation2d.fromDegrees(-12.9199), "ALGAE_LOW"),
+    ALGAE_HIGH(1.35857, Rotation2d.fromDegrees(-12.9199), "ALGAE_HIGH"),
+    ALGAE_PROCESSOR(0.7829, Rotation2d.fromDegrees(-40.1660), "ALGAE_PROCESSOR"),
+    BARGE(2.08, Rotation2d.fromDegrees(23.3789), "BARGE"),
+    STATION(0.90041, Rotation2d.fromDegrees(135), "STATION");
 
-    TargetType(TargetData target, List<Waypoint> enter, List<Waypoint> exit) {
-      this.target = target;
-      this.enter_trj = new ArrayList<Waypoint>(enter);
-      this.exit_trj = new ArrayList<Waypoint>(exit);
-      this.soultion_type = SolutionType.BELOW_PIVOT;
+    @Log.File public double elevator_height_ = 0;
+    @Log.File private double elevator_offset_ = 0;
+    @Log.File public Optional<Rotation2d> staging_arm_angle_ = Optional.empty();
+    @Log.File public Rotation2d arm_angle_ = Rotation2d.kZero;
+    @Log.File private Rotation2d arm_offset_ = Rotation2d.kZero;
+    @Log.File private String name_ = "";
+    @Log.File private boolean collision_ = false;
+
+    TargetType(double elevator_height, Rotation2d arm_angle, String name) {
+      elevator_height_ = elevator_height;
+      arm_angle_ = arm_angle;
+      name_ = name;
     }
 
-    TargetType(TargetData target, List<Waypoint> enter, List<Waypoint> exit, SolutionType es) {
-      this.target = target;
-      this.enter_trj = new ArrayList<Waypoint>(enter);
-      this.exit_trj = new ArrayList<Waypoint>(exit);
-      this.soultion_type = es;
+    TargetType(double elevator_height, Rotation2d arm_angle, String name, boolean c) {
+      elevator_height_ = elevator_height;
+      arm_angle_ = arm_angle;
+      name_ = name;
+      collision_ = c;
     }
 
-    private TargetData target;
-    private SolutionType soultion_type;
-    private ArrayList<Waypoint> enter_trj;
-    private ArrayList<Waypoint> exit_trj;
-
-    public SolutionType getJointSpaceSolution() {
-      return soultion_type;
+    TargetType(
+        double elevator_height, Rotation2d arm_angle, Rotation2d staging_arm_angle, String name) {
+      elevator_height_ = elevator_height;
+      arm_angle_ = arm_angle;
+      staging_arm_angle_ = Optional.of(staging_arm_angle);
+      name_ = name;
     }
 
-    public ArrayList<Waypoint> getEnterTrj() {
-      return enter_trj;
+    TargetType(
+        double elevator_height,
+        Rotation2d arm_angle,
+        Rotation2d staging_arm_angle,
+        String name,
+        boolean c) {
+      elevator_height_ = elevator_height;
+      arm_angle_ = arm_angle;
+      staging_arm_angle_ = Optional.of(staging_arm_angle);
+      name_ = name;
+      collision_ = c;
     }
 
-    public ArrayList<Waypoint> getExitTrj() {
-      return exit_trj;
+    public String toString() {
+      return this.name_;
     }
 
-    public TargetData getTarget() {
-      return target;
+    public boolean getCollision() {
+      return collision_;
     }
 
-    public void offSet(Translation3d t) {
-      target.offSet(t);
+    // Height Methods
+    /**
+     * Returns the current height including the active offset
+     *
+     * @return
+     */
+    public double getHeight() {
+      return elevator_height_ + elevator_offset_;
     }
 
+    /**
+     * Adjusts the height offset by the supplied increment
+     *
+     * @param offset
+     */
+    public void offsetHeight(double offset) {
+      elevator_offset_ += offset;
+    }
+
+    /**
+     * Returns the current stored angle offset
+     *
+     * @return
+     */
+    public double getHeightOffset() {
+      return elevator_offset_;
+    }
+
+    /** Reset the height offset to 0 */
+    public void resetHeightOffset() {
+      elevator_offset_ = 0;
+    }
+
+    // Angle Methods
+    /**
+     * Returns the current angle including the active offset
+     *
+     * @return target angle
+     */
+    public Rotation2d getAngle() {
+      return arm_angle_.rotateBy(arm_offset_);
+    }
+
+    /**
+     * Returns an optional angle for staging while traveling
+     *
+     * @return
+     */
+    public Optional<Rotation2d> getStagingAngle() {
+      return staging_arm_angle_;
+    }
+
+    /**
+     * Adjusts the angle offset by the supplied increment
+     *
+     * @param offset
+     */
+    public void offsetAngle(Rotation2d offset) {
+      arm_offset_ = arm_offset_.rotateBy(offset);
+    }
+
+    /**
+     * Returns the current stored angle offset
+     *
+     * @return
+     */
+    public Rotation2d getAngleOffset() {
+      return arm_offset_;
+    }
+
+    /** Resets the angle offset to 0 */
+    public void resetAngleOffset() {
+      arm_offset_ = new Rotation2d();
+    }
+
+    /** Resets both height and angle offsets */
     public void resetOffsets() {
-      target.resetOffsets();
+      resetAngleOffset();
+      resetHeightOffset();
     }
 
-    public TargetData getLoggingObject() {
-      return target;
+    /**
+     * @return the name of the target
+     */
+    public String getName() {
+      return name_;
     }
   }
 }
