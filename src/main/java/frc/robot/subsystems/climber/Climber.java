@@ -22,7 +22,6 @@ import edu.wpi.first.wpilibj.motorcontrol.Spark;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.mw_lib.logging.Elastic;
 import frc.mw_lib.subsystem.RemovableSubsystem;
-import frc.robot.Constants.ClimberConstants;
 import frc.robot.subsystems.elevator.Elevator;
 import frc.robot.subsystems.pickup.Pickup;
 import frc.robot.subsystems.pickup.Pickup.PickupMode;

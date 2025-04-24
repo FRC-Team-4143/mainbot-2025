@@ -11,8 +11,6 @@ import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.lib.ElevatorTargets.TargetType;
 import frc.mw_lib.proxy_server.ProxyServer;
-import frc.robot.Constants.DrivetrainConstants;
-import frc.robot.Constants.PickupConstants;
 import frc.robot.subsystems.claw.Claw;
 import frc.robot.subsystems.claw.Claw.ClawMode;
 import frc.robot.subsystems.claw.Claw.GamePiece;
@@ -20,7 +18,10 @@ import frc.robot.subsystems.coral_detector.CoralDetector;
 import frc.robot.subsystems.elevator.Elevator;
 import frc.robot.subsystems.pickup.Pickup;
 import frc.robot.subsystems.pickup.Pickup.PickupMode;
+import frc.robot.subsystems.pickup.PickupConstants;
 import frc.robot.subsystems.drive.SwerveDrivetrain;
+import frc.robot.subsystems.drive.DriveConstants;
+
 
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
 public class CoralTractorBeam extends Command {
@@ -35,12 +36,12 @@ public class CoralTractorBeam extends Command {
     // Use addRequirements() here to declare subsystem dependencies.
     intake_off_set =
         new Transform2d(
-            DrivetrainConstants.CENTER_OFFSET_X,
+            DriveConstants.CENTER_OFFSET_X,
             -PickupConstants.INTAKE_OFF_SET_Y,
             Rotation2d.kZero);
     stageing_off_set_ =
         new Transform2d(
-            DrivetrainConstants.CENTER_OFFSET_X + Units.inchesToMeters(12),
+          DriveConstants.CENTER_OFFSET_X + Units.inchesToMeters(12),
             -PickupConstants.INTAKE_OFF_SET_Y,
             Rotation2d.kZero);
     addRequirements(Pickup.getInstance(), Claw.getInstance(), Elevator.getInstance());

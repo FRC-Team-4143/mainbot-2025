@@ -20,7 +20,6 @@ import frc.mw_lib.proxy_server.ProxyServer;
 import frc.mw_lib.subsystem.Subsystem;
 import frc.mw_lib.util.Util;
 import frc.robot.Constants;
-import frc.robot.Constants.CoralDetectorConstants;
 import monologue.Annotations.Log;
 import monologue.Logged;
 import frc.robot.subsystems.pose_estimator.PoseEstimator;
@@ -180,7 +179,7 @@ public class CoralDetector extends Subsystem {
     return new Pose3d(
         p.getX(),
         p.getY(),
-        Constants.CoralDetectorConstants.DISPLAY_Z_OFFSEET,
+        CoralDetectorConstants.DISPLAY_Z_OFFSET,
         new Rotation3d(0, 0, p.getRotation().getRadians()));
   }
 
@@ -207,7 +206,7 @@ public class CoralDetector extends Subsystem {
   private void updateValidity() {
     boolean check =
         io_.can_see_coral_
-            && (io_.target_distance_ < Constants.CoralDetectorConstants.DETECTION_DISTANCE_LIMIT);
+            && (io_.target_distance_ < CoralDetectorConstants.DETECTION_DISTANCE_LIMIT);
     io_.target_valid_ =
         validity_debouncer_falling_.calculate(validity_debouncer_rising_.calculate(check));
   }

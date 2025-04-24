@@ -7,8 +7,8 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.util.Units;
 import frc.mw_lib.geometry.TightRope;
 import frc.mw_lib.util.ConstantsLoader;
-import frc.robot.Constants;
-import frc.robot.Constants.DrivetrainConstants;
+import frc.robot.subsystems.drive.DriveConstants;
+import frc.robot.subsystems.claw.ClawConstants;
 
 public class ScoringPoses {
 
@@ -19,23 +19,23 @@ public class ScoringPoses {
   // Offset to align robot bumpers with reef face
   public static final Transform2d REEF_FACE_OFFSET =
       new Transform2d(
-          new Translation2d(DrivetrainConstants.CENTER_OFFSET_X, 0), Rotation2d.fromDegrees(180));
+          new Translation2d(DriveConstants.CENTER_OFFSET_X, 0), Rotation2d.fromDegrees(180));
   // Offset to align robot bumpers with coral station
   public static final Transform2d CORAL_STATION_OFFSET =
       new Transform2d(
-          new Translation2d(DrivetrainConstants.CENTER_OFFSET_X, 0), Rotation2d.fromDegrees(0));
+          new Translation2d(DriveConstants.CENTER_OFFSET_X, 0), Rotation2d.fromDegrees(0));
   // Offset to align robot bumpers with processor face
   public static final Transform2d PROCESSOR_OFFSET =
       new Transform2d(
-          new Translation2d(DrivetrainConstants.CENTER_OFFSET_X, 0), Rotation2d.fromDegrees(180));
+          new Translation2d(DriveConstants.CENTER_OFFSET_X, 0), Rotation2d.fromDegrees(180));
   // Offset to align robot bumpers with middle of barge
   public static final Transform2d BARGE_OFFSET =
       new Transform2d(
-          new Translation2d(DrivetrainConstants.CENTER_OFFSET_X, 0), Rotation2d.fromDegrees(180));
+          new Translation2d(DriveConstants.CENTER_OFFSET_X, 0), Rotation2d.fromDegrees(180));
 
   public static final Transform2d ALGAE_ALIGN_OFFSET =
-      new Transform2d(0, -Constants.ClawConstants.ALGAE_IMP_OFFSET, new Rotation2d());
-  public static final double CORAL_ALIGN_OFFSET = -Constants.ClawConstants.CORAL_IMP_OFFSET;
+      new Transform2d(0, -ClawConstants.ALGAE_IMP_OFFSET, new Rotation2d());
+  public static final double CORAL_ALIGN_OFFSET = -ClawConstants.CORAL_IMP_OFFSET;
 
   public static final Transform2d LEFT_COLUMN_OFFSET =
       new Transform2d(0, Units.inchesToMeters(6.47) + CORAL_ALIGN_OFFSET, new Rotation2d());
@@ -83,7 +83,7 @@ public class ScoringPoses {
           7.7562,
           (FieldConstants.FIELD_WIDTH / 2)
               + Units.inchesToMeters(7)
-              - Constants.ClawConstants.ALGAE_IMP_OFFSET
+              - ClawConstants.ALGAE_IMP_OFFSET
               + (FieldConstants.ALGAE_DIAMETER / 2),
           Rotation2d.fromDegrees(0));
 
@@ -91,12 +91,12 @@ public class ScoringPoses {
   public static Pose2d PROCESSOR_TIGHT_ROPE_POSE_A =
       FieldConstants.Processor.CENTER_FACE.transformBy(
           new Transform2d(
-              3 - DrivetrainConstants.CENTER_OFFSET_X,
-              -Constants.ClawConstants.ALGAE_IMP_OFFSET,
+              3 - DriveConstants.CENTER_OFFSET_X,
+              -ClawConstants.ALGAE_IMP_OFFSET,
               new Rotation2d()));
   public static Pose2d PROCESSOR_TIGHT_ROPE_POSE_B =
       FieldConstants.Processor.CENTER_FACE.transformBy(
-          new Transform2d(0, -Constants.ClawConstants.ALGAE_IMP_OFFSET, new Rotation2d()));
+          new Transform2d(0, -ClawConstants.ALGAE_IMP_OFFSET, new Rotation2d()));
 
   // Tight Ropes
   public static TightRope BARGE_TIGHT_ROPE =

@@ -22,9 +22,7 @@
  * SOFTWARE.
  */
 
-package frc.robot;
-
-import static frc.robot.Constants.Vision.*;
+package frc.robot.subsystems.pose_estimator;
 
 import edu.wpi.first.hal.SimDevice;
 import edu.wpi.first.math.Matrix;
@@ -38,8 +36,8 @@ import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.mw_lib.util.CamConstants;
-import frc.robot.Constants.DrivetrainConstants;
-import frc.robot.subsystems.pose_estimator.PoseEstimator;
+import frc.robot.subsystems.drive.DriveConstants;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -73,23 +71,23 @@ public class PhotonVision {
   private double sim_pose_y_;
   private XboxController sim_pose_controller_;
   private static final double POSE_TRANSLATION_SCALAR =
-      (DrivetrainConstants.MAX_DRIVE_SPEED / 2) * 0.01;
+      (DriveConstants.MAX_DRIVE_SPEED / 2) * 0.01;
   private static final double POSE_ROTATION_SCALAR =
-      (DrivetrainConstants.MAX_DRIVE_ANGULAR_RATE / 2) * 0.01;
+      (DriveConstants.MAX_DRIVE_ANGULAR_RATE / 2) * 0.01;
 
   public PhotonVision() {
-    num_cameras_ = Constants.Vision.CAMERAS.size();
+    num_cameras_ = PhotonVisionConstants.CAMERAS.size();
 
     cameras = new PhotonCamera[num_cameras_];
     photonEstimators = new PhotonPoseEstimator[num_cameras_];
 
     for (int i = 0; i < num_cameras_; i++) {
-      CamConstants config = Constants.Vision.CAMERAS.get(i);
+      CamConstants config = PhotonVisionConstants.CAMERAS.get(i);
       cameras[i] = new PhotonCamera(config.camera_name);
       DataLogManager.log("Registering camera " + config.camera_name);
       photonEstimators[i] =
           new PhotonPoseEstimator(
-              TAG_LAYOUT, PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR, config.camera_transform);
+            PhotonVisionConstants.TAG_LAYOUT, PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR, config.camera_transform);
       photonEstimators[i].setMultiTagFallbackStrategy(PoseStrategy.LOWEST_AMBIGUITY);
     }
 
@@ -173,16 +171,16 @@ public class PhotonVision {
   private void updateEstimationStdDevs(
       Optional<EstimatedRobotPose> estimatedPose, List<PhotonTrackedTarget> targets, int index) {
     if (index == num_cameras_ - 1 && vision_sim_ != null) {
-      curStdDevs = MULTI_TAG_STD_DEVS;
+      curStdDevs = PhotonVisionConstants.MULTI_TAG_STD_DEVS;
     }
 
     if (estimatedPose.isEmpty()) {
       // No pose input. Default to single-tag std devs
-      curStdDevs = SINGLE_TAG_STD_DEVS;
+      curStdDevs = PhotonVisionConstants.SINGLE_TAG_STD_DEVS;
 
     } else {
       // Pose present. Start running Heuristic
-      var estStdDevs = SINGLE_TAG_STD_DEVS;
+      var estStdDevs = PhotonVisionConstants.SINGLE_TAG_STD_DEVS;
       // int numTags = 0;
       numTags = 0;
       double avgDist = 0;
@@ -202,12 +200,12 @@ public class PhotonVision {
 
       if (numTags == 0) {
         // No tags visible. Default to single-tag std devs
-        curStdDevs = SINGLE_TAG_STD_DEVS;
+        curStdDevs = PhotonVisionConstants.SINGLE_TAG_STD_DEVS;
       } else {
         // One or more tags visible, run the full heuristic.
         avgDist /= numTags;
         // Decrease std devs if multiple targets are visible
-        if (numTags > 1) estStdDevs = MULTI_TAG_STD_DEVS;
+        if (numTags > 1) estStdDevs = PhotonVisionConstants.MULTI_TAG_STD_DEVS;
         // Increase std devs based on (average) distance
         if (numTags == 1 && avgDist > 4)
           estStdDevs = VecBuilder.fill(Double.MAX_VALUE, Double.MAX_VALUE, Double.MAX_VALUE);

@@ -16,7 +16,6 @@ import frc.mw_lib.drivers.SimTof;
 import frc.mw_lib.subsystem.Subsystem;
 import frc.mw_lib.util.Util;
 import frc.robot.Constants;
-import frc.robot.Constants.ClawConstants;
 import monologue.Annotations.Log;
 import monologue.Logged;
 
@@ -98,7 +97,7 @@ public class Claw extends Subsystem {
    */
   @Override
   public void updateLogic(double timestamp) {
-    io_.coral_present_ = io_.tof_distance < Constants.ClawConstants.TIME_OF_FLIGHT_DIST;
+    io_.coral_present_ = io_.tof_distance < ClawConstants.TIME_OF_FLIGHT_DIST;
     if (io_.game_piece_ == GamePiece.CORAL) {
       switch (io_.claw_mode_) {
         case BLAST:
@@ -161,8 +160,8 @@ public class Claw extends Subsystem {
     SmartDashboard.putString(
         "Subsystems/Claw/Game Piece Mode",
         (io_.game_piece_ == GamePiece.CORAL)
-            ? Constants.ClawConstants.CORAL_COLOR
-            : Constants.ClawConstants.ALGAE_COLOR);
+            ? ClawConstants.CORAL_COLOR
+            : ClawConstants.ALGAE_COLOR);
   }
 
   /**

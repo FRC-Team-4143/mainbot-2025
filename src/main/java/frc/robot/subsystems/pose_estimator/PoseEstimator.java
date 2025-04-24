@@ -16,7 +16,6 @@ import frc.mw_lib.geometry.PolygonRegion;
 import frc.mw_lib.geometry.Region;
 import frc.mw_lib.subsystem.Subsystem;
 import frc.robot.Constants;
-import frc.robot.PhotonVision;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -120,7 +119,7 @@ public class PoseEstimator extends Subsystem {
         }
         io_.detected_tags_.get(i).clear();
         for (var target : est.targetsUsed) {
-          Optional<Pose3d> tagPose = Constants.Vision.TAG_LAYOUT.getTagPose(target.fiducialId);
+          Optional<Pose3d> tagPose = PhotonVisionConstants.TAG_LAYOUT.getTagPose(target.fiducialId);
           if (tagPose.isPresent()) {
             io_.detected_tags_.get(i).add(tagPose.get());
           }

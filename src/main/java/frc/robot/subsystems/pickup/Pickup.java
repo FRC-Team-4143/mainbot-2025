@@ -23,7 +23,6 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import frc.mw_lib.drivers.SimTof;
 import frc.mw_lib.subsystem.Subsystem;
 import frc.mw_lib.util.Util;
-import frc.robot.Constants.PickupConstants;
 import frc.robot.commands.SetDefaultPickup;
 import monologue.Annotations.Log;
 import monologue.Logged;

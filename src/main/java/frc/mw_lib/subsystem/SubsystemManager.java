@@ -4,7 +4,6 @@ import edu.wpi.first.wpilibj.DataLogManager;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Notifier;
 import edu.wpi.first.wpilibj.Timer;
-import frc.mw_lib.logging.GitLogger;
 import frc.mw_lib.util.ConstantsLoader;
 import java.util.ArrayList;
 import java.util.List;
@@ -103,8 +102,6 @@ public abstract class SubsystemManager {
 
     Monologue.setupMonologue(ios, "Robot", true, false);
     DriverStation.startDataLog(DataLogManager.getLog());
-    GitLogger.logGitData();
-    GitLogger.putGitDataToDashboard();
     log_init = true;
   }
 

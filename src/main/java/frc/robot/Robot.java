@@ -24,15 +24,55 @@ import frc.robot.subsystems.drive.SwerveDrivetrain;
 import frc.robot.subsystems.drive.SwerveDrivetrain.DriveMode;
 import java.util.Optional;
 
+import org.littletonrobotics.junction.LogFileUtil;
 import org.littletonrobotics.junction.LoggedRobot;
+import org.littletonrobotics.junction.Logger;
+import org.littletonrobotics.junction.networktables.NT4Publisher;
+import org.littletonrobotics.junction.wpilog.WPILOGReader;
+import org.littletonrobotics.junction.wpilog.WPILOGWriter;
 
 public class Robot extends LoggedRobot {
   private RobotContainer robot_container_;
   private Alliance alliance_ = Alliance.Blue;
 
+  Robot(){
+    Logger.recordMetadata("PROJECT_NAME", BuildConstants.MAVEN_NAME);
+    Logger.recordMetadata("GIT_SHA", BuildConstants.GIT_SHA);
+    Logger.recordMetadata("GIT_DATE", BuildConstants.GIT_DATE);
+    Logger.recordMetadata("GIT_BRANCH", BuildConstants.GIT_BRANCH);
+    Logger.recordMetadata("BUILD_DATE", BuildConstants.BUILD_DATE);
+    Logger.recordMetadata("DIRTY", (BuildConstants.DIRTY == 1)? "Uncommitted Changes :(": "All Changes Committed :)");
+
+    // Set up data receivers & replay source
+    switch (Constants.CURRENT_MODE) {
+      case REAL:
+        // Running on a real robot, log to a USB stick ("/U/logs")
+        Logger.addDataReceiver(new WPILOGWriter());
+        Logger.addDataReceiver(new NT4Publisher());
+        break;
+
+      case SIM:
+        // Running a physics simulator, log to NT
+        Logger.addDataReceiver(new NT4Publisher());
+        break;
+
+      case REPLAY:
+        // Replaying a log, set up replay source
+        setUseTiming(false); // Run as fast as possible
+        String logPath = LogFileUtil.findReplayLog();
+        Logger.setReplaySource(new WPILOGReader(logPath));
+        Logger.addDataReceiver(new WPILOGWriter(LogFileUtil.addPathSuffix(logPath, "_sim")));
+        break;
+    }
+
+    // Start AdvantageKit logger
+    Logger.start();
+
+    robot_container_ = RobotContainer.getInstance();
+  }
+
   @Override
   public void robotInit() {
-    robot_container_ = RobotContainer.getInstance();
     OI.configureBindings();
     FieldRegions.makeRegions();
     ProxyServer.configureServer();

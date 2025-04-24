@@ -7,7 +7,7 @@ import edu.wpi.first.wpilibj.DataLogManager;
 import edu.wpi.first.wpilibj.DriverStation;
 import frc.lib.AllianceFlipUtil.SymmetryType;
 import frc.mw_lib.geometry.PolygonRegion;
-import frc.robot.Constants;
+import frc.robot.subsystems.drive.DriveConstants;
 import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.List;
@@ -28,8 +28,8 @@ public class FieldRegions {
       new PolygonRegion(
           new Translation2d[] {
             new Translation2d(4, 0),
-            new Translation2d(4, Constants.DrivetrainConstants.CENTER_OFFSET_X),
-            new Translation2d(8, Constants.DrivetrainConstants.CENTER_OFFSET_X),
+            new Translation2d(4, DriveConstants.CENTER_OFFSET_X),
+            new Translation2d(8, DriveConstants.CENTER_OFFSET_X),
             new Translation2d(8, 0),
             new Translation2d(4, 0),
           },

@@ -16,7 +16,6 @@ import frc.lib.ScoringPoses;
 import frc.mw_lib.subsystem.Subsystem;
 import frc.mw_lib.util.Util;
 import frc.robot.Constants;
-import frc.robot.Constants.GameStateManagerConstants;
 import frc.robot.commands.CoralEject;
 import frc.robot.subsystems.claw.Claw;
 import frc.robot.subsystems.claw.Claw.ClawMode;
@@ -135,7 +134,7 @@ public class GameStateManager extends Subsystem {
         if (Util.epislonEquals(
             PoseEstimator.getInstance().getRobotPose().getRotation(),
             io_.reef_target_.get().getRotation(),
-            Constants.GameStateManagerConstants.REQUIRED_ROTATION_FOR_ELEVATOR)) {
+            GameStateManagerConstants.REQUIRED_ROTATION_FOR_ELEVATOR)) {
           // move elevator once within rotation threshold
           Elevator.getInstance().setTarget(elevatorTargetSwitch());
         }
