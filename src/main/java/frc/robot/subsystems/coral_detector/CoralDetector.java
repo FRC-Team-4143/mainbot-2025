@@ -19,10 +19,9 @@ import frc.mw_lib.proxy_server.PieceDetectionPacket.PieceDetection;
 import frc.mw_lib.proxy_server.ProxyServer;
 import frc.mw_lib.subsystem.Subsystem;
 import frc.mw_lib.util.Util;
-import frc.robot.Constants;
+import frc.robot.subsystems.pose_estimator.PoseEstimator;
 import monologue.Annotations.Log;
 import monologue.Logged;
-import frc.robot.subsystems.pose_estimator.PoseEstimator;
 
 public class CoralDetector extends Subsystem {
 

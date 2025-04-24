@@ -9,7 +9,6 @@ import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command.InterruptionBehavior;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
-import edu.wpi.first.wpilibj2.command.Commands;
 import frc.lib.FieldRegions;
 import frc.mw_lib.auto.Auto;
 import frc.mw_lib.auto.AutoManager;
@@ -17,13 +16,12 @@ import frc.mw_lib.logging.Elastic;
 import frc.mw_lib.proxy_server.ProxyServer;
 import frc.robot.autos.*;
 import frc.robot.commands.L4Hang;
+import frc.robot.subsystems.drive.SwerveDrivetrain;
+import frc.robot.subsystems.drive.SwerveDrivetrain.DriveMode;
 import frc.robot.subsystems.elevator.Elevator;
 import frc.robot.subsystems.gsm.GameStateManager;
 import frc.robot.subsystems.gsm.GameStateManager.RobotState;
-import frc.robot.subsystems.drive.SwerveDrivetrain;
-import frc.robot.subsystems.drive.SwerveDrivetrain.DriveMode;
 import java.util.Optional;
-
 import org.littletonrobotics.junction.LogFileUtil;
 import org.littletonrobotics.junction.LoggedRobot;
 import org.littletonrobotics.junction.Logger;
@@ -35,13 +33,15 @@ public class Robot extends LoggedRobot {
   private RobotContainer robot_container_;
   private Alliance alliance_ = Alliance.Blue;
 
-  Robot(){
+  Robot() {
     Logger.recordMetadata("PROJECT_NAME", BuildConstants.MAVEN_NAME);
     Logger.recordMetadata("GIT_SHA", BuildConstants.GIT_SHA);
     Logger.recordMetadata("GIT_DATE", BuildConstants.GIT_DATE);
     Logger.recordMetadata("GIT_BRANCH", BuildConstants.GIT_BRANCH);
     Logger.recordMetadata("BUILD_DATE", BuildConstants.BUILD_DATE);
-    Logger.recordMetadata("DIRTY", (BuildConstants.DIRTY == 1)? "Uncommitted Changes :(": "All Changes Committed :)");
+    Logger.recordMetadata(
+        "DIRTY",
+        (BuildConstants.DIRTY == 1) ? "Uncommitted Changes :(" : "All Changes Committed :)");
 
     // Set up data receivers & replay source
     switch (Constants.CURRENT_MODE) {
@@ -76,13 +76,8 @@ public class Robot extends LoggedRobot {
     OI.configureBindings();
     FieldRegions.makeRegions();
     ProxyServer.configureServer();
-
     AutoManager.getInstance().registerAutos(new Right_3_Piece());
     AutoManager.getInstance().registerAutos(new Left_3_Piece());
-
-    SmartDashboard.putData(
-        "Snapshot", Commands.runOnce(() -> ProxyServer.snapshot("Test Snapshot")));
-    SmartDashboard.putData("Sync Match Data", Commands.runOnce(() -> ProxyServer.syncMatchData()));
   }
 
   @Override
@@ -145,14 +140,13 @@ public class Robot extends LoggedRobot {
 
   @Override
   public void teleopInit() {
-    ProxyServer.syncMatchData();
+    Elastic.selectTab("Teleop");
     SwerveDrivetrain.getInstance().restoreDefaultDriveMode();
     CommandScheduler.getInstance().cancelAll();
     if (Elevator.getInstance().isElevatorAndArmHung()) {
       CommandScheduler.getInstance()
           .schedule(new L4Hang().withInterruptBehavior(InterruptionBehavior.kCancelIncoming));
     }
-    Elastic.selectTab("Teleop");
   }
 
   @Override

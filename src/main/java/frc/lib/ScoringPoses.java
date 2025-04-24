@@ -7,8 +7,8 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.util.Units;
 import frc.mw_lib.geometry.TightRope;
 import frc.mw_lib.util.ConstantsLoader;
-import frc.robot.subsystems.drive.DriveConstants;
 import frc.robot.subsystems.claw.ClawConstants;
+import frc.robot.subsystems.drive.DriveConstants;
 
 public class ScoringPoses {
 

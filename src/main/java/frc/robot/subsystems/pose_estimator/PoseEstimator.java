@@ -15,14 +15,13 @@ import frc.lib.FieldRegions;
 import frc.mw_lib.geometry.PolygonRegion;
 import frc.mw_lib.geometry.Region;
 import frc.mw_lib.subsystem.Subsystem;
-import frc.robot.Constants;
+import frc.robot.subsystems.drive.SwerveDrivetrain;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import monologue.Annotations.Log;
 import monologue.Logged;
 import org.photonvision.EstimatedRobotPose;
-import frc.robot.subsystems.drive.SwerveDrivetrain;
 
 public class PoseEstimator extends Subsystem {
 

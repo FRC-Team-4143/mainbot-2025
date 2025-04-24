@@ -15,15 +15,12 @@ import frc.lib.FieldRegions;
 import frc.lib.ScoringPoses;
 import frc.mw_lib.subsystem.Subsystem;
 import frc.mw_lib.util.Util;
-import frc.robot.Constants;
 import frc.robot.commands.CoralEject;
 import frc.robot.subsystems.claw.Claw;
 import frc.robot.subsystems.claw.Claw.ClawMode;
-import frc.robot.subsystems.pose_estimator.PoseEstimator;
-import frc.robot.subsystems.elevator.Elevator;
 import frc.robot.subsystems.drive.SwerveDrivetrain;
-
-
+import frc.robot.subsystems.elevator.Elevator;
+import frc.robot.subsystems.pose_estimator.PoseEstimator;
 import java.util.Optional;
 import monologue.Annotations.Log;
 import monologue.Logged;

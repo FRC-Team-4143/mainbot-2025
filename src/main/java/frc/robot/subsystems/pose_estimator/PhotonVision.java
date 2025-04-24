@@ -37,7 +37,6 @@ import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.mw_lib.util.CamConstants;
 import frc.robot.subsystems.drive.DriveConstants;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -70,8 +69,7 @@ public class PhotonVision {
   private double sim_pose_x_;
   private double sim_pose_y_;
   private XboxController sim_pose_controller_;
-  private static final double POSE_TRANSLATION_SCALAR =
-      (DriveConstants.MAX_DRIVE_SPEED / 2) * 0.01;
+  private static final double POSE_TRANSLATION_SCALAR = (DriveConstants.MAX_DRIVE_SPEED / 2) * 0.01;
   private static final double POSE_ROTATION_SCALAR =
       (DriveConstants.MAX_DRIVE_ANGULAR_RATE / 2) * 0.01;
 
@@ -87,7 +85,9 @@ public class PhotonVision {
       DataLogManager.log("Registering camera " + config.camera_name);
       photonEstimators[i] =
           new PhotonPoseEstimator(
-            PhotonVisionConstants.TAG_LAYOUT, PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR, config.camera_transform);
+              PhotonVisionConstants.TAG_LAYOUT,
+              PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR,
+              config.camera_transform);
       photonEstimators[i].setMultiTagFallbackStrategy(PoseStrategy.LOWEST_AMBIGUITY);
     }
 

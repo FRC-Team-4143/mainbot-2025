@@ -15,8 +15,8 @@ import edu.wpi.first.wpilibj.smartdashboard.MechanismLigament2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj.util.Color8Bit;
-import frc.robot.subsystems.pose_estimator.PoseEstimator;
 import frc.robot.subsystems.drive.SwerveDrivetrain;
+import frc.robot.subsystems.pose_estimator.PoseEstimator;
 
 public class Telemetry {
   private final double MaxSpeed;
