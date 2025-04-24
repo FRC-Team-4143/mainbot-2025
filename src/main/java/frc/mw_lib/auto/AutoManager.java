@@ -4,8 +4,8 @@ import choreo.auto.AutoFactory;
 import edu.wpi.first.wpilibj.DataLogManager;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import frc.robot.subsystems.PoseEstimator;
-import frc.robot.subsystems.SwerveDrivetrain;
+import frc.robot.subsystems.pose_estimator.PoseEstimator;
+import frc.robot.subsystems.drive.SwerveDrivetrain;
 
 public class AutoManager {
   // Singleton pattern

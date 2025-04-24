@@ -6,10 +6,10 @@ package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.lib.ElevatorTargets.TargetType;
-import frc.robot.subsystems.Claw;
-import frc.robot.subsystems.Claw.ClawMode;
-import frc.robot.subsystems.Claw.GamePiece;
-import frc.robot.subsystems.Elevator;
+import frc.robot.subsystems.claw.Claw;
+import frc.robot.subsystems.claw.Claw.ClawMode;
+import frc.robot.subsystems.claw.Claw.GamePiece;
+import frc.robot.subsystems.elevator.Elevator;
 
 public class AutoBargeSequence extends Command {
   /** Creates a new AutoBargeSequence. */

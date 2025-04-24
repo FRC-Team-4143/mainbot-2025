@@ -6,7 +6,6 @@ package frc.robot;
 
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
-import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command.InterruptionBehavior;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
@@ -18,14 +17,16 @@ import frc.mw_lib.logging.Elastic;
 import frc.mw_lib.proxy_server.ProxyServer;
 import frc.robot.autos.*;
 import frc.robot.commands.L4Hang;
-import frc.robot.subsystems.Elevator;
-import frc.robot.subsystems.GameStateManager;
-import frc.robot.subsystems.GameStateManager.RobotState;
-import frc.robot.subsystems.SwerveDrivetrain;
-import frc.robot.subsystems.SwerveDrivetrain.DriveMode;
+import frc.robot.subsystems.elevator.Elevator;
+import frc.robot.subsystems.gsm.GameStateManager;
+import frc.robot.subsystems.gsm.GameStateManager.RobotState;
+import frc.robot.subsystems.drive.SwerveDrivetrain;
+import frc.robot.subsystems.drive.SwerveDrivetrain.DriveMode;
 import java.util.Optional;
 
-public class Robot extends TimedRobot {
+import org.littletonrobotics.junction.LoggedRobot;
+
+public class Robot extends LoggedRobot {
   private RobotContainer robot_container_;
   private Alliance alliance_ = Alliance.Blue;
 

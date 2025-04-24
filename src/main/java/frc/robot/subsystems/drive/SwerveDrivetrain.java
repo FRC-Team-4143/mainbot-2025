@@ -4,7 +4,7 @@
  * For support and suggestions contact support@ctr-electronics.com or file
  * an issue tracker at https://github.com/CrossTheRoadElec/Phoenix-Releases
  */
-package frc.robot.subsystems;
+package frc.robot.subsystems.drive;
 
 import static edu.wpi.first.units.Units.Radians;
 
@@ -40,6 +40,7 @@ import frc.mw_lib.swerve.SwerveRequest.SwerveControlRequestParameters;
 import frc.mw_lib.util.Util;
 import frc.robot.Constants;
 import frc.robot.Constants.DrivetrainConstants;
+import frc.robot.subsystems.pose_estimator.PoseEstimator;
 import frc.robot.OI;
 import java.util.Optional;
 import java.util.function.Supplier;
@@ -111,7 +112,7 @@ public class SwerveDrivetrain extends Subsystem {
   private final SwerveModule[] swerve_modules_;
 
   // Drivetrain config
-  final SwerveDriveKinematics kinematics_;
+  public final SwerveDriveKinematics kinematics_;
   private final Translation2d[] module_locations_;
 
   // Drive requests

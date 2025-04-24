@@ -2,7 +2,7 @@
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
-package frc.robot.subsystems;
+package frc.robot.subsystems.climber;
 
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.ControlRequest;
@@ -23,7 +23,9 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.mw_lib.logging.Elastic;
 import frc.mw_lib.subsystem.RemovableSubsystem;
 import frc.robot.Constants.ClimberConstants;
-import frc.robot.subsystems.Pickup.PickupMode;
+import frc.robot.subsystems.elevator.Elevator;
+import frc.robot.subsystems.pickup.Pickup;
+import frc.robot.subsystems.pickup.Pickup.PickupMode;
 import monologue.Annotations.Log;
 import monologue.Logged;
 

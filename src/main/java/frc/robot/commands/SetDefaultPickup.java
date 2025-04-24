@@ -3,12 +3,12 @@ package frc.robot.commands;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.OI;
 import frc.robot.OI.IntakePreference;
-import frc.robot.subsystems.Claw;
-import frc.robot.subsystems.Claw.GamePiece;
-import frc.robot.subsystems.Climber;
-import frc.robot.subsystems.Climber.ClimberMode;
-import frc.robot.subsystems.Pickup;
-import frc.robot.subsystems.Pickup.PickupMode;
+import frc.robot.subsystems.claw.Claw;
+import frc.robot.subsystems.claw.Claw.GamePiece;
+import frc.robot.subsystems.climber.Climber;
+import frc.robot.subsystems.climber.Climber.ClimberMode;
+import frc.robot.subsystems.pickup.Pickup;
+import frc.robot.subsystems.pickup.Pickup.PickupMode;
 
 public class SetDefaultPickup extends Command {
   public SetDefaultPickup() {

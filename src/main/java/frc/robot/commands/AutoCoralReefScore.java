@@ -9,11 +9,11 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.mw_lib.util.ConstantsLoader;
-import frc.robot.subsystems.Claw;
-import frc.robot.subsystems.Elevator;
-import frc.robot.subsystems.GameStateManager;
-import frc.robot.subsystems.GameStateManager.RobotState;
-import frc.robot.subsystems.SwerveDrivetrain;
+import frc.robot.subsystems.claw.Claw;
+import frc.robot.subsystems.elevator.Elevator;
+import frc.robot.subsystems.gsm.GameStateManager;
+import frc.robot.subsystems.gsm.GameStateManager.RobotState;
+import frc.robot.subsystems.drive.SwerveDrivetrain;
 
 // NOTE:  Consider using this command inline, rather than writing a subclass.  For more
 // information, see:

@@ -4,10 +4,10 @@ import frc.mw_lib.auto.Auto;
 import frc.robot.commands.AutoCoralReefScore;
 import frc.robot.commands.CoralTractorBeam;
 import frc.robot.commands.IntakeHandoff;
-import frc.robot.subsystems.CoralDetector;
-import frc.robot.subsystems.GameStateManager;
-import frc.robot.subsystems.GameStateManager.Column;
-import frc.robot.subsystems.GameStateManager.ReefScoringTarget;
+import frc.robot.subsystems.coral_detector.CoralDetector;
+import frc.robot.subsystems.gsm.GameStateManager;
+import frc.robot.subsystems.gsm.GameStateManager.Column;
+import frc.robot.subsystems.gsm.GameStateManager.ReefScoringTarget;
 
 public class Left_3_Piece extends Auto {
 

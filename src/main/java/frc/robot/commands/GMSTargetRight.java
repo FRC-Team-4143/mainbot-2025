@@ -5,9 +5,9 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.subsystems.GameStateManager;
-import frc.robot.subsystems.GameStateManager.Column;
-import frc.robot.subsystems.GameStateManager.RobotState;
+import frc.robot.subsystems.gsm.GameStateManager;
+import frc.robot.subsystems.gsm.GameStateManager.Column;
+import frc.robot.subsystems.gsm.GameStateManager.RobotState;
 
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
 public class GMSTargetRight extends Command {

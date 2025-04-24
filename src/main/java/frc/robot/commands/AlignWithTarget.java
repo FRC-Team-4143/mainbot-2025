@@ -5,8 +5,8 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.ConditionalCommand;
-import frc.robot.subsystems.Claw;
-import frc.robot.subsystems.PoseEstimator;
+import frc.robot.subsystems.claw.Claw;
+import frc.robot.subsystems.pose_estimator.PoseEstimator;
 
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
 public class AlignWithTarget extends ConditionalCommand {

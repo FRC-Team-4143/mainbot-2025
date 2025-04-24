@@ -1,4 +1,4 @@
-package frc.robot.subsystems;
+package frc.robot.subsystems.pose_estimator;
 
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
@@ -23,6 +23,7 @@ import java.util.Optional;
 import monologue.Annotations.Log;
 import monologue.Logged;
 import org.photonvision.EstimatedRobotPose;
+import frc.robot.subsystems.drive.SwerveDrivetrain;
 
 public class PoseEstimator extends Subsystem {
 

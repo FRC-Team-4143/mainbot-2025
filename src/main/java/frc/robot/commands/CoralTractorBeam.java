@@ -13,14 +13,14 @@ import frc.lib.ElevatorTargets.TargetType;
 import frc.mw_lib.proxy_server.ProxyServer;
 import frc.robot.Constants.DrivetrainConstants;
 import frc.robot.Constants.PickupConstants;
-import frc.robot.subsystems.Claw;
-import frc.robot.subsystems.Claw.ClawMode;
-import frc.robot.subsystems.Claw.GamePiece;
-import frc.robot.subsystems.CoralDetector;
-import frc.robot.subsystems.Elevator;
-import frc.robot.subsystems.Pickup;
-import frc.robot.subsystems.Pickup.PickupMode;
-import frc.robot.subsystems.SwerveDrivetrain;
+import frc.robot.subsystems.claw.Claw;
+import frc.robot.subsystems.claw.Claw.ClawMode;
+import frc.robot.subsystems.claw.Claw.GamePiece;
+import frc.robot.subsystems.coral_detector.CoralDetector;
+import frc.robot.subsystems.elevator.Elevator;
+import frc.robot.subsystems.pickup.Pickup;
+import frc.robot.subsystems.pickup.Pickup.PickupMode;
+import frc.robot.subsystems.drive.SwerveDrivetrain;
 
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
 public class CoralTractorBeam extends Command {

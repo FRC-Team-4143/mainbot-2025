@@ -5,7 +5,7 @@
 package frc.robot.commands;
 
 import frc.mw_lib.command.NoReqConditionalCommand;
-import frc.robot.subsystems.Elevator;
+import frc.robot.subsystems.elevator.Elevator;
 
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
 public class CoralScore extends NoReqConditionalCommand {

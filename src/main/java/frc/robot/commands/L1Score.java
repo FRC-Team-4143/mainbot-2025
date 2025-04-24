@@ -7,9 +7,9 @@ package frc.robot.commands;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.lib.ElevatorTargets.TargetType;
-import frc.robot.subsystems.Claw;
-import frc.robot.subsystems.Claw.ClawMode;
-import frc.robot.subsystems.Elevator;
+import frc.robot.subsystems.claw.Claw;
+import frc.robot.subsystems.claw.Claw.ClawMode;
+import frc.robot.subsystems.elevator.Elevator;
 
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
 public class L1Score extends SequentialCommandGroup {

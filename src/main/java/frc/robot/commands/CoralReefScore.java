@@ -6,13 +6,13 @@ package frc.robot.commands;
 
 import frc.lib.FieldRegions;
 import frc.mw_lib.command.LazyCommand;
-import frc.robot.subsystems.Claw;
-import frc.robot.subsystems.Claw.ClawMode;
-import frc.robot.subsystems.Claw.GamePiece;
-import frc.robot.subsystems.Elevator;
-import frc.robot.subsystems.GameStateManager;
-import frc.robot.subsystems.GameStateManager.RobotState;
-import frc.robot.subsystems.PoseEstimator;
+import frc.robot.subsystems.claw.Claw;
+import frc.robot.subsystems.claw.Claw.ClawMode;
+import frc.robot.subsystems.claw.Claw.GamePiece;
+import frc.robot.subsystems.elevator.Elevator;
+import frc.robot.subsystems.gsm.GameStateManager;
+import frc.robot.subsystems.gsm.GameStateManager.RobotState;
+import frc.robot.subsystems.pose_estimator.PoseEstimator;
 
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
 public class CoralReefScore extends LazyCommand {

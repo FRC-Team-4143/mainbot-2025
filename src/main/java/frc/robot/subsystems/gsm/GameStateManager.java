@@ -1,4 +1,4 @@
-package frc.robot.subsystems;
+package frc.robot.subsystems.gsm;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
@@ -18,10 +18,13 @@ import frc.mw_lib.util.Util;
 import frc.robot.Constants;
 import frc.robot.Constants.GameStateManagerConstants;
 import frc.robot.commands.CoralEject;
-import frc.robot.subsystems.Claw.ClawMode;
-import frc.robot.subsystems.GameStateManager.Column;
-import frc.robot.subsystems.GameStateManager.GameStateManagerPeriodicIo;
-import frc.robot.subsystems.GameStateManager.ReefScoringTarget;
+import frc.robot.subsystems.claw.Claw;
+import frc.robot.subsystems.claw.Claw.ClawMode;
+import frc.robot.subsystems.pose_estimator.PoseEstimator;
+import frc.robot.subsystems.elevator.Elevator;
+import frc.robot.subsystems.drive.SwerveDrivetrain;
+
+
 import java.util.Optional;
 import monologue.Annotations.Log;
 import monologue.Logged;

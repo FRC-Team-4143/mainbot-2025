@@ -2,7 +2,7 @@
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
-package frc.robot.subsystems;
+package frc.robot.subsystems.coral_detector;
 
 import edu.wpi.first.math.filter.Debouncer;
 import edu.wpi.first.math.geometry.Pose2d;
@@ -23,6 +23,7 @@ import frc.robot.Constants;
 import frc.robot.Constants.CoralDetectorConstants;
 import monologue.Annotations.Log;
 import monologue.Logged;
+import frc.robot.subsystems.pose_estimator.PoseEstimator;
 
 public class CoralDetector extends Subsystem {
 

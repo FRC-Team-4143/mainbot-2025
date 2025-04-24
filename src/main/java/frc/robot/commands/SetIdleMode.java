@@ -5,8 +5,8 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.subsystems.SwerveDrivetrain;
-import frc.robot.subsystems.SwerveDrivetrain.DriveMode;
+import frc.robot.subsystems.drive.SwerveDrivetrain;
+import frc.robot.subsystems.drive.SwerveDrivetrain.DriveMode;
 
 public class SetIdleMode extends Command {
 
