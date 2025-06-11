@@ -8,6 +8,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import frc.lib.AllianceFlipUtil;
 import frc.lib.FieldConstants;
 import frc.mw_lib.command.NoReqSequentialCommandGroup;
+import frc.mw_lib.subsystem.Subsystem;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -31,6 +32,13 @@ public class Auto extends NoReqSequentialCommandGroup {
   protected Command getTrajectoryCmd(String Name) {
     Trajectory<?> traj = trajectories.get(Name);
     return AutoManager.getInstance().getAutoFactory().trajectoryCmd(traj);
+  }
+
+  protected Command getTrajectoryCmd(String Name, Subsystem... requirements) {
+    Trajectory<?> traj = trajectories.get(Name);
+    Command cmd = AutoManager.getInstance().getAutoFactory().trajectoryCmd(traj);
+    cmd.addRequirements(requirements);
+    return cmd;
   }
 
   public List<Pose2d> getPath() {

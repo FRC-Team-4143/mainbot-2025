@@ -7,9 +7,9 @@ import frc.mw_lib.auto.Auto;
 import frc.robot.commands.AutoAlgaeReefPickup;
 import frc.robot.commands.AutoCoralReefScore;
 import frc.robot.subsystems.Claw;
+import frc.robot.subsystems.Claw.ClawMode;
 import frc.robot.subsystems.Elevator;
 import frc.robot.subsystems.GameStateManager;
-import frc.robot.subsystems.Claw.ClawMode;
 import frc.robot.subsystems.GameStateManager.Column;
 import frc.robot.subsystems.GameStateManager.ReefScoringTarget;
 
@@ -33,28 +33,34 @@ public class H4_Algae extends Auto {
         new AutoAlgaeReefPickup(),
 
         // Go to barge
-        this.getTrajectoryCmd("GH To Barge").alongWith(
-        new WaitCommand(0.25)).andThen(
-        Commands.runOnce(() -> Elevator.getInstance().setTarget(TargetType.BARGE))),
+        this.getTrajectoryCmd("GH To Barge", Elevator.getInstance())
+            .alongWith(
+                new WaitCommand(0.25)
+                    .andThen(
+                        Commands.runOnce(
+                            () -> Elevator.getInstance().setTarget(TargetType.BARGE)))),
 
         // score piece 2
-        Commands.run(() -> Claw.getInstance().setClawMode(ClawMode.SHOOT)).withTimeout(1),
+        Commands.run(() -> Claw.getInstance().setClawMode(ClawMode.SHOOT), Elevator.getInstance())
+            .withTimeout(1),
 
         // get game piece 3
-        this.getTrajectoryCmd("Barge to IJ").alongWith(
-        new WaitCommand(0.25)).andThen(
-        Commands.runOnce(() -> Elevator.getInstance().setTarget(TargetType.ALGAE_HIGH))),
+        this.getTrajectoryCmd("Barge to IJ", Elevator.getInstance())
+            .alongWith(new WaitCommand(0.25))
+            .andThen(
+                Commands.runOnce(() -> Elevator.getInstance().setTarget(TargetType.ALGAE_HIGH))),
         new AutoAlgaeReefPickup(),
 
-        //Go to barge
-        this.getTrajectoryCmd("IJ to Barge").alongWith(
-          new WaitCommand(0.25)).andThen(
-          Commands.runOnce(() -> Elevator.getInstance().setTarget(TargetType.BARGE))),
+        // Go to barge
+        this.getTrajectoryCmd("IJ to Barge", Elevator.getInstance())
+            .alongWith(new WaitCommand(0.25))
+            .andThen(Commands.runOnce(() -> Elevator.getInstance().setTarget(TargetType.BARGE))),
 
         // score piece 3
-        Commands.run(() -> Claw.getInstance().setClawMode(ClawMode.SHOOT)).withTimeout(1),
-
-        this.getTrajectoryCmd("Barge to IJ").alongWith(Commands.runOnce(() -> Elevator.getInstance().setTarget(TargetType.ALGAE_STOW)))
-    );
+        Commands.run(() -> Claw.getInstance().setClawMode(ClawMode.SHOOT), Elevator.getInstance())
+            .withTimeout(1),
+        this.getTrajectoryCmd("Barge to IJ", Elevator.getInstance())
+            .alongWith(
+                Commands.runOnce(() -> Elevator.getInstance().setTarget(TargetType.ALGAE_STOW))));
   }
 }
