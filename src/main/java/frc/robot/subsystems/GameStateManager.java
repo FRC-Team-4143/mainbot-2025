@@ -114,6 +114,12 @@ public class GameStateManager extends Subsystem {
     switch (io_.robot_state_) {
       case TARGET_ACQUISITION:
         io_.reef_target_ = reefPose(io_.target_column_);
+        if (io_.scoring_target_ == ReefScoringTarget.L2
+            || io_.scoring_target_ == ReefScoringTarget.L3) {
+          Claw.getInstance().enableBlastMode();
+        } else {
+          Claw.getInstance().disableBlastMode();
+        }
         if (io_.scoring_target_ == ReefScoringTarget.L1) {
           SwerveDrivetrain.getInstance().setTargetRotation(io_.reef_target_.get().getRotation());
           Elevator.getInstance().setTarget(elevatorTargetSwitch());
@@ -144,7 +150,6 @@ public class GameStateManager extends Subsystem {
             double waitToScoreTime = 0.0;
             if (io_.scoring_target_ == ReefScoringTarget.L2
                 || io_.scoring_target_ == ReefScoringTarget.L3) {
-              Claw.getInstance().enableBlastMode();
               waitToScoreTime = GameStateManagerConstants.L2_L3_WAIT_TIME;
             }
             CommandScheduler.getInstance()

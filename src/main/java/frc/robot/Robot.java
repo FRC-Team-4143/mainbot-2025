@@ -18,6 +18,7 @@ import frc.mw_lib.logging.Elastic;
 import frc.mw_lib.proxy_server.ProxyServer;
 import frc.robot.autos.*;
 import frc.robot.commands.L4Hang;
+import frc.robot.commands.SetDefaultStow;
 import frc.robot.subsystems.Elevator;
 import frc.robot.subsystems.GameStateManager;
 import frc.robot.subsystems.GameStateManager.RobotState;
@@ -65,6 +66,9 @@ public class Robot extends TimedRobot {
     if (GameStateManager.getInstance().getRobotState() != RobotState.END) {
       GameStateManager.getInstance().setRobotState(RobotState.END);
     }
+
+    if (Elevator.getInstance().getDefaultCommand() == null)
+      Elevator.getInstance().setDefaultCommand(new SetDefaultStow());
   }
 
   @Override
