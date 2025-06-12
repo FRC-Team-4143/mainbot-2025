@@ -380,4 +380,19 @@ public final class Constants {
     public static final Rotation3d DISPLAY_ROTATION =
         new Rotation3d(0, Units.degreesToRadians(0), 0);
   }
+
+  public class ReefControlsConstants {
+    private static final String toRobotTable = "/ReefControls/ToRobot";
+    private static final String toDashboardTable = "/ReefControls/ToDashboard";
+    private static final String selectedLevelTopicName = "SelectedLevel";
+    private static final String l1TopicName = "Level1";
+    private static final String l2TopicName = "Level2";
+    private static final String l3TopicName = "Level3";
+    private static final String l4TopicName = "Level4";
+    private static final String algaeTopicName = "Algae";
+    private static final String coopTopicName = "Coop";
+    private static final String isElimsTopicName = "IsElims";
+
+    
+  }
 }
