@@ -7,7 +7,7 @@ import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 
-public abstract class MathUtil {
+public abstract class NumUtil {
   public static boolean epislonEquals(double x, double y, double epislon) {
     return Math.abs(x - y) < epislon;
   }

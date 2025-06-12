@@ -22,7 +22,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Commands;
 import frc.mw_lib.drivers.SimTof;
 import frc.mw_lib.subsystem.Subsystem;
-import frc.mw_lib.util.MathUtil;
+import frc.mw_lib.util.NumUtil;
 import frc.robot.Constants.PickupConstants;
 import frc.robot.commands.SetDefaultPickup;
 import monologue.Annotations.Log;
@@ -205,7 +205,7 @@ public class Pickup extends Subsystem {
   }
 
   public boolean isAtTarget() {
-    return MathUtil.epislonEquals(
+    return NumUtil.epislonEquals(
         io_.current_pivot_angle_, io_.target_pivot_angle_, PickupConstants.PIVOT_THRESHOLD);
   }
 

@@ -18,7 +18,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.mw_lib.proxy_server.PieceDetectionPacket.PieceDetection;
 import frc.mw_lib.proxy_server.ProxyServer;
 import frc.mw_lib.subsystem.Subsystem;
-import frc.mw_lib.util.MathUtil;
+import frc.mw_lib.util.NumUtil;
 import frc.robot.Constants;
 import frc.robot.Constants.CoralDetectorConstants;
 import monologue.Annotations.Log;
@@ -60,7 +60,7 @@ public class CoralDetector extends Subsystem {
             .getStructTopic("CoralDetector/Coral Pose", Pose3d.struct)
             .publish();
 
-    bot_to_cam_tf_ = MathUtil.flatten(CoralDetectorConstants.BOT_TO_CAM_TRANSFORM);
+    bot_to_cam_tf_ = NumUtil.flatten(CoralDetectorConstants.BOT_TO_CAM_TRANSFORM);
 
     // Call reset last in subsystem configuration
     reset();
