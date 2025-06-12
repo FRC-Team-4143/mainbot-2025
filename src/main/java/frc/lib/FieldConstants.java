@@ -11,6 +11,7 @@ import edu.wpi.first.math.geometry.*;
 import edu.wpi.first.math.util.Units;
 import frc.lib.AllianceFlipUtil.SymmetryType;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -157,16 +158,25 @@ public class FieldConstants {
   }
 
   public enum ReefHeight {
-    L4(Units.inchesToMeters(72), Rotation2d.fromDegrees(-90)),
-    L3(Units.inchesToMeters(47.625), Rotation2d.fromDegrees(-35)),
-    L2(Units.inchesToMeters(31.875), Rotation2d.fromDegrees(-35)),
-    L1(Units.inchesToMeters(18), Rotation2d.fromDegrees(0));
+    L4(3, Units.inchesToMeters(72), Rotation2d.fromDegrees(-90)),
+    L3(2, Units.inchesToMeters(47.625), Rotation2d.fromDegrees(-35)),
+    L2(1, Units.inchesToMeters(31.875), Rotation2d.fromDegrees(-35)),
+    L1(0, Units.inchesToMeters(18), Rotation2d.fromDegrees(0));
 
-    ReefHeight(double height, Rotation2d pitch) {
+    ReefHeight(int level_number, double height, Rotation2d pitch) {
+      this.LEVEL_NUMBER = level_number;
       this.HEIGHT = height;
       this.PITCH = pitch; // in degrees
     }
 
+    public static ReefHeight fromLevel(int level) {
+      return Arrays.stream(values())
+          .filter(height -> height.ordinal() == level)
+          .findFirst()
+          .orElse(L4);
+    }
+
+    public final int LEVEL_NUMBER;
     public final double HEIGHT;
     public final Rotation2d PITCH;
   }

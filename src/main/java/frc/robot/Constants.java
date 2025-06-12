@@ -382,16 +382,16 @@ public final class Constants {
   }
 
   public class ReefControlsConstants {
-    public static final String toRobotTable = "/ReefControls/ToRobot";
-    public static final String toDashboardTable = "/ReefControls/ToDashboard";
-    public static final String selectedLevelTopicName = "SelectedLevel";
-    public static final String l1TopicName = "Level1";
-    public static final String l2TopicName = "Level2";
-    public static final String l3TopicName = "Level3";
-    public static final String l4TopicName = "Level4";
-    public static final String algaeTopicName = "Algae";
-    public static final String coopTopicName = "Coop";
-    public static final String isElimsTopicName = "IsElims";
-    public static final int port = 5802;
+    public static final String TO_ROBOT_TABLE = "/ReefControls/ToRobot";
+    public static final String TO_DASHBOARD_TABLE = "/ReefControls/ToDashboard";
+    public static final String SELECTED_LEVEL_TOPIC_NAME = "SelectedLevel";
+    public static final String L1_TOPIC_NAME = "Level1";
+    public static final String L2_TOPIC_NAME = "Level2";
+    public static final String L3_TOPIC_NAME = "Level3";
+    public static final String L4_TOPIC_NAME = "Level4";
+    public static final String ALGAE_TOPIC_NAME = "Algae";
+    public static final String COOP_TOPIC_NAME = "Coop";
+    public static final String IS_ELIMS_TOPIC_NAME = "IsElims";
+    public static final int PORT = 5802;
   }
 }
