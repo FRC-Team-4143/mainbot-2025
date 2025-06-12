@@ -14,7 +14,7 @@ import frc.lib.ElevatorTargets.TargetType;
 import frc.lib.FieldRegions;
 import frc.lib.ScoringPoses;
 import frc.mw_lib.subsystem.Subsystem;
-import frc.mw_lib.util.Util;
+import frc.mw_lib.util.MathUtil;
 import frc.robot.Constants;
 import frc.robot.Constants.GameStateManagerConstants;
 import frc.robot.commands.CoralEject;
@@ -129,7 +129,7 @@ public class GameStateManager extends Subsystem {
         break;
       case APPROACHING_TARGET:
         SwerveDrivetrain.getInstance().setTargetPose(io_.reef_target_.get());
-        if (Util.epislonEquals(
+        if (MathUtil.epislonEquals(
             PoseEstimator.getInstance().getRobotPose().getRotation(),
             io_.reef_target_.get().getRotation(),
             Constants.GameStateManagerConstants.REQUIRED_ROTATION_FOR_ELEVATOR)) {

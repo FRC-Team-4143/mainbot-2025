@@ -8,8 +8,11 @@
 package frc.lib;
 
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.geometry.Translation3d;
 import frc.mw_lib.geometry.CircularRegion;
 import frc.mw_lib.geometry.PolygonRegion;
 import frc.mw_lib.geometry.Region;
@@ -37,6 +40,23 @@ public class AllianceFlipUtil {
     }
   }
 
+  public static Translation3d apply(Translation3d translation, SymmetryType symmetry) {
+    if (symmetry == SymmetryType.DIAGONAL) {
+      return translation.rotateAround(
+          new Translation3d(FieldConstants.FIELD_CENTER),
+          new Rotation3d(Rotation2d.fromDegrees(180)));
+    } else {
+      double distToMid = Math.abs(translation.getX() - FieldConstants.FIELD_CENTER.getX());
+      double offset = 0;
+      if (translation.getX() < FieldConstants.FIELD_CENTER.getX()) {
+        offset = distToMid * 2;
+      } else {
+        offset = -(distToMid * 2);
+      }
+      return new Translation3d(translation.getX() + offset, translation.getY(), translation.getZ());
+    }
+  }
+
   public static Pose2d apply(Pose2d pose, SymmetryType symmetry) {
     if (symmetry == SymmetryType.DIAGONAL) {
       return new Pose2d(
@@ -46,6 +66,18 @@ public class AllianceFlipUtil {
       return new Pose2d(
           apply(pose.getTranslation(), symmetry),
           pose.getRotation().rotateBy(Rotation2d.fromDegrees(180)));
+    }
+  }
+
+  public static Pose3d apply(Pose3d pose, SymmetryType symmetry) {
+    if (symmetry == SymmetryType.DIAGONAL) {
+      return new Pose3d(
+          apply(pose.getTranslation(), symmetry),
+          pose.getRotation().rotateBy(new Rotation3d(Rotation2d.fromDegrees(180))));
+    } else {
+      return new Pose3d(
+          apply(pose.getTranslation(), symmetry),
+          pose.getRotation().rotateBy(new Rotation3d(Rotation2d.fromDegrees(180))));
     }
   }
 
