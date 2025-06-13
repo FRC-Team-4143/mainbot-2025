@@ -352,7 +352,6 @@ public class ReefObserver extends Subsystem {
                         0.0,
                         ((i % 2 == 0) ? second_branch_pose.getZ() - first_branch_pose.getZ() : 0.0)
                             + Units.inchesToMeters(-0.7)));
-        pose = AllianceFlipUtil.apply(pose, FieldConstants.SYMMETRY_TYPE);
         algae_poses.add(
             (DriverStation.getAlliance().orElse(Alliance.Blue) == Alliance.Blue)
                 ? pose
