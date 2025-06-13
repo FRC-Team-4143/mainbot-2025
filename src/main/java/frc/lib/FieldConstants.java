@@ -158,10 +158,10 @@ public class FieldConstants {
   }
 
   public enum ReefHeight {
-    L4(3, Units.inchesToMeters(72), Rotation2d.fromDegrees(-90)),
-    L3(2, Units.inchesToMeters(47.625), Rotation2d.fromDegrees(-35)),
+    L1(0, Units.inchesToMeters(18), Rotation2d.fromDegrees(0)),
     L2(1, Units.inchesToMeters(31.875), Rotation2d.fromDegrees(-35)),
-    L1(0, Units.inchesToMeters(18), Rotation2d.fromDegrees(0));
+    L3(2, Units.inchesToMeters(47.625), Rotation2d.fromDegrees(-35)),
+    L4(3, Units.inchesToMeters(72), Rotation2d.fromDegrees(-90));
 
     ReefHeight(int level_number, double height, Rotation2d pitch) {
       this.LEVEL_NUMBER = level_number;
