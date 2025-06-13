@@ -302,63 +302,66 @@ public class ReefObserver extends Subsystem {
         || io_.coop_state_ != io_.previous_coop_state_) {
       io_.previous_reef_state_ = io_.reef_state_.clone();
       io_.previous_coop_state_ = io_.coop_state_;
+      publishReefState();
+    }
+  }
 
-      // Show state of reef in 3d
-      Set<Pose3d> coral_poses = new HashSet<>();
-      for (int level = 0; level < io_.reef_state_.coral().length; level++) {
-        for (int j = 0; j < io_.reef_state_.coral()[0].length; j++) {
-          if (!io_.reef_state_.coral()[level][j]) continue;
-          Pose3d pose =
-              FieldConstants.Reef.BRANCH_POSITIONS
-                  .get(j)
-                  .get(ReefHeight.fromLevel(level + 1))
-                  .transformBy(
-                      GeomUtil.toTransform3d(
-                          new Pose3d(
-                              level == 2
-                                  ? new Translation3d(
-                                      -Units.inchesToMeters(6.5), 0, Units.inchesToMeters(0.9))
-                                  : new Translation3d(
-                                      Units.inchesToMeters(-4.5), 0.0, Units.inchesToMeters(-1.2)),
-                              level == 2
-                                  ? new Rotation3d(0, Units.degreesToRadians(20), 0)
-                                  : Rotation3d.kZero)));
-          coral_poses.add(
-              (DriverStation.getAlliance().orElse(Alliance.Blue) == Alliance.Blue)
-                  ? pose
-                  : AllianceFlipUtil.apply(pose, FieldConstants.SYMMETRY_TYPE));
-        }
-      }
-      coral_pub_.set(coral_poses.toArray(Pose3d[]::new));
-
-      Set<Translation3d> algae_poses = new HashSet<>();
-      for (int i = 0; i < 6; i++) {
-        if (!io_.reef_state_.algae()[i]) continue;
-        var first_branch_pose = FieldConstants.Reef.BRANCH_POSITIONS.get(i * 2).get(ReefHeight.L2);
-        var second_branch_pose =
-            FieldConstants.Reef.BRANCH_POSITIONS.get(i * 2 + 1).get(ReefHeight.L3);
-        Translation3d pose =
-            first_branch_pose
-                .getTranslation()
-                .interpolate(second_branch_pose.getTranslation(), 0.5)
-                .plus(
-                    new Translation3d(
-                        -FieldConstants.ALGAE_DIAMETER / 3.0,
-                        new Rotation3d(
-                            0.0, -35.0 / 180.0 * Math.PI, first_branch_pose.getRotation().getZ())))
-                .plus(
-                    new Translation3d(
-                        0.0,
-                        0.0,
-                        ((i % 2 == 0) ? second_branch_pose.getZ() - first_branch_pose.getZ() : 0.0)
-                            + Units.inchesToMeters(-0.7)));
-        algae_poses.add(
+  public void publishReefState() {
+    // Show state of reef in 3d
+    Set<Pose3d> coral_poses = new HashSet<>();
+    for (int level = 0; level < io_.reef_state_.coral().length; level++) {
+      for (int j = 0; j < io_.reef_state_.coral()[0].length; j++) {
+        if (!io_.reef_state_.coral()[level][j]) continue;
+        Pose3d pose =
+            FieldConstants.Reef.BRANCH_POSITIONS
+                .get(j)
+                .get(ReefHeight.fromLevel(level + 1))
+                .transformBy(
+                    GeomUtil.toTransform3d(
+                        new Pose3d(
+                            level == 2
+                                ? new Translation3d(
+                                    -Units.inchesToMeters(6.5), 0, Units.inchesToMeters(0.9))
+                                : new Translation3d(
+                                    Units.inchesToMeters(-4.5), 0.0, Units.inchesToMeters(-1.2)),
+                            level == 2
+                                ? new Rotation3d(0, Units.degreesToRadians(20), 0)
+                                : Rotation3d.kZero)));
+        coral_poses.add(
             (DriverStation.getAlliance().orElse(Alliance.Blue) == Alliance.Blue)
                 ? pose
                 : AllianceFlipUtil.apply(pose, FieldConstants.SYMMETRY_TYPE));
       }
-      algae_pub_.set(algae_poses.toArray(Translation3d[]::new));
     }
+    coral_pub_.set(coral_poses.toArray(Pose3d[]::new));
+
+    Set<Translation3d> algae_poses = new HashSet<>();
+    for (int i = 0; i < 6; i++) {
+      if (!io_.reef_state_.algae()[i]) continue;
+      var first_branch_pose = FieldConstants.Reef.BRANCH_POSITIONS.get(i * 2).get(ReefHeight.L2);
+      var second_branch_pose =
+          FieldConstants.Reef.BRANCH_POSITIONS.get(i * 2 + 1).get(ReefHeight.L3);
+      Translation3d pose =
+          first_branch_pose
+              .getTranslation()
+              .interpolate(second_branch_pose.getTranslation(), 0.5)
+              .plus(
+                  new Translation3d(
+                      -FieldConstants.ALGAE_DIAMETER / 3.0,
+                      new Rotation3d(
+                          0.0, -35.0 / 180.0 * Math.PI, first_branch_pose.getRotation().getZ())))
+              .plus(
+                  new Translation3d(
+                      0.0,
+                      0.0,
+                      ((i % 2 == 0) ? second_branch_pose.getZ() - first_branch_pose.getZ() : 0.0)
+                          + Units.inchesToMeters(-0.7)));
+      algae_poses.add(
+          (DriverStation.getAlliance().orElse(Alliance.Blue) == Alliance.Blue)
+              ? pose
+              : AllianceFlipUtil.apply(pose, FieldConstants.SYMMETRY_TYPE));
+    }
+    algae_pub_.set(algae_poses.toArray(Translation3d[]::new));
   }
 
   private void setSelectedLevel(int value) {

@@ -21,6 +21,7 @@ import frc.robot.commands.L4Hang;
 import frc.robot.subsystems.Elevator;
 import frc.robot.subsystems.GameStateManager;
 import frc.robot.subsystems.GameStateManager.RobotState;
+import frc.robot.subsystems.ReefObserver;
 import frc.robot.subsystems.SwerveDrivetrain;
 import frc.robot.subsystems.SwerveDrivetrain.DriveMode;
 import java.util.Optional;
@@ -83,6 +84,8 @@ public class Robot extends TimedRobot {
                     : SwerveDrivetrain.getInstance().BLUE_ALLIANCE_HEADING);
         // Flip Field Regions
         FieldRegions.flipRegions();
+        // Update Reef Observer
+        ReefObserver.getInstance().publishReefState();
       }
     }
   }
