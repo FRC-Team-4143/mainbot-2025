@@ -361,35 +361,35 @@ public class ReefObserver extends Subsystem {
     }
   }
 
-  public void setSelectedLevel(int value) {
+  private void setSelectedLevel(int value) {
     selected_level_out_.set(value);
   }
 
-  public void setLevel1State(int value) {
+  private void setLevel1State(int value) {
     l1_state_out_.set(value);
   }
 
-  public void setLevel2State(int value) {
+  private void setLevel2State(int value) {
     l2_state_out_.set(value);
   }
 
-  public void setLevel3State(int value) {
+  private void setLevel3State(int value) {
     l3_state_out_.set(value);
   }
 
-  public void setLevel4State(int value) {
+  private void setLevel4State(int value) {
     l4_state_out_.set(value);
   }
 
-  public void setAlgaeState(int value) {
+  private void setAlgaeState(int value) {
     algae_state_out_.set(value);
   }
 
-  public void setCoopState(boolean value) {
+  private void setCoopState(boolean value) {
     coop_state_out_.set(value);
   }
 
-  public void setElims(boolean isElims) {
+  private void setElims(boolean isElims) {
     is_elims_out_.set(isElims);
   }
 
