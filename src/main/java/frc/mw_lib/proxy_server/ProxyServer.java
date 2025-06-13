@@ -11,7 +11,7 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import frc.mw_lib.proxy_server.PieceDetectionPacket.PieceDetection;
 import frc.mw_lib.proxy_server.TagSolutionPacket.TagSolution;
-import frc.mw_lib.util.Util;
+import frc.mw_lib.util.NumUtil;
 import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
@@ -211,7 +211,7 @@ public class ProxyServer {
    * @param tag_name flag name to record in log
    */
   public static void snapshot(String tag_name) {
-    int tag_name_length = (int) Util.clamp(tag_name.length(), 400);
+    int tag_name_length = (int) NumUtil.clamp(tag_name.length(), 400);
     byte[] buffer = new byte[1 + tag_name_length];
     buffer[0] = 52; // Message ID
     for (int i = 0; i < tag_name_length; i++) {

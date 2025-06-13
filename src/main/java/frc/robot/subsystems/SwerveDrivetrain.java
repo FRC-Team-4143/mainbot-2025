@@ -37,7 +37,7 @@ import frc.mw_lib.subsystem.Subsystem;
 import frc.mw_lib.swerve.*;
 import frc.mw_lib.swerve.SwerveRequest.ForwardReference;
 import frc.mw_lib.swerve.SwerveRequest.SwerveControlRequestParameters;
-import frc.mw_lib.util.Util;
+import frc.mw_lib.util.NumUtil;
 import frc.robot.Constants;
 import frc.robot.Constants.DrivetrainConstants;
 import frc.robot.OI;
@@ -341,7 +341,7 @@ public class SwerveDrivetrain extends Subsystem {
   public synchronized void updateLogic(double timestamp) {
     io_.failing_to_reach_target =
         stallingDebouncer.calculate(
-            !Util.epislonEquals(
+            !NumUtil.epislonEquals(
                 io_.current_chassis_speeds_,
                 io_.requested_chassis_speeds_,
                 Constants.DrivetrainConstants.FAILING_TO_REACH_TARGET_SPEEDS_TOLERANCE));
@@ -383,12 +383,12 @@ public class SwerveDrivetrain extends Subsystem {
               field_centric_target_facing_
                   // Drive forward with negative Y (forward)
                   .withVelocityX(
-                      Util.clamp(
+                      NumUtil.clamp(
                           -io_.joystick_left_y_ * io_.active_max_speed,
                           DrivetrainConstants.MAX_TARGET_SPEED))
                   // Drive left with negative X (left)
                   .withVelocityY(
-                      Util.clamp(
+                      NumUtil.clamp(
                           -io_.joystick_left_x_ * io_.active_max_speed,
                           DrivetrainConstants.MAX_TARGET_SPEED))
                   // Set Robots target rotation
@@ -439,11 +439,13 @@ public class SwerveDrivetrain extends Subsystem {
           this.setControl(
               auto_request_
                   .withVelocityX(
-                      Util.clamp(x_velocity, DrivetrainConstants.MAX_TRACTOR_BEAM_VELOCITY_SPEED))
+                      NumUtil.clamp(
+                          x_velocity, DrivetrainConstants.MAX_TRACTOR_BEAM_VELOCITY_SPEED))
                   .withVelocityY(
-                      Util.clamp(y_velocity, DrivetrainConstants.MAX_TRACTOR_BEAM_VELOCITY_SPEED))
+                      NumUtil.clamp(
+                          y_velocity, DrivetrainConstants.MAX_TRACTOR_BEAM_VELOCITY_SPEED))
                   .withRotationalRate(
-                      Util.clamp(omega, DrivetrainConstants.MAX_TRACTOR_BEAM_OMEGA_SPEED)));
+                      NumUtil.clamp(omega, DrivetrainConstants.MAX_TRACTOR_BEAM_OMEGA_SPEED)));
         }
         break;
       case FOLLOW_POINT:
@@ -471,11 +473,13 @@ public class SwerveDrivetrain extends Subsystem {
           this.setControl(
               auto_request_
                   .withVelocityX(
-                      Util.clamp(x_velocity, DrivetrainConstants.MAX_TRACTOR_BEAM_VELOCITY_SPEED))
+                      NumUtil.clamp(
+                          x_velocity, DrivetrainConstants.MAX_TRACTOR_BEAM_VELOCITY_SPEED))
                   .withVelocityY(
-                      Util.clamp(y_velocity, DrivetrainConstants.MAX_TRACTOR_BEAM_VELOCITY_SPEED))
+                      NumUtil.clamp(
+                          y_velocity, DrivetrainConstants.MAX_TRACTOR_BEAM_VELOCITY_SPEED))
                   .withRotationalRate(
-                      Util.clamp(omega, DrivetrainConstants.MAX_TRACTOR_BEAM_OMEGA_SPEED)));
+                      NumUtil.clamp(omega, DrivetrainConstants.MAX_TRACTOR_BEAM_OMEGA_SPEED)));
         }
         break;
       case TIGHT_ROPE:
@@ -503,9 +507,11 @@ public class SwerveDrivetrain extends Subsystem {
               field_centric_target_facing_
                   .withTargetDirection(io_.tight_rope_.poseA.getRotation())
                   .withVelocityX(
-                      Util.clamp(x_velocity, DrivetrainConstants.MAX_TRACTOR_BEAM_VELOCITY_SPEED))
+                      NumUtil.clamp(
+                          x_velocity, DrivetrainConstants.MAX_TRACTOR_BEAM_VELOCITY_SPEED))
                   .withVelocityY(
-                      Util.clamp(y_velocity, DrivetrainConstants.MAX_TRACTOR_BEAM_VELOCITY_SPEED)));
+                      NumUtil.clamp(
+                          y_velocity, DrivetrainConstants.MAX_TRACTOR_BEAM_VELOCITY_SPEED)));
         }
         break;
       case CRAWL:
@@ -727,11 +733,11 @@ public class SwerveDrivetrain extends Subsystem {
    */
   private Pose2d clampTargetPose(Pose2d p) {
     return new Pose2d(
-        Util.clamp(
+        MathUtil.clamp(
             p.getX(),
             DrivetrainConstants.TRACTOR_BEAM_SAFETY_DISTANCE,
             FieldConstants.FIELD_LENGTH - DrivetrainConstants.TRACTOR_BEAM_SAFETY_DISTANCE),
-        Util.clamp(
+        MathUtil.clamp(
             p.getY(),
             DrivetrainConstants.TRACTOR_BEAM_SAFETY_DISTANCE,
             FieldConstants.FIELD_WIDTH - DrivetrainConstants.TRACTOR_BEAM_SAFETY_DISTANCE),
@@ -744,17 +750,17 @@ public class SwerveDrivetrain extends Subsystem {
   public boolean atTractorBeamPose() {
     SmartDashboard.putBoolean(
         "TractorBeam In translation",
-        Util.epislonEquals(
+        NumUtil.epislonEquals(
             io_.current_pose_.getTranslation(),
             io_.target_pose_.getTranslation(),
             DrivetrainConstants.TRACTOR_BEAM_TARGET_DISTANCE));
     SmartDashboard.putBoolean(
         "TractorBeam In rotation",
-        Util.epislonEquals(
+        NumUtil.epislonEquals(
             io_.current_pose_.getRotation(),
             io_.target_pose_.getRotation(),
             DrivetrainConstants.TRACTOR_BEAM_ROTATION_THRESHOLD));
-    return Util.epislonEquals(
+    return NumUtil.epislonEquals(
         io_.current_pose_,
         io_.target_pose_,
         DrivetrainConstants.TRACTOR_BEAM_ROTATION_THRESHOLD,
