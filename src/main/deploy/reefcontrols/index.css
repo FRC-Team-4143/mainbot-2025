@@ -257,28 +257,41 @@ div.lower-section {
 
 div.lower-section div.subtract,
 div.lower-section div.add,
-div.lower-section div.coop {
+div.lower-section div.coop,
+div.lower-section div.rp-focus {
   top: 10%;
   height: 80%;
-  width: 25%;
+  width: 20%;
   border-radius: 5vh;
   border: 1px solid #333;
 }
 
 div.lower-section div.subtract {
-  left: 7%;
+  left: 5%;
 }
 
 div.lower-section div.add {
-  left: 34%;
+  left: 28%;
 }
 
 div.lower-section div.coop {
-  left: 68%;
+  left: 51%;
+}
+
+div.lower-section div.rp-focus {
+  left: 74%;
 }
 
 div.lower-section div.coop.active {
   background-color: #00b7ff;
+}
+
+div.lower-section div.rp-focus {
+  background-color: #7a5757;
+}
+
+div.lower-section div.rp-focus.active {
+  background-color: #51cd43;
 }
 
 div.lower-section div.subtract div,
@@ -298,18 +311,31 @@ div.lower-section div.coop div {
   font-size: 12vh;
 }
 
+div.lower-section div.rp-focus div {
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 6vh;
+  font-weight:bold;
+  text-align:center;
+}
+
 div.lower-section div.coop.active div {
   display: initial;
 }
 
 body.elims div.lower-section div.subtract {
-  left: 24%;
+  left: 5%;
 }
 
 body.elims div.lower-section div.add {
-  left: 51%;
+  left: 28%;
 }
 
 body.elims div.lower-section div.coop {
+  display: none;
+}
+
+body.elims div.lower-section div.rp-focus {
   display: none;
 }

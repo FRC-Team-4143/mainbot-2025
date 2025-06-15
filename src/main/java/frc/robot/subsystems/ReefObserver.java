@@ -51,6 +51,7 @@ public class ReefObserver extends Subsystem {
     public int[] level_4_state = new int[] {}; // Bitfield
     public int[] algae_state = new int[] {}; // Bitfield
     public boolean[] coop_state = new boolean[] {}; // Boolean
+    public boolean[] rp_focus_state = new boolean[] {}; // Boolean
   }
 
   ReefControlInputs reef_control_inputs_ = new ReefControlInputs();
@@ -62,6 +63,7 @@ public class ReefObserver extends Subsystem {
   private final IntegerSubscriber l4_state_in_;
   private final IntegerSubscriber algae_state_in_;
   private final BooleanSubscriber coop_state_in_;
+  private final BooleanSubscriber rp_focus_state_in_;
 
   private final IntegerPublisher selected_level_out_;
   private final IntegerPublisher l1_state_out_;
@@ -71,6 +73,7 @@ public class ReefObserver extends Subsystem {
   private final IntegerPublisher algae_state_out_;
   private final BooleanPublisher coop_state_out_;
   private final BooleanPublisher is_elims_out_;
+  private final BooleanPublisher rp_focus_state_out_;
 
   private final StructArrayPublisher<Pose3d> coral_pub_;
   private final StructArrayPublisher<Translation3d> algae_pub_;
@@ -116,6 +119,10 @@ public class ReefObserver extends Subsystem {
         input_table_
             .getBooleanTopic(ReefControlsConstants.COOP_TOPIC_NAME)
             .subscribe(false, PubSubOption.keepDuplicates(true));
+    rp_focus_state_in_ =
+        input_table_
+            .getBooleanTopic(ReefControlsConstants.RP_FOCUS_TOPIC_NAME)
+            .subscribe(false, PubSubOption.keepDuplicates(true));
 
     // Create publishers
     var output_table_ =
@@ -151,6 +158,10 @@ public class ReefObserver extends Subsystem {
     is_elims_out_ =
         output_table_
             .getBooleanTopic(ReefControlsConstants.IS_ELIMS_TOPIC_NAME)
+            .publish(PubSubOption.keepDuplicates(true));
+    rp_focus_state_out_ =
+        output_table_
+            .getBooleanTopic(ReefControlsConstants.RP_FOCUS_TOPIC_NAME)
             .publish(PubSubOption.keepDuplicates(true));
 
     // Start web server
@@ -207,6 +218,10 @@ public class ReefObserver extends Subsystem {
         coop_state_in_.readQueue().length > 0
             ? new boolean[] {coop_state_in_.get()}
             : new boolean[] {};
+    reef_control_inputs_.rp_focus_state =
+        rp_focus_state_in_.readQueue().length > 0
+            ? new boolean[] {rp_focus_state_in_.get()}
+            : new boolean[] {};
   }
 
   /**
@@ -253,6 +268,9 @@ public class ReefObserver extends Subsystem {
     if (DriverStation.getMatchType() == MatchType.Elimination) {
       io_.coop_state_ = false;
     }
+    if (reef_control_inputs_.rp_focus_state.length > 0) {
+      io_.rp_focus_state_ = reef_control_inputs_.rp_focus_state[0];
+    }
   }
 
   /**
@@ -288,6 +306,7 @@ public class ReefObserver extends Subsystem {
     setAlgaeState(algae_state);
     setCoopState(io_.coop_state_);
     setElims(DriverStation.getMatchType() == MatchType.Elimination);
+    setRpFocusState(io_.rp_focus_state_);
   }
 
   /**
@@ -298,10 +317,8 @@ public class ReefObserver extends Subsystem {
    */
   @Override
   public void outputTelemetry(double timestamp) {
-    if (!io_.reef_state_.equals(io_.previous_reef_state_)
-        || io_.coop_state_ != io_.previous_coop_state_) {
+    if (!io_.reef_state_.equals(io_.previous_reef_state_)) {
       io_.previous_reef_state_ = io_.reef_state_.clone();
-      io_.previous_coop_state_ = io_.coop_state_;
       publishReefState();
     }
   }
@@ -396,12 +413,16 @@ public class ReefObserver extends Subsystem {
     is_elims_out_.set(isElims);
   }
 
+  private void setRpFocusState(boolean isRPFocus) {
+    rp_focus_state_out_.set(isRPFocus);
+  }
+
   public class ReefObserverPeriodicIo implements Logged {
     public ReefState reef_state_ = ReefState.initial;
     public ReefState previous_reef_state_ = null;
     public int selected_level_ = 0;
     public boolean coop_state_ = false;
-    public boolean previous_coop_state_ = false;
+    public boolean rp_focus_state_ = false;
   }
 
   @Override

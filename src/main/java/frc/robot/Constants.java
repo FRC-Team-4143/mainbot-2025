@@ -392,6 +392,7 @@ public final class Constants {
     public static final String ALGAE_TOPIC_NAME = "Algae";
     public static final String COOP_TOPIC_NAME = "Coop";
     public static final String IS_ELIMS_TOPIC_NAME = "IsElims";
+    public static final String RP_FOCUS_TOPIC_NAME = "RPFocus";
     public static final int PORT = 5802;
   }
 }

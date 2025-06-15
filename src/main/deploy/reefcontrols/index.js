@@ -18,6 +18,7 @@ const l3TopicName = "Level3";
 const l4TopicName = "Level4";
 const algaeTopicName = "Algae";
 const coopTopicName = "Coop";
+const rpFocusTopicName = "RPFocus";
 const isElimsTopicName = "IsElims";
 
 const ntClient = new NT4_Client(
@@ -47,6 +48,8 @@ const ntClient = new NT4_Client(
       coopState = value;
     } else if (topic.name === toDashboardPrefix + isElimsTopicName) {
       isElims = value;
+    } else if (topic.name === toDashboardPrefix + rpFocusTopicName) {
+      rpFocus = value;
     } else {
       return;
     }
@@ -73,6 +76,7 @@ window.addEventListener("load", () => {
       toDashboardPrefix + algaeTopicName,
       toDashboardPrefix + coopTopicName,
       toDashboardPrefix + isElimsTopicName,
+      toDashboardPrefix + rpFocusTopicName,
     ],
     false,
     false,
@@ -86,6 +90,7 @@ window.addEventListener("load", () => {
   ntClient.publishTopic(toRobotPrefix + l4TopicName, "int");
   ntClient.publishTopic(toRobotPrefix + algaeTopicName, "int");
   ntClient.publishTopic(toRobotPrefix + coopTopicName, "boolean");
+  ntClient.publishTopic(toRobotPrefix + rpFocusTopicName, "boolean");
   ntClient.connect();
 });
 
@@ -99,6 +104,7 @@ let l4State = 0; // Bitfield
 let algaeState = 0; // Bitfield
 let coopState = false; // Boolean
 let isElims = false; // Boolean
+let rpFocus = true; // Boolean
 
 /** Update the full UI based on the state cache. */
 function updateUI() {
@@ -176,6 +182,14 @@ function updateUI() {
     coopDiv.classList.add("active");
   } else {
     coopDiv.classList.remove("active");
+  }
+
+  // Update rp button
+  let rpFocusDiv = document.getElementsByClassName("rp-focus")[0];
+  if (rpFocus) {
+    rpFocusDiv.classList.remove("active");
+  } else {
+    rpFocusDiv.classList.add("active");
   }
 
   // Update RP flag
@@ -286,6 +300,11 @@ window.addEventListener("load", () => {
   // Coop button
   bind(document.getElementsByClassName("coop")[0], () => {
     ntClient.addSample(toRobotPrefix + coopTopicName, !coopState);
+  });
+
+  // RP Focus button
+  bind(document.getElementsByClassName("rp-focus")[0], () => {
+    ntClient.addSample(toRobotPrefix + rpFocusTopicName, !rpFocus);
   });
 });
 
