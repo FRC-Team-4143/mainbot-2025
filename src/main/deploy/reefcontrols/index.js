@@ -193,8 +193,13 @@ function updateUI() {
   }
 
   // Update RP flag
-  document.getElementsByClassName("flag")[0].hidden =
-    isElims || rpLevelCount < (coopState ? 3 : 4);
+  let rpFlag = document.getElementsByClassName("flag")[0];
+    if(isElims || rpLevelCount < (coopState ? 3 : 4)) {
+      rpFlag.hidden = true;
+    } else {
+      rpFlag.hidden = false;
+    }
+  
 
   // Update elims state
   if (isElims) {
