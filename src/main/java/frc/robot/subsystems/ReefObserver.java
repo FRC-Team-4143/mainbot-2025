@@ -20,6 +20,7 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.DriverStation.MatchType;
 import edu.wpi.first.wpilibj.Filesystem;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.lib.AllianceFlipUtil;
 import frc.lib.FieldConstants;
 import frc.lib.FieldConstants.ReefHeight;
@@ -317,6 +318,10 @@ public class ReefObserver extends Subsystem {
    */
   @Override
   public void outputTelemetry(double timestamp) {
+    // SmartDashboard.putBooleanArray("L3", getFace(3)[1]);
+    // SmartDashboard.putBooleanArray("L2", getFace(3)[0]);
+    // SmartDashboard.putBooleanArray("L4", getFace(3)[2]);
+
     if (!io_.reef_state_.equals(io_.previous_reef_state_)) {
       io_.previous_reef_state_ = io_.reef_state_.clone();
       publishReefState();
@@ -428,6 +433,27 @@ public class ReefObserver extends Subsystem {
   @Override
   public Logged getLoggingObject() {
     return io_;
+  }
+
+  public boolean[][] getFace(int id) {
+    boolean[][] grid = new boolean[3][2];
+    int baseIndex = id * 2;
+    grid[0][0] = !io_.reef_state_.coral[0][baseIndex + 1];
+    grid[0][1] = !io_.reef_state_.coral[0][baseIndex];
+    grid[1][0] = !io_.reef_state_.coral[1][baseIndex + 1];
+    grid[1][1] = !io_.reef_state_.coral[1][baseIndex];
+    grid[2][0] = !io_.reef_state_.coral[2][baseIndex + 1];
+    grid[2][1] = !io_.reef_state_.coral[2][baseIndex];
+
+    if (io_.reef_state_.algae[id]) {
+      grid[1][0] = false;
+      grid[1][1] = false;
+      if (id % 2 != 0) {
+        grid[0][0] = false;
+        grid[0][1] = false;
+      }
+    }
+    return grid;
   }
 
   private record ReefState(boolean[][] coral, boolean[] algae, int trough_count) {
