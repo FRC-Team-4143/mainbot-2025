@@ -55,10 +55,10 @@ public class GameStateManager extends Subsystem {
   }
 
   public enum ReefScoringTarget {
-    L1,
     L2,
     L3,
     L4,
+    L1,
     ALGAE,
     TURTLE,
     TELEOP_CONTROL
@@ -68,7 +68,41 @@ public class GameStateManager extends Subsystem {
     LEFT,
     RIGHT,
     CENTER,
-    ALGAE
+    ALGAE,
+  }
+
+  class GameStateTarget {
+    public Column column;
+    public ReefScoringTarget reef_target;
+
+
+    GameStateTarget(ReefScoringTarget t, Column c) {
+      column = c;
+      reef_target = t;
+    }
+
+    GameStateTarget(Column c, ReefScoringTarget t) {
+      column = c;
+      reef_target = t;
+    }
+
+    
+
+    public Column getColumn() {
+      return column;
+    }
+
+    public ReefScoringTarget getReefScoringTarget() {
+      return reef_target;
+    }
+
+    public void setColumn(Column c) {
+      column = c;
+    }
+
+    public void setReefScoringTarget(ReefScoringTarget t) {
+      reef_target = t;
+    }
   }
 
   private GameStateManager() {
@@ -257,6 +291,19 @@ public class GameStateManager extends Subsystem {
 
   public static Command setScoringCommand(Column col, ReefScoringTarget target) {
     return Commands.runOnce(() -> getInstance().setScoringObj(col, target, true));
+  }
+
+  public void setScoringObj(GameStateTarget t, boolean save) {
+    Column c = t.getColumn();
+    ReefScoringTarget target = t.getReefScoringTarget();
+    setScoringColum(c, save);
+    setScoringTarget(target, save);
+  }
+
+  public static Command setScoringCommand(GameStateTarget t) {
+    Column c = t.getColumn();
+    ReefScoringTarget target = t.getReefScoringTarget();
+    return Commands.runOnce(() -> getInstance().setScoringObj(c, target, true));
   }
 
   public ReefScoringTarget getSavedScoringTarget() {
