@@ -461,10 +461,11 @@ public class ReefObserver extends Subsystem {
   }
 
   public GameStateTarget findHighestPoint(boolean[][] grid) {
-    for (int i = 0; i < grid.length; i++) {
-      for (int j = 0; j < grid.length; j++) {
+    for (int i = 0; i < grid.length - 1; i++) {
+      for (int j = 0; j < grid.length - 1; j++) {
         if (grid[i][j]) {
-          return GameStateManager.getInstance().new GameStateTarget(Column.values()[j], ReefScoringTarget.values()[i]);
+          return GameStateManager.getInstance()
+          .new GameStateTarget(Column.values()[j], ReefScoringTarget.values()[i]);
         }
       }
     }
@@ -472,11 +473,12 @@ public class ReefObserver extends Subsystem {
   }
 
   public GameStateTarget findHighestRankingPoint(boolean[][] grid) {
-    for (int i = 0; i < grid.length; i++) {
+    for (int i = 0; i < grid.length - 1; i++) {
       int rowCount = countTrues(io_.reef_state_.coral[i]);
-      for (int j = 0; j < grid.length; j++) {
+      for (int j = 0; j < grid.length - 1; j++) {
         if (grid[i][j] && rowCount < Constants.ReefControlsConstants.CORAL_NEEDED_FOR_RP) {
-          return GameStateManager.getInstance().new GameStateTarget(Column.values()[j], ReefScoringTarget.values()[i]);
+          return GameStateManager.getInstance()
+          .new GameStateTarget(Column.values()[j], ReefScoringTarget.values()[i]);
         }
       }
     }
@@ -488,11 +490,9 @@ public class ReefObserver extends Subsystem {
     boolean[][] grid = getFace(currentFace);
     if (io_.rp_focus_state_ == true) {
       return findHighestRankingPoint(grid);
-    } 
+    }
     return findHighestPoint(grid);
   }
-
-
 
   public int countTrues(boolean[] array) {
     int count = 0;

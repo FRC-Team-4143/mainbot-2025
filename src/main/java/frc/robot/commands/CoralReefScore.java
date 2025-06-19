@@ -13,6 +13,7 @@ import frc.robot.subsystems.Elevator;
 import frc.robot.subsystems.GameStateManager;
 import frc.robot.subsystems.GameStateManager.RobotState;
 import frc.robot.subsystems.PoseEstimator;
+import frc.robot.subsystems.ReefObserver;
 
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
 public class CoralReefScore extends LazyCommand {
@@ -30,9 +31,7 @@ public class CoralReefScore extends LazyCommand {
     this.timerReset();
     GameStateManager.getInstance().setRobotState(RobotState.TARGET_ACQUISITION);
     GameStateManager.getInstance()
-        .setScoringTarget(GameStateManager.getInstance().getSavedScoringTarget(), true);
-    GameStateManager.getInstance()
-        .setScoringColum(GameStateManager.getInstance().getSavedScoringColum(), true);
+        .setScoringObj(ReefObserver.getInstance().findNextTarget(), false);
     Claw.getInstance().setGamePiece(GamePiece.CORAL);
     Claw.getInstance().setClawMode(ClawMode.IDLE);
   }
