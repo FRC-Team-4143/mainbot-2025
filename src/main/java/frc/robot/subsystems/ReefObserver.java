@@ -20,6 +20,7 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.DriverStation.MatchType;
 import edu.wpi.first.wpilibj.Filesystem;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.lib.AllianceFlipUtil;
 import frc.lib.FieldConstants;
 import frc.lib.FieldConstants.ReefHeight;
@@ -321,9 +322,10 @@ public class ReefObserver extends Subsystem {
    */
   @Override
   public void outputTelemetry(double timestamp) {
-    // SmartDashboard.putBooleanArray("L3", getFace(3)[1]);
-    // SmartDashboard.putBooleanArray("L2", getFace(3)[0]);
-    // SmartDashboard.putBooleanArray("L4", getFace(3)[2]);
+    SmartDashboard.putBooleanArray("L2", getFace(0)[0]);
+    SmartDashboard.putBooleanArray("L3", getFace(0)[1]);
+    SmartDashboard.putBooleanArray("L4", getFace(0)[2]);
+    SmartDashboard.putBoolean("RP Focus", io_.rp_focus_state_);
 
     if (!io_.reef_state_.equals(io_.previous_reef_state_)) {
       io_.previous_reef_state_ = io_.reef_state_.clone();
@@ -430,7 +432,7 @@ public class ReefObserver extends Subsystem {
     public ReefState previous_reef_state_ = null;
     public int selected_level_ = 0;
     public boolean coop_state_ = false;
-    public boolean rp_focus_state_ = false;
+    public boolean rp_focus_state_ = true;
   }
 
   @Override
@@ -461,8 +463,8 @@ public class ReefObserver extends Subsystem {
   }
 
   public GameStateTarget findHighestPoint(boolean[][] grid) {
-    for (int i = 0; i < grid.length - 1; i++) {
-      for (int j = 0; j < grid.length - 1; j++) {
+    for (int i = grid.length - 1; i >= 0; i--) {
+      for (int j = 0; j < grid[i].length; j++) {
         if (grid[i][j]) {
           return GameStateManager.getInstance()
           .new GameStateTarget(Column.values()[j], ReefScoringTarget.values()[i]);
@@ -473,9 +475,9 @@ public class ReefObserver extends Subsystem {
   }
 
   public GameStateTarget findHighestRankingPoint(boolean[][] grid) {
-    for (int i = 0; i < grid.length - 1; i++) {
+    for (int i = grid.length - 1; i >= 0; i--) {
       int rowCount = countTrues(io_.reef_state_.coral[i]);
-      for (int j = 0; j < grid.length - 1; j++) {
+      for (int j = 0; j < grid[i].length; j++) {
         if (grid[i][j] && rowCount < Constants.ReefControlsConstants.CORAL_NEEDED_FOR_RP) {
           return GameStateManager.getInstance()
           .new GameStateTarget(Column.values()[j], ReefScoringTarget.values()[i]);
@@ -505,6 +507,7 @@ public class ReefObserver extends Subsystem {
   }
 
   private record ReefState(boolean[][] coral, boolean[] algae, int trough_count) {
+
     public static final ReefState initial =
         new ReefState(
             new boolean[][] {
