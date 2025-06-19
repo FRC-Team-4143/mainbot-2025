@@ -314,6 +314,7 @@ public class GameStateManager extends Subsystem {
     return io_.saved_target_column_;
   }
 
+
   /**
    * Returns a target pose when robot is in an reef region If not in a region empty is returned.
    * Also adjust to the provided column

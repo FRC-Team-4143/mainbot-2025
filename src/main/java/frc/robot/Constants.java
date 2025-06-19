@@ -394,5 +394,6 @@ public final class Constants {
     public static final String IS_ELIMS_TOPIC_NAME = "IsElims";
     public static final String RP_FOCUS_TOPIC_NAME = "RPFocus";
     public static final int PORT = 5802;
+    public static final int CORAL_NEEDED_FOR_RP = 5;
   }
 }

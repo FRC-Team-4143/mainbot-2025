@@ -483,6 +483,17 @@ public class ReefObserver extends Subsystem {
     return GameStateManager.getInstance().new GameStateTarget(ReefScoringTarget.L1, Column.CENTER);
   }
 
+  public GameStateTarget findNextTarget() {
+    int currentFace = PoseEstimator.getInstance().reefPoseInt();
+    boolean[][] grid = getFace(currentFace);
+    if (io_.rp_focus_state_ == true) {
+      return findHighestRankingPoint(grid);
+    } 
+    return findHighestPoint(grid);
+  }
+
+
+
   public int countTrues(boolean[] array) {
     int count = 0;
     for (int i = 0; i < array.length; i++) {
