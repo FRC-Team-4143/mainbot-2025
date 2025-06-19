@@ -216,6 +216,18 @@ public class PoseEstimator extends Subsystem {
     return Optional.empty();
   }
 
+  public int reefPoseInt() {
+    int number = -1;
+    Region region;
+    if (reefPose().isPresent()) {
+      region = reefPose().get();
+    } else {
+      return -1;
+    }
+    number = FieldRegions.REEF_REGIONS.indexOf(region);
+    return number;
+  }
+
   public class PoseEstimatorPeriodicIo implements Logged {
     @Log.File public Pose2d filtered_vision_pose_ = new Pose2d();
     @Log.File public Optional<Pose2d> raw_vision_pose_ = Optional.empty();
