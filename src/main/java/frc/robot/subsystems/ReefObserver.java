@@ -506,6 +506,72 @@ public class ReefObserver extends Subsystem {
     return count;
   }
 
+  public void updateReefState(GameStateTarget target) {
+
+    int col = 0;
+    if (target.getReefScoringTarget() == ReefScoringTarget.ALGAE) {
+      col = PoseEstimator.getInstance().reefPoseInt();
+      if (col > 5) {
+        col -= 6;
+      }
+      io_.reef_state_.algae[col] = false;
+
+    } else {
+      int row = 0;
+      if (target.getColumn() == Column.LEFT) {
+        col++;
+      }
+      switch (PoseEstimator.getInstance().reefPoseInt()) {
+        case 1:
+          col += 2;
+          break;
+        case 2:
+          col += 4;
+          break;
+        case 3:
+          col += 6;
+          break;
+        case 4:
+          col += 8;
+          break;
+        case 5:
+          col += 10;
+          break;
+        case 7:
+          col += 2;
+          break;
+        case 8:
+          col += 4;
+          break;
+        case 9:
+          col += 6;
+          break;
+        case 10:
+          col += 8;
+          break;
+        case 11:
+          col += 10;
+          break;
+        default:
+          break;
+      }
+      switch (target.getReefScoringTarget()) {
+        case L2:
+          row = 0;
+          break;
+        case L3:
+          row = 1;
+          break;
+        case L4:
+          row = 2;
+          break;
+        default:
+          break;
+      }
+      io_.reef_state_.coral[row][col] = true;
+    }
+  }
+
   private record ReefState(boolean[][] coral, boolean[] algae, int trough_count) {
 
     public static final ReefState initial =

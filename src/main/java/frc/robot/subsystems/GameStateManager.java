@@ -184,12 +184,15 @@ public class GameStateManager extends Subsystem {
                         .withTimeout(0.25)
                         .beforeStarting(new WaitCommand(waitToScoreTime)));
           }
+          ReefObserver.getInstance()
+              .updateReefState(new GameStateTarget(io_.target_column_, io_.scoring_target_));
           io_.robot_state_ = RobotState.SCORING;
         }
         break;
       case SCORING:
         if (!inExitRegion()) {
           // wait until you leave the exit Circle
+
           io_.robot_state_ = RobotState.END;
         }
         break;
