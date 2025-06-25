@@ -115,8 +115,6 @@ public abstract class OI {
         .y()
         .onTrue(SwerveDrivetrain.getInstance().toggleFieldCentric().ignoringDisable(true));
 
-
-
     // Crawl
     driver_pov_active_.whileTrue(
         Commands.startEnd(
@@ -202,9 +200,9 @@ public abstract class OI {
                 .ignoringDisable(true));
 
     // Manual Override for loading
-    operator_controller_.rightTrigger().whileTrue(new OverrideLoad());
+    driver_controller_.x().whileTrue(new OverrideLoad());
     // Manual Override for intake flush
-    operator_controller_.leftTrigger().whileTrue(new OverrideFlush());
+    driver_controller_.a().whileTrue(new OverrideFlush());
 
     operator_controller_
         .start()

@@ -75,7 +75,6 @@ public class GameStateManager extends Subsystem {
     public Column column;
     public ReefScoringTarget reef_target;
 
-
     GameStateTarget(ReefScoringTarget t, Column c) {
       column = c;
       reef_target = t;
@@ -85,8 +84,6 @@ public class GameStateManager extends Subsystem {
       column = c;
       reef_target = t;
     }
-
-    
 
     public Column getColumn() {
       return column;
@@ -187,12 +184,15 @@ public class GameStateManager extends Subsystem {
                         .withTimeout(0.25)
                         .beforeStarting(new WaitCommand(waitToScoreTime)));
           }
+          ReefObserver.getInstance()
+              .updateReefState(new GameStateTarget(io_.target_column_, io_.scoring_target_));
           io_.robot_state_ = RobotState.SCORING;
         }
         break;
       case SCORING:
         if (!inExitRegion()) {
           // wait until you leave the exit Circle
+
           io_.robot_state_ = RobotState.END;
         }
         break;
@@ -313,7 +313,6 @@ public class GameStateManager extends Subsystem {
   public Column getSavedScoringColum() {
     return io_.saved_target_column_;
   }
-
 
   /**
    * Returns a target pose when robot is in an reef region If not in a region empty is returned.

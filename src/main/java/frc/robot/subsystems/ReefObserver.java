@@ -464,7 +464,8 @@ public class ReefObserver extends Subsystem {
     for (int i = 0; i < grid.length; i++) {
       for (int j = 0; j < grid.length; j++) {
         if (grid[i][j]) {
-          return GameStateManager.getInstance().new GameStateTarget(Column.values()[j], ReefScoringTarget.values()[i]);
+          return GameStateManager.getInstance()
+          .new GameStateTarget(Column.values()[j], ReefScoringTarget.values()[i]);
         }
       }
     }
@@ -476,7 +477,8 @@ public class ReefObserver extends Subsystem {
       int rowCount = countTrues(io_.reef_state_.coral[i]);
       for (int j = 0; j < grid.length; j++) {
         if (grid[i][j] && rowCount < Constants.ReefControlsConstants.CORAL_NEEDED_FOR_RP) {
-          return GameStateManager.getInstance().new GameStateTarget(Column.values()[j], ReefScoringTarget.values()[i]);
+          return GameStateManager.getInstance()
+          .new GameStateTarget(Column.values()[j], ReefScoringTarget.values()[i]);
         }
       }
     }
@@ -488,11 +490,9 @@ public class ReefObserver extends Subsystem {
     boolean[][] grid = getFace(currentFace);
     if (io_.rp_focus_state_ == true) {
       return findHighestRankingPoint(grid);
-    } 
+    }
     return findHighestPoint(grid);
   }
-
-
 
   public int countTrues(boolean[] array) {
     int count = 0;
@@ -503,54 +503,72 @@ public class ReefObserver extends Subsystem {
     }
     return count;
   }
-  
-  public void updateReefState(GameStateTarget target){
-    
-      int col = 0;
-      if(target.getReefScoringTarget() == ReefScoringTarget.ALGAE){
-        col = PoseEstimator.getInstance().reefPoseInt();
-        if(col > 5){
-          col -= 6;
-        }
-        
-      }else{
+
+  public void updateReefState(GameStateTarget target) {
+
+    int col = 0;
+    if (target.getReefScoringTarget() == ReefScoringTarget.ALGAE) {
+      col = PoseEstimator.getInstance().reefPoseInt();
+      if (col > 5) {
+        col -= 6;
+      }
+      io_.reef_state_.algae[col] = false;
+
+    } else {
       int row = 0;
-      if(target.getColumn() == Column.LEFT){
+      if (target.getColumn() == Column.LEFT) {
         col++;
       }
-      switch(PoseEstimator.getInstance().reefPoseInt()){
+      switch (PoseEstimator.getInstance().reefPoseInt()) {
         case 1:
           col += 2;
+          break;
         case 2:
           col += 4;
+          break;
         case 3:
           col += 6;
+          break;
         case 4:
           col += 8;
+          break;
         case 5:
           col += 10;
+          break;
         case 7:
           col += 2;
+          break;
         case 8:
           col += 4;
+          break;
         case 9:
           col += 6;
+          break;
         case 10:
           col += 8;
+          break;
         case 11:
           col += 10;
+          break;
+        default:
+          break;
       }
-      switch(target.getReefScoringTarget()){
+      switch (target.getReefScoringTarget()) {
         case L2:
           row = 0;
+          break;
         case L3:
           row = 1;
+          break;
         case L4:
           row = 2;
+          break;
+        default:
+          break;
       }
+      io_.reef_state_.coral[row][col] = true;
     }
-    }
-
+  }
 
   private record ReefState(boolean[][] coral, boolean[] algae, int trough_count) {
     public static final ReefState initial =
@@ -577,7 +595,6 @@ public class ReefObserver extends Subsystem {
           && Arrays.deepEquals(coral, reef_state.coral);
     }
 
-    
     @Override
     protected ReefState clone() {
       boolean[][] copy = new boolean[coral.length][coral[0].length];
