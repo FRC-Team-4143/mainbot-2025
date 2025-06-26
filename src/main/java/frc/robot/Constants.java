@@ -380,4 +380,20 @@ public final class Constants {
     public static final Rotation3d DISPLAY_ROTATION =
         new Rotation3d(0, Units.degreesToRadians(0), 0);
   }
+
+  public class ReefControlsConstants {
+    public static final String TO_ROBOT_TABLE = "/ReefControls/ToRobot";
+    public static final String TO_DASHBOARD_TABLE = "/ReefControls/ToDashboard";
+    public static final String SELECTED_LEVEL_TOPIC_NAME = "SelectedLevel";
+    public static final String L1_TOPIC_NAME = "Level1";
+    public static final String L2_TOPIC_NAME = "Level2";
+    public static final String L3_TOPIC_NAME = "Level3";
+    public static final String L4_TOPIC_NAME = "Level4";
+    public static final String ALGAE_TOPIC_NAME = "Algae";
+    public static final String COOP_TOPIC_NAME = "Coop";
+    public static final String IS_ELIMS_TOPIC_NAME = "IsElims";
+    public static final String RP_FOCUS_TOPIC_NAME = "RPFocus";
+    public static final int PORT = 5802;
+    public static final int CORAL_NEEDED_FOR_RP = 7;
+  }
 }
