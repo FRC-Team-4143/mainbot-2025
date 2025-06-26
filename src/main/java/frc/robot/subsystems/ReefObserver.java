@@ -34,6 +34,7 @@ import frc.robot.subsystems.GameStateManager.ReefScoringTarget;
 import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.HashSet;
+import java.util.Optional;
 import java.util.Set;
 import monologue.Logged;
 
@@ -487,13 +488,16 @@ public class ReefObserver extends Subsystem {
     return GameStateManager.getInstance().new GameStateTarget(ReefScoringTarget.L1, Column.CENTER);
   }
 
-  public GameStateTarget findNextTarget() {
+  public Optional<GameStateTarget> findNextTarget() {
     int currentFace = PoseEstimator.getInstance().reefPoseInt();
+    if (currentFace != -1 && currentFace <= 7) {
+      return Optional.empty();
+    }
     boolean[][] grid = getFace(currentFace);
     if (io_.rp_focus_state_ == true) {
-      return findHighestRankingPoint(grid);
+      return Optional.of(findHighestRankingPoint(grid));
     }
-    return findHighestPoint(grid);
+    return Optional.of(findHighestPoint(grid));
   }
 
   public int countTrues(boolean[] array) {

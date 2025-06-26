@@ -4,6 +4,8 @@
 
 package frc.robot.commands;
 
+import java.util.Optional;
+
 import frc.lib.FieldRegions;
 import frc.mw_lib.command.LazyCommand;
 import frc.robot.subsystems.Claw;
@@ -11,6 +13,7 @@ import frc.robot.subsystems.Claw.ClawMode;
 import frc.robot.subsystems.Claw.GamePiece;
 import frc.robot.subsystems.Elevator;
 import frc.robot.subsystems.GameStateManager;
+import frc.robot.subsystems.GameStateManager.GameStateTarget;
 import frc.robot.subsystems.GameStateManager.RobotState;
 import frc.robot.subsystems.PoseEstimator;
 import frc.robot.subsystems.ReefObserver;
@@ -30,15 +33,21 @@ public class CoralReefScore extends LazyCommand {
   public void initialize() {
     this.timerReset();
     GameStateManager.getInstance().setRobotState(RobotState.TARGET_ACQUISITION);
-    GameStateManager.getInstance()
-        .setScoringObj(ReefObserver.getInstance().findNextTarget(), false);
+    Optional<GameStateTarget> target = ReefObserver.getInstance().findNextTarget();
+    if (target.isPresent()) {
+      GameStateManager.getInstance()
+        .setScoringObj(target.get(), false);
+    } else {
+      end(false);
+    }
     Claw.getInstance().setGamePiece(GamePiece.CORAL);
     Claw.getInstance().setClawMode(ClawMode.IDLE);
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
-  public void execute() {}
+  public void execute() {
+  }
 
   // Called once the command ends or is interrupted.
   @Override

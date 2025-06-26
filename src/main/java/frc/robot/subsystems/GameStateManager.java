@@ -71,7 +71,7 @@ public class GameStateManager extends Subsystem {
     ALGAE,
   }
 
-  class GameStateTarget {
+  public class GameStateTarget {
     public Column column;
     public ReefScoringTarget reef_target;
 
