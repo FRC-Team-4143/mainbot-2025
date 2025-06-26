@@ -4,8 +4,6 @@
 
 package frc.robot.commands;
 
-import java.util.Optional;
-
 import frc.lib.FieldRegions;
 import frc.mw_lib.command.LazyCommand;
 import frc.robot.subsystems.Claw;
@@ -17,6 +15,7 @@ import frc.robot.subsystems.GameStateManager.GameStateTarget;
 import frc.robot.subsystems.GameStateManager.RobotState;
 import frc.robot.subsystems.PoseEstimator;
 import frc.robot.subsystems.ReefObserver;
+import java.util.Optional;
 
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
 public class CoralReefScore extends LazyCommand {
@@ -35,8 +34,7 @@ public class CoralReefScore extends LazyCommand {
     GameStateManager.getInstance().setRobotState(RobotState.TARGET_ACQUISITION);
     Optional<GameStateTarget> target = ReefObserver.getInstance().findNextTarget();
     if (target.isPresent()) {
-      GameStateManager.getInstance()
-        .setScoringObj(target.get(), false);
+      GameStateManager.getInstance().setScoringObj(target.get(), false);
     } else {
       end(false);
     }
@@ -46,8 +44,7 @@ public class CoralReefScore extends LazyCommand {
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
-  public void execute() {
-  }
+  public void execute() {}
 
   // Called once the command ends or is interrupted.
   @Override

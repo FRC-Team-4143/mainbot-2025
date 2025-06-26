@@ -274,8 +274,12 @@ public class ReefObserver extends Subsystem {
     if (DriverStation.getMatchType() == MatchType.Elimination) {
       io_.coop_state_ = false;
     }
+    io_.rp_completed_ = updateRP();
     if (reef_control_inputs_.rp_focus_state.length > 0) {
       io_.rp_focus_state_ = reef_control_inputs_.rp_focus_state[0];
+    }
+    if (io_.rp_completed_) {
+      io_.rp_focus_state_ = false;
     }
   }
 
@@ -327,6 +331,7 @@ public class ReefObserver extends Subsystem {
     SmartDashboard.putBooleanArray("L3", getFace(0)[1]);
     SmartDashboard.putBooleanArray("L4", getFace(0)[2]);
     SmartDashboard.putBoolean("RP Focus", io_.rp_focus_state_);
+    SmartDashboard.putBoolean("RP Completed", io_.rp_completed_);
 
     if (!io_.reef_state_.equals(io_.previous_reef_state_)) {
       io_.previous_reef_state_ = io_.reef_state_.clone();
@@ -421,7 +426,8 @@ public class ReefObserver extends Subsystem {
   }
 
   private void setElims(boolean isElims) {
-    is_elims_out_.set(isElims);
+    // is_elims_out_.set(isElims);
+    is_elims_out_.set(true);
   }
 
   private void setRpFocusState(boolean isRPFocus) {
@@ -491,7 +497,7 @@ public class ReefObserver extends Subsystem {
 
   public Optional<GameStateTarget> findNextTarget() {
     int currentFace = PoseEstimator.getInstance().reefPoseInt();
-    if (currentFace != -1 && currentFace <= 7) {
+    if (currentFace <= -1 || currentFace >= 8) {
       return Optional.empty();
     }
     boolean[][] grid = getFace(currentFace);
@@ -577,17 +583,17 @@ public class ReefObserver extends Subsystem {
     }
   }
 
-  public boolean updateRP(){
+  public boolean updateRP() {
     int count = 0;
-    for(boolean[] arr : io_.reef_state_.coral){
-      if(countTrues(arr) >= Constants.ReefControlsConstants.CORAL_NEEDED_FOR_RP){
+    for (boolean[] arr : io_.reef_state_.coral) {
+      if (countTrues(arr) >= Constants.ReefControlsConstants.CORAL_NEEDED_FOR_RP) {
         count++;
       }
     }
-    if(io_.reef_state_.trough_count >= Constants.ReefControlsConstants.CORAL_NEEDED_FOR_RP){
+    if (io_.reef_state_.trough_count >= Constants.ReefControlsConstants.CORAL_NEEDED_FOR_RP) {
       count++;
     }
-    if((io_.coop_state_ && count >= 3) || (count >= 4)){
+    if ((io_.coop_state_ && count >= 3) || (count >= 4)) {
       return true;
     }
     return false;

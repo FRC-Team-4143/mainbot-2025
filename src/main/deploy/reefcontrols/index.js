@@ -187,9 +187,9 @@ function updateUI() {
   // Update rp button
   let rpFocusDiv = document.getElementsByClassName("rp-focus")[0];
   if (rpFocus) {
-    rpFocusDiv.classList.remove("active");
-  } else {
     rpFocusDiv.classList.add("active");
+  } else {
+    rpFocusDiv.classList.remove("active");
   }
 
   // Update RP flag
