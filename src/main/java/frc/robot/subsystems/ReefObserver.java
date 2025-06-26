@@ -433,7 +433,8 @@ public class ReefObserver extends Subsystem {
     public ReefState previous_reef_state_ = null;
     public int selected_level_ = 0;
     public boolean coop_state_ = false;
-    public boolean rp_focus_state_ = true;
+    public boolean rp_focus_state_ = false;
+    public boolean rp_completed_ = false;
   }
 
   @Override
@@ -574,6 +575,22 @@ public class ReefObserver extends Subsystem {
       }
       io_.reef_state_.coral[row][col] = true;
     }
+  }
+
+  public boolean updateRP(){
+    int count = 0;
+    for(boolean[] arr : io_.reef_state_.coral){
+      if(countTrues(arr) >= Constants.ReefControlsConstants.CORAL_NEEDED_FOR_RP){
+        count++;
+      }
+    }
+    if(io_.reef_state_.trough_count >= Constants.ReefControlsConstants.CORAL_NEEDED_FOR_RP){
+      count++;
+    }
+    if((io_.coop_state_ && count >= 3) || (count >= 4)){
+      return true;
+    }
+    return false;
   }
 
   private record ReefState(boolean[][] coral, boolean[] algae, int trough_count) {
