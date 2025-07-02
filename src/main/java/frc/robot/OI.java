@@ -42,8 +42,7 @@ public abstract class OI {
 
   private static BooleanSupplier pov_is_present_ = () -> getDriverJoystickPOV().isPresent();
   private static Trigger driver_pov_active_ = new Trigger(pov_is_present_);
-  public static BooleanSupplier use_vision =
-      () -> SmartDashboard.getBoolean("Vision/Use Vision Features", true);
+  public static BooleanSupplier use_vision = () -> SmartDashboard.getBoolean("Vision/Use Vision Features", true);
   public static IntakePreference intake_preference = IntakePreference.GROUND;
 
   public enum IntakePreference {
@@ -103,10 +102,10 @@ public abstract class OI {
     }
 
     // driver_controller_
-    //     .a()
-    //     .onTrue(
-    //         Commands.runOnce(() -> toggleIntakePreference())
-    //             .unless(Climber.getInstance()::lockOutControl));
+    // .a()
+    // .onTrue(
+    // Commands.runOnce(() -> toggleIntakePreference())
+    // .unless(Climber.getInstance()::lockOutControl));
 
     driver_controller_.b().whileTrue(new CoralTractorBeam());
 
@@ -204,6 +203,11 @@ public abstract class OI {
     // Manual Override for intake flush
     driver_controller_.a().whileTrue(new OverrideFlush());
 
+    // Manual Override for loading
+    operator_controller_.leftTrigger().whileTrue(new OverrideLoad());
+    // Manual Override for intake flush
+    operator_controller_.rightTrigger().whileTrue(new OverrideFlush());
+
     operator_controller_
         .start()
         .onTrue(
@@ -259,7 +263,8 @@ public abstract class OI {
   }
 
   /**
-   * @return driver controller joystick pov angle in degs. empty if nothing is pressed
+   * @return driver controller joystick pov angle in degs. empty if nothing is
+   *         pressed
    */
   public static Optional<Rotation2d> getDriverJoystickPOV() {
     int pov = driver_controller_.getHID().getPOV();
@@ -268,8 +273,8 @@ public abstract class OI {
 
   public static Command setRumble(double duration) {
     return Commands.startEnd(
-            () -> driver_controller_.setRumble(RumbleType.kBothRumble, 1),
-            () -> driver_controller_.setRumble(RumbleType.kBothRumble, 0))
+        () -> driver_controller_.setRumble(RumbleType.kBothRumble, 1),
+        () -> driver_controller_.setRumble(RumbleType.kBothRumble, 0))
         .withTimeout(duration);
   }
 
