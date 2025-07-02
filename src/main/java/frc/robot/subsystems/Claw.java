@@ -14,7 +14,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.mw_lib.drivers.SimTof;
 import frc.mw_lib.subsystem.Subsystem;
-import frc.mw_lib.util.Util;
+import frc.mw_lib.util.NumUtil;
 import frc.robot.Constants;
 import frc.robot.Constants.ClawConstants;
 import monologue.Annotations.Log;
@@ -217,7 +217,7 @@ public class Claw extends Subsystem {
     return algae_debouncer_.calculate(
         isAlgaeMode()
             && wheel_motor_.getSupplyCurrent().getValueAsDouble() > 0
-            && Util.epislonEquals(
+            && NumUtil.epislonEquals(
                 wheel_motor_.getVelocity().getValueAsDouble(),
                 0,
                 ClawConstants.ALGAE_SPEED_THRESHOLD));

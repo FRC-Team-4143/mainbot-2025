@@ -28,7 +28,7 @@ import frc.lib.ElevatorTargets.TargetType;
 import frc.mw_lib.controls.TalonFXTuner;
 import frc.mw_lib.subsystem.Subsystem;
 import frc.mw_lib.util.MWPreferences;
-import frc.mw_lib.util.Util;
+import frc.mw_lib.util.NumUtil;
 import frc.robot.Constants.ArmConstants;
 import frc.robot.Constants.ElevatorConstants;
 import frc.robot.OI;
@@ -319,7 +319,7 @@ public class Elevator extends Subsystem {
    * @return If the arm is within the threshold of its final target
    */
   public boolean isArmAtTarget() {
-    return Util.epislonEquals(
+    return NumUtil.epislonEquals(
         io_.current_arm_angle_,
         io_.final_target_.getAngle().getRadians(),
         ArmConstants.ARM_TARGET_THRESHOLD);
@@ -329,7 +329,7 @@ public class Elevator extends Subsystem {
    * @return If the elevator is within the threshold of its final target
    */
   public boolean isElevatorAtTarget() {
-    return Util.epislonEquals(
+    return NumUtil.epislonEquals(
         io_.current_elevator_height_,
         io_.final_target_.getHeight(),
         ElevatorConstants.ELEVATOR_TARGET_THRESHOLD);
@@ -339,7 +339,7 @@ public class Elevator extends Subsystem {
    * @return If the elevator is within the threshold of its final target
    */
   public boolean isElevatorCloseToTarget() {
-    return Util.epislonEquals(
+    return NumUtil.epislonEquals(
         io_.current_elevator_height_,
         io_.final_target_.getHeight(),
         ElevatorConstants.ELEVATOR_TARGET_THRESHOLD_CLOSE);
@@ -353,19 +353,19 @@ public class Elevator extends Subsystem {
   }
 
   public boolean isArmAtCurrentTarget() {
-    return Util.epislonEquals(
+    return NumUtil.epislonEquals(
         io_.current_arm_angle_, io_.target_arm_angle_, ArmConstants.ARM_TARGET_THRESHOLD);
   }
 
   public boolean isElevatorAtCurrentTarget() {
-    return Util.epislonEquals(
+    return NumUtil.epislonEquals(
         io_.current_elevator_height_,
         io_.target_elevator_height_,
         ElevatorConstants.ELEVATOR_TARGET_THRESHOLD);
   }
 
   public boolean isElevatorCloseToCurrentTarget() {
-    return Util.epislonEquals(
+    return NumUtil.epislonEquals(
         io_.current_elevator_height_,
         io_.target_elevator_height_,
         ElevatorConstants.ELEVATOR_TARGET_THRESHOLD_CLOSE);
