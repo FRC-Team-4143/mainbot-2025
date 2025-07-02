@@ -192,7 +192,6 @@ public class GameStateManager extends Subsystem {
       case SCORING:
         if (!inExitRegion()) {
           // wait until you leave the exit Circle
-
           io_.robot_state_ = RobotState.END;
         }
         break;
@@ -336,10 +335,10 @@ public class GameStateManager extends Subsystem {
               FieldRegions.REGION_POSE_TABLE
                   .get(FieldRegions.REEF_REGIONS.get(i).getName())
                   .transformBy(ScoringPoses.LEFT_COLUMN_OFFSET);
-          if (io_.scoring_target_ == ReefScoringTarget.L2
-              || io_.scoring_target_ == ReefScoringTarget.L3) {
-            return Optional.of(newPose.transformBy(ScoringPoses.L2_L3_OFFSET));
-          }
+          // if (io_.scoring_target_ == ReefScoringTarget.L2
+          //     || io_.scoring_target_ == ReefScoringTarget.L3) {
+          //   return Optional.of(newPose.transformBy(ScoringPoses.L2_L3_FAR_OFFSET));
+          // }
           return Optional.of(newPose);
         }
         if (column == Column.RIGHT) {
@@ -347,10 +346,10 @@ public class GameStateManager extends Subsystem {
               FieldRegions.REGION_POSE_TABLE
                   .get(FieldRegions.REEF_REGIONS.get(i).getName())
                   .transformBy(ScoringPoses.RIGHT_COLUMN_OFFSET);
-          if (io_.scoring_target_ == ReefScoringTarget.L2
-              || io_.scoring_target_ == ReefScoringTarget.L3) {
-            return Optional.of(newPose.transformBy(ScoringPoses.L2_L3_OFFSET));
-          }
+          // if (io_.scoring_target_ == ReefScoringTarget.L2
+          //     || io_.scoring_target_ == ReefScoringTarget.L3) {
+          //   return Optional.of(newPose.transformBy(ScoringPoses.L2_L3_FAR_OFFSET));
+          // }
           return Optional.of(newPose);
         }
         if (column == Column.ALGAE) {

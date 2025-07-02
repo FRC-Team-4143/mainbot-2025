@@ -42,7 +42,8 @@ public abstract class OI {
 
   private static BooleanSupplier pov_is_present_ = () -> getDriverJoystickPOV().isPresent();
   private static Trigger driver_pov_active_ = new Trigger(pov_is_present_);
-  public static BooleanSupplier use_vision = () -> SmartDashboard.getBoolean("Vision/Use Vision Features", true);
+  public static BooleanSupplier use_vision =
+      () -> SmartDashboard.getBoolean("Vision/Use Vision Features", true);
   public static IntakePreference intake_preference = IntakePreference.GROUND;
 
   public enum IntakePreference {
@@ -263,8 +264,7 @@ public abstract class OI {
   }
 
   /**
-   * @return driver controller joystick pov angle in degs. empty if nothing is
-   *         pressed
+   * @return driver controller joystick pov angle in degs. empty if nothing is pressed
    */
   public static Optional<Rotation2d> getDriverJoystickPOV() {
     int pov = driver_controller_.getHID().getPOV();
@@ -273,8 +273,8 @@ public abstract class OI {
 
   public static Command setRumble(double duration) {
     return Commands.startEnd(
-        () -> driver_controller_.setRumble(RumbleType.kBothRumble, 1),
-        () -> driver_controller_.setRumble(RumbleType.kBothRumble, 0))
+            () -> driver_controller_.setRumble(RumbleType.kBothRumble, 1),
+            () -> driver_controller_.setRumble(RumbleType.kBothRumble, 0))
         .withTimeout(duration);
   }
 
