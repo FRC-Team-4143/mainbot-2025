@@ -32,7 +32,9 @@ public class SetDefaultStow extends Command {
       Elevator.getInstance().setTarget(TargetType.ALGAE_STOW);
       // If In Coral Mode + Vision is Enabled
     } else if (OI.use_vision.getAsBoolean()) {
-      if (Elevator.getInstance().getTarget() == TargetType.L4
+      if ((Elevator.getInstance().getTarget() == TargetType.L4
+              || Elevator.getInstance().getTarget() == TargetType.L3
+              || Elevator.getInstance().getTarget() == TargetType.L2)
           && PoseEstimator.getInstance().isInL4CollisionZone()) {
         // DO NOTHING
       } else {

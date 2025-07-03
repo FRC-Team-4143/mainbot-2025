@@ -103,10 +103,10 @@ public abstract class OI {
     }
 
     // driver_controller_
-    //     .a()
-    //     .onTrue(
-    //         Commands.runOnce(() -> toggleIntakePreference())
-    //             .unless(Climber.getInstance()::lockOutControl));
+    // .a()
+    // .onTrue(
+    // Commands.runOnce(() -> toggleIntakePreference())
+    // .unless(Climber.getInstance()::lockOutControl));
 
     driver_controller_.b().whileTrue(new CoralTractorBeam());
 
@@ -203,6 +203,11 @@ public abstract class OI {
     driver_controller_.x().whileTrue(new OverrideLoad());
     // Manual Override for intake flush
     driver_controller_.a().whileTrue(new OverrideFlush());
+
+    // Manual Override for loading
+    operator_controller_.leftTrigger().whileTrue(new OverrideLoad());
+    // Manual Override for intake flush
+    operator_controller_.rightTrigger().whileTrue(new OverrideFlush());
 
     operator_controller_
         .start()
