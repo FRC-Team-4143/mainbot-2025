@@ -567,9 +567,11 @@ public class ReefObserver extends Subsystem {
       }
       switch (target.getReefScoringTarget()) {
         case L2:
+        case L2_FAR:
           row = 0;
           break;
         case L3:
+        case L3_FAR:
           row = 1;
           break;
         case L4:
