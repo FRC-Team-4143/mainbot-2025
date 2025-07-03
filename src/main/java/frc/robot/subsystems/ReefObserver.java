@@ -426,8 +426,7 @@ public class ReefObserver extends Subsystem {
   }
 
   private void setElims(boolean isElims) {
-    // is_elims_out_.set(isElims);
-    is_elims_out_.set(true);
+    is_elims_out_.set(isElims);
   }
 
   private void setRpFocusState(boolean isRPFocus) {
