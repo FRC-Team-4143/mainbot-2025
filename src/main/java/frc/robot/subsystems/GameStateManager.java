@@ -193,6 +193,10 @@ public class GameStateManager extends Subsystem {
               .updateReefState(new GameStateTarget(io_.target_column_, io_.scoring_target_));
           io_.robot_state_ = RobotState.SCORING;
         }
+        if(Claw.getInstance().hasAlgae()){
+          ReefObserver.getInstance()
+              .updateReefState(new GameStateTarget(io_.target_column_, io_.scoring_target_));
+        }
         break;
       case SCORING:
         if (!inExitRegion()) {
