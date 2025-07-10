@@ -183,6 +183,9 @@ public class GameStateManager extends Subsystem {
               Claw.getInstance().enableBlastMode();
               waitToScoreTime = GameStateManagerConstants.L2_L3_WAIT_TIME;
             }
+            if (io_.scoring_target_ == ReefScoringTarget.L4) {
+              Claw.getInstance().enableBlastMode();
+            }
             CommandScheduler.getInstance()
                 .schedule(
                     new CoralEject()
