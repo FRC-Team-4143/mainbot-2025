@@ -10,7 +10,7 @@ public class ElevatorTargets {
     SAFETY(0.90041, Rotation2d.fromDegrees(-45), "SAFETY"),
     CLIMB(0.90041, Rotation2d.fromDegrees(121.201), "CLIMB"),
     CORAL_INTAKE(0.75, Rotation2d.fromDegrees(-117), "CORAL_INTAKE"),
-    L4(2.109, Rotation2d.fromDegrees(-19.599), Rotation2d.fromDegrees(-65), "L4", true),
+    L4(2.109, Rotation2d.fromDegrees(-19), Rotation2d.fromDegrees(-65), "L4", true),
     L4_SAFETY(2.109, Rotation2d.fromDegrees(-19.599), "L4_SAFETY"),
     L3_FAR(1.423500, Rotation2d.fromDegrees(-4.515), "L3_FAR"),
     L2_FAR(1.0235, Rotation2d.fromDegrees(-4.515), "L2_FAR"),

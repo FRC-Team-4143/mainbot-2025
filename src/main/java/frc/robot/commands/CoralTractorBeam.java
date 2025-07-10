@@ -54,22 +54,19 @@ public class CoralTractorBeam extends Command {
     Elevator.getInstance().setTarget(TargetType.CORAL_INTAKE);
     Pickup.getInstance().setPickupMode(PickupMode.INTAKE);
     Claw.getInstance().setGamePiece(GamePiece.CORAL);
+    Claw.getInstance().setClawMode(ClawMode.LOAD);
     target_ = CoralDetector.getInstance().getCoralPose2d().transformBy(intake_off_set);
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    if (Elevator.getInstance().isElevatorAndArmAtTarget() == true) {
-      Pickup.getInstance().setPickupMode(PickupMode.INTAKE);
-      Claw.getInstance().setClawMode(ClawMode.LOAD);
-      if (CoralDetector.getInstance().isValid()) {
-        target_ = CoralDetector.getInstance().getCoralPose2d().transformBy(intake_off_set);
-        if (!Pickup.getInstance().isCoralPresent()) {
-          SwerveDrivetrain.getInstance().setTargetFollow(target_);
-        } else {
-          SwerveDrivetrain.getInstance().restoreDefaultDriveMode();
-        }
+    if (CoralDetector.getInstance().isValid()) {
+      target_ = CoralDetector.getInstance().getCoralPose2d().transformBy(intake_off_set);
+      if (!Pickup.getInstance().isCoralPresent()) {
+        SwerveDrivetrain.getInstance().setTargetFollow(target_);
+      } else {
+        SwerveDrivetrain.getInstance().restoreDefaultDriveMode();
       }
     }
     if (Pickup.getInstance().isCoralPresent()) {

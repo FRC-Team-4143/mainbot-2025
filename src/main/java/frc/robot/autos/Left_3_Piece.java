@@ -26,9 +26,7 @@ public class Left_3_Piece extends Auto {
         new AutoCoralReefScore(),
 
         // Get game Piece 2
-        this.getTrajectoryCmd("IJ to Left Ground")
-            .until(CoralDetector.getInstance()::isValid)
-            .raceWith(new IntakeHandoff()),
+        this.getTrajectoryCmd("IJ to Left Ground").until(CoralDetector.getInstance()::isValid),
         new CoralTractorBeam(),
 
         // Score game Piece 2
@@ -37,9 +35,7 @@ public class Left_3_Piece extends Auto {
         new AutoCoralReefScore(),
 
         // Get game Piece 3
-        this.getTrajectoryCmd("KL to Left Ground")
-            .until(CoralDetector.getInstance()::isValid)
-            .raceWith(new IntakeHandoff()),
+        this.getTrajectoryCmd("KL to Left Ground").until(CoralDetector.getInstance()::isValid),
         new CoralTractorBeam(),
 
         // Score game Piece 3
