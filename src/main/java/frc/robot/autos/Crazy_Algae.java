@@ -6,16 +6,15 @@ import frc.lib.ElevatorTargets.TargetType;
 import frc.mw_lib.auto.Auto;
 import frc.robot.commands.AutoAlgaeReefPickup;
 import frc.robot.commands.AutoCoralReefScore;
-import frc.robot.subsystems.Claw;
-import frc.robot.subsystems.Claw.ClawMode;
+import frc.robot.commands.AutoScoreBarge;
 import frc.robot.subsystems.Elevator;
 import frc.robot.subsystems.GameStateManager;
 import frc.robot.subsystems.GameStateManager.Column;
 import frc.robot.subsystems.GameStateManager.ReefScoringTarget;
 
-public class H4_Algae extends Auto {
+public class Crazy_Algae extends Auto {
 
-  public H4_Algae() {
+  public Crazy_Algae() {
     // Register the paths first
     this.loadTrajectory("GH to Mid");
     this.loadTrajectory("GH To Barge");
@@ -35,16 +34,10 @@ public class H4_Algae extends Auto {
                             () -> Elevator.getInstance().setTarget(TargetType.BARGE),
                             Elevator.getInstance()))),
 
-        // score piece 2
-        Commands.run(
-                () -> {
-                  Claw.getInstance().setClawMode(ClawMode.BLAST);
-                  Elevator.getInstance().setTarget(TargetType.BARGE);
-                },
-                Elevator.getInstance())
-            .withTimeout(0.5),
+        // score piece 1
+        new AutoScoreBarge().withTimeout(2),
 
-        // get game piece 3
+        // get game piece 2
         this.getTrajectoryCmd("Barge to IJ"),
         new AutoAlgaeReefPickup(),
 
@@ -57,16 +50,31 @@ public class H4_Algae extends Auto {
                             () -> Elevator.getInstance().setTarget(TargetType.BARGE),
                             Elevator.getInstance()))),
 
-        // score piece 3
-        Commands.run(
-                () -> {
-                  Claw.getInstance().setClawMode(ClawMode.BLAST);
-                  Elevator.getInstance().setTarget(TargetType.BARGE);
-                },
-                Elevator.getInstance())
-            .withTimeout(0.5),
+        // score piece 2
+        new AutoScoreBarge().withTimeout(2),
         this.getTrajectoryCmd("Barge to IJ")
             .alongWith(
-                Commands.runOnce(() -> Elevator.getInstance().setTarget(TargetType.ALGAE_STOW))));
+                Commands.runOnce(() -> Elevator.getInstance().setTarget(TargetType.ALGAE_STOW))),
+
+        // get game piece 3
+        this.getTrajectoryCmd("Barge to EF"),
+        new AutoAlgaeReefPickup(),
+
+        // Go to barge
+        this.getTrajectoryCmd("EF to Barge")
+            .raceWith(
+                new WaitCommand(0.1)
+                    .andThen(
+                        Commands.run(
+                            () -> Elevator.getInstance().setTarget(TargetType.BARGE),
+                            Elevator.getInstance()))),
+
+        // score piece 3
+        new AutoScoreBarge().withTimeout(2),
+
+        // coral
+        this.getTrajectoryCmd("Barge to IJ"),
+        GameStateManager.setScoringCommand(Column.RIGHT, ReefScoringTarget.L4),
+        new AutoCoralReefScore());
   }
 }

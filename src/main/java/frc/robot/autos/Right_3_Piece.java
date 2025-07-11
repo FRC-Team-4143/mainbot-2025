@@ -27,7 +27,7 @@ public class Right_3_Piece extends Auto {
 
         // Get game Piece 2
         this.getTrajectoryCmd("EF to Right Ground").until(CoralDetector.getInstance()::isValid),
-        new CoralTractorBeam(),
+        new CoralTractorBeam().withTimeout(5),
 
         // Score game Piece 2
         this.getTrajectoryCmd("Right Ground to CD").alongWith(new IntakeHandoff()),
@@ -36,7 +36,7 @@ public class Right_3_Piece extends Auto {
 
         // Get game Piece 3
         this.getTrajectoryCmd("CD to Right Ground").until(CoralDetector.getInstance()::isValid),
-        new CoralTractorBeam(),
+        new CoralTractorBeam().withTimeout(5),
 
         // Score game Piece 3
         this.getTrajectoryCmd("Right Ground to CD").alongWith(new IntakeHandoff()),
