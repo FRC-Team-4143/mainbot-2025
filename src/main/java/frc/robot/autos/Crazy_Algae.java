@@ -1,0 +1,72 @@
+package frc.robot.autos;
+
+import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
+import frc.lib.ElevatorTargets.TargetType;
+import frc.mw_lib.auto.Auto;
+import frc.robot.commands.AutoAlgaeReefPickup;
+import frc.robot.commands.AutoCoralReefScore;
+import frc.robot.subsystems.Claw;
+import frc.robot.subsystems.Claw.ClawMode;
+import frc.robot.subsystems.Elevator;
+import frc.robot.subsystems.GameStateManager;
+import frc.robot.subsystems.GameStateManager.Column;
+import frc.robot.subsystems.GameStateManager.ReefScoringTarget;
+
+public class H4_Algae extends Auto {
+
+  public H4_Algae() {
+    // Register the paths first
+    this.loadTrajectory("GH to Mid");
+    this.loadTrajectory("GH To Barge");
+    this.loadTrajectory("Barge to IJ");
+    this.loadTrajectory("IJ to Barge");
+
+    this.addCommands(
+        // Get algae 1
+        new AutoAlgaeReefPickup(),
+
+        // Go to barge
+        this.getTrajectoryCmd("GH To Barge")
+            .raceWith(
+                new WaitCommand(0.1)
+                    .andThen(
+                        Commands.run(
+                            () -> Elevator.getInstance().setTarget(TargetType.BARGE),
+                            Elevator.getInstance()))),
+
+        // score piece 2
+        Commands.run(
+                () -> {
+                  Claw.getInstance().setClawMode(ClawMode.BLAST);
+                  Elevator.getInstance().setTarget(TargetType.BARGE);
+                },
+                Elevator.getInstance())
+            .withTimeout(0.5),
+
+        // get game piece 3
+        this.getTrajectoryCmd("Barge to IJ"),
+        new AutoAlgaeReefPickup(),
+
+        // Go to barge
+        this.getTrajectoryCmd("IJ to Barge")
+            .raceWith(
+                new WaitCommand(0.1)
+                    .andThen(
+                        Commands.run(
+                            () -> Elevator.getInstance().setTarget(TargetType.BARGE),
+                            Elevator.getInstance()))),
+
+        // score piece 3
+        Commands.run(
+                () -> {
+                  Claw.getInstance().setClawMode(ClawMode.BLAST);
+                  Elevator.getInstance().setTarget(TargetType.BARGE);
+                },
+                Elevator.getInstance())
+            .withTimeout(0.5),
+        this.getTrajectoryCmd("Barge to IJ")
+            .alongWith(
+                Commands.runOnce(() -> Elevator.getInstance().setTarget(TargetType.ALGAE_STOW))));
+  }
+}

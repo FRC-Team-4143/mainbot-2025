@@ -13,7 +13,6 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.commands.AlignWithTarget;
-import frc.robot.commands.CoralTractorBeam;
 import frc.robot.commands.ElevatorL1Target;
 import frc.robot.commands.ElevatorL2Target;
 import frc.robot.commands.ElevatorL3Target;
@@ -108,11 +107,15 @@ public abstract class OI {
     // Commands.runOnce(() -> toggleIntakePreference())
     // .unless(Climber.getInstance()::lockOutControl));
 
-    driver_controller_.y().onTrue(
-      Commands.runOnce(() -> Elevator.getInstance().setOffset(OffsetType.UP))
-          .ignoringDisable(true));
+    driver_controller_
+        .y()
+        .onTrue(
+            Commands.runOnce(() -> Elevator.getInstance().setOffset(OffsetType.UP))
+                .ignoringDisable(true));
 
-          driver_controller_.b().onTrue(
+    driver_controller_
+        .b()
+        .onTrue(
             Commands.runOnce(() -> Elevator.getInstance().setOffset(OffsetType.DOWN))
                 .ignoringDisable(true));
 
