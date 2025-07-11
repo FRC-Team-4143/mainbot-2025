@@ -108,7 +108,13 @@ public abstract class OI {
     // Commands.runOnce(() -> toggleIntakePreference())
     // .unless(Climber.getInstance()::lockOutControl));
 
-    driver_controller_.b().whileTrue(new CoralTractorBeam());
+    driver_controller_.y().onTrue(
+      Commands.runOnce(() -> Elevator.getInstance().setOffset(OffsetType.UP))
+          .ignoringDisable(true));
+
+          driver_controller_.b().onTrue(
+            Commands.runOnce(() -> Elevator.getInstance().setOffset(OffsetType.DOWN))
+                .ignoringDisable(true));
 
     // Swap Between Robot Centric and Field Centric
     driver_controller_

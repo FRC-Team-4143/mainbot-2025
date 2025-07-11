@@ -799,7 +799,8 @@ public class SwerveDrivetrain extends Subsystem {
   }
 
   public boolean getFailingToReachTarget() {
-    return io_.failing_to_reach_target;
+    return false;
+    // return io_.failing_to_reach_target;
   }
 
   public double getTractorBeamError() {
