@@ -7,9 +7,7 @@ import edu.wpi.first.networktables.StructArrayPublisher;
 import edu.wpi.first.networktables.StructPublisher;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.Commands;
-import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.lib.ElevatorTargets.TargetType;
 import frc.lib.FieldRegions;
 import frc.lib.ScoringPoses;
@@ -17,8 +15,8 @@ import frc.mw_lib.subsystem.Subsystem;
 import frc.mw_lib.util.NumUtil;
 import frc.robot.Constants;
 import frc.robot.Constants.GameStateManagerConstants;
-import frc.robot.commands.CoralEject;
 import frc.robot.subsystems.Claw.ClawMode;
+import frc.robot.subsystems.Claw.GamePiece;
 import frc.robot.subsystems.GameStateManager.Column;
 import frc.robot.subsystems.GameStateManager.GameStateManagerPeriodicIo;
 import frc.robot.subsystems.GameStateManager.ReefScoringTarget;
@@ -51,7 +49,9 @@ public class GameStateManager extends Subsystem {
     APPROACHING_TARGET,
     SCORING,
     END,
-    TELEOP_CONTROL
+    TELEOP_CONTROL,
+    PRE_FIRE_WAIT,
+    FIRING
   }
 
   public enum ReefScoringTarget {
@@ -175,27 +175,48 @@ public class GameStateManager extends Subsystem {
           // Once at final target, hand off control
           SwerveDrivetrain.getInstance().restoreDefaultDriveMode();
           if (Claw.getInstance().isCoralMode()) {
-            double waitToScoreTime = 0.0;
+            io_.wait_to_score_time = 0;
             if (io_.scoring_target_ == ReefScoringTarget.L2
                 || io_.scoring_target_ == ReefScoringTarget.L3
                 || io_.scoring_target_ == ReefScoringTarget.L2_FAR
                 || io_.scoring_target_ == ReefScoringTarget.L3_FAR) {
               Claw.getInstance().enableBlastMode();
-              waitToScoreTime = GameStateManagerConstants.L2_L3_WAIT_TIME;
+              io_.wait_to_score_time = GameStateManagerConstants.L2_L3_WAIT_TIME;
             }
             if (io_.scoring_target_ == ReefScoringTarget.L4) {
               Claw.getInstance().enableBlastMode();
             }
-            CommandScheduler.getInstance()
-                .schedule(
-                    new CoralEject()
-                        .withTimeout(0.25)
-                        .beforeStarting(new WaitCommand(waitToScoreTime)));
+            // CommandScheduler.getInstance()
+            // .schedule(
+            // new CoralEject()
+            // .withTimeout(0.25)
+            // .beforeStarting(new WaitCommand(io_.wait_to_score_time)));
+            io_.robot_state_ = RobotState.PRE_FIRE_WAIT;
+            io_.pre_fire_stamp = timestamp;
           }
           ReefObserver.getInstance()
               .updateReefState(new GameStateTarget(io_.target_column_, io_.scoring_target_));
-          io_.robot_state_ = RobotState.SCORING;
+
+          if (io_.robot_state_ != RobotState.PRE_FIRE_WAIT) {
+            io_.robot_state_ = RobotState.SCORING;
+          }
         }
+        break;
+      case PRE_FIRE_WAIT:
+        if (timestamp > io_.pre_fire_stamp + io_.wait_to_score_time) {
+          io_.robot_state_ = RobotState.FIRING;
+          io_.firing_stamp = timestamp;
+          Claw.getInstance().setGamePiece(GamePiece.CORAL);
+          Claw.getInstance().setClawMode(ClawMode.BLAST);
+        }
+
+        break;
+      case FIRING:
+        if (timestamp > io_.firing_stamp + 0.25) {
+          io_.robot_state_ = RobotState.SCORING;
+          Claw.getInstance().setClawMode(ClawMode.IDLE);
+        }
+
         break;
       case SCORING:
         if (!inExitRegion()) {
@@ -444,6 +465,9 @@ public class GameStateManager extends Subsystem {
     @Log.File public Optional<Pose2d> reef_target_ = Optional.empty();
     @Log.File public Column target_column_ = Column.LEFT;
     @Log.File public Column saved_target_column_ = Column.LEFT;
+    @Log.File public double pre_fire_stamp = 0;
+    @Log.File public double firing_stamp = 0;
+    @Log.File public double wait_to_score_time = 0;
 
     @Log.File
     public boolean algae_level_high = false; // false is low level and true is the higher level
