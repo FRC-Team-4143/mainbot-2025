@@ -25,7 +25,7 @@ public class PieceDetectionPacket implements Packet {
   private static final int THETA_X = 18;
   private static final int THETA_Y = 26;
 
-  private static final double RESOLUTION = 10e6;
+  private static final double RESOLUTION = 1e6;
 
   private Timestamp timestamp_ = new Timestamp(0, 0);
 

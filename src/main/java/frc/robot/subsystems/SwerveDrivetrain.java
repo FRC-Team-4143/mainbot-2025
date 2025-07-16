@@ -695,6 +695,10 @@ public class SwerveDrivetrain extends Subsystem {
     io_.drivers_station_perspective_ = perspective;
   }
 
+  public Rotation2d getDriverPerspective() {
+    return io_.drivers_station_perspective_;
+  }
+
   /**
    * Updates the internal target for the robot to follow and begins TRAJECTORY mode
    *
@@ -799,7 +803,8 @@ public class SwerveDrivetrain extends Subsystem {
   }
 
   public boolean getFailingToReachTarget() {
-    return io_.failing_to_reach_target;
+    return false;
+    // return io_.failing_to_reach_target;
   }
 
   public double getTractorBeamError() {

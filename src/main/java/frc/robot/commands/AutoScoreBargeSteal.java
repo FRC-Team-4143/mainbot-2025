@@ -4,6 +4,7 @@
 
 package frc.robot.commands;
 
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.lib.ElevatorTargets.TargetType;
@@ -17,7 +18,7 @@ import frc.robot.subsystems.PoseEstimator;
 import frc.robot.subsystems.SwerveDrivetrain;
 import java.util.Optional;
 
-public class AutoScoreBarge extends Command {
+public class AutoScoreBargeSteal extends Command {
 
   static Optional<Region> current_region = Optional.empty();
   static int cyclesToWaitAfter = 15;
@@ -25,7 +26,7 @@ public class AutoScoreBarge extends Command {
   static boolean amDone;
 
   /** Creates a new CoralStationLoad. */
-  public AutoScoreBarge() {
+  public AutoScoreBargeSteal() {
     addRequirements(Elevator.getInstance(), SwerveDrivetrain.getInstance());
     setName(this.getClass().getSimpleName());
   }
@@ -36,7 +37,10 @@ public class AutoScoreBarge extends Command {
     Claw.getInstance().setGamePiece(GamePiece.ALGAE);
     Elevator.getInstance().setTarget(TargetType.BARGE);
     SwerveDrivetrain.getInstance()
-        .setTargetRotation(SwerveDrivetrain.getInstance().getDriverPerspective());
+        .setTargetRotation(
+            SwerveDrivetrain.getInstance()
+                .getDriverPerspective()
+                .rotateBy(Rotation2d.fromDegrees(180)));
 
     counter = 0;
     amDone = false;
@@ -48,7 +52,9 @@ public class AutoScoreBarge extends Command {
     if (Elevator.getInstance().isElevatorAndArmAtTarget()
         && NumUtil.epislonEquals(
             PoseEstimator.getInstance().getRobotPose().getRotation(),
-            SwerveDrivetrain.getInstance().getDriverPerspective(),
+            SwerveDrivetrain.getInstance()
+                .getDriverPerspective()
+                .rotateBy(Rotation2d.fromDegrees(180)),
             Units.degreesToRadians(10))) {
       amDone = true;
       Claw.getInstance().setClawMode(ClawMode.BLAST);

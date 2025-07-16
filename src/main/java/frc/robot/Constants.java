@@ -219,7 +219,7 @@ public final class Constants {
     public static final double WHEEL_CORAL_SHOOT_SPEED = 0.6;
     public static final double WHEEL_CORAL_BLAST_SPEED = 0.9;
     public static final double WHEEL_ALGAE_SHOOT_SPEED = 0.5;
-    public static final double WHEEL_ALGAE_BLAST_SPEED = 0.5;
+    public static final double WHEEL_ALGAE_BLAST_SPEED = 1.0;
     public static final double CORAL_LOAD_SPEED = -0.5;
     public static final double ALGAE_LOAD_SPEED = -0.7;
     public static final double ALGAE_IDLE_SPEED = -0.05;
@@ -370,7 +370,7 @@ public final class Constants {
     public static final Translation2d BOT_TO_CAM_TRANSLATION =
         BOT_TO_CAM_TRANSFORM.getTranslation().toTranslation2d();
     public static final double CORAL_HEIGHT_METERS = Units.inchesToMeters(5);
-    public static final double DETECTION_DISTANCE_LIMIT = 2.5;
+    public static final double DETECTION_DISTANCE_LIMIT = 5;
     public static final double DETECT_DEBOUNCE_TIME_RISING = 0.1;
     public static final double DETECT_DEBOUNCE_TIME_FALLING = 0.5;
 

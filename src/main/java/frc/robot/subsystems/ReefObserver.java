@@ -36,6 +36,7 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
+import monologue.Annotations.Log;
 import monologue.Logged;
 
 public class ReefObserver extends Subsystem {
@@ -91,9 +92,6 @@ public class ReefObserver extends Subsystem {
     // Create io object first in subsystem configuration
     io_ = new ReefObserverPeriodicIo();
 
-    // Create subscribers
-    var inputTable =
-        NetworkTableInstance.getDefault().getTable(ReefControlsConstants.TO_ROBOT_TABLE);
     // Create subscribers
     var input_table_ =
         NetworkTableInstance.getDefault().getTable(ReefControlsConstants.TO_ROBOT_TABLE);
@@ -434,12 +432,12 @@ public class ReefObserver extends Subsystem {
   }
 
   public class ReefObserverPeriodicIo implements Logged {
-    public ReefState reef_state_ = ReefState.initial;
-    public ReefState previous_reef_state_ = null;
-    public int selected_level_ = 0;
-    public boolean coop_state_ = false;
-    public boolean rp_focus_state_ = false;
-    public boolean rp_completed_ = false;
+    @Log.File public ReefState reef_state_ = ReefState.initial;
+    @Log.File public ReefState previous_reef_state_ = null;
+    @Log.File public int selected_level_ = 0;
+    @Log.File public boolean coop_state_ = false;
+    @Log.File public boolean rp_focus_state_ = false;
+    @Log.File public boolean rp_completed_ = false;
   }
 
   @Override

@@ -383,7 +383,8 @@ public class FieldRegions {
     OPP_REEF_EXIT_REGION =
         AllianceFlipUtil.apply(OPP_REEF_EXIT_REGION, FieldConstants.SYMMETRY_TYPE);
 
-    // Opposing Alliance Reef Regions start as Current Alliance and need flipped on construction
+    // Opposing Alliance Reef Regions start as Current Alliance and need flipped on
+    // construction
     ScoringPoses.OPP_REEF_FACE_0_POSE =
         AllianceFlipUtil.apply(ScoringPoses.OPP_REEF_FACE_0_POSE, FieldConstants.SYMMETRY_TYPE);
     ScoringPoses.OPP_REEF_FACE_1_POSE =
@@ -401,6 +402,13 @@ public class FieldRegions {
     OPP_BARGE_ENTER = AllianceFlipUtil.apply(OPP_BARGE_ENTER, SymmetryType.DIRECT);
     ScoringPoses.OPP_BARGE_TIGHT_ROPE =
         AllianceFlipUtil.apply(ScoringPoses.OPP_BARGE_TIGHT_ROPE, SymmetryType.DIRECT);
+
+    REEF_REGIONS.add(6, OPP_REEF_FACE0_REGION);
+    REEF_REGIONS.add(7, OPP_REEF_FACE1_REGION);
+    REEF_REGIONS.add(8, OPP_REEF_FACE2_REGION);
+    REEF_REGIONS.add(9, OPP_REEF_FACE3_REGION);
+    REEF_REGIONS.add(10, OPP_REEF_FACE4_REGION);
+    REEF_REGIONS.add(11, OPP_REEF_FACE5_REGION);
 
     populateTable();
   }
