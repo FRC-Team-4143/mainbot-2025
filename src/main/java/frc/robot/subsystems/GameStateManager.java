@@ -197,9 +197,9 @@ public class GameStateManager extends Subsystem {
           ReefObserver.getInstance()
               .updateReefState(new GameStateTarget(io_.target_column_, io_.scoring_target_));
 
-          if (io_.robot_state_ != RobotState.PRE_FIRE_WAIT) {
-            io_.robot_state_ = RobotState.SCORING;
-          }
+          // if (io_.robot_state_ != RobotState.PRE_FIRE_WAIT) {
+          //   io_.robot_state_ = RobotState.SCORING;
+          // }
         }
         break;
       case PRE_FIRE_WAIT:
