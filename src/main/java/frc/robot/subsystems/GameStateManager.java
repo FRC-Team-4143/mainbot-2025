@@ -194,6 +194,10 @@ public class GameStateManager extends Subsystem {
             io_.robot_state_ = RobotState.PRE_FIRE_WAIT;
             io_.pre_fire_stamp = timestamp;
           }
+          if (Claw.getInstance().hasAlgae() && io_.target_column_ == Column.ALGAE) {
+            ReefObserver.getInstance()
+                .updateReefState(new GameStateTarget(io_.target_column_, io_.scoring_target_));
+          }
           ReefObserver.getInstance()
               .updateReefState(new GameStateTarget(io_.target_column_, io_.scoring_target_));
 

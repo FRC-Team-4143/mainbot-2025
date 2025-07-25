@@ -120,9 +120,9 @@ public abstract class OI {
                 .ignoringDisable(true));
 
     // Swap Between Robot Centric and Field Centric
-    driver_controller_
-        .y()
-        .onTrue(SwerveDrivetrain.getInstance().toggleFieldCentric().ignoringDisable(true));
+    // driver_controller_
+    //     .y()
+    //     .onTrue(SwerveDrivetrain.getInstance().toggleFieldCentric().ignoringDisable(true));
 
     // Crawl
     driver_pov_active_.whileTrue(
