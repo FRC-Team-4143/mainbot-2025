@@ -4,9 +4,9 @@
 
 package frc.robot.commands;
 
-import edu.wpi.first.wpilibj2.command.Command;
 import frc.lib.ElevatorTargets.TargetType;
 import frc.lib.FieldRegions;
+import frc.mw_lib.command.LazyCommand;
 import frc.robot.subsystems.Claw;
 import frc.robot.subsystems.Claw.ClawMode;
 import frc.robot.subsystems.Claw.GamePiece;
@@ -18,9 +18,10 @@ import frc.robot.subsystems.GameStateManager.RobotState;
 import frc.robot.subsystems.PoseEstimator;
 
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
-public class AutoAlgaeReefPickup extends Command {
+public class AutoAlgaeReefPickup extends LazyCommand {
   /** Creates a new AutoAlgaeReefPickup. */
   public AutoAlgaeReefPickup() {
+    super(.5);
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(Elevator.getInstance());
     setName(this.getClass().getSimpleName());
@@ -29,6 +30,7 @@ public class AutoAlgaeReefPickup extends Command {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
+    this.timerReset();
     GameStateManager.getInstance().setScoringTarget(ReefScoringTarget.ALGAE, false);
     GameStateManager.getInstance().setScoringColum(Column.ALGAE, false);
     Claw.getInstance().setGamePiece(GamePiece.ALGAE);
@@ -60,7 +62,7 @@ public class AutoAlgaeReefPickup extends Command {
 
   // Returns true when the command should end.
   @Override
-  public boolean isFinished() {
+  public boolean isConditionMet() {
     return Claw.getInstance().hasAlgae();
   }
 }
