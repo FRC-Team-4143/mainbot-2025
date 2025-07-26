@@ -68,8 +68,6 @@ public class Left_3_Piece extends Auto {
         // Get game piece 4
         this.getTrajectoryCmd("KL to Left Ground").until(CoralDetector.getInstance()::isValid),
         new CoralTractorBeam().withTimeout(3),
-        
         this.getTrajectoryCmd("Left Ground to IJ").alongWith(new IntakeHandoff()));
-
   }
 }

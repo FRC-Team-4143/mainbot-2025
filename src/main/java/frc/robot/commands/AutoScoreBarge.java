@@ -49,7 +49,7 @@ public class AutoScoreBarge extends Command {
         && NumUtil.epislonEquals(
             PoseEstimator.getInstance().getRobotPose().getRotation(),
             SwerveDrivetrain.getInstance().getDriverPerspective(),
-            Units.degreesToRadians(10))) {
+            Units.degreesToRadians(5))) {
       amDone = true;
       Claw.getInstance().setClawMode(ClawMode.BLAST);
     }

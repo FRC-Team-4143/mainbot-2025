@@ -19,12 +19,14 @@ public class IntakeHandoff extends Command {
   public IntakeHandoff() {
     addRequirements(Pickup.getInstance());
     addRequirements(Claw.getInstance());
+    addRequirements(Elevator.getInstance());
     setName(this.getClass().getSimpleName());
   }
 
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
+    Elevator.getInstance().setTarget(TargetType.CORAL_INTAKE);
     Claw.getInstance().setGamePiece(GamePiece.CORAL);
     Pickup.getInstance().setPickupMode(PickupMode.INTAKE);
     Claw.getInstance().setClawMode(ClawMode.LOAD);
