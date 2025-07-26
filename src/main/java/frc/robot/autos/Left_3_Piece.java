@@ -22,13 +22,14 @@ public class Left_3_Piece extends Auto {
     this.loadTrajectory("Left Ground to KL");
     this.loadTrajectory("KL to Left Ground");
     this.loadTrajectory("Left Ground to KL");
+    this.loadTrajectory("Left Ground to IJ");
 
     this.addCommands(
         // Score game Piece 1
         GameStateManager.setScoringCommand(Column.RIGHT, ReefScoringTarget.L4),
         this.getTrajectoryCmd("Left Start to IJ")
             .raceWith(
-                new WaitCommand(0.0)
+                new WaitCommand(0.5)
                     .andThen(
                         Commands.run(
                             () -> Elevator.getInstance().setTarget(ElevatorTargets.TargetType.L4),
@@ -37,7 +38,7 @@ public class Left_3_Piece extends Auto {
 
         // Get game Piece 2
         this.getTrajectoryCmd("IJ to Left Ground").until(CoralDetector.getInstance()::isValid),
-        new CoralTractorBeam().withTimeout(5),
+        new CoralTractorBeam().withTimeout(3),
 
         // Score game Piece 2
         GameStateManager.setScoringCommand(Column.LEFT, ReefScoringTarget.L4),
@@ -52,7 +53,7 @@ public class Left_3_Piece extends Auto {
 
         // Get game Piece 3
         this.getTrajectoryCmd("KL to Left Ground").until(CoralDetector.getInstance()::isValid),
-        new CoralTractorBeam().withTimeout(5),
+        new CoralTractorBeam().withTimeout(3),
 
         // Score game Piece 3
         GameStateManager.setScoringCommand(Column.RIGHT, ReefScoringTarget.L4),
@@ -66,6 +67,9 @@ public class Left_3_Piece extends Auto {
         new AutoCoralReefScore(),
         // Get game piece 4
         this.getTrajectoryCmd("KL to Left Ground").until(CoralDetector.getInstance()::isValid),
-        new CoralTractorBeam().withTimeout(5));
+        new CoralTractorBeam().withTimeout(3),
+        
+        this.getTrajectoryCmd("Left Ground to IJ").alongWith(new IntakeHandoff()));
+
   }
 }

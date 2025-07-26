@@ -130,7 +130,7 @@ public class Elevator extends Subsystem {
     // Arm Encoder Config
     arm_encoder_config_ = new CANcoderConfiguration();
     arm_encoder_config_.MagnetSensor.SensorDirection = ArmConstants.ABSOLUTE_ENCODER_INVERSION;
-    arm_encoder_config_.MagnetSensor.AbsoluteSensorDiscontinuityPoint = 1;
+    arm_encoder_config_.MagnetSensor.AbsoluteSensorDiscontinuityPoint = 0.5;
     arm_encoder_.getConfigurator().apply(arm_encoder_config_);
 
     // System Behavior Setup
