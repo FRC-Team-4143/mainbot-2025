@@ -94,6 +94,9 @@ public abstract class OI {
     // Toggle Game Piece
     driver_controller_.leftBumper().onTrue(Claw.getInstance().toggleGamePieceCommand());
 
+    // Toggle Field Centric
+    driver_controller_.rightStick().onTrue(SwerveDrivetrain.getInstance().toggleFieldCentric());
+
     if (Climber.getInstance().isEnabled()) {
       // Increment Climb Sequence
       driver_controller_.start().onTrue(Commands.runOnce(() -> Climber.getInstance().nextStage()));
