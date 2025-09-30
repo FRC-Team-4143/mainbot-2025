@@ -24,7 +24,7 @@ public class CoralReefScore extends LazyCommand {
     super(2);
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(Elevator.getInstance());
-    addRequirements(Claw.getInstance());
+    // addRequirements(Claw.getInstance());
     setName(this.getClass().getSimpleName());
   }
 

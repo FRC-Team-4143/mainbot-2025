@@ -354,7 +354,7 @@ public final class Constants {
   public class GameStateManagerConstants {
     public static final double REQUIRED_ROTATION_FOR_ELEVATOR = Units.degreesToRadians(45);
     public static final double CORAL_BLOCKED_THRESHOLD = Units.inchesToMeters(6.5);
-    public static final double L2_L3_WAIT_TIME = 0.125;
+    public static final double L2_L3_WAIT_TIME = 0.25;
   }
 
   public class CoralDetectorConstants {
@@ -394,6 +394,6 @@ public final class Constants {
     public static final String IS_ELIMS_TOPIC_NAME = "IsElims";
     public static final String RP_FOCUS_TOPIC_NAME = "RPFocus";
     public static final int PORT = 5802;
-    public static final int CORAL_NEEDED_FOR_RP = 7;
+    public static final int CORAL_NEEDED_FOR_RP = 5;
   }
 }

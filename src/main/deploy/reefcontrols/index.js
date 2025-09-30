@@ -138,7 +138,7 @@ function updateUI() {
     (element, index) => {
       if (index === 0) {
         element.innerText = l1State;
-        if (l1State >= 7) rpLevelCount++;
+        if (l1State >= 5) rpLevelCount++;
       } else {
         let count = 0;
         let levelState = [l2State, l3State, l4State][index - 1];
@@ -148,7 +148,7 @@ function updateUI() {
           }
         }
         element.innerText = count === 12 ? "\u2705" : count;
-        if (count >= 7) rpLevelCount++;
+        if (count >= 5) rpLevelCount++;
       }
     }
   );

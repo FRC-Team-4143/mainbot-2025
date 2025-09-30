@@ -1,6 +1,5 @@
 package frc.robot.subsystems;
 
-import static edu.wpi.first.units.Units.Degrees;
 import static edu.wpi.first.units.Units.Fahrenheit;
 import static edu.wpi.first.units.Units.Radians;
 import static edu.wpi.first.units.Units.Rotations;
@@ -27,7 +26,6 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import frc.lib.ElevatorTargets.TargetType;
 import frc.mw_lib.controls.TalonFXTuner;
 import frc.mw_lib.subsystem.Subsystem;
-import frc.mw_lib.util.MWPreferences;
 import frc.mw_lib.util.NumUtil;
 import frc.robot.Constants.ArmConstants;
 import frc.robot.Constants.ElevatorConstants;
@@ -129,8 +127,9 @@ public class Elevator extends Subsystem {
 
     // Arm Encoder Config
     arm_encoder_config_ = new CANcoderConfiguration();
+    arm_encoder_.getConfigurator().refresh(arm_encoder_config_);
     arm_encoder_config_.MagnetSensor.SensorDirection = ArmConstants.ABSOLUTE_ENCODER_INVERSION;
-    arm_encoder_config_.MagnetSensor.AbsoluteSensorDiscontinuityPoint = 1;
+    arm_encoder_config_.MagnetSensor.AbsoluteSensorDiscontinuityPoint = 0.5;
     arm_encoder_.getConfigurator().apply(arm_encoder_config_);
 
     // System Behavior Setup
@@ -165,9 +164,7 @@ public class Elevator extends Subsystem {
     SmartDashboard.putData(
         "Commands/Zero Arm",
         Commands.runOnce(() -> Elevator.getInstance().armPosReset()).ignoringDisable(true));
-    arm_motor_.setPosition(
-        readArmEncoder().getRotations()
-            - (MWPreferences.getInstance().getPreferenceDouble("ArmEncoderOffset", 0)));
+    arm_motor_.setPosition(readArmEncoder());
   }
 
   /** Called to reset and configure the subsystem */
@@ -309,10 +306,9 @@ public class Elevator extends Subsystem {
    *
    * @return raw arm encoder value without wrapping
    */
-  private Rotation2d readArmEncoder() {
-    double value = arm_encoder_.getAbsolutePosition().getValue().in(Degrees);
-    if (Math.abs(value) > 180) return Rotation2d.fromDegrees(value + (-Math.copySign(360, value)));
-    return Rotation2d.fromDegrees(value);
+  private double readArmEncoder() {
+    double value = arm_encoder_.getAbsolutePosition().getValueAsDouble();
+    return value;
   }
 
   /**
@@ -402,10 +398,10 @@ public class Elevator extends Subsystem {
 
   /** Sync Arm position to Arm encoder */
   public void armPosReset() {
-    MWPreferences.getInstance().setPreference("ArmEncoderOffset", readArmEncoder().getRotations());
-    arm_motor_.setPosition(
-        readArmEncoder().getRotations()
-            - (MWPreferences.getInstance().getPreferenceDouble("ArmEncoderOffset", 0)));
+    // MWPreferences.getInstance().setPreference("ArmEncoderOffset",
+    // readArmEncoder().getRotations());
+    arm_encoder_.setPosition(0);
+    arm_motor_.setPosition(readArmEncoder());
   }
 
   /**
