@@ -14,11 +14,9 @@ import com.thethriftybot.ThriftyNova;
 import com.thethriftybot.ThriftyNova.CurrentType;
 import com.thethriftybot.ThriftyNova.MotorType;
 import edu.wpi.first.math.controller.PIDController;
-import edu.wpi.first.wpilibj.CounterBase.EncodingType;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.RobotController;
-import edu.wpi.first.wpilibj.motorcontrol.Spark;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.mw_lib.logging.Elastic;
 import frc.mw_lib.subsystem.RemovableSubsystem;
@@ -37,7 +35,7 @@ public class Climber extends RemovableSubsystem {
 
   private Encoder prong_counter_;
   private PIDController prong_controller_;
-  private Spark prong_motor_;
+  private ThriftyNova prong_motor_;
   private ThriftyNova arm_motor_;
 
   public enum ClimberMode {
@@ -68,8 +66,10 @@ public class Climber extends RemovableSubsystem {
     io_ = new ClimberPeriodicIo();
 
     if (isEnabled()) {
-      prong_motor_ = new Spark(ClimberConstants.PRONG_ID);
+      prong_motor_ = new ThriftyNova(ClimberConstants.PRONG_ID);
       prong_motor_.setInverted(true);
+      prong_motor_.setMaxCurrent(CurrentType.STATOR, ClimberConstants.ARM_SUPPLY_CURRENT_LIMIT);
+      prong_motor_.setMotorType(MotorType.NEO);
 
       arm_motor_ = new ThriftyNova(ClimberConstants.ARM_ID);
       arm_motor_.setInverted(false);
@@ -86,12 +86,6 @@ public class Climber extends RemovableSubsystem {
       strap_config_ = new TalonFXConfiguration();
       strap_config_.MotorOutput.Inverted = ClimberConstants.STRAP_INVERSION;
       strap_config_.MotorOutput.NeutralMode = NeutralModeValue.Brake;
-
-      prong_counter_ =
-          new Encoder(
-              ClimberConstants.PRONG_ID_A, ClimberConstants.PRONG_ID_B, false, EncodingType.k2X);
-      prong_controller_ = new PIDController(ClimberConstants.PRONG_P, 0, ClimberConstants.PRONG_D);
-
       reset();
     }
   }

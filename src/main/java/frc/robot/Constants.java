@@ -238,9 +238,7 @@ public final class Constants {
 
   public class ClimberConstants {
     public static final int STRAP_ID = 31;
-    public static final int PRONG_ID = 1;
-    public static final int PRONG_ID_A = 8;
-    public static final int PRONG_ID_B = 9;
+    public static final int PRONG_ID = 32;
     public static final int ARM_ID = 2;
     public static final InvertedValue STRAP_INVERSION = InvertedValue.Clockwise_Positive;
     public static final Slot0Configs STRAP_GAINS =
