@@ -398,7 +398,7 @@ public class Elevator extends Subsystem {
 
   /** Sync Arm position to Arm encoder */
   public void armPosReset() {
-    // MWPreferences.getInstance().setPreference("ArmEncoderOffset",
+    // MWPreferences.setPreference("ArmEncoderOffset",
     // readArmEncoder().getRotations());
     arm_encoder_.setPosition(0);
     arm_motor_.setPosition(readArmEncoder());

@@ -37,10 +37,10 @@ public class Robot extends TimedRobot {
     FieldRegions.makeRegions();
     ProxyServer.configureServer();
 
-    AutoManager.getInstance().registerAutos(new Right_3_Piece());
-    AutoManager.getInstance().registerAutos(new Left_3_Piece());
-    AutoManager.getInstance().registerAutos(new H4_Algae());
-    AutoManager.getInstance().registerAutos(new Algae_Thief());
+    // AutoManager.getInstance().registerAutos(new Right_3_Piece());
+    // AutoManager.getInstance().registerAutos(new Left_3_Piece());
+    // AutoManager.getInstance().registerAutos(new H4_Algae());
+    // AutoManager.getInstance().registerAutos(new Algae_Thief());
 
     SmartDashboard.putData(
         "Snapshot", Commands.runOnce(() -> ProxyServer.snapshot("Test Snapshot")));
